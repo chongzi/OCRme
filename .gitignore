@@ -10,4 +10,6 @@
 gradlew
 gradlew.bat
 settings.gradle
+.idea/misc.xml
+
 

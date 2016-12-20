@@ -1,11 +1,16 @@
 package com.ashomok.imagetotext.language;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import com.ashomok.imagetotext.App;
 import com.ashomok.imagetotext.R;
 
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Created by iuliia on 12/17/16.
@@ -14,6 +19,7 @@ import java.util.LinkedHashSet;
 //singleton
 public class LanguageList {
 
+    public static final String CHECKED_LANGUAGES = "checked_languages";
     private static LanguageList instance;
     private LinkedHashSet<Language> languages;
 
@@ -41,8 +47,51 @@ public class LanguageList {
         }
         if (result.size() > 1 && result.contains(getDefaultLanguage())) {
             result.remove(getDefaultLanguage());
+        } else if (result.size() <= 1) {
+            //try to get value from shared preferences
+            result = obtainDataFromSharedPreferances();
+        } else {
+            putDataToSharedPreferances(result);
         }
 
+        return result;
+    }
+
+    public void putDataToSharedPreferances(LinkedHashSet<Language> data) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+        SharedPreferences.Editor editor = preferences.edit();
+        Set<String> checkedLanguages = new HashSet<>();
+        for (Language l : data) {
+            checkedLanguages.add(l.getName());
+        }
+        editor.putStringSet(CHECKED_LANGUAGES, checkedLanguages);
+        editor.apply();
+    }
+
+    /**
+     * Obtain data from shared preferances of provide default value
+     * @return
+     */
+    public LinkedHashSet<Language> obtainDataFromSharedPreferances() {
+        LinkedHashSet<Language> result = new LinkedHashSet<>();
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+        Set<String> checkedLanguagesNames = sharedPref.getStringSet(CHECKED_LANGUAGES, null);
+
+        if (checkedLanguagesNames != null) {
+            Iterator<String> checkedLanguagesNamesIterator = checkedLanguagesNames.iterator();
+            Iterator<Language> languagesIterator = languages.iterator();
+            while (checkedLanguagesNamesIterator.hasNext()) {
+                while (languagesIterator.hasNext()) {
+                    Language language = languagesIterator.next();
+                    if (checkedLanguagesNamesIterator.next().equals(language.getName())) {
+                        result.add(language);
+                    }
+                }
+            }
+        }
+
+        //if empty - provide default value
         if (result.size() < 1) {
             result.add(getDefaultLanguage());
         }

@@ -82,16 +82,20 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
+        updateLanguageTextView();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == LANGUAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
 
-            String languageString = generateLanguageString();
-            updateTextView(languageTextView, languageString);
+            updateLanguageTextView();
         }
+    }
+
+    private void updateLanguageTextView() {
+        String languageString = generateLanguageString();
+        updateTextView(languageTextView, languageString);
     }
 
     @Override
