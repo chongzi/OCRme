@@ -1,12 +1,11 @@
-package com.ashomok.imagetotext;
+package com.ashomok.imagetotext.language;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.ashomok.imagetotext.language.Language;
-import com.ashomok.imagetotext.language.LanguageList;
+import com.ashomok.imagetotext.App;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +20,13 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * Created by iuliia on 12/20/16.
+ *
+ how to add coverage metrics
+ ./gradlew createDebugCoverageReport
+ http://stackoverflow.com/questions/29133761/jacoco-code-coverage-in-android-studio
+ report path - app/build/reports/coverage/debug/index.html
  */
+
 @RunWith(AndroidJUnit4.class)
 public class LanguageListTest {
 
