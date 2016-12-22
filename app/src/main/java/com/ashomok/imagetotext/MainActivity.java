@@ -1,10 +1,12 @@
 package com.ashomok.imagetotext;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Paint;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,6 +35,9 @@ import com.ashomok.imagetotext.menu.ItemClickListener;
 import com.ashomok.imagetotext.menu.Menu;
 import com.ashomok.imagetotext.menu.Row;
 import com.ashomok.imagetotext.menu.RowsAdapter;
+import com.ashomok.imagetotext.ocr_task.OCRAnimationActivity;
+import com.ashomok.imagetotext.ocr_task.RecognizeImageAsyncTask;
+import com.ashomok.imagetotext.ocr_task.RecognizeImageAsyncTaskRESTClient;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,16 +48,18 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int LANGUAGE_ACTIVITY_REQUEST_CODE = 1;
+    public static final String IMAGE_PATH_EXTRA = "image";
     private ActionBarDrawerToggle toggle;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private static final int CaptureImage_REQUEST_CODE = 1;
-    //    private static final int OCRAnimationActivity_REQUEST_CODE = 2;
+        private static final int OCRAnimationActivity_REQUEST_CODE = 2;
     public static final int CAMERA_PERMISSIONS_REQUEST = 3;
     public static final String LANGUAGE_EXTRA = "language";
     private String img_path;
     private LanguageList languageList;
-//    private RecognizeImageAsyncTask recognizeImageAsyncTask;
+
+    private RecognizeImageAsyncTask recognizeImageAsyncTask;
 
     private TextView languageTextView;
 
@@ -91,6 +98,53 @@ public class MainActivity extends AppCompatActivity {
 
             updateLanguageTextView();
         }
+
+        //making photo
+        if (requestCode == CaptureImage_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            startOCRtask(img_path);
+        }
+
+        //ocr canceled
+        else if (requestCode == OCRAnimationActivity_REQUEST_CODE && resultCode == Activity.RESULT_CANCELED) {
+            recognizeImageAsyncTask.cancel(true);
+        }
+    }
+
+    private void startOCRtask(String img_path) {
+
+        //run animation
+        Intent intent = new Intent(this, OCRAnimationActivity.class);
+        intent.putExtra(IMAGE_PATH_EXTRA, img_path);
+        startActivityForResult(intent, OCRAnimationActivity_REQUEST_CODE);
+
+        try {
+            //start ocr
+            if (isNetworkAvailable(this)) {
+                recognizeImageAsyncTask = new RecognizeImageAsyncTaskRESTClient(img_path);
+                RecognizeImageAsyncTask.OnTaskCompletedListener onTaskCompletedListener = new RecognizeImageAsyncTask.OnTaskCompletedListener() {
+                    @Override
+                    public void onTaskCompleted(String result) {
+                        finishActivity(OCRAnimationActivity_REQUEST_CODE);
+                        //// TODO: 12/22/16
+                    }
+                };
+                recognizeImageAsyncTask.setOnTaskCompletedListener(onTaskCompletedListener);
+
+            } else {
+                Toast.makeText(this, "Not available in offline mode.", Toast.LENGTH_SHORT).show();
+            }
+            recognizeImageAsyncTask.execute();
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
+
+    }
+
+    private boolean isNetworkAvailable(final Context context) {
+        final ConnectivityManager connectivityManager =
+                ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        return connectivityManager.getActiveNetworkInfo() != null &&
+                connectivityManager.getActiveNetworkInfo().isConnected();
     }
 
     private void updateLanguageTextView() {

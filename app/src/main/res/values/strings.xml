@@ -11,6 +11,7 @@
     <string name="ok" translatable="false">OK</string>
     <string name="later">Later</string>
     <string name="never">Never</string>
+    <string name="recognition">Recognition…</string>
     <string name="camera_not_found">Camera not found</string>
     <string name="thank_you_for_your_support">Thank you for your support!</string>
     <string name="times_app_was_used" translatable="false">times_app_was_used</string>
@@ -36,6 +37,7 @@
     <string name="danish">Danish</string>
     <string name="dutch">Dutch</string>
     <string name="estonian">Estonian</string>
+    <string name="recognizing">Recognizing</string>
 
 
 </resources>

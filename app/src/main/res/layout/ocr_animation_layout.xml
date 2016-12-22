@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ocr_animation_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.ashomok.imagetotext.ocr_task.OCRAnimationView
+        android:id="@+id/ocr_animation_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:text="@string/recognition"
+        android:textColor="@color/red"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin" />
+
+    <Button
+        android:id="@+id/cancel_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="end"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:text="@string/cancel"
+        android:layout_alignParentRight="true" />
+
+</RelativeLayout>

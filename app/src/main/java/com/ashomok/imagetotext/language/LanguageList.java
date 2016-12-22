@@ -47,17 +47,15 @@ public class LanguageList {
         }
         if (result.size() > 1 && result.contains(getDefaultLanguage())) {
             result.remove(getDefaultLanguage());
+            putDataToSharedPreferances(result);
         } else if (result.size() <= 1) {
             //try to get value from shared preferences
             result = obtainDataFromSharedPreferances();
-        } else {
-            putDataToSharedPreferances(result);
         }
-
         return result;
     }
 
-    public void putDataToSharedPreferances(LinkedHashSet<Language> data) {
+    public void putDataToSharedPreferances(Set<Language> data) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(App.getContext());
         SharedPreferences.Editor editor = preferences.edit();
         Set<String> checkedLanguages = new HashSet<>();
@@ -79,12 +77,14 @@ public class LanguageList {
         Set<String> checkedLanguagesNames = sharedPref.getStringSet(CHECKED_LANGUAGES, null);
 
         if (checkedLanguagesNames != null) {
-            Iterator<String> checkedLanguagesNamesIterator = checkedLanguagesNames.iterator();
+
             Iterator<Language> languagesIterator = languages.iterator();
-            while (checkedLanguagesNamesIterator.hasNext()) {
-                while (languagesIterator.hasNext()) {
-                    Language language = languagesIterator.next();
-                    if (checkedLanguagesNamesIterator.next().equals(language.getName())) {
+            while (languagesIterator.hasNext()) {
+                Language language = languagesIterator.next();
+                Iterator<String> checkedLanguagesNamesIterator = checkedLanguagesNames.iterator();
+                while (checkedLanguagesNamesIterator.hasNext()) {
+                    String checkedLanguageName = checkedLanguagesNamesIterator.next();
+                    if (checkedLanguageName.equals(language.getName())) {
                         result.add(language);
                     }
                 }
@@ -98,6 +98,7 @@ public class LanguageList {
         return result;
     }
 
+    //todo add english language equals auto
     private LanguageList() {
         final Context context = App.getContext();
         languages = new LinkedHashSet<Language>() {{
