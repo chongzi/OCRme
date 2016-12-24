@@ -3,6 +3,7 @@ package com.ashomok.imagetotext.language;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.annotation.VisibleForTesting;
 
 import com.ashomok.imagetotext.App;
 import com.ashomok.imagetotext.R;
@@ -55,7 +56,8 @@ public class LanguageList {
         return result;
     }
 
-    public void putDataToSharedPreferances(Set<Language> data) {
+    @VisibleForTesting
+    protected void putDataToSharedPreferances(Set<Language> data) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(App.getContext());
         SharedPreferences.Editor editor = preferences.edit();
         Set<String> checkedLanguages = new HashSet<>();
@@ -70,7 +72,8 @@ public class LanguageList {
      * Obtain data from shared preferances of provide default value
      * @return
      */
-    public LinkedHashSet<Language> obtainDataFromSharedPreferances() {
+    @VisibleForTesting
+    protected LinkedHashSet<Language> obtainDataFromSharedPreferances() {
         LinkedHashSet<Language> result = new LinkedHashSet<>();
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(App.getContext());

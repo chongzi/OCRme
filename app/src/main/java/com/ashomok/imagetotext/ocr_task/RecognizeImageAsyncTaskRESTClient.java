@@ -19,6 +19,11 @@ public final class RecognizeImageAsyncTaskRESTClient extends RecognizeImageAsync
     @Override
     protected String doInBackground(Void... params) {
 
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 //        RestTemplate restTemplate = new RestTemplate(true);
 //
 //        LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();

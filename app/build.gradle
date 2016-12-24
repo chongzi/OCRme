@@ -26,9 +26,16 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'org.hamcrest', module: 'hamcrest-integration'
     })
-    compile 'com.android.support:appcompat-v7:25.1.0'
     testCompile 'junit:junit:4.12'
+
+//    https://developer.android.com/training/testing/unit-testing/local-unit-tests.html
+    testCompile 'org.mockito:mockito-core:2.3.11'
+
+    compile 'com.android.support:appcompat-v7:25.1.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
 }
