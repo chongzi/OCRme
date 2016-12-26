@@ -1,5 +1,6 @@
 package com.ashomok.imagetotext.ocr_task;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.ashomok.imagetotext.MainActivity;
+import com.ashomok.imagetotext.PermissionUtils;
 import com.ashomok.imagetotext.R;
 
 import junit.framework.Assert;
@@ -42,6 +44,7 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static java.lang.Thread.sleep;
 
 /**
  * Created by iuliia on 12/25/16.
@@ -67,7 +70,7 @@ public class OCRAnimationActivityTest {
             launchActivityWithPath(path);
             onView(withId(R.id.image)).check(matches(isDisplayed()));
             //wait while image was loaded by Picasso
-            Thread.sleep(5000);
+            sleep(5000);
             onView(withId(R.id.image)).check(matches(hasDrawable()));
 
             mActivityRule.getActivity().finish();
@@ -143,6 +146,11 @@ public class OCRAnimationActivityTest {
         if (ContextCompat.checkSelfPermission(targetContext, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             throw new AssertionError("Test not failed, but needs permission");
+//            One way to make this work is by granting permissions using adb.
+//
+//            $ adb pm grant com.example.myapp android.permission.<PERMISSION>
+//                    or
+//            $ adb install -g com.example.myapp
         } else {
             for (String path : paths) {
                 File dir = new File(path);

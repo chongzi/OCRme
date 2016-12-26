@@ -9,7 +9,6 @@ import com.ashomok.imagetotext.App;
 import com.ashomok.imagetotext.R;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -23,6 +22,7 @@ public class LanguageList {
     public static final String CHECKED_LANGUAGES = "checked_languages";
     private static LanguageList instance;
     private LinkedHashSet<Language> languages;
+    private LinkedHashSet<Language> defaultLanguages;
 
     public LinkedHashSet<Language> getLanguages() {
         return languages;
@@ -36,7 +36,7 @@ public class LanguageList {
     }
 
     public Language getDefaultLanguage() {
-        return new Language(App.getContext().getString(R.string.auto), null);
+        return new Language(App.getContext().getString(R.string.auto), null, true);
     }
 
     public LinkedHashSet<Language> getChecked() {
@@ -46,9 +46,11 @@ public class LanguageList {
                 result.add(l);
             }
         }
-        if (result.size() > 1 && result.contains(getDefaultLanguage())) {
-            result.remove(getDefaultLanguage());
+        if (result.size() > 1) {
             putDataToSharedPreferances(result);
+            if (result.contains(getDefaultLanguage())) {
+                result.remove(getDefaultLanguage());
+            }
         } else if (result.size() <= 1) {
             //try to get value from shared preferences
             result = obtainDataFromSharedPreferances();
@@ -70,6 +72,7 @@ public class LanguageList {
 
     /**
      * Obtain data from shared preferances of provide default value
+     *
      * @return
      */
     @VisibleForTesting
@@ -81,12 +84,8 @@ public class LanguageList {
 
         if (checkedLanguagesNames != null) {
 
-            Iterator<Language> languagesIterator = languages.iterator();
-            while (languagesIterator.hasNext()) {
-                Language language = languagesIterator.next();
-                Iterator<String> checkedLanguagesNamesIterator = checkedLanguagesNames.iterator();
-                while (checkedLanguagesNamesIterator.hasNext()) {
-                    String checkedLanguageName = checkedLanguagesNamesIterator.next();
+            for (Language language : defaultLanguages) {
+                for (String checkedLanguageName : checkedLanguagesNames) {
                     if (checkedLanguageName.equals(language.getName())) {
                         result.add(language);
                     }
@@ -104,7 +103,7 @@ public class LanguageList {
     //todo add english language equals auto
     private LanguageList() {
         final Context context = App.getContext();
-        languages = new LinkedHashSet<Language>() {{
+        defaultLanguages = new LinkedHashSet<Language>() {{
             add(new Language(context.getString(R.string.auto), null, true));
             add(new Language(context.getString(R.string.afrikaans), "af"));
             add(new Language(context.getString(R.string.arabic), "ar"));
@@ -162,5 +161,8 @@ public class LanguageList {
             add(new Language("Uzbek", "uz"));
             add(new Language("Vietnamese", "vi"));
         }};
+
+        languages = obtainDataFromSharedPreferances();
+        languages.addAll(defaultLanguages);
     }
 }

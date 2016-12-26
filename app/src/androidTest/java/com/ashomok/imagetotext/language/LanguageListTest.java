@@ -42,15 +42,13 @@ public class LanguageListTest {
     @Test
     public void getChecked() throws Exception {
         LinkedHashSet<Language> languages = instance.getLanguages();
-        Iterator<Language> iterator = languages.iterator();
-        while (iterator.hasNext()) {
-            iterator.next().setChecked(true);
+        for (Language language : languages) {
+            language.setChecked(true);
         }
 
         LinkedHashSet<Language> checked = instance.getChecked();
-        Iterator<Language> iteratorChecked = checked.iterator();
-        while (iteratorChecked.hasNext()) {
-            assertTrue(iteratorChecked.next().isChecked());
+        for (Language language : checked) {
+            assertTrue(language.isChecked());
         }
 
         assertTrue(languages.size() == (checked.size() + 1)); //all except auto

@@ -48,13 +48,15 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int LANGUAGE_ACTIVITY_REQUEST_CODE = 1;
+    private static final int CaptureImage_REQUEST_CODE = 2;
+    private static final int OCRAnimationActivity_REQUEST_CODE = 3;
+    public static final int CAMERA_PERMISSIONS_REQUEST = 4;
+
     public static final String IMAGE_PATH_EXTRA = "image";
     private ActionBarDrawerToggle toggle;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
-    private static final int CaptureImage_REQUEST_CODE = 1;
-        private static final int OCRAnimationActivity_REQUEST_CODE = 2;
-    public static final int CAMERA_PERMISSIONS_REQUEST = 3;
+
     public static final String LANGUAGE_EXTRA = "language";
     private String img_path;
     private LanguageList languageList;

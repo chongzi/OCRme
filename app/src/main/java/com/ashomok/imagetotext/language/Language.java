@@ -45,23 +45,24 @@ public class Language {
 
 
     @Override
+    public int hashCode() {
+        int result = shortCut != null ? shortCut.hashCode() : 0;
+        result = 31 * result + name.hashCode();
+        return result;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         Language language = (Language) o;
 
+        if (checked != language.checked) return false;
         if (shortCut != null ? !shortCut.equals(language.shortCut) : language.shortCut != null)
             return false;
         return name.equals(language.name);
 
-    }
-
-    @Override
-    public int hashCode() {
-        int result = shortCut != null ? shortCut.hashCode() : 0;
-        result = 31 * result + name.hashCode();
-        return result;
     }
 }
 
