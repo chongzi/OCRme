@@ -1,6 +1,7 @@
 package com.ashomok.imagetotext.language;
 
 import android.support.test.filters.LargeTest;
+import android.support.test.filters.SmallTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v7.app.ActionBar;
@@ -27,7 +28,7 @@ import static org.junit.Assert.assertNotNull;
  * Created by iuliia on 12/23/16.
  */
 @RunWith(AndroidJUnit4.class)
-@LargeTest
+@SmallTest
 public class LanguageActivityTest {
 
     @Rule

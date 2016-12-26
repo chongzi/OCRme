@@ -3,6 +3,7 @@ package com.ashomok.imagetotext.language;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.ashomok.imagetotext.App;
@@ -27,7 +28,6 @@ import static org.junit.Assert.assertTrue;
  * http://stackoverflow.com/questions/29133761/jacoco-code-coverage-in-android-studio
  * report path - app/build/reports/coverage/debug/index.html
  */
-
 @RunWith(AndroidJUnit4.class)
 public class LanguageListTest {
 
@@ -59,7 +59,7 @@ public class LanguageListTest {
 
     @Test
     public void obtainDataFromSharedPreferances() throws Exception {
-        Context context = App.getContext();
+        Context context = InstrumentationRegistry.getTargetContext();
         assertNotNull(context);
 
         //test1
@@ -100,7 +100,7 @@ public class LanguageListTest {
 
         instance.putDataToSharedPreferances(data);
 
-        Context context = App.getContext();
+        Context context = InstrumentationRegistry.getTargetContext();
         assertNotNull(context);
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);

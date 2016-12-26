@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import com.ashomok.imagetotext.R;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+
 import static com.ashomok.imagetotext.MainActivity.IMAGE_PATH_EXTRA;
 
 
@@ -18,7 +20,7 @@ import static com.ashomok.imagetotext.MainActivity.IMAGE_PATH_EXTRA;
  */
 public class OCRAnimationActivity extends AppCompatActivity {
 
-    private String imageUri;
+    private String path;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,7 +31,7 @@ public class OCRAnimationActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
 
         if (bundle != null) {
-            imageUri = bundle.getString(IMAGE_PATH_EXTRA);
+            path = bundle.getString(IMAGE_PATH_EXTRA);
         }
 
         initCancelBtn();
@@ -51,15 +53,12 @@ public class OCRAnimationActivity extends AppCompatActivity {
 
     private void initImage() {
         ImageView image = (ImageView) findViewById(R.id.image);
+//todo get sizes of original image
 
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int height = displayMetrics.heightPixels / 2;
-        int width = displayMetrics.widthPixels /2;
-
+        File file = new File(path);
         Picasso.with(this)
-                .load(imageUri)
-                .resize(width, height)
+                .load(file)
+//                .resize(width, height)
                 .into(image);
     }
 }
