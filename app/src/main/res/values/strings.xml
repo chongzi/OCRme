@@ -38,6 +38,8 @@
     <string name="dutch">Dutch</string>
     <string name="estonian">Estonian</string>
     <string name="recognizing">Recognizing</string>
+    <string name="english">English</string>
+    <string name="max_checked_allowed">Max %1$s languages allowed</string>
 
 
 </resources>

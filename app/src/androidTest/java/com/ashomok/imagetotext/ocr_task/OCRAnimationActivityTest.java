@@ -1,6 +1,5 @@
 package com.ashomok.imagetotext.ocr_task;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -20,14 +19,15 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.ashomok.imagetotext.MainActivity;
-import com.ashomok.imagetotext.PermissionUtils;
 import com.ashomok.imagetotext.R;
+import com.ashomok.imagetotext.Settings;
 
 import junit.framework.Assert;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,17 +57,22 @@ public class OCRAnimationActivityTest {
     private static final String DATA_PATH = Environment.getExternalStorageDirectory().toString() + "/ImageToText/";
     private static final String TEST_IMGS = "test_imgs";
 
+
     @Rule
     public ActivityTestRule<OCRAnimationActivity> mActivityRule = new ActivityTestRule<>(
             OCRAnimationActivity.class, true, false);
 
+    @Before
+    public void setTestMode() {
+        Settings.isTestMode = true;
+    }
 
     @Test
     public void backgroundSettedProperly() throws InterruptedException {
-
         ArrayList<String> imagePaths = getTestImages();
         for (String path : imagePaths) {
             launchActivityWithPath(path);
+
             onView(withId(R.id.image)).check(matches(isDisplayed()));
             //wait while image was loaded by Picasso
             sleep(5000);
@@ -82,6 +87,9 @@ public class OCRAnimationActivityTest {
                 .getTargetContext();
         Intent intent = new Intent(targetContext, OCRAnimationActivity.class);
         intent.putExtra(MainActivity.IMAGE_PATH_EXTRA, path);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
         mActivityRule.launchActivity(intent);
     }
 
@@ -146,11 +154,6 @@ public class OCRAnimationActivityTest {
         if (ContextCompat.checkSelfPermission(targetContext, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             throw new AssertionError("Test not failed, but needs permission");
-//            One way to make this work is by granting permissions using adb.
-//
-//            $ adb pm grant com.example.myapp android.permission.<PERMISSION>
-//                    or
-//            $ adb install -g com.example.myapp
         } else {
             for (String path : paths) {
                 File dir = new File(path);

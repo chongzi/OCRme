@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Paint;
 import android.net.ConnectivityManager;
@@ -11,8 +12,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 import android.support.v4.content.FileProvider;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -28,9 +31,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ashomok.imagetotext.language.Language;
 import com.ashomok.imagetotext.language.LanguageActivity;
-import com.ashomok.imagetotext.language.LanguageList;
 import com.ashomok.imagetotext.menu.ItemClickListener;
 import com.ashomok.imagetotext.menu.Menu;
 import com.ashomok.imagetotext.menu.Row;
@@ -41,8 +42,12 @@ import com.ashomok.imagetotext.ocr_task.RecognizeImageAsyncTaskRESTClient;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,23 +62,17 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
 
-    public static final String LANGUAGE_EXTRA = "language";
     private String img_path;
-    private LanguageList languageList;
+    public static final String CHECKED_LANGUAGES = "checked_languages";
 
     private RecognizeImageAsyncTask recognizeImageAsyncTask;
-
     private TextView languageTextView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        if (savedInstanceState != null) {
-            //screen rotated
-            languageList = (LanguageList) savedInstanceState.getSerializable(LANGUAGE_EXTRA);
-        }
 
         initLeftMenu();
 
@@ -87,22 +86,36 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), LanguageActivity.class);
 
+                intent.putExtra(LanguageActivity.CHECKED_LANGUAGES, getCheckedLanguages());
                 startActivityForResult(intent, LANGUAGE_ACTIVITY_REQUEST_CODE);
 
             }
         });
-        updateLanguageTextView();
+
+        updateLanguageTextView(getCheckedLanguages());
+    }
+
+    @NonNull
+    private ArrayList<String> getCheckedLanguages() {
+        Set<String> checkedLanguageNames = obtainSavedLanguages();
+        ArrayList<String> checkedLanguages = new ArrayList<>();
+        checkedLanguages.addAll(checkedLanguageNames);
+        return checkedLanguages;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == LANGUAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
 
-            updateLanguageTextView();
+            Bundle bundle = data.getExtras();
+            ArrayList<String> checkedLanguages = bundle.getStringArrayList(LanguageActivity.CHECKED_LANGUAGES);
+            updateLanguageTextView(checkedLanguages);
+
+            saveLanguages(new LinkedHashSet<>(checkedLanguages));
         }
 
         //making photo
-        if (requestCode == CaptureImage_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        else if (requestCode == CaptureImage_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             startOCRtask(img_path);
         }
 
@@ -149,8 +162,8 @@ public class MainActivity extends AppCompatActivity {
                 connectivityManager.getActiveNetworkInfo().isConnected();
     }
 
-    private void updateLanguageTextView() {
-        String languageString = generateLanguageString();
+    private void updateLanguageTextView(ArrayList<String> checkedLanguages) {
+        String languageString = generateLanguageString(checkedLanguages);
         updateTextView(languageTextView, languageString);
     }
 
@@ -164,12 +177,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @NonNull
-    private String generateLanguageString() {
+    private String generateLanguageString(ArrayList<String> checkedLanguages) {
         String languageString = "";
 
-        LinkedHashSet<Language> checkedLanguages = LanguageList.getInstance().getChecked();
-        for (Language l : checkedLanguages) {
-            languageString += l.getName() + ", ";
+        for (String l : checkedLanguages) {
+            languageString += l + ", ";
         }
 
         if (languageString.endsWith(", ")) {
@@ -409,5 +421,29 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.d(TAG, "Created directory " + path);
         }
+    }
+
+
+    @VisibleForTesting
+    protected Set<String> obtainSavedLanguages() {
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        Set<String> auto = new HashSet<String>() {{
+            add(getString(R.string.auto));
+        }};
+        TreeSet<String> checkedLanguagesNames = new TreeSet<>(sharedPref.getStringSet(CHECKED_LANGUAGES, auto));
+        return checkedLanguagesNames;
+    }
+
+    @VisibleForTesting
+    protected void saveLanguages(LinkedHashSet<String> data) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        LinkedHashSet<String> checkedLanguages = new LinkedHashSet<>();
+        for (String name : data) {
+            checkedLanguages.add(name);
+        }
+        editor.putStringSet(CHECKED_LANGUAGES, checkedLanguages);
+        editor.apply();
     }
 }
