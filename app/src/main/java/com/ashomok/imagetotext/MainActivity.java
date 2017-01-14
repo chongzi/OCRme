@@ -33,6 +33,7 @@ import com.ashomok.imagetotext.language.LanguageActivity;
 import com.ashomok.imagetotext.ocr_task.OCRAnimationActivity;
 import com.ashomok.imagetotext.ocr_task.RecognizeImageAsyncTask;
 import com.ashomok.imagetotext.ocr_task.RecognizeImageAsyncTaskRESTClient;
+import com.ashomok.imagetotext.tools.FilePathTool;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int CaptureImage_REQUEST_CODE = 2;
     private static final int OCRAnimationActivity_REQUEST_CODE = 3;
     public static final int CAMERA_PERMISSIONS_REQUEST = 4;
+    private static final int GALLERY_IMAGE_REQUEST = 5;
 
     public static final String IMAGE_PATH_EXTRA = "image";
     private DrawerLayout mDrawerLayout;
@@ -112,6 +114,17 @@ public class MainActivity extends AppCompatActivity {
             startOCRtask(img_path);
         }
 
+        //photo obtained from gallery
+        else if (requestCode == GALLERY_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
+            try {
+                Uri uri = data.getData();
+                String path = FilePathTool.getPath(this, uri);
+                startOCRtask(path);
+            } catch (Exception e) {
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
+
         //ocr canceled
         else if (requestCode == OCRAnimationActivity_REQUEST_CODE && resultCode == Activity.RESULT_CANCELED) {
             recognizeImageAsyncTask.cancel(true);
@@ -134,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onTaskCompleted(String result) {
                         finishActivity(OCRAnimationActivity_REQUEST_CODE);
                         //// TODO: 12/22/16
+                        //open new activity and show result
                     }
                 };
                 recognizeImageAsyncTask.setOnTaskCompletedListener(onTaskCompletedListener);
@@ -200,9 +214,17 @@ public class MainActivity extends AppCompatActivity {
         galleryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //// TODO: 12/16/16  
+                startGalleryChooser();
             }
         });
+    }
+
+    public void startGalleryChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select a photo"),
+                GALLERY_IMAGE_REQUEST);
     }
 
     private void equalizeSides(final View v) {
@@ -229,8 +251,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setUpNavigationDrawer()
-    {
+    private void setUpNavigationDrawer() {
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         // Set up the navigation drawer.
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         if (navigationView != null) {
@@ -412,7 +434,7 @@ public class MainActivity extends AppCompatActivity {
         return checkedLanguagesNames;
     }
 
-   private void saveLanguages(LinkedHashSet<String> data) {
+    private void saveLanguages(LinkedHashSet<String> data) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
         LinkedHashSet<String> checkedLanguages = new LinkedHashSet<>();
