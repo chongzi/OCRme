@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.graphics.Paint;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -15,27 +14,22 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
+import android.support.design.widget.NavigationView;
 import android.support.v4.content.FileProvider;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ashomok.imagetotext.language.LanguageActivity;
-import com.ashomok.imagetotext.menu.ItemClickListener;
-import com.ashomok.imagetotext.menu.Menu;
-import com.ashomok.imagetotext.menu.Row;
-import com.ashomok.imagetotext.menu.RowsAdapter;
 import com.ashomok.imagetotext.ocr_task.OCRAnimationActivity;
 import com.ashomok.imagetotext.ocr_task.RecognizeImageAsyncTask;
 import com.ashomok.imagetotext.ocr_task.RecognizeImageAsyncTaskRESTClient;
@@ -45,7 +39,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -58,9 +51,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int CAMERA_PERMISSIONS_REQUEST = 4;
 
     public static final String IMAGE_PATH_EXTRA = "image";
-    private ActionBarDrawerToggle toggle;
     private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
 
     private String img_path;
     public static final String CHECKED_LANGUAGES = "checked_languages";
@@ -74,7 +65,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initLeftMenu();
+        setUpToolbar();
+
+        setUpNavigationDrawer();
 
         initImageSourceBtns();
 
@@ -226,39 +219,57 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void initLeftMenu() {
+    private void setUpToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        try {
-            mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-            toggle = new ActionBarDrawerToggle(
-                    this,
-                    mDrawerLayout,
-                    toolbar,
-                    R.string.navigation_drawer_open,
-                    R.string.navigation_drawer_close) {
-            };
-
-            toggle.setDrawerIndicatorEnabled(true);
-
-            if (getSupportActionBar() != null) {
-                getSupportActionBar().setHomeButtonEnabled(true);
-            }
-
-            // Set the drawer toggle as the DrawerListener
-            mDrawerLayout.setDrawerListener(toggle);
-
-            mDrawerList = (ListView) findViewById(R.id.lv_navigation_drawer);
-
-            List<Row> menuItems = Menu.getRows();
-
-            mDrawerList.setAdapter(new RowsAdapter(this, menuItems));
-
-            mDrawerList.setOnItemClickListener(new DrawerItemClickListener(this));
-        } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
+    }
+
+    private void setUpNavigationDrawer()
+    {
+        // Set up the navigation drawer.
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        if (navigationView != null) {
+            setupDrawerContent(navigationView);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // Open the navigation drawer when the home icon is selected from the toolbar.
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void setupDrawerContent(NavigationView navigationView) {
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        switch (menuItem.getItemId()) {
+                            case R.id.list_navigation_menu_item:
+                                // Do nothing, we're already on that screen
+                                break;
+                            case R.id.statistics_navigation_menu_item:
+                                // TODO: 1/14/17
+                                break;
+                            default:
+                                break;
+                        }
+                        // Close the navigation drawer when an item is selected.
+                        menuItem.setChecked(true);
+                        mDrawerLayout.closeDrawers();
+                        return true;
+                    }
+                });
     }
 
     @Override
@@ -275,45 +286,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        toggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        toggle.onConfigurationChanged(newConfig);
-    }
-
-    @Override
     public void setTitle(CharSequence title) {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(title);
         }
     }
 
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-
-        private ItemClickListener itemClickListener;
-
-
-        DrawerItemClickListener(Context context) {
-            itemClickListener = new ItemClickListener(context);
-        }
-
-        @Override
-        public void onItemClick(AdapterView parent, View view, int position, long id) {
-
-            itemClickListener.onRowClicked(position);
-
-            // Highlight the selected item, update the title, and close the drawer
-            mDrawerList.setItemChecked(position, true);
-            RelativeLayout layout = (RelativeLayout) findViewById(R.id.menu);
-            mDrawerLayout.closeDrawer(layout);
-        }
-    }
 
     @Override
     public void onRequestPermissionsResult(
@@ -424,8 +402,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @VisibleForTesting
-    protected Set<String> obtainSavedLanguages() {
+    private Set<String> obtainSavedLanguages() {
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         Set<String> auto = new HashSet<String>() {{
@@ -435,8 +412,7 @@ public class MainActivity extends AppCompatActivity {
         return checkedLanguagesNames;
     }
 
-    @VisibleForTesting
-    protected void saveLanguages(LinkedHashSet<String> data) {
+   private void saveLanguages(LinkedHashSet<String> data) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
         LinkedHashSet<String> checkedLanguages = new LinkedHashSet<>();
