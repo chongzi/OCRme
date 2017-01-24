@@ -64,30 +64,22 @@ public class RecognizeImageAsyncTaskRESTClientTest {
         for (String path : files) {
 
             final CountDownLatch signal = new CountDownLatch(1);
-//            TaskDelegateImpl delegate = new TaskDelegateImpl(signal);
+
 
             ArrayList<String> languages = new ArrayList<>();
             languages.add("pl");
             Uri uri = Uri.fromFile(new File(path));
 
-
-//            RecognizeImageAsyncTask.OnTaskCompletedListener onTaskCompletedListener = new RecognizeImageAsyncTask.OnTaskCompletedListener() {
-//                @Override
-//                public void onTaskCompleted(String result) {
-//                    finishActivity(OCRAnimationActivity_REQUEST_CODE);
-//                    Log.d(TAG, result);
-//                    //// TODO: 12/22/16
-//                    //open new activity and show result
-//                }
-//            };
-//            recognizeImageAsyncTask.setOnTaskCompletedListener(onTaskCompletedListener);
-
             RecognizeImageAsyncTask task = new RecognizeImageAsyncTaskRESTClient(context, uri, languages);
+
+            TaskDelegateImpl delegate = new TaskDelegateImpl(signal);
+            task.setOnTaskCompletedListener(delegate);
+
             executeTask(signal, task);
         }
         long endTime = System.nanoTime();
         long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
-        Log.v(TAG, "RecognizeImageAsyncTaskRESTClient: " + duration + "/n");
+        Log.v(TAG, "duration: " + duration + "/n");
     }
 
     private ArrayList<String> getTestImages() {
@@ -139,7 +131,7 @@ public class RecognizeImageAsyncTaskRESTClientTest {
         return files;
     }
 
-    private class TaskDelegateImpl implements TaskDelegate {
+    private class TaskDelegateImpl implements RecognizeImageAsyncTask.OnTaskCompletedListener {
         private CountDownLatch signal;
 
         public TaskDelegateImpl(CountDownLatch signal) {
@@ -147,13 +139,8 @@ public class RecognizeImageAsyncTaskRESTClientTest {
         }
 
         @Override
-        public void TaskCompletionResult(String[] result) {
-            StringBuilder builder = new StringBuilder();
-            for (String s : result) {
-                builder.append(s);
-            }
-            Log.d(TAG, " result: " + builder.toString());
-
+        public void onTaskCompleted(String result) {
+            Log.d(TAG, " result: " + result);
             signal.countDown();// notify the count down latch
         }
     }
@@ -175,7 +162,7 @@ public class RecognizeImageAsyncTaskRESTClientTest {
         if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            PermissionUtils.requestPermission(mActivityRule.getActivity(),0, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            PermissionUtils.requestPermission(mActivityRule.getActivity(), 0, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
 
             final long PERMISSIONS_DIALOG_DELAY = 10000;
@@ -208,7 +195,7 @@ public class RecognizeImageAsyncTaskRESTClientTest {
 
 
     public interface TaskDelegate {
-        void TaskCompletionResult(String[] result);
+        void TaskCompletionResult(String result);
     }
 
 }

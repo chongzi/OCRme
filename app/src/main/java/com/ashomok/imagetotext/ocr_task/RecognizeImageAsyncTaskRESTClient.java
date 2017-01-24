@@ -89,7 +89,7 @@ public final class RecognizeImageAsyncTaskRESTClient extends RecognizeImageAsync
                 annotateImageRequest.setFeatures(new ArrayList<Feature>() {{
                     Feature labelDetection = new Feature();
                     labelDetection.setType("TEXT_DETECTION");
-                    labelDetection.setMaxResults(100);
+                    labelDetection.setMaxResults(100); //// TODO: 1/24/17  what doest 100 mean?
                     add(labelDetection);
                 }});
 
