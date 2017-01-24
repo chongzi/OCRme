@@ -61,6 +61,52 @@ public class RecognizeImageAsyncTaskRESTClientTest {
     }
 
     /**
+     * empty result expected
+     */
+    @Test
+    public void recognizeImageWithoutText() {
+        recognizeImageTest(EMPTY);
+    }
+
+    @Test
+    public void recognizeEnglish() {
+        recognizeImageTest(ENG);
+    }
+
+    @Test
+    public void recognizeWrongOrientation() {
+
+        recognizeImageTest(WRONG_ORIENTATION);
+    }
+
+    @Test
+    public void recognizeVerticalOrientation() {
+
+        recognizeImageTest(VERTICAL_ORIENTATION);
+    }
+
+    /**
+     * @param tag file name of image from assets
+     */
+    private void recognizeImageTest(String tag)
+    {
+        for (String path : files) {
+            if (path.contains(tag)) {
+                final CountDownLatch signal = new CountDownLatch(1);
+
+                Uri uri = Uri.fromFile(new File(path));
+
+                RecognizeImageAsyncTask task = new RecognizeImageAsyncTaskRESTClient(context, uri, null);
+
+                TaskDelegateImpl delegate = new TaskDelegateImpl(signal, tag);
+                task.setOnTaskCompletedListener(delegate);
+
+                executeTask(signal, task);
+            }
+        }
+    }
+
+    /**
      * recognize image with uni characters
      * ć, ń, ó, ś, ź, ł, ę, ą for Polish
      */
@@ -78,84 +124,6 @@ public class RecognizeImageAsyncTaskRESTClientTest {
                 RecognizeImageAsyncTask task = new RecognizeImageAsyncTaskRESTClient(context, uri, languages);
 
                 TaskDelegateImpl delegate = new TaskDelegateImpl(signal, PL);
-                task.setOnTaskCompletedListener(delegate);
-
-                executeTask(signal, task);
-            }
-        }
-    }
-
-    /**
-     * empty result expected
-     */
-    @Test
-    public void recognizeImageWithoutText() {
-        for (String path : files) {
-            if (path.contains("no_text")) {
-                final CountDownLatch signal = new CountDownLatch(1);
-
-                Uri uri = Uri.fromFile(new File(path));
-
-                RecognizeImageAsyncTask task = new RecognizeImageAsyncTaskRESTClient(context, uri, null);
-
-                TaskDelegateImpl delegate = new TaskDelegateImpl(signal, EMPTY);
-                task.setOnTaskCompletedListener(delegate);
-
-                executeTask(signal, task);
-            }
-        }
-    }
-
-    @Test
-    public void recognizeEnglish() {
-
-        for (String path : files) {
-            if (path.contains("eng")) {
-                final CountDownLatch signal = new CountDownLatch(1);
-
-                Uri uri = Uri.fromFile(new File(path));
-
-                RecognizeImageAsyncTask task = new RecognizeImageAsyncTaskRESTClient(context, uri, null);
-
-                TaskDelegateImpl delegate = new TaskDelegateImpl(signal, ENG);
-                task.setOnTaskCompletedListener(delegate);
-
-                executeTask(signal, task);
-            }
-        }
-    }
-
-    @Test
-    public void recognizeWrongOrientation() {
-
-        for (String path : files) {
-            if (path.contains("wrong_orientation")) {
-                final CountDownLatch signal = new CountDownLatch(1);
-
-                Uri uri = Uri.fromFile(new File(path));
-
-                RecognizeImageAsyncTask task = new RecognizeImageAsyncTaskRESTClient(context, uri, null);
-
-                TaskDelegateImpl delegate = new TaskDelegateImpl(signal, WRONG_ORIENTATION);
-                task.setOnTaskCompletedListener(delegate);
-
-                executeTask(signal, task);
-            }
-        }
-    }
-
-    @Test
-    public void recognizeVerticalOrientation() {
-
-        for (String path : files) {
-            if (path.contains("vertical_orientation")) {
-                final CountDownLatch signal = new CountDownLatch(1);
-
-                Uri uri = Uri.fromFile(new File(path));
-
-                RecognizeImageAsyncTask task = new RecognizeImageAsyncTaskRESTClient(context, uri, null);
-
-                TaskDelegateImpl delegate = new TaskDelegateImpl(signal, VERTICAL_ORIENTATION);
                 task.setOnTaskCompletedListener(delegate);
 
                 executeTask(signal, task);
