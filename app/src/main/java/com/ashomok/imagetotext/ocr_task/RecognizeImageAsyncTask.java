@@ -1,12 +1,14 @@
 package com.ashomok.imagetotext.ocr_task;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 /**
  * Created by Iuliia on 19.11.2015.
  */
 public abstract class RecognizeImageAsyncTask extends AsyncTask<Void, Integer, String> {
 
+    private static final String TAG = RecognizeImageAsyncTask.class.getSimpleName();
     private OnTaskCompletedListener onTaskCompletedListener;
 
     @Override
@@ -19,7 +21,7 @@ public abstract class RecognizeImageAsyncTask extends AsyncTask<Void, Integer, S
 
     @Override
     protected void onPostExecute(String result) {
-
+        Log.d(TAG, result);
         onTaskCompletedListener.onTaskCompleted(result);
     }
 
@@ -32,7 +34,7 @@ public abstract class RecognizeImageAsyncTask extends AsyncTask<Void, Integer, S
         this.onTaskCompletedListener = onTaskCompletedListener;
     }
 
-    public interface OnTaskCompletedListener{
+    public interface OnTaskCompletedListener {
         void onTaskCompleted(String result);
     }
 }

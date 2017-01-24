@@ -1,5 +1,6 @@
 package com.ashomok.imagetotext.ocr_task;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -13,17 +14,13 @@ import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.Settings;
 import com.squareup.picasso.Picasso;
 
-import java.io.File;
-
-import static com.ashomok.imagetotext.MainActivity.IMAGE_PATH_EXTRA;
-
 
 /**
  * Created by Iuliia on 13.12.2015.
  */
 public class OCRAnimationActivity extends AppCompatActivity {
 
-    private String path;
+    private Uri imageUri;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -31,11 +28,7 @@ public class OCRAnimationActivity extends AppCompatActivity {
 
         setContentView(R.layout.ocr_animation_layout);
 
-        Bundle bundle = getIntent().getExtras();
-
-        if (bundle != null) {
-            path = bundle.getString(IMAGE_PATH_EXTRA);
-        }
+        imageUri = getIntent().getData();
 
         initCancelBtn();
 
@@ -79,10 +72,19 @@ public class OCRAnimationActivity extends AppCompatActivity {
     private void initImage() {
         ImageView image = (ImageView) findViewById(R.id.image);
 
-        //todo what if image is very large?
-        File file = new File(path);
+//        // scale the image to save on bandwidth
+//        Bitmap bitmap =
+//                scaleBitmapDown(
+//                        MediaStore.Images.Media.getBitmap(getContentResolver(), uri),
+//                        1200);
+//
+//        callCloudVision(bitmap);
+//        mMainImage.setImageBitmap(bitmap);
+
+        //todo cut image before
+        //big image makes app works slow
         Picasso.with(this)
-                .load(file)
+                .load(imageUri)
                 .into(image);
     }
 }

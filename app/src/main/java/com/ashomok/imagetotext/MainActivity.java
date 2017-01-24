@@ -33,7 +33,7 @@ import com.ashomok.imagetotext.language.LanguageActivity;
 import com.ashomok.imagetotext.ocr_task.OCRAnimationActivity;
 import com.ashomok.imagetotext.ocr_task.RecognizeImageAsyncTask;
 import com.ashomok.imagetotext.ocr_task.RecognizeImageAsyncTaskRESTClient;
-import com.ashomok.imagetotext.tools.FilePathTool;
+import com.ashomok.imagetotext.tools.PermissionUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,11 +51,9 @@ public class MainActivity extends AppCompatActivity {
     private static final int OCRAnimationActivity_REQUEST_CODE = 3;
     public static final int CAMERA_PERMISSIONS_REQUEST = 4;
     private static final int GALLERY_IMAGE_REQUEST = 5;
-
-    public static final String IMAGE_PATH_EXTRA = "image";
     private DrawerLayout mDrawerLayout;
 
-    private String img_path;
+    private Uri imageUri;
     public static final String CHECKED_LANGUAGES = "checked_languages";
 
     private RecognizeImageAsyncTask recognizeImageAsyncTask;
@@ -88,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         updateLanguageTextView(getCheckedLanguages());
+
     }
 
     @NonNull
@@ -111,15 +110,15 @@ public class MainActivity extends AppCompatActivity {
 
         //making photo
         else if (requestCode == CaptureImage_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            startOCRtask(img_path);
+
+            startOCRtask(imageUri);
         }
 
         //photo obtained from gallery
         else if (requestCode == GALLERY_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
             try {
                 Uri uri = data.getData();
-                String path = FilePathTool.getPath(this, uri);
-                startOCRtask(path);
+                startOCRtask(uri);
             } catch (Exception e) {
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
             }
@@ -131,17 +130,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void startOCRtask(String img_path) {
+    private void startOCRtask(Uri uri) {
 
         //run animation
         Intent intent = new Intent(this, OCRAnimationActivity.class);
-        intent.putExtra(IMAGE_PATH_EXTRA, img_path);
+        intent.setData(uri);
         startActivityForResult(intent, OCRAnimationActivity_REQUEST_CODE);
 
         try {
             //start ocr
             if (isNetworkAvailable(this)) {
-                recognizeImageAsyncTask = new RecognizeImageAsyncTaskRESTClient(img_path);
+
+                ArrayList<String> languages = obtainLanguageShortcuts();
+                recognizeImageAsyncTask = new RecognizeImageAsyncTaskRESTClient(this, uri, languages);
+
                 RecognizeImageAsyncTask.OnTaskCompletedListener onTaskCompletedListener = new RecognizeImageAsyncTask.OnTaskCompletedListener() {
                     @Override
                     public void onTaskCompleted(String result) {
@@ -160,6 +162,30 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG, e.getMessage());
         }
 
+    }
+
+//    @Override
+//    public boolean onPrepareOptionsMenu(Menu menu) {
+////// TODO: 1/18/17 add/remove special items for free/PRO version
+//        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+//        Menu navigationMenu = navigationView.getMenu();
+//
+////        add(int groupId, int itemId, int order, CharSequence title)
+////        Add a new item to the menu.
+//
+//        navigationMenu.add(0, 0, Menu.NONE, "ADDED PROGRAMMATICALLY").setIcon(R.drawable.ic_android_black_24dp);
+//
+//        MenuItem item = navigationView.getMenu().getItem(0);
+//        item.setVisible(false);
+//
+//        return super.onPrepareOptionsMenu(menu);
+//    }
+
+    private ArrayList<String> obtainLanguageShortcuts() {
+        ArrayList<String> languages = new ArrayList<>();
+        languages.add("pl");
+        //// TODO: 1/16/17
+        return languages;
     }
 
     private boolean isNetworkAvailable(final Context context) {
@@ -368,10 +394,6 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG, e.getMessage());
         }
 
-        // Save a file: path for use with ACTION_VIEW intents
-        if (image != null) {
-            img_path = image.getAbsolutePath();
-        }
         return image;
     }
 
@@ -390,17 +412,16 @@ public class MainActivity extends AppCompatActivity {
             // Continue only if the File was successfully created
             if (photoFile != null) {
 
-                Uri outputFileUri;
                 if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { //explanation https://inthecheesefactory.com/blog/how-to-share-access-to-file-with-fileprovider-on-android-nougat/en
 
-                    outputFileUri = FileProvider.getUriForFile(this,
+                    imageUri = FileProvider.getUriForFile(this,
                             BuildConfig.APPLICATION_ID + ".provider",
                             createImageFile());
                 } else {
-                    outputFileUri = Uri.fromFile(createImageFile());
+                    imageUri = Uri.fromFile(createImageFile());
                 }
 
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                 startActivityForResult(takePictureIntent, CaptureImage_REQUEST_CODE);
             }
         } else {

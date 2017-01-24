@@ -30,13 +30,18 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'org.hamcrest', module: 'hamcrest-integration'
+        exclude group: 'com.google.code.findbugs'
     })
     testCompile 'junit:junit:4.12'
 
-//    https://developer.android.com/training/testing/unit-testing/local-unit-tests.html
     testCompile 'org.mockito:mockito-core:2.3.11'
 
     compile 'com.android.support:appcompat-v7:25.1.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile "com.android.support:design:25.1.0"
+
+    //google vision
+    compile 'com.google.api-client:google-api-client-android:1.20.0' exclude module: 'httpclient'
+    compile 'com.google.http-client:google-http-client-gson:1.20.0' exclude module: 'httpclient'
+    compile 'com.google.apis:google-api-services-vision:v1-rev2-1.21.0'
 }

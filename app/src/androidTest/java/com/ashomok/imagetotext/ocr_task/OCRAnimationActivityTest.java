@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Environment;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.LargeTest;
@@ -71,7 +72,7 @@ public class OCRAnimationActivityTest {
     public void backgroundSettedProperly() throws InterruptedException {
         ArrayList<String> imagePaths = getTestImages();
         for (String path : imagePaths) {
-            launchActivityWithPath(path);
+            launchActivityWithPath(Uri.fromFile(new File(path)));
 
             onView(withId(R.id.image)).check(matches(isDisplayed()));
             //wait while image was loaded by Picasso
@@ -82,11 +83,11 @@ public class OCRAnimationActivityTest {
         }
     }
 
-    private void launchActivityWithPath(String path) {
+    private void launchActivityWithPath(Uri uri) {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, OCRAnimationActivity.class);
-        intent.putExtra(MainActivity.IMAGE_PATH_EXTRA, path);
+        intent.setData(uri);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 
