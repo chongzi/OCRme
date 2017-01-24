@@ -12,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.ashomok.imagetotext.MainActivity;
+import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.tools.PermissionUtils;
 
 import junit.framework.Assert;
@@ -40,7 +41,14 @@ public class RecognizeImageAsyncTaskRESTClientTest {
     private static final String TAG = RecognizeImageAsyncTaskRESTClientTest.class.getSimpleName();
     private static final String DATA_PATH = Environment.getExternalStorageDirectory().toString() + "/ImageToText/";
     private static final String TEST_IMGS = "test_imgs";
+    private static final String ENG = "eng";
+    private static final String WRONG_ORIENTATION = "wrong_orientation";
+    private static final String VERTICAL_ORIENTATION = "vertical_orientation";
+
     private Context context;
+    private ArrayList<String> files;
+    private static final String PL = "pl";
+    private static final String EMPTY = "empty";
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(
@@ -48,7 +56,8 @@ public class RecognizeImageAsyncTaskRESTClientTest {
 
     @Before
     public void init() {
-        context = getContext();
+        context = mActivityRule.getActivity();
+        files = getTestImages();
     }
 
     /**
@@ -56,30 +65,102 @@ public class RecognizeImageAsyncTaskRESTClientTest {
      * ć, ń, ó, ś, ź, ł, ę, ą for Polish
      */
     @Test
-    public void recognizePolish() {
-        ArrayList<String> files = getTestImages();
+    public void recognizeUniCharacters() {
 
-
-        long startTime = System.nanoTime();
         for (String path : files) {
+            if (path.contains("pl")) {
+                final CountDownLatch signal = new CountDownLatch(1);
 
-            final CountDownLatch signal = new CountDownLatch(1);
+                ArrayList<String> languages = new ArrayList<>();
+                languages.add("pl");
+                Uri uri = Uri.fromFile(new File(path));
 
+                RecognizeImageAsyncTask task = new RecognizeImageAsyncTaskRESTClient(context, uri, languages);
 
-            ArrayList<String> languages = new ArrayList<>();
-            languages.add("pl");
-            Uri uri = Uri.fromFile(new File(path));
+                TaskDelegateImpl delegate = new TaskDelegateImpl(signal, PL);
+                task.setOnTaskCompletedListener(delegate);
 
-            RecognizeImageAsyncTask task = new RecognizeImageAsyncTaskRESTClient(context, uri, languages);
-
-            TaskDelegateImpl delegate = new TaskDelegateImpl(signal);
-            task.setOnTaskCompletedListener(delegate);
-
-            executeTask(signal, task);
+                executeTask(signal, task);
+            }
         }
-        long endTime = System.nanoTime();
-        long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
-        Log.v(TAG, "duration: " + duration + "/n");
+    }
+
+    /**
+     * empty result expected
+     */
+    @Test
+    public void recognizeImageWithoutText() {
+        for (String path : files) {
+            if (path.contains("no_text")) {
+                final CountDownLatch signal = new CountDownLatch(1);
+
+                Uri uri = Uri.fromFile(new File(path));
+
+                RecognizeImageAsyncTask task = new RecognizeImageAsyncTaskRESTClient(context, uri, null);
+
+                TaskDelegateImpl delegate = new TaskDelegateImpl(signal, EMPTY);
+                task.setOnTaskCompletedListener(delegate);
+
+                executeTask(signal, task);
+            }
+        }
+    }
+
+    @Test
+    public void recognizeEnglish() {
+
+        for (String path : files) {
+            if (path.contains("eng")) {
+                final CountDownLatch signal = new CountDownLatch(1);
+
+                Uri uri = Uri.fromFile(new File(path));
+
+                RecognizeImageAsyncTask task = new RecognizeImageAsyncTaskRESTClient(context, uri, null);
+
+                TaskDelegateImpl delegate = new TaskDelegateImpl(signal, ENG);
+                task.setOnTaskCompletedListener(delegate);
+
+                executeTask(signal, task);
+            }
+        }
+    }
+
+    @Test
+    public void recognizeWrongOrientation() {
+
+        for (String path : files) {
+            if (path.contains("wrong_orientation")) {
+                final CountDownLatch signal = new CountDownLatch(1);
+
+                Uri uri = Uri.fromFile(new File(path));
+
+                RecognizeImageAsyncTask task = new RecognizeImageAsyncTaskRESTClient(context, uri, null);
+
+                TaskDelegateImpl delegate = new TaskDelegateImpl(signal, WRONG_ORIENTATION);
+                task.setOnTaskCompletedListener(delegate);
+
+                executeTask(signal, task);
+            }
+        }
+    }
+
+    @Test
+    public void recognizeVerticalOrientation() {
+
+        for (String path : files) {
+            if (path.contains("vertical_orientation")) {
+                final CountDownLatch signal = new CountDownLatch(1);
+
+                Uri uri = Uri.fromFile(new File(path));
+
+                RecognizeImageAsyncTask task = new RecognizeImageAsyncTaskRESTClient(context, uri, null);
+
+                TaskDelegateImpl delegate = new TaskDelegateImpl(signal, VERTICAL_ORIENTATION);
+                task.setOnTaskCompletedListener(delegate);
+
+                executeTask(signal, task);
+            }
+        }
     }
 
     private ArrayList<String> getTestImages() {
@@ -87,7 +168,7 @@ public class RecognizeImageAsyncTaskRESTClientTest {
         prepareDirectories(
                 new String[]{DATA_PATH + TEST_IMGS});
 
-        ArrayList<String> files = new ArrayList<String>();
+        ArrayList<String> files = new ArrayList<>();
 
         try {
 
@@ -133,15 +214,26 @@ public class RecognizeImageAsyncTaskRESTClientTest {
 
     private class TaskDelegateImpl implements RecognizeImageAsyncTask.OnTaskCompletedListener {
         private CountDownLatch signal;
+        private String tag;
 
-        public TaskDelegateImpl(CountDownLatch signal) {
+        public TaskDelegateImpl(CountDownLatch signal, String tag) {
             this.signal = signal;
+            this.tag = tag;
         }
 
         @Override
         public void onTaskCompleted(String result) {
             Log.d(TAG, " result: " + result);
             signal.countDown();// notify the count down latch
+            if (tag.equals(PL)) {
+                Assert.assertTrue(result.contains("ś") || result.contains("ł"));
+            } else if (tag.equals(EMPTY)) {
+                Assert.assertTrue(result.equals(context.getResources().getString(R.string.text_not_found)));
+            } else if (tag.equals(ENG)) {
+                Assert.assertTrue(result.contains("right"));
+            } else if (tag.equals(VERTICAL_ORIENTATION) || tag.equals(WRONG_ORIENTATION)) {
+                Assert.assertTrue(result.length() > 50);
+            }
         }
     }
 
@@ -191,11 +283,6 @@ public class RecognizeImageAsyncTaskRESTClientTest {
                 }
             }
         }
-    }
-
-
-    public interface TaskDelegate {
-        void TaskCompletionResult(String result);
     }
 
 }

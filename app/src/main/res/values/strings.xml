@@ -40,6 +40,7 @@
     <string name="recognizing">Recognizing</string>
     <string name="english">English</string>
     <string name="max_checked_allowed">Max %1$s languages allowed</string>
+    <string name="text_not_found">Text not found.</string>
 
 
 </resources>

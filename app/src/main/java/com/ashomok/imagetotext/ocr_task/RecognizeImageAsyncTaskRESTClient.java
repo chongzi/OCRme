@@ -6,9 +6,8 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.ashomok.imagetotext.App;
+import com.ashomok.imagetotext.R;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.HttpTransport;
@@ -38,12 +37,12 @@ import static com.ashomok.imagetotext.Settings.CLOUD_VISION_API_KEY;
 public final class RecognizeImageAsyncTaskRESTClient extends RecognizeImageAsyncTask {
 
 
-    private static final String TAG = RecognizeImageAsyncTaskRESTClient.class.getSimpleName()    ;
+    private static final String TAG = RecognizeImageAsyncTaskRESTClient.class.getSimpleName();
     private final List<String> languages;
     private final Uri image;
     private Context context;
 
-    public RecognizeImageAsyncTaskRESTClient(Context context, Uri image, List<String> languages) {
+    public RecognizeImageAsyncTaskRESTClient(Context context, Uri image, @Nullable List<String> languages) {
         this.context = context;
         this.image = image;
         this.languages = languages;
@@ -68,10 +67,12 @@ public final class RecognizeImageAsyncTaskRESTClient extends RecognizeImageAsync
             batchAnnotateImagesRequest.setRequests(new ArrayList<AnnotateImageRequest>() {{
                 AnnotateImageRequest annotateImageRequest = new AnnotateImageRequest();
 
-                //https://cloud.google.com/vision/docs/languages
-                ImageContext imageContext = new ImageContext();
-                imageContext.setLanguageHints(languages);
-                annotateImageRequest.setImageContext(imageContext);
+                if (languages != null && languages.size() > 0) {
+                    //https://cloud.google.com/vision/docs/languages
+                    ImageContext imageContext = new ImageContext();
+                    imageContext.setLanguageHints(languages);
+                    annotateImageRequest.setImageContext(imageContext);
+                }
 
                 // Add the image
                 Image base64EncodedImage = new Image();
@@ -87,10 +88,10 @@ public final class RecognizeImageAsyncTaskRESTClient extends RecognizeImageAsync
 
                 // add the features we want
                 annotateImageRequest.setFeatures(new ArrayList<Feature>() {{
-                    Feature labelDetection = new Feature();
-                    labelDetection.setType("TEXT_DETECTION");
-                    labelDetection.setMaxResults(100); //// TODO: 1/24/17  what doest 100 mean?
-                    add(labelDetection);
+                    Feature textDetection = new Feature();
+                    textDetection.setType("TEXT_DETECTION");
+                    textDetection.setMaxResults(1);
+                    add(textDetection);
                 }});
 
                 // Add the list of one thing to the request
@@ -123,7 +124,7 @@ public final class RecognizeImageAsyncTaskRESTClient extends RecognizeImageAsync
                         scaleBitmapDown(
                                 MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri),
                                 1200);
-                return  bitmap;
+                return bitmap;
 
             } catch (IOException e) {
                 Log.d(TAG, "Image picking failed because " + e.getMessage());
@@ -134,20 +135,15 @@ public final class RecognizeImageAsyncTaskRESTClient extends RecognizeImageAsync
         return null;
     }
 
-    //// TODO: 1/16/17 edit it
     private String convertResponseToString(BatchAnnotateImagesResponse response) {
-        String message = "I found these things:\n\n";
+        String message = "";
 
-        List<EntityAnnotation> labels = response.getResponses().get(0).getTextAnnotations();
-        if (labels != null) {
-            for (EntityAnnotation label : labels) {
-                message += String.format("%.3f: %s", label.getScore(), label.getDescription());
-                message += "\n";
-            }
+        List<EntityAnnotation> texts = response.getResponses().get(0).getTextAnnotations();
+        if (texts != null && texts.size() > 0) {
+            message += texts.get(0).getDescription();
         } else {
-            message += "nothing";
+            message += context.getResources().getString(R.string.text_not_found);
         }
-
         return message;
     }
 
