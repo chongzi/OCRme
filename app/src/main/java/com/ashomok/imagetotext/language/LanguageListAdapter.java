@@ -112,7 +112,7 @@ public class LanguageListAdapter extends BaseAdapter {
                         String message = String.format(view.getContext().getString(R.string.max_checked_allowed),
                                 String.valueOf(MAX_CHECKED_ALLOWED));
                         Toast.makeText(view.getContext(), message,
-                                Toast.LENGTH_SHORT).show();
+                                Toast.LENGTH_SHORT).show(); //todo make cardview insteda of toast
 
                     }
                 } else {

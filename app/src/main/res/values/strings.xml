@@ -41,6 +41,9 @@
     <string name="english">English</string>
     <string name="max_checked_allowed">Max %1$s languages allowed</string>
     <string name="text_not_found">Text not found.</string>
+    <string name="select_photo">Select a photo</string>
+    <string name="error_no_connection">Cannot connect to server. Please, check your Internet connectivity.</string>
+
 
 
 </resources>

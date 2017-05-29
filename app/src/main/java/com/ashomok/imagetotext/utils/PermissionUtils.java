@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ashomok.imagetotext.tools;
+package com.ashomok.imagetotext.utils;
 
 import android.app.Activity;
 import android.content.pm.PackageManager;

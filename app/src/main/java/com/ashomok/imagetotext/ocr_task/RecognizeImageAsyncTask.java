@@ -6,23 +6,29 @@ import android.util.Log;
 /**
  * Created by Iuliia on 19.11.2015.
  */
-public abstract class RecognizeImageAsyncTask extends AsyncTask<Void, Integer, String> {
+public abstract class RecognizeImageAsyncTask extends AsyncTask<Void, Integer, OCRResult> {
 
     private static final String TAG = RecognizeImageAsyncTask.class.getSimpleName();
     private OnTaskCompletedListener onTaskCompletedListener;
 
     @Override
-    protected abstract String doInBackground(Void... params);
+    protected abstract OCRResult doInBackground(Void... params);
 
     @Override
     protected void onPreExecute() {
     }
 
-
     @Override
-    protected void onPostExecute(String result) {
-        Log.d(TAG, result);
-        onTaskCompletedListener.onTaskCompleted(result);
+    protected void onPostExecute(OCRResult result) {
+        if (result.getError() == null || result.getError().length() == 0) {
+            String text = result.getText();
+            onTaskCompletedListener.onTaskCompleted(text);
+            Log.d(TAG, text);
+        } else {
+            String error = result.getError();
+            onTaskCompletedListener.onError(error);
+            Log.e(TAG, error);
+        }
     }
 
     @Override
@@ -36,6 +42,7 @@ public abstract class RecognizeImageAsyncTask extends AsyncTask<Void, Integer, S
 
     public interface OnTaskCompletedListener {
         void onTaskCompleted(String result);
+        void onError(String message);
     }
 }
 

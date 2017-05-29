@@ -19,12 +19,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+        <android.support.v7.widget.CardView
+            android:id="@+id/ocr_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:visibility="gone"
+            android:layout_below="@+id/toolbar">
+            <TextView
+                android:id="@+id/error_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/error_horizontal_padding"
+                android:paddingLeft="@dimen/error_horizontal_padding"
+                android:paddingTop="@dimen/error_vertical_padding"
+                android:paddingBottom="@dimen/error_vertical_padding"
+                android:background="@color/error_message_background"
+                android:gravity="center"
+                tools:text="Connectivity error!"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"/>
+        </android.support.v7.widget.CardView>
+
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/toolbar"
             android:layout_margin="@dimen/activity_horizontal_margin">
-
             <LinearLayout
                 android:id="@+id/language_layout"
                 android:layout_width="wrap_content"

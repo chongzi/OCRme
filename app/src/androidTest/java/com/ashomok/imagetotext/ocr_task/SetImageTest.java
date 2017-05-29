@@ -19,7 +19,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.ashomok.imagetotext.MainActivity;
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.Settings;
 
@@ -52,9 +51,9 @@ import static java.lang.Thread.sleep;
  */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class OCRAnimationActivityTest {
+public class SetImageTest {
 
-    private static final String TAG = OCRAnimationActivityTest.class.getSimpleName();
+    private static final String TAG = SetImageTest.class.getSimpleName();
     private static final String DATA_PATH = Environment.getExternalStorageDirectory().toString() + "/ImageToText/";
     private static final String TEST_IMGS = "test_imgs";
 

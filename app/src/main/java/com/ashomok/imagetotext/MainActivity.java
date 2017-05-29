@@ -2,8 +2,10 @@ package com.ashomok.imagetotext;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.net.ConnectivityManager;
@@ -14,6 +16,7 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
@@ -30,15 +33,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ashomok.imagetotext.language.LanguageActivity;
+import com.ashomok.imagetotext.language.LanguageList;
 import com.ashomok.imagetotext.ocr_task.OCRAnimationActivity;
 import com.ashomok.imagetotext.ocr_task.RecognizeImageAsyncTask;
-import com.ashomok.imagetotext.ocr_task.RecognizeImageAsyncTaskRESTClient;
-import com.ashomok.imagetotext.tools.PermissionUtils;
+import com.ashomok.imagetotext.ocr_task.RecognizeImageRESTClient;
+import com.ashomok.imagetotext.utils.NetworkHelper;
+import com.ashomok.imagetotext.utils.PermissionUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.TreeSet;
@@ -49,9 +55,11 @@ public class MainActivity extends AppCompatActivity {
     private static final int LANGUAGE_ACTIVITY_REQUEST_CODE = 1;
     private static final int CaptureImage_REQUEST_CODE = 2;
     private static final int OCRAnimationActivity_REQUEST_CODE = 3;
-    public static final int CAMERA_PERMISSIONS_REQUEST = 4;
+    private static final int CAMERA_PERMISSIONS_REQUEST = 4;
     private static final int GALLERY_IMAGE_REQUEST = 5;
     private DrawerLayout mDrawerLayout;
+    private View mErrorView;
+    private TextView mErrorMessage;
 
     private Uri imageUri;
     public static final String CHECKED_LANGUAGES = "checked_languages";
@@ -59,6 +67,17 @@ public class MainActivity extends AppCompatActivity {
     private RecognizeImageAsyncTask recognizeImageAsyncTask;
     private TextView languageTextView;
 
+    private final BroadcastReceiver mConnectivityChangeReceiver = new BroadcastReceiver() {
+        private boolean oldOnline = false;
+        @Override
+        public void onReceive(Context context, Intent intent) {
+                boolean isOnline = NetworkHelper.isOnline(context);
+                if (isOnline != oldOnline) {
+                    oldOnline = isOnline;
+                    checkForUserVisibleErrors(null);
+                }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +106,23 @@ public class MainActivity extends AppCompatActivity {
 
         updateLanguageTextView(getCheckedLanguages());
 
+        mErrorView = findViewById(R.id.ocr_error);
+        mErrorMessage = (TextView) mErrorView.findViewById(R.id.error_message);
+        checkForUserVisibleErrors(null);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Registers BroadcastReceiver to track network connection changes.
+       registerReceiver(mConnectivityChangeReceiver,
+                new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        unregisterReceiver(mConnectivityChangeReceiver);
     }
 
     @NonNull
@@ -139,23 +175,31 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             //start ocr
-            if (isNetworkAvailable(this)) {
+            if (NetworkHelper.isOnline(this)) {
 
                 ArrayList<String> languages = obtainLanguageShortcuts();
-                recognizeImageAsyncTask = new RecognizeImageAsyncTaskRESTClient(this, uri, languages);
+                recognizeImageAsyncTask = new RecognizeImageRESTClient(uri, languages);
 
                 RecognizeImageAsyncTask.OnTaskCompletedListener onTaskCompletedListener = new RecognizeImageAsyncTask.OnTaskCompletedListener() {
                     @Override
                     public void onTaskCompleted(String result) {
                         finishActivity(OCRAnimationActivity_REQUEST_CODE);
+
                         //// TODO: 12/22/16
                         //open new activity and show result
+                    }
+
+                    //// TODO: 5/29/17 there is no mechanism to close error view - fix it
+                    @Override
+                    public void onError(String message) {
+                        finishActivity(OCRAnimationActivity_REQUEST_CODE);
+                        checkForUserVisibleErrors(message);
                     }
                 };
                 recognizeImageAsyncTask.setOnTaskCompletedListener(onTaskCompletedListener);
 
             } else {
-                Toast.makeText(this, "Not available in offline mode.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Not available in offline mode.", Toast.LENGTH_SHORT).show(); //todo delete bacause of card view with error
             }
             recognizeImageAsyncTask.execute();
         } catch (Exception e) {
@@ -182,17 +226,39 @@ public class MainActivity extends AppCompatActivity {
 //    }
 
     private ArrayList<String> obtainLanguageShortcuts() {
-        ArrayList<String> languages = new ArrayList<>();
-        languages.add("pl");
-        //// TODO: 1/16/17
-        return languages;
+        ArrayList<String> languageNames = getCheckedLanguages();
+
+        LanguageList data = new LanguageList(this);
+        LinkedHashMap<String, String> languages = data.getLanguages();
+
+        ArrayList<String> result = new ArrayList<>();
+        for (String name : languageNames) {
+            if (languages.containsKey(name)) {
+                result.add(languages.get(name));
+            }
+        }
+
+        return result;
     }
 
-    private boolean isNetworkAvailable(final Context context) {
-        final ConnectivityManager connectivityManager =
-                ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
-        return connectivityManager.getActiveNetworkInfo() != null &&
-                connectivityManager.getActiveNetworkInfo().isConnected();
+    //todo messages will not be translated - fix it
+    private void checkForUserVisibleErrors(@Nullable String forceErrorMessage) {
+
+        boolean showError = false;
+
+        // If offline, message is about the lack of connectivity:
+        if (!NetworkHelper.isOnline(this)) {
+            mErrorMessage.setText(R.string.error_no_connection);
+            showError = true;
+        } else {
+            if (forceErrorMessage != null && forceErrorMessage.length() > 0) {
+                // Finally, if the caller requested to show error, show an error message:
+                mErrorMessage.setText(forceErrorMessage);
+                showError = true;
+            }
+        }
+        mErrorView.setVisibility(showError ? View.VISIBLE : View.GONE);
+        Log.d(TAG, mErrorMessage.getText().toString());
     }
 
     private void updateLanguageTextView(ArrayList<String> checkedLanguages) {
@@ -249,7 +315,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select a photo"),
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.select_photo)),
                 GALLERY_IMAGE_REQUEST);
     }
 
