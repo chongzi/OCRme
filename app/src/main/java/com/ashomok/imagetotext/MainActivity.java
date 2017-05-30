@@ -37,7 +37,8 @@ import com.ashomok.imagetotext.language.LanguageList;
 import com.ashomok.imagetotext.ocr_task.OCRAnimationActivity;
 import com.ashomok.imagetotext.ocr_task.RecognizeImageAsyncTask;
 import com.ashomok.imagetotext.ocr_task.RecognizeImageRESTClient;
-import com.ashomok.imagetotext.utils.NetworkHelper;
+import com.ashomok.imagetotext.utils.FileUtils;
+import com.ashomok.imagetotext.utils.NetworkUtils;
 import com.ashomok.imagetotext.utils.PermissionUtils;
 
 import java.io.File;
@@ -69,13 +70,14 @@ public class MainActivity extends AppCompatActivity {
 
     private final BroadcastReceiver mConnectivityChangeReceiver = new BroadcastReceiver() {
         private boolean oldOnline = false;
+
         @Override
         public void onReceive(Context context, Intent intent) {
-                boolean isOnline = NetworkHelper.isOnline(context);
-                if (isOnline != oldOnline) {
-                    oldOnline = isOnline;
-                    checkForUserVisibleErrors(null);
-                }
+            boolean isOnline = NetworkUtils.isOnline(context);
+            if (isOnline != oldOnline) {
+                oldOnline = isOnline;
+                checkForUserVisibleErrors(null);
+            }
         }
     };
 
@@ -115,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         // Registers BroadcastReceiver to track network connection changes.
-       registerReceiver(mConnectivityChangeReceiver,
+        registerReceiver(mConnectivityChangeReceiver,
                 new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
@@ -168,17 +170,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void startOCRtask(Uri uri) {
 
-        //run animation
-        Intent intent = new Intent(this, OCRAnimationActivity.class);
-        intent.setData(uri);
-        startActivityForResult(intent, OCRAnimationActivity_REQUEST_CODE);
+        runOCRAnimation(uri);
 
-        try {
-            //start ocr
-            if (NetworkHelper.isOnline(this)) {
+        //start ocr
+        if (NetworkUtils.isOnline(this)) {
 
-                ArrayList<String> languages = obtainLanguageShortcuts();
-                recognizeImageAsyncTask = new RecognizeImageRESTClient(uri, languages);
+            ArrayList<String> languages = obtainLanguageShortcuts();
+            String path = getImagePath(uri);
+            if (path != null) {
+                recognizeImageAsyncTask = new RecognizeImageRESTClient(path, languages);
 
                 RecognizeImageAsyncTask.OnTaskCompletedListener onTaskCompletedListener = new RecognizeImageAsyncTask.OnTaskCompletedListener() {
                     @Override
@@ -189,7 +189,6 @@ public class MainActivity extends AppCompatActivity {
                         //open new activity and show result
                     }
 
-                    //// TODO: 5/29/17 there is no mechanism to close error view - fix it
                     @Override
                     public void onError(String message) {
                         finishActivity(OCRAnimationActivity_REQUEST_CODE);
@@ -197,15 +196,27 @@ public class MainActivity extends AppCompatActivity {
                     }
                 };
                 recognizeImageAsyncTask.setOnTaskCompletedListener(onTaskCompletedListener);
-
-            } else {
-                Toast.makeText(this, "Not available in offline mode.", Toast.LENGTH_SHORT).show(); //todo delete bacause of card view with error
+                recognizeImageAsyncTask.execute();
             }
-            recognizeImageAsyncTask.execute();
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
         }
+    }
 
+    @Nullable
+    private String getImagePath(Uri uri) {
+        String path = null;
+        try {
+            path = FileUtils.getRealPath(this, uri);
+        } catch (IOException e) {
+            e.printStackTrace();
+            checkForUserVisibleErrors(getResources().getString(R.string.file_not_found));
+        }
+        return path;
+    }
+
+    private void runOCRAnimation(Uri image) {
+        Intent intent = new Intent(this, OCRAnimationActivity.class);
+        intent.setData(image);
+        startActivityForResult(intent, OCRAnimationActivity_REQUEST_CODE);
     }
 
 //    @Override
@@ -242,12 +253,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //todo messages will not be translated - fix it
+    //// TODO: 5/29/17 there is no mechanism to close error view - fix it
     private void checkForUserVisibleErrors(@Nullable String forceErrorMessage) {
 
         boolean showError = false;
 
         // If offline, message is about the lack of connectivity:
-        if (!NetworkHelper.isOnline(this)) {
+        if (!NetworkUtils.isOnline(this)) {
             mErrorMessage.setText(R.string.error_no_connection);
             showError = true;
         } else {

@@ -123,7 +123,7 @@ public class RecognizeImageRESTClientTest {
         final CountDownLatch signal = new CountDownLatch(1);
         TaskDelegateImpl delegate = new TaskDelegateImpl(signal, null);
 
-        RecognizeImageAsyncTask task = new RecognizeImageRESTClient(Uri.fromFile(new File(path)), null);
+        RecognizeImageAsyncTask task = new RecognizeImageRESTClient(path, null);
         task.setOnTaskCompletedListener(delegate);
         executeTask(signal, task);
 
@@ -140,9 +140,7 @@ public class RecognizeImageRESTClientTest {
             if (path.contains(tag)) {
                 final CountDownLatch signal = new CountDownLatch(1);
 
-                Uri uri = Uri.fromFile(new File(path));
-
-                RecognizeImageAsyncTask task = new RecognizeImageRESTClient(uri, null);
+                RecognizeImageAsyncTask task = new RecognizeImageRESTClient(path, null);
 
                 TaskDelegateImpl delegate = new TaskDelegateImpl(signal, tag);
                 task.setOnTaskCompletedListener(delegate);
@@ -163,9 +161,7 @@ public class RecognizeImageRESTClientTest {
             if (path.contains(tag)) {
                 final CountDownLatch signal = new CountDownLatch(1);
 
-                Uri uri = Uri.fromFile(new File(path));
-
-                RecognizeImageAsyncTask task = new RecognizeImageRESTClient(uri, languages);
+                RecognizeImageAsyncTask task = new RecognizeImageRESTClient(path, languages);
 
                 TaskDelegateImpl delegate = new TaskDelegateImpl(signal, tag);
                 task.setOnTaskCompletedListener(delegate);

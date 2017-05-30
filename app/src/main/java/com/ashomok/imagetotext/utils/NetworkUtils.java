@@ -23,7 +23,7 @@ import android.net.NetworkInfo;
 /**
  * Generic reusable network methods.
  */
-public class NetworkHelper {
+public class NetworkUtils {
     /**
      * @param context to use to check for network connectivity.
      * @return true if connected, false otherwise.

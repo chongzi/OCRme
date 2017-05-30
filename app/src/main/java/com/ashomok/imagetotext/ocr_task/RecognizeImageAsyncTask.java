@@ -23,11 +23,15 @@ public abstract class RecognizeImageAsyncTask extends AsyncTask<Void, Integer, O
         if (result.getError() == null || result.getError().length() == 0) {
             String text = result.getText();
             onTaskCompletedListener.onTaskCompleted(text);
-            Log.d(TAG, text);
+            if (text != null) {
+                Log.d(TAG, text);
+            }
         } else {
             String error = result.getError();
             onTaskCompletedListener.onError(error);
-            Log.e(TAG, error);
+            if (error != null) {
+                Log.e(TAG, error);
+            }
         }
     }
 
