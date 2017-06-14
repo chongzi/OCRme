@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
  * Created by iuliia on 5/28/17.
  */
 
-public class OCRResult {
+class OCRResult {
     @Nullable
     public String getError() {
         return error;

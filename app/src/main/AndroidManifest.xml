@@ -41,6 +41,14 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
+            android:name=".ocr_result.OCRResultActivity"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity
             android:name=".ocr_task.OCRAnimationActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/recognizing"
