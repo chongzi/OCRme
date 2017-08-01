@@ -7,7 +7,7 @@ import android.support.test.filters.SmallTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.ashomok.imagetotext.language.LanguageActivity;
+import com.ashomok.imagetotext.language_choser.LanguageActivity;
 import com.ashomok.imagetotext.ocr_result.OCRResultActivity;
 
 import org.junit.Before;

@@ -32,7 +32,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".language.LanguageActivity"
+            android:name=".language_choser.LanguageActivity"
             android:label="@string/language_label"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme">

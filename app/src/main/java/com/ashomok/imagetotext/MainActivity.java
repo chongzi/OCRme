@@ -32,8 +32,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ashomok.imagetotext.language.LanguageActivity;
-import com.ashomok.imagetotext.language.LanguageList;
+import com.ashomok.imagetotext.language_choser.LanguageActivity;
+import com.ashomok.imagetotext.language_choser.LanguageList;
 import com.ashomok.imagetotext.ocr_task.OCRAnimationActivity;
 import com.ashomok.imagetotext.ocr_task.RecognizeImageAsyncTask;
 import com.ashomok.imagetotext.ocr_task.RecognizeImageRESTClient;
@@ -381,11 +381,11 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
-                            case R.id.list_navigation_menu_item:
-                                // Do nothing, we're already on that screen
+                            case R.id.about:
+                                //// TODO: 8/1/17
                                 break;
-                            case R.id.statistics_navigation_menu_item:
-                                // TODO: 1/14/17
+                            case R.id.sign_in:
+                                // TODO: 1/14/17 open Sign in screen
                                 break;
                             default:
                                 break;

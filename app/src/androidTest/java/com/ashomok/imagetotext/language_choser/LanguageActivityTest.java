@@ -1,4 +1,4 @@
-package com.ashomok.imagetotext.language;
+package com.ashomok.imagetotext.language_choser;
 
 import android.content.Context;
 import android.content.Intent;

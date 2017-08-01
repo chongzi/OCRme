@@ -3,11 +3,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/list_navigation_menu_item"
+        android:id="@+id/about"
         android:icon="@drawable/ic_android_black_24dp"
         android:title="@string/about" />
     <item
-        android:id="@+id/statistics_navigation_menu_item"
+        android:id="@+id/sign_in"
         android:icon="@drawable/ic_android_black_24dp"
-        android:title="@string/my_docs" />
+        android:title="@string/sign_in" />
 </menu>
