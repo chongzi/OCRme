@@ -6,4 +6,11 @@
     <!-- error infobar -->
     <dimen name="error_horizontal_padding">4dp</dimen>
     <dimen name="error_vertical_padding">16dp</dimen>
+
+    <dimen name="loginactivity_logo_from_login">20dp</dimen>
+
+    <dimen name="nav_header_vertical_spacing">16dp</dimen>
+
+    <dimen name="sing_in_btn_height">48dp</dimen>
+    
 </resources>

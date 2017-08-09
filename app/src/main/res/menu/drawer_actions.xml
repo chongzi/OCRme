@@ -1,13 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/login"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/sign_in"
+            android:icon="@drawable/ic_android_black_24dp"
+            android:title="@string/sign_in" />
+    </group>
+    <group
+        android:id="@+id/menu_items"
+        android:checkableBehavior="single">
 
-    <item
-        android:id="@+id/about"
-        android:icon="@drawable/ic_android_black_24dp"
-        android:title="@string/about" />
-    <item
-        android:id="@+id/sign_in"
-        android:icon="@drawable/ic_android_black_24dp"
-        android:title="@string/sign_in" />
+        <item
+            android:id="@+id/my_docs"
+            android:icon="@drawable/ic_android_black_24dp"
+            android:title="@string/my_docs" />
+        <item
+            android:id="@+id/about"
+            android:icon="@drawable/ic_android_black_24dp"
+            android:title="@string/about" />
+        <item
+            android:id="@+id/remove_ads"
+            android:icon="@drawable/ic_android_black_24dp"
+            android:title="@string/remove_ads" />
+    </group>
+    <group
+        android:id="@+id/logout"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/notification"
+            android:icon="@drawable/ic_android_black_24dp"
+            android:title="@string/logout" />
+    </group>
 </menu>
