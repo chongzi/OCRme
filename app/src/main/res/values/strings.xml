@@ -53,6 +53,7 @@
     <string translatable="false" name="last_login_mode">last_login_mode</string>
     <string translatable="false" name="user_email">user_email</string>
     <string name="register">Register</string>
+    <string name="alert_dialog_logout">Logout</string>
 
 
 </resources>

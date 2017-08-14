@@ -2,7 +2,7 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group
-        android:id="@+id/login"
+        android:id="@+id/login_group"
         android:checkableBehavior="single">
         <item
             android:id="@+id/sign_in"
@@ -27,10 +27,10 @@
             android:title="@string/remove_ads" />
     </group>
     <group
-        android:id="@+id/logout"
+        android:id="@+id/logout_group"
         android:checkableBehavior="single">
         <item
-            android:id="@+id/notification"
+            android:id="@+id/logout"
             android:icon="@drawable/ic_android_black_24dp"
             android:title="@string/logout" />
     </group>

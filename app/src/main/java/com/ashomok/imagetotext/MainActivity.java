@@ -18,6 +18,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -25,6 +26,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
@@ -37,9 +39,16 @@ import com.ashomok.imagetotext.language_choser.LanguageList;
 import com.ashomok.imagetotext.ocr_task.OCRAnimationActivity;
 import com.ashomok.imagetotext.ocr_task.RecognizeImageAsyncTask;
 import com.ashomok.imagetotext.ocr_task.RecognizeImageRESTClient;
+import com.ashomok.imagetotext.sign_in.AutoSignInAsyncTask;
+import com.ashomok.imagetotext.sign_in.LoginActivity;
+import com.ashomok.imagetotext.sign_in.LoginManager;
+import com.ashomok.imagetotext.sign_in.social_networks.LoginProcessor;
+import com.ashomok.imagetotext.sign_in.social_networks.LoginProcessorFacebook;
+import com.ashomok.imagetotext.sign_in.social_networks.LoginProcessorGoogle;
 import com.ashomok.imagetotext.utils.FileUtils;
 import com.ashomok.imagetotext.utils.NetworkUtils;
 import com.ashomok.imagetotext.utils.PermissionUtils;
+import com.facebook.CallbackManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,7 +59,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AutoSignInAsyncTask.AutoSignInListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int LANGUAGE_ACTIVITY_REQUEST_CODE = 1;
@@ -61,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private View mErrorView;
     private TextView mErrorMessage;
+    private LoginManager loginManager;
+
+    private boolean mIsUserSignedIn = false;
 
     private Uri imageUri;
     public static final String CHECKED_LANGUAGES = "checked_languages";
@@ -85,6 +97,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        loginManager = new LoginManager(this.getApplicationContext(), LoginsProvider.getLogins(this));
+        AutoSignInAsyncTask autoSignin = new AutoSignInAsyncTask(loginManager, this);
+        autoSignin.execute();
 
         setUpToolbar();
 
@@ -165,6 +181,36 @@ public class MainActivity extends AppCompatActivity {
         //ocr canceled
         else if (requestCode == OCRAnimationActivity_REQUEST_CODE && resultCode == Activity.RESULT_CANCELED) {
             recognizeImageAsyncTask.cancel(true);
+//            //// TODO: 8/9/17 error here
+//            08-09 16:06:26.494 14427-14427/com.ashomok.imagetotext E/AndroidRuntime: FATAL EXCEPTION: main
+//            Process: com.ashomok.imagetotext, PID: 14427
+//            java.lang.RuntimeException: Failure delivering result ResultInfo{who=null, request=3, result=0, data=null} to activity {com.ashomok.imagetotext/com.ashomok.imagetotext.MainActivity}: java.lang.NullPointerException: Attempt to invoke virtual method 'boolean com.ashomok.imagetotext.ocr_task.RecognizeImageAsyncTask.cancel(boolean)' on a null object reference
+//            at android.app.ActivityThread.deliverResults(ActivityThread.java:4323)
+//            at android.app.ActivityThread.handleSendResult(ActivityThread.java:4366)
+//            at android.app.ActivityThread.-wrap19(Unknown Source:0)
+//            at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1649)
+//            at android.os.Handler.dispatchMessage(Handler.java:105)
+//            at android.os.Looper.loop(Looper.java:164)
+//            at android.app.ActivityThread.main(ActivityThread.java:6540)
+//            at java.lang.reflect.Method.invoke(Native Method)
+//            at com.android.internal.os.Zygote$MethodAndArgsCaller.run(Zygote.java:240)
+//            at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:767)
+//            Caused by: java.lang.NullPointerException: Attempt to invoke virtual method 'boolean com.ashomok.imagetotext.ocr_task.RecognizeImageAsyncTask.cancel(boolean)' on a null object reference
+//            at com.ashomok.imagetotext.MainActivity.onActivityResult(MainActivity.java:177)
+//            at android.app.Activity.dispatchActivityResult(Activity.java:7237)
+//            at android.app.ActivityThread.deliverResults(ActivityThread.java:4319)
+//            at android.app.ActivityThread.handleSendResult(ActivityThread.java:4366) 
+//            at android.app.ActivityThread.-wrap19(Unknown Source:0) 
+//            at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1649) 
+//            at android.os.Handler.dispatchMessage(Handler.java:105) 
+//            at android.os.Looper.loop(Looper.java:164) 
+//            at android.app.ActivityThread.main(ActivityThread.java:6540) 
+//            at java.lang.reflect.Method.invoke(Native Method) 
+//            at com.android.internal.os.Zygote$MethodAndArgsCaller.run(Zygote.java:240) 
+//            at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:767) 
+//            08-09 16:06:26.551 14427-15134/com.ashomok.imagetotext V/FA: Using measurement service
+//            08-09 16:06:26.552 14427-15134/com.ashomok.imagetotext V/FA: Connection attempt already in progress
+//
         }
     }
 
@@ -219,22 +265,19 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, OCRAnimationActivity_REQUEST_CODE);
     }
 
-//    @Override
-//    public boolean onPrepareOptionsMenu(Menu menu) {
-////// TODO: 1/18/17 add/remove special items for free/PRO version
-//        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-//        Menu navigationMenu = navigationView.getMenu();
-//
-////        add(int groupId, int itemId, int order, CharSequence title)
-////        Add a new item to the menu.
-//
-//        navigationMenu.add(0, 0, Menu.NONE, "ADDED PROGRAMMATICALLY").setIcon(R.drawable.ic_android_black_24dp);
-//
-//        MenuItem item = navigationView.getMenu().getItem(0);
-//        item.setVisible(false);
-//
-//        return super.onPrepareOptionsMenu(menu);
-//    }
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        Menu navigationMenu = navigationView.getMenu();
+
+        navigationMenu.findItem(R.id.sign_in).setVisible(!mIsUserSignedIn);
+        navigationMenu.findItem(R.id.logout).setVisible(mIsUserSignedIn);
+
+        //todo remove RemoveAdd in menu if needed. May be create Session class and put all info about currect session to this class
+
+        return super.onPrepareOptionsMenu(menu);
+    }
 
     private ArrayList<String> obtainLanguageShortcuts() {
         ArrayList<String> languageNames = getCheckedLanguages();
@@ -375,18 +418,30 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setupDrawerContent(NavigationView navigationView) {
+    private void setupDrawerContent(final NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
-                            case R.id.about:
-                                //// TODO: 8/1/17
-                                break;
                             case R.id.sign_in:
-                                // TODO: 1/14/17 open Sign in screen
+                                startActivity(
+                                        new Intent(navigationView.getContext(), LoginActivity.class));
                                 break;
+                            case R.id.my_docs:
+                                // TODO:
+                                break;
+                            case R.id.about:
+                                // TODO:
+                                break;
+                            case R.id.remove_ads:
+                                // TODO:
+                                break;
+                            case R.id.logout:
+                                logout();
+                                break;
+
+
                             default:
                                 break;
                         }
@@ -398,13 +453,19 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    private void logout() {
+        LogoutDialogFragment dialog = LogoutDialogFragment.newInstance(loginManager);
+        dialog.show(getFragmentManager(), "dialog");
+    }
+
     @Override
     public void onBackPressed() {
         Log.d(TAG, "onBackPressed()" + getFragmentManager().getBackStackEntryCount());
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             super.onBackPressed();
         } else {
-            ExitDialogFragment exitDialogFragment = ExitDialogFragment.newInstance(R.string.exit_dialog_title);
+            ExitDialogFragment exitDialogFragment = ExitDialogFragment.newInstance(
+                    R.string.exit_dialog_title);
 
             exitDialogFragment.show(getFragmentManager(), "dialog");
         }
@@ -542,5 +603,34 @@ public class MainActivity extends AppCompatActivity {
         }
         editor.putStringSet(CHECKED_LANGUAGES, checkedLanguages);
         editor.apply();
+    }
+
+    //// TODO: 8/10/17
+    @Override
+    public void signedIn(boolean isSignedIn) {
+        mIsUserSignedIn = isSignedIn;
+
+        if (mIsUserSignedIn) {
+            //user signed in without interaction, update ui
+        }
+    }
+
+    /**
+     * this class provides login processors to LoginManager for auto (silent) login.
+     */
+    private static class LoginsProvider {
+        static ArrayList<LoginProcessor> getLogins(FragmentActivity activity) {
+            //Google+ LoginProcessor
+            LoginProcessorGoogle loginGoogle = new LoginProcessorGoogle(activity);
+
+            //Facebook LoginProcessor
+            CallbackManager callbackManager = CallbackManager.Factory.create();
+            LoginProcessorFacebook loginFacebook = new LoginProcessorFacebook(callbackManager);
+
+            ArrayList<LoginProcessor> list = new ArrayList<>();
+            list.add(loginGoogle);
+            list.add(loginFacebook);
+            return list;
+        }
     }
 }

@@ -21,6 +21,8 @@ import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
+import java.io.Serializable;
+
 import static com.ashomok.imagetotext.sign_in.LoginActivity.RC_SIGN_IN;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
@@ -29,7 +31,9 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  * Created by iuliia on 8/4/17.
  */
 
-public class LoginProcessorGoogle implements LoginProcessor, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+public class LoginProcessorGoogle implements LoginProcessor,
+        GoogleApiClient.OnConnectionFailedListener, View.OnClickListener{
+
     private static final String TAG = DEV_TAG + LoginProcessorGoogle.class.getSimpleName();
     private FragmentActivity activity;
     private String token;
@@ -84,15 +88,20 @@ public class LoginProcessorGoogle implements LoginProcessor, GoogleApiClient.OnC
         // [END build_client]
     }
 
-
     @Nullable
     public String getAccessToken() {
         return token;
     }
 
+    /**
+     * There is no reason to keep connected to the GoogleApiClient unless you plan on directly
+     * calling one of its APIs later.
+     * Once you have the authorization code, you can close the GoogleApiClient. The best place to
+     * call this - onStop() method of the Activity.
+     */
     public void disconnect() {
         dismissProgressDialog();
-        if (mGoogleApiClient.isConnected()) {
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
     }
@@ -120,7 +129,6 @@ public class LoginProcessorGoogle implements LoginProcessor, GoogleApiClient.OnC
             }
         }).start();
     }
-
 
     @Override
     public void signOut() {

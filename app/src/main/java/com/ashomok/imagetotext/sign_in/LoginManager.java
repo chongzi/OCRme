@@ -1,11 +1,16 @@
-package com.ashomok.imagetotext.sign_in.social_networks;
+package com.ashomok.imagetotext.sign_in;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.IntDef;
+import android.util.Log;
 
 import com.ashomok.imagetotext.R;
+import com.ashomok.imagetotext.sign_in.social_networks.LoginProcessor;
+import com.ashomok.imagetotext.sign_in.social_networks.LoginProcessorFacebook;
+import com.ashomok.imagetotext.sign_in.social_networks.LoginProcessorGoogle;
 
+import java.io.Serializable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -17,7 +22,11 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  * Created by iuliia on 8/4/17.
  */
 
-public class SocialLoginManager {
+/**
+ * Login manager for login, logout, etc
+ * Works with social networks logins and native login
+ */
+public class LoginManager {
 
     private Context context;
 
@@ -25,13 +34,20 @@ public class SocialLoginManager {
 
     //user email
     private String mSignedAs;
+    public String getSignedAs() {
+        return mSignedAs;
+    }
 
     private ArrayList<LoginProcessor> loginsInUseArray = new ArrayList<>();
 
-    private static final String TAG = DEV_TAG + SocialLoginManager.class.getSimpleName();
+    private static final String TAG = DEV_TAG + LoginManager.class.getSimpleName();
 
     //[START define login mode]
-    @IntDef({LOGIN_MODE_UNDEFINED, LOGIN_MODE_STANDARD, LOGIN_MODE_GOOGLE_PLUS, LOGIN_MODE_FACEBOOK})
+    @IntDef({
+            LOGIN_MODE_UNDEFINED,
+            LOGIN_MODE_STANDARD,
+            LOGIN_MODE_GOOGLE_PLUS,
+            LOGIN_MODE_FACEBOOK})
     @Retention(RetentionPolicy.SOURCE)
     public @interface LoginMode {
     }
@@ -81,39 +97,36 @@ public class SocialLoginManager {
         editor.apply();
     }
 
-    public SocialLoginManager(Context context) {
+    public LoginManager(Context context) {
+        this(context, new ArrayList<LoginProcessor>());
+    }
+
+    public LoginManager(Context context, ArrayList<LoginProcessor> logins) {
         this.context = context;
+        this.loginsInUseArray = logins;
     }
 
     public void addLogin(LoginProcessor loginProcessor) {
         loginsInUseArray.add(loginProcessor);
     }
 
+
+
     /**
-     * try sign in without user interaction using previous sign in data
-     *
-     * @return is sign in
+     * logout from all accounts
      */
-    public boolean trySignInAutomatically() {
-        isSignedIn = false;
-        for (LoginProcessor loginProcessor : loginsInUseArray) {
-            loginProcessor.trySignIn();
-        }
-
-        //checking if user already signed in
-        for (LoginProcessor loginProcessor : loginsInUseArray) {
-            if (loginProcessor.isSignedIn()) {
-                isSignedIn = true;
-                @LoginMode int loginMode = getLoginMode(loginProcessor);
-                @LoginMode int mLastLoginMode = getLastLoginMode();
-                if (loginMode == mLastLoginMode || mLoginMode == LOGIN_MODE_UNDEFINED) {
-                    mLoginMode = loginMode;
-                    mSignedAs = getEmail(loginProcessor);
+    public void logout() {
+        if (isSignedIn) {
+            for (LoginProcessor loginProcessor : loginsInUseArray) {
+                if (loginProcessor.isSignedIn()) {
+                    loginProcessor.signOut();
                 }
-
+                isSignedIn = false;
+                saveLoginMode();
             }
+        } else {
+            Log.w(TAG, "logout called for not signed in user");
         }
-        return isSignedIn;
     }
 
 

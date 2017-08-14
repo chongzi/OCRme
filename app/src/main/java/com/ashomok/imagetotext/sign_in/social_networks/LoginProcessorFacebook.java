@@ -18,6 +18,8 @@ import com.facebook.login.widget.LoginButton;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 
@@ -25,7 +27,7 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  * Created by iuliia on 8/4/17.
  */
 
-public class LoginProcessorFacebook implements LoginProcessor {
+public class LoginProcessorFacebook implements LoginProcessor, Serializable {
 
     private CallbackManager callbackManager;
     private LoginButton button;

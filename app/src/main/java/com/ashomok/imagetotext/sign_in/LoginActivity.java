@@ -29,7 +29,6 @@ import com.ashomok.imagetotext.MainActivity;
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.sign_in.social_networks.LoginProcessorFacebook;
 import com.ashomok.imagetotext.sign_in.social_networks.LoginProcessorGoogle;
-import com.ashomok.imagetotext.sign_in.social_networks.SocialLoginManager;
 
 import com.ashomok.imagetotext.sign_in.utils.Constants;
 import com.ashomok.imagetotext.sign_in.utils.ValidateUserInfo;
@@ -44,7 +43,7 @@ import java.util.List;
 /**
  * A login screen that offers login via email/password.
  * This activity is shown if sign in automatically failed, for more details
- * @see SocialLoginManager#trySignInAutomatically()
+ * @see LoginManager#trySignInAutomatically()
  */
 
 public class LoginActivity extends AppCompatActivity implements
@@ -137,7 +136,7 @@ public class LoginActivity extends AppCompatActivity implements
         loginFacebook = new LoginProcessorFacebook(callbackManager);
         loginFacebook.setSignInButton(facebookLoginButton);
 
-//        SocialLoginManager loginManager = new SocialLoginManager(this);
+//        LoginManager loginManager = new LoginManager(this);
 //        loginManager.addLogin(loginGoogle);
 //        loginManager.addLogin(loginFacebook);
 
