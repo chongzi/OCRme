@@ -1,4 +1,4 @@
-package com.ashomok.imagetotext;
+package com.ashomok.imagetotext.sign_in;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -7,31 +7,42 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 
-/**
- * Created by iuliia on 7/10/16.
- */
-public class ExitDialogFragment extends DialogFragment {
+import com.ashomok.imagetotext.ExitDialogFragment;
+import com.ashomok.imagetotext.R;
 
-    public static ExitDialogFragment newInstance(int title) {
-        ExitDialogFragment frag = new ExitDialogFragment();
+/**
+ * Created by iuliia on 8/9/17.
+ */
+
+//todo pls answer https://stackoverflow.com/questions/13338113/managing-activity-from-dialogfragment
+public class SignOutDialogFragment extends DialogFragment {
+
+    public static interface SignOutListener {
+        public void onSignOut();
+    }
+
+    private SignOutListener mListener;
+
+    public static SignOutDialogFragment newInstance(String title) {
+        SignOutDialogFragment frag = new SignOutDialogFragment();
         Bundle args = new Bundle();
-        args.putInt("title", title);
+        args.putString("title", title);
         frag.setArguments(args);
         return frag;
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        int title = getArguments().getInt("title");
+        String title = getArguments().getString("title");
+
+        mListener = (SignOutListener) getActivity();
 
         return new AlertDialog.Builder(getActivity())
                 .setTitle(title)
                 .setPositiveButton(R.string.ok,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-
-                                ActivityCompat.finishAffinity(getActivity());
-
+                                mListener.onSignOut();
                             }
                         }
                 )
@@ -43,5 +54,11 @@ public class ExitDialogFragment extends DialogFragment {
                         }
                 )
                 .create();
+    }
+
+    @Override
+    public void onDetach() {
+        mListener = null;
+        super.onDetach();
     }
 }

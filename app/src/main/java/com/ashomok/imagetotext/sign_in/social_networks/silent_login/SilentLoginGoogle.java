@@ -28,16 +28,16 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 public class SilentLoginGoogle implements GoogleApiClient.OnConnectionFailedListener, SilentLogin {
 
     private static final String TAG = DEV_TAG + SilentLoginGoogle.class.getSimpleName();
-    private FragmentActivity activity;
+    protected FragmentActivity activity;
     private String token;
     private boolean isSignedIn;
     private String email;
     /* Client used to interact with Google APIs. */
-    private GoogleApiClient mGoogleApiClient;
+    protected GoogleApiClient mGoogleApiClient;
     /* Is there a ConnectionResult resolution in progress? */
     private boolean mIsResolving = false;
     /* Should we automatically resolve ConnectionResults when possible? */
-    private boolean mShouldResolve = false;
+    protected boolean mShouldResolve = false;
 
     public SilentLoginGoogle(FragmentActivity activity) {
         this.activity = activity;
@@ -113,7 +113,7 @@ public class SilentLoginGoogle implements GoogleApiClient.OnConnectionFailedList
         handleSignInResult(result);
     }
 
-    private void handleSignInResult(GoogleSignInResult result) {
+    protected void handleSignInResult(GoogleSignInResult result) {
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
             isSignedIn = true;
@@ -157,7 +157,12 @@ public class SilentLoginGoogle implements GoogleApiClient.OnConnectionFailedList
         }
     }
 
-
+    /**
+     * There is no reason to keep connected to the GoogleApiClient unless you plan on directly
+     * calling one of its APIs later.
+     * Once you have the authorization code, you can close the GoogleApiClient. The best place to
+     * call this - onStop() method of the Activity.
+     */
     public void disconnect() {
         if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
@@ -165,7 +170,7 @@ public class SilentLoginGoogle implements GoogleApiClient.OnConnectionFailedList
     }
 
     @Override
-    public void signOut() {
+    public void signOutAsync() {
         if (isSignedIn) {
             Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                     new ResultCallback<Status>() {

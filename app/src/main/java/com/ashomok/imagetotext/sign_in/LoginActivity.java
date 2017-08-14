@@ -27,8 +27,8 @@ import android.widget.TextView;
 
 import com.ashomok.imagetotext.MainActivity;
 import com.ashomok.imagetotext.R;
-import com.ashomok.imagetotext.sign_in.social_networks.LoginProcessorFacebook;
-import com.ashomok.imagetotext.sign_in.social_networks.LoginProcessorGoogle;
+import com.ashomok.imagetotext.sign_in.social_networks.LoginFacebook;
+import com.ashomok.imagetotext.sign_in.social_networks.LoginGoogle;
 
 import com.ashomok.imagetotext.sign_in.utils.Constants;
 import com.ashomok.imagetotext.sign_in.utils.ValidateUserInfo;
@@ -71,8 +71,8 @@ public class LoginActivity extends AppCompatActivity implements
     private View mLoginFormView;
 
     private SignInButton mPlusSignInButton;
-    private LoginProcessorGoogle loginGoogle;
-    private LoginProcessorFacebook loginFacebook;
+    private LoginGoogle loginGoogle;
+    private LoginFacebook loginFacebook;
     private Button mEmailSignInButton;
     private TextView txt_create, txt_forgot;
 
@@ -127,13 +127,13 @@ public class LoginActivity extends AppCompatActivity implements
 
         //Google+ LoginProcessor
         mPlusSignInButton = (SignInButton) findViewById(R.id.g_sign_in_button);
-        loginGoogle = new LoginProcessorGoogle(this);
+        loginGoogle = new LoginGoogle(this);
         loginGoogle.setSignInButton(mPlusSignInButton);
 
         //Facebook LoginProcessor
         facebookLoginButton = (LoginButton) findViewById(R.id.f_sign_in_button);
         callbackManager = CallbackManager.Factory.create();
-        loginFacebook = new LoginProcessorFacebook(callbackManager);
+        loginFacebook = new LoginFacebook(callbackManager);
         loginFacebook.setSignInButton(facebookLoginButton);
 
 //        LoginManager loginManager = new LoginManager(this);

@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
  * Created by iuliia on 8/14/17.
  */
 
-interface SilentLogin {
+public interface SilentLogin {
 
     /**
      * attempt to sign in without user interaction
@@ -23,7 +23,7 @@ interface SilentLogin {
     /**
      * sign out
      */
-    void signOut();
+    void signOutAsync();
 
     /**
      * get user's email

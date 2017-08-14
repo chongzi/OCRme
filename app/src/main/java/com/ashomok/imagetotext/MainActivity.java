@@ -39,12 +39,13 @@ import com.ashomok.imagetotext.language_choser.LanguageList;
 import com.ashomok.imagetotext.ocr_task.OCRAnimationActivity;
 import com.ashomok.imagetotext.ocr_task.RecognizeImageAsyncTask;
 import com.ashomok.imagetotext.ocr_task.RecognizeImageRESTClient;
-import com.ashomok.imagetotext.sign_in.AutoSignInAsyncTask;
+import com.ashomok.imagetotext.sign_in.SignOutDialogFragment;
+import com.ashomok.imagetotext.sign_in.social_networks.silent_login.SilentSignInAsyncTask;
 import com.ashomok.imagetotext.sign_in.LoginActivity;
 import com.ashomok.imagetotext.sign_in.LoginManager;
 import com.ashomok.imagetotext.sign_in.social_networks.LoginProcessor;
-import com.ashomok.imagetotext.sign_in.social_networks.LoginProcessorFacebook;
-import com.ashomok.imagetotext.sign_in.social_networks.LoginProcessorGoogle;
+import com.ashomok.imagetotext.sign_in.social_networks.LoginFacebook;
+import com.ashomok.imagetotext.sign_in.social_networks.LoginGoogle;
 import com.ashomok.imagetotext.utils.FileUtils;
 import com.ashomok.imagetotext.utils.NetworkUtils;
 import com.ashomok.imagetotext.utils.PermissionUtils;
@@ -59,7 +60,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class MainActivity extends AppCompatActivity implements AutoSignInAsyncTask.AutoSignInListener {
+public class MainActivity extends AppCompatActivity implements SignOutDialogFragment.SignOutListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int LANGUAGE_ACTIVITY_REQUEST_CODE = 1;
@@ -99,8 +100,7 @@ public class MainActivity extends AppCompatActivity implements AutoSignInAsyncTa
         setContentView(R.layout.activity_main);
 
         loginManager = new LoginManager(this.getApplicationContext(), LoginsProvider.getLogins(this));
-        AutoSignInAsyncTask autoSignin = new AutoSignInAsyncTask(loginManager, this);
-        autoSignin.execute();
+        new SilentSignInAsyncTask(loginManager).execute();
 
         setUpToolbar();
 
@@ -454,7 +454,8 @@ public class MainActivity extends AppCompatActivity implements AutoSignInAsyncTa
     }
 
     private void logout() {
-        LogoutDialogFragment dialog = LogoutDialogFragment.newInstance(loginManager);
+        String userEmail = loginManager.obtainEmail();
+        SignOutDialogFragment dialog = SignOutDialogFragment.newInstance(getString(R.string.ask_sign_out, userEmail));
         dialog.show(getFragmentManager(), "dialog");
     }
 
@@ -605,14 +606,9 @@ public class MainActivity extends AppCompatActivity implements AutoSignInAsyncTa
         editor.apply();
     }
 
-    //// TODO: 8/10/17
     @Override
-    public void signedIn(boolean isSignedIn) {
-        mIsUserSignedIn = isSignedIn;
-
-        if (mIsUserSignedIn) {
-            //user signed in without interaction, update ui
-        }
+    public void onSignOut() {
+       loginManager.logout();
     }
 
     /**
@@ -620,16 +616,9 @@ public class MainActivity extends AppCompatActivity implements AutoSignInAsyncTa
      */
     private static class LoginsProvider {
         static ArrayList<LoginProcessor> getLogins(FragmentActivity activity) {
-            //Google+ LoginProcessor
-            LoginProcessorGoogle loginGoogle = new LoginProcessorGoogle(activity);
-
-            //Facebook LoginProcessor
-            CallbackManager callbackManager = CallbackManager.Factory.create();
-            LoginProcessorFacebook loginFacebook = new LoginProcessorFacebook(callbackManager);
-
             ArrayList<LoginProcessor> list = new ArrayList<>();
-            list.add(loginGoogle);
-            list.add(loginFacebook);
+            list.add( new LoginGoogle(activity));
+            list.add(new LoginFacebook(CallbackManager.Factory.create()));
             return list;
         }
     }

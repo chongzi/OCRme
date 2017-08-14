@@ -54,6 +54,7 @@
     <string translatable="false" name="user_email">user_email</string>
     <string name="register">Register</string>
     <string name="alert_dialog_logout">Logout</string>
+    <string name="ask_sign_out">You signed in as %1$s. Sign out?</string>
 
 
 </resources>

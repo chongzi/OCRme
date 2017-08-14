@@ -1,19 +1,21 @@
 package com.ashomok.imagetotext.sign_in.social_networks;
 
+import com.ashomok.imagetotext.sign_in.social_networks.silent_login.SilentLogin;
+import com.ashomok.imagetotext.sign_in.social_networks.silent_login.SilentLoginGoogle;
+
 /**
  * Created by iuliia on 8/5/17.
  */
-//// TODO: 8/6/17 make it abstract class
-public interface LoginProcessor {
-    boolean isSignedIn();
+public interface LoginProcessor extends SilentLogin {
 
-    void trySignIn();
-
+    /**
+     * Sign in when user click on sign in button
+     */
     void signIn();
 
-    void signOut();
-
-    String getEmail();
-
+    /**
+     * Set sign in button
+     * @param button
+     */
     void setSignInButton(Object button);
 }
