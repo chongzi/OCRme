@@ -25,7 +25,6 @@ public class SilentSignInAsyncTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
-        Log.d(TAG, "SilentSignInAsyncTask called");
         weakLoginManager.get().trySignInAutomatically();
         return null;
     }

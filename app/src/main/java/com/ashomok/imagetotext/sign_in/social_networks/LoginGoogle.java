@@ -33,7 +33,6 @@ public class LoginGoogle extends SilentLoginGoogle implements LoginProcessor,
 
     public LoginGoogle(FragmentActivity activity) {
         super(activity);
-        Log.d(TAG, "constructor called");
     }
 
     @Override

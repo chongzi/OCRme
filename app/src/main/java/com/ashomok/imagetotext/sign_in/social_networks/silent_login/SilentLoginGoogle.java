@@ -45,7 +45,6 @@ public class SilentLoginGoogle implements GoogleApiClient.OnConnectionFailedList
     public SilentLoginGoogle(FragmentActivity activity) {
         this.activity = activity;
         init();
-        Log.d(TAG, "constructor called");
     }
 
     private void init() {
@@ -69,7 +68,6 @@ public class SilentLoginGoogle implements GoogleApiClient.OnConnectionFailedList
 
     @Override
     public boolean isSignedIn() {
-        Log.d(TAG, "call to isSignedIn, returned " + isSignedIn);
         return isSignedIn;
     }
 
@@ -121,7 +119,7 @@ public class SilentLoginGoogle implements GoogleApiClient.OnConnectionFailedList
 
     protected void handleSignInResult(GoogleSignInResult result) {
         if (result.isSuccess()) {
-            setSignedIn(true);
+            isSignedIn = true;
 
             if (onSignedInListener != null) {
                 onSignedInListener.onSignedIn();
@@ -137,7 +135,7 @@ public class SilentLoginGoogle implements GoogleApiClient.OnConnectionFailedList
                 Log.d(TAG, "You logged as: " + email);
             }
         } else {
-            setSignedIn(false);
+            isSignedIn = false;
         }
     }
 
@@ -180,13 +178,13 @@ public class SilentLoginGoogle implements GoogleApiClient.OnConnectionFailedList
 
     @Override
     public void signOutAsync() {
-        if (isSignedIn()) {
+        if (isSignedIn) {
             Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                     new ResultCallback<Status>() {
                         @Override
                         public void onResult(Status status) {
                             if (status.isSuccess()) {
-                                setSignedIn(false);
+                                isSignedIn = false;
                                 Log.d(TAG, "signed out");
                             } else {
                                 Log.e(TAG, "error occurs in sign out");
@@ -201,11 +199,5 @@ public class SilentLoginGoogle implements GoogleApiClient.OnConnectionFailedList
     @Override
     public void setOnSignedInListener(OnSignedInListener listener) {
         this.onSignedInListener = listener;
-    }
-
-
-    private void setSignedIn(boolean signedIn) {
-        Log.d(TAG, "setSignedIn called with " + signedIn);
-        isSignedIn = signedIn;
     }
 }

@@ -616,17 +616,30 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
         editor.apply();
     }
 
+    /**
+     * called by sign out DialogFragment
+     */
     @Override
     public void onSignedOut() {
         loginManager.logout();
         mIsUserSignedIn = false;
-        invalidateOptionsMenu();
+        updateUi();
     }
 
     @Override
     public void onSignedIn() {
         mIsUserSignedIn = true;
+        updateUi();
+    }
+
+    //// TODO: 8/16/17
+    private void updateUi() {
         invalidateOptionsMenu();
+        if (mIsUserSignedIn) {
+
+        } else {
+
+        }
     }
 
     /**

@@ -61,7 +61,6 @@ public class LoginManager {
     public LoginManager(Context context, ArrayList<LoginProcessor> logins) {
         this.context = context;
         this.loginsInUseArray = logins;
-        Log.d(TAG, "constructor called");
     }
 
     public boolean obtainIsSignedIn() {
