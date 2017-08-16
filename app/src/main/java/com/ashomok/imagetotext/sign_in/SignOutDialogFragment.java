@@ -5,9 +5,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 
-import com.ashomok.imagetotext.ExitDialogFragment;
 import com.ashomok.imagetotext.R;
 
 /**
@@ -17,8 +15,8 @@ import com.ashomok.imagetotext.R;
 //todo pls answer https://stackoverflow.com/questions/13338113/managing-activity-from-dialogfragment
 public class SignOutDialogFragment extends DialogFragment {
 
-    public static interface SignOutListener {
-        public void onSignOut();
+    public interface SignOutListener {
+        void onSignedOut();
     }
 
     private SignOutListener mListener;
@@ -42,7 +40,7 @@ public class SignOutDialogFragment extends DialogFragment {
                 .setPositiveButton(R.string.ok,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                mListener.onSignOut();
+                                mListener.onSignedOut();
                             }
                         }
                 )

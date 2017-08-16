@@ -25,11 +25,22 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  * Login manager for login, logout, etc
  * Works with social networks logins and native login
  */
+
+//// TODO: 8/16/17 make as singleton 
 public class LoginManager {
 
     private static final String TAG = DEV_TAG + LoginManager.class.getSimpleName();
     private Context context;
     private ArrayList<LoginProcessor> loginsInUseArray = new ArrayList<>();
+    private OnSignedInListener onSignedInListener;
+
+    public void setOnSignedInListener(OnSignedInListener onSignedInListener) {
+        this.onSignedInListener = onSignedInListener;
+
+        for (LoginProcessor login : loginsInUseArray) {
+            login.setOnSignedInListener(onSignedInListener);
+        }
+    }
 
     //[START define login mode]
     @IntDef({
@@ -50,6 +61,7 @@ public class LoginManager {
     public LoginManager(Context context, ArrayList<LoginProcessor> logins) {
         this.context = context;
         this.loginsInUseArray = logins;
+        Log.d(TAG, "constructor called");
     }
 
     public boolean obtainIsSignedIn() {
@@ -73,7 +85,6 @@ public class LoginManager {
         }
         return email;
     }
-
 
 
     /**
@@ -126,8 +137,6 @@ public class LoginManager {
                     (processor instanceof LoginFacebook && mode == LOGIN_MODE_FACEBOOK) ||
                             (processor instanceof LoginGoogle && mode == LOGIN_MODE_GOOGLE_PLUS)) {
                 result = processor;
-            } else {
-                Log.e(TAG, "Can not get processor by mode.");
             }
         }
         return result;

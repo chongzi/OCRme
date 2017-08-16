@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.ashomok.imagetotext.sign_in.OnSignedInListener;
 import com.ashomok.imagetotext.sign_in.social_networks.silent_login.SilentLoginFacebook;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -32,6 +33,7 @@ public class LoginFacebook extends SilentLoginFacebook implements LoginProcessor
 
     private static final String TAG = DEV_TAG + LoginFacebook.class.getSimpleName();
 
+
     public LoginFacebook(CallbackManager callbackManager) {
         super(callbackManager);
     }
@@ -56,6 +58,10 @@ public class LoginFacebook extends SilentLoginFacebook implements LoginProcessor
 
                     if (accessToken != null) {
                         isSignedIn = true;
+
+                        if (onSignedInListener != null) {
+                            onSignedInListener.onSignedIn();
+                        }
 
                         //get token string
                         token = accessToken.getToken();

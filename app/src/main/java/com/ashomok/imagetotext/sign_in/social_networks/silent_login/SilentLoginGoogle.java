@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.ashomok.imagetotext.sign_in.OnSignedInListener;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -39,9 +40,12 @@ public class SilentLoginGoogle implements GoogleApiClient.OnConnectionFailedList
     /* Should we automatically resolve ConnectionResults when possible? */
     protected boolean mShouldResolve = false;
 
+    protected OnSignedInListener onSignedInListener;
+
     public SilentLoginGoogle(FragmentActivity activity) {
         this.activity = activity;
         init();
+        Log.d(TAG, "constructor called");
     }
 
     private void init() {
@@ -65,6 +69,7 @@ public class SilentLoginGoogle implements GoogleApiClient.OnConnectionFailedList
 
     @Override
     public boolean isSignedIn() {
+        Log.d(TAG, "call to isSignedIn, returned " + isSignedIn);
         return isSignedIn;
     }
 
@@ -106,6 +111,7 @@ public class SilentLoginGoogle implements GoogleApiClient.OnConnectionFailedList
 
     /**
      * should be called by FragmentActivity in onActivityResult.
+     *
      * @param data
      */
     public void onSignedIn(Intent data) {
@@ -114,9 +120,12 @@ public class SilentLoginGoogle implements GoogleApiClient.OnConnectionFailedList
     }
 
     protected void handleSignInResult(GoogleSignInResult result) {
-        Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
-            isSignedIn = true;
+            setSignedIn(true);
+
+            if (onSignedInListener != null) {
+                onSignedInListener.onSignedIn();
+            }
             mShouldResolve = false;
             GoogleSignInAccount acct = result.getSignInAccount();
 
@@ -128,7 +137,7 @@ public class SilentLoginGoogle implements GoogleApiClient.OnConnectionFailedList
                 Log.d(TAG, "You logged as: " + email);
             }
         } else {
-            isSignedIn = false;
+            setSignedIn(false);
         }
     }
 
@@ -171,13 +180,13 @@ public class SilentLoginGoogle implements GoogleApiClient.OnConnectionFailedList
 
     @Override
     public void signOutAsync() {
-        if (isSignedIn) {
+        if (isSignedIn()) {
             Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                     new ResultCallback<Status>() {
                         @Override
                         public void onResult(Status status) {
                             if (status.isSuccess()) {
-                                isSignedIn = false;
+                                setSignedIn(false);
                                 Log.d(TAG, "signed out");
                             } else {
                                 Log.e(TAG, "error occurs in sign out");
@@ -187,5 +196,16 @@ public class SilentLoginGoogle implements GoogleApiClient.OnConnectionFailedList
         } else {
             Log.d(TAG, "User is already signed out.");
         }
+    }
+
+    @Override
+    public void setOnSignedInListener(OnSignedInListener listener) {
+        this.onSignedInListener = listener;
+    }
+
+
+    private void setSignedIn(boolean signedIn) {
+        Log.d(TAG, "setSignedIn called with " + signedIn);
+        isSignedIn = signedIn;
     }
 }

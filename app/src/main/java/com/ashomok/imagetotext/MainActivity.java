@@ -39,13 +39,14 @@ import com.ashomok.imagetotext.language_choser.LanguageList;
 import com.ashomok.imagetotext.ocr_task.OCRAnimationActivity;
 import com.ashomok.imagetotext.ocr_task.RecognizeImageAsyncTask;
 import com.ashomok.imagetotext.ocr_task.RecognizeImageRESTClient;
-import com.ashomok.imagetotext.sign_in.SignOutDialogFragment;
-import com.ashomok.imagetotext.sign_in.social_networks.silent_login.SilentSignInAsyncTask;
 import com.ashomok.imagetotext.sign_in.LoginActivity;
 import com.ashomok.imagetotext.sign_in.LoginManager;
-import com.ashomok.imagetotext.sign_in.social_networks.LoginProcessor;
+import com.ashomok.imagetotext.sign_in.OnSignedInListener;
+import com.ashomok.imagetotext.sign_in.SignOutDialogFragment;
 import com.ashomok.imagetotext.sign_in.social_networks.LoginFacebook;
 import com.ashomok.imagetotext.sign_in.social_networks.LoginGoogle;
+import com.ashomok.imagetotext.sign_in.social_networks.LoginProcessor;
+import com.ashomok.imagetotext.sign_in.social_networks.silent_login.SilentSignInAsyncTask;
 import com.ashomok.imagetotext.utils.FileUtils;
 import com.ashomok.imagetotext.utils.NetworkUtils;
 import com.ashomok.imagetotext.utils.PermissionUtils;
@@ -60,27 +61,21 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class MainActivity extends AppCompatActivity implements SignOutDialogFragment.SignOutListener {
+import static com.ashomok.imagetotext.Settings.isAdsActive;
 
+public class MainActivity extends AppCompatActivity implements SignOutDialogFragment.SignOutListener, OnSignedInListener {
+
+    public static final String CHECKED_LANGUAGES = "checked_languages";
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int LANGUAGE_ACTIVITY_REQUEST_CODE = 1;
     private static final int CaptureImage_REQUEST_CODE = 2;
     private static final int OCRAnimationActivity_REQUEST_CODE = 3;
-    private static final int CAMERA_PERMISSIONS_REQUEST = 4;
-    private static final int GALLERY_IMAGE_REQUEST = 5;
+    private static final int LoginActivity_REQUEST_CODE = 4;
+    private static final int CAMERA_PERMISSIONS_REQUEST = 5;
+    private static final int GALLERY_IMAGE_REQUEST = 6;
     private DrawerLayout mDrawerLayout;
     private View mErrorView;
     private TextView mErrorMessage;
-    private LoginManager loginManager;
-
-    private boolean mIsUserSignedIn = false;
-
-    private Uri imageUri;
-    public static final String CHECKED_LANGUAGES = "checked_languages";
-
-    private RecognizeImageAsyncTask recognizeImageAsyncTask;
-    private TextView languageTextView;
-
     private final BroadcastReceiver mConnectivityChangeReceiver = new BroadcastReceiver() {
         private boolean oldOnline = false;
 
@@ -93,14 +88,32 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
             }
         }
     };
+    private LoginManager loginManager;
+    private boolean mIsUserSignedIn = false;
+    private Uri imageUri;
+    private RecognizeImageAsyncTask recognizeImageAsyncTask;
+    private TextView languageTextView;
+
+
+    public static void prepareDirectory(String path) throws Exception {
+
+        File dir = new File(path);
+        if (!dir.exists()) {
+            if (!dir.mkdirs()) {
+                Log.e(TAG, "ERROR: Creation of directory " + path
+                        + " failed");
+                throw new Exception(
+                        "Could not create folder" + path);
+            }
+        } else {
+            Log.d(TAG, "Created directory " + path);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        loginManager = new LoginManager(this.getApplicationContext(), LoginsProvider.getLogins(this));
-        new SilentSignInAsyncTask(loginManager).execute();
 
         setUpToolbar();
 
@@ -127,6 +140,9 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
         mErrorView = findViewById(R.id.ocr_error);
         mErrorMessage = (TextView) mErrorView.findViewById(R.id.error_message);
         checkForUserVisibleErrors(null);
+
+        loginManager = new LoginManager(this.getApplicationContext(), LoginsProvider.getLogins(this));
+        loginManager.setOnSignedInListener(this);
     }
 
     @Override
@@ -135,6 +151,10 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
         // Registers BroadcastReceiver to track network connection changes.
         registerReceiver(mConnectivityChangeReceiver,
                 new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+
+        // init login manager for try to sign in
+        // don't call in in onCreate - it should be called every time when activity showed to user.
+        new SilentSignInAsyncTask(loginManager).execute();
     }
 
     @Override
@@ -212,6 +232,11 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
 //            08-09 16:06:26.552 14427-15134/com.ashomok.imagetotext V/FA: Connection attempt already in progress
 //
         }
+
+        //signed in
+        else if (requestCode == LoginActivity_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            onSignedIn();
+        }
     }
 
     private void startOCRtask(Uri uri) {
@@ -274,10 +299,11 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
         navigationMenu.findItem(R.id.sign_in).setVisible(!mIsUserSignedIn);
         navigationMenu.findItem(R.id.logout).setVisible(mIsUserSignedIn);
 
-        //todo remove RemoveAdd in menu if needed. May be create Session class and put all info about currect session to this class
+        navigationMenu.findItem(R.id.remove_ads).setVisible(isAdsActive);
 
         return super.onPrepareOptionsMenu(menu);
     }
+
 
     private ArrayList<String> obtainLanguageShortcuts() {
         ArrayList<String> languageNames = getCheckedLanguages();
@@ -425,8 +451,7 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.sign_in:
-                                startActivity(
-                                        new Intent(navigationView.getContext(), LoginActivity.class));
+                                startSignInActivity();
                                 break;
                             case R.id.my_docs:
                                 // TODO:
@@ -451,6 +476,10 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
                         return true;
                     }
                 });
+    }
+
+    private void startSignInActivity() {
+        startActivityForResult(new Intent(this, LoginActivity.class), LoginActivity_REQUEST_CODE);
     }
 
     private void logout() {
@@ -480,7 +509,6 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
         }
     }
 
-
     @Override
     public void onRequestPermissionsResult(
             int requestCode, String[] permissions, int[] grantResults) {
@@ -505,7 +533,6 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
         }
     }
 
-
     void startCamera() {
         try {
             dispatchTakePictureIntent();
@@ -513,7 +540,6 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
             Log.e(TAG, e.getMessage());
         }
     }
-
 
     private File createImageFile() {
         // Create an image file name
@@ -569,22 +595,6 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
         }
     }
 
-    public static void prepareDirectory(String path) throws Exception {
-
-        File dir = new File(path);
-        if (!dir.exists()) {
-            if (!dir.mkdirs()) {
-                Log.e(TAG, "ERROR: Creation of directory " + path
-                        + " failed");
-                throw new Exception(
-                        "Could not create folder" + path);
-            }
-        } else {
-            Log.d(TAG, "Created directory " + path);
-        }
-    }
-
-
     private Set<String> obtainSavedLanguages() {
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -607,17 +617,25 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
     }
 
     @Override
-    public void onSignOut() {
-       loginManager.logout();
+    public void onSignedOut() {
+        loginManager.logout();
+        mIsUserSignedIn = false;
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onSignedIn() {
+        mIsUserSignedIn = true;
+        invalidateOptionsMenu();
     }
 
     /**
      * this class provides login processors to LoginManager for auto (silent) login.
      */
-    private static class LoginsProvider {
-        static ArrayList<LoginProcessor> getLogins(FragmentActivity activity) {
+    public static class LoginsProvider {
+        public static ArrayList<LoginProcessor> getLogins(FragmentActivity activity) {
             ArrayList<LoginProcessor> list = new ArrayList<>();
-            list.add( new LoginGoogle(activity));
+            list.add(new LoginGoogle(activity));
             list.add(new LoginFacebook(CallbackManager.Factory.create()));
             return list;
         }

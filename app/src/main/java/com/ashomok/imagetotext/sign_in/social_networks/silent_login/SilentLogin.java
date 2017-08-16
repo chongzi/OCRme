@@ -3,6 +3,8 @@ package com.ashomok.imagetotext.sign_in.social_networks.silent_login;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 
+import com.ashomok.imagetotext.sign_in.OnSignedInListener;
+
 /**
  * Created by iuliia on 8/14/17.
  */
@@ -38,4 +40,6 @@ public interface SilentLogin {
      */
     @Nullable
     String getAccessToken();
+
+    void setOnSignedInListener(OnSignedInListener listener);
 }

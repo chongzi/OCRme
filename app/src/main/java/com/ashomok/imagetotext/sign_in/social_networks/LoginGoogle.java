@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 
 import com.ashomok.imagetotext.R;
@@ -32,6 +33,7 @@ public class LoginGoogle extends SilentLoginGoogle implements LoginProcessor,
 
     public LoginGoogle(FragmentActivity activity) {
         super(activity);
+        Log.d(TAG, "constructor called");
     }
 
     @Override

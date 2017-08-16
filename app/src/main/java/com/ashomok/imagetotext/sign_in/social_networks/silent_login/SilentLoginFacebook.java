@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.ashomok.imagetotext.sign_in.OnSignedInListener;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.GraphRequest;
@@ -27,6 +28,7 @@ public class SilentLoginFacebook implements SilentLogin {
     protected String token;
     private String email;
     protected boolean isSignedIn;
+    protected OnSignedInListener onSignedInListener;
 
     public SilentLoginFacebook(CallbackManager callbackManager) {
         this.callbackManager = callbackManager;
@@ -57,6 +59,10 @@ public class SilentLoginFacebook implements SilentLogin {
             token = accessToken.getToken();
             obtainEmail(accessToken);
             isSignedIn = true;
+
+            if (onSignedInListener != null) {
+                onSignedInListener.onSignedIn();
+            }
         }
     }
 
@@ -99,5 +105,10 @@ public class SilentLoginFacebook implements SilentLogin {
         parameters.putString("fields", "email");
         request.setParameters(parameters);
         request.executeAsync();
+    }
+
+    @Override
+    public void setOnSignedInListener(OnSignedInListener listener) {
+        this.onSignedInListener = listener;
     }
 }

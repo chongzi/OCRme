@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -29,7 +30,7 @@ import com.ashomok.imagetotext.MainActivity;
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.sign_in.social_networks.LoginFacebook;
 import com.ashomok.imagetotext.sign_in.social_networks.LoginGoogle;
-
+import com.ashomok.imagetotext.sign_in.social_networks.LoginProcessor;
 import com.ashomok.imagetotext.sign_in.utils.Constants;
 import com.ashomok.imagetotext.sign_in.utils.ValidateUserInfo;
 import com.facebook.CallbackManager;
@@ -43,11 +44,12 @@ import java.util.List;
 /**
  * A login screen that offers login via email/password.
  * This activity is shown if sign in automatically failed, for more details
+ *
  * @see LoginManager#trySignInAutomatically()
  */
 
 public class LoginActivity extends AppCompatActivity implements
-        View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
+        View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor>, OnSignedInListener {
 
     /**
      * A dummy authentication store containing known user names and passwords.
@@ -70,14 +72,11 @@ public class LoginActivity extends AppCompatActivity implements
     private View mProgressView;
     private View mLoginFormView;
 
-    private SignInButton mPlusSignInButton;
     private LoginGoogle loginGoogle;
     private LoginFacebook loginFacebook;
     private Button mEmailSignInButton;
     private TextView txt_create, txt_forgot;
 
-    //[START facebook fields]
-    private LoginButton facebookLoginButton;
     private CallbackManager callbackManager;
     //[END facebook fields]
 
@@ -89,12 +88,6 @@ public class LoginActivity extends AppCompatActivity implements
 
         setContentView(R.layout.activity_login);
         initInstances();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-//        hideProgressDialog();
     }
 
     private void initInstances() {
@@ -125,20 +118,8 @@ public class LoginActivity extends AppCompatActivity implements
         mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(this);
 
-        //Google+ LoginProcessor
-        mPlusSignInButton = (SignInButton) findViewById(R.id.g_sign_in_button);
-        loginGoogle = new LoginGoogle(this);
-        loginGoogle.setSignInButton(mPlusSignInButton);
-
-        //Facebook LoginProcessor
-        facebookLoginButton = (LoginButton) findViewById(R.id.f_sign_in_button);
-        callbackManager = CallbackManager.Factory.create();
-        loginFacebook = new LoginFacebook(callbackManager);
-        loginFacebook.setSignInButton(facebookLoginButton);
-
-//        LoginManager loginManager = new LoginManager(this);
-//        loginManager.addLogin(loginGoogle);
-//        loginManager.addLogin(loginFacebook);
+        LoginManager loginManager = new LoginManager(this, new LoginsProvider(this).generateDefaultProcessorsList());
+        loginManager.setOnSignedInListener(this);
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
@@ -317,6 +298,12 @@ public class LoginActivity extends AppCompatActivity implements
         loginGoogle.disconnect();
     }
 
+    @Override
+    public void onSignedIn() {
+        setResult(RESULT_OK);
+        this.finish();
+    }
+
     private interface ProfileQuery {
         String[] PROJECTION = {
                 ContactsContract.CommonDataKinds.Email.ADDRESS,
@@ -383,6 +370,36 @@ public class LoginActivity extends AppCompatActivity implements
         protected void onCancelled() {
             mAuthTask = null;
             showProgress(false);
+        }
+    }
+
+    /**
+     * this class provides login processors to LoginManager for login.
+     */
+    private class LoginsProvider {
+
+        private final FragmentActivity activity;
+
+        public LoginsProvider(FragmentActivity activity) {
+            this.activity = activity;
+        }
+
+        ArrayList<LoginProcessor> generateDefaultProcessorsList() {
+            //Google+ LoginProcessor
+            SignInButton mPlusSignInButton = (SignInButton) findViewById(R.id.g_sign_in_button);
+            loginGoogle = new LoginGoogle(activity);
+            loginGoogle.setSignInButton(mPlusSignInButton);
+
+            //Facebook LoginProcessor
+            LoginButton facebookLoginButton = (LoginButton) findViewById(R.id.f_sign_in_button);
+            callbackManager = CallbackManager.Factory.create();
+            loginFacebook = new LoginFacebook(callbackManager);
+            loginFacebook.setSignInButton(facebookLoginButton);
+
+            ArrayList<LoginProcessor> list = new ArrayList<>();
+            list.add(loginGoogle);
+            list.add(loginFacebook);
+            return list;
         }
     }
 }
