@@ -121,9 +121,6 @@ public class SilentLoginGoogle implements GoogleApiClient.OnConnectionFailedList
         if (result.isSuccess()) {
             isSignedIn = true;
 
-            if (onSignedInListener != null) {
-                onSignedInListener.onSignedIn();
-            }
             mShouldResolve = false;
             GoogleSignInAccount acct = result.getSignInAccount();
 
@@ -133,6 +130,9 @@ public class SilentLoginGoogle implements GoogleApiClient.OnConnectionFailedList
                 token = acct.getIdToken(); //todo send token to the server and validate server-side see https://developers.google.com/identity/sign-in/android/backend-auth
 
                 Log.d(TAG, "You logged as: " + email);
+                if (onSignedInListener != null) {
+                    onSignedInListener.onSignedIn();
+                }
             }
         } else {
             isSignedIn = false;

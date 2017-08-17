@@ -2,24 +2,56 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="192dp"
-    android:background="?attr/colorPrimaryDark"
+    android:layout_height="wrap_content"
     android:gravity="bottom"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+     >
 
-    <ImageView
-        android:layout_width="100dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:src="@drawable/ic_camera" />
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        android:background="?attr/colorButtonNormal"
+        android:id="@+id/propose_login_layout"
+        android:padding="19dp"
+        android:clickable="true"
+        android:orientation="horizontal"
+        android:gravity="center">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:text="@string/app_name"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        <ImageView
+            android:id="@+id/ic_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_login_white_24dp"
+           />
+        <TextView
+            android:id="@+id/sign_in"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sign_in_captured"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            />
+    </LinearLayout>
 
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="192dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        android:background="?attr/colorAccent"
+        android:id="@+id/signed_in_layout"
+        android:padding="16dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/you_signed_as"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:text="@string/you_signed_in_as"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+    </FrameLayout>
 </FrameLayout>
+

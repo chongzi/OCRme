@@ -15,11 +15,11 @@ import com.ashomok.imagetotext.R;
 //todo pls answer https://stackoverflow.com/questions/13338113/managing-activity-from-dialogfragment
 public class SignOutDialogFragment extends DialogFragment {
 
-    public interface SignOutListener {
+    public interface OnSignedOutListener {
         void onSignedOut();
     }
 
-    private SignOutListener mListener;
+    private OnSignedOutListener mListener;
 
     public static SignOutDialogFragment newInstance(String title) {
         SignOutDialogFragment frag = new SignOutDialogFragment();
@@ -33,7 +33,7 @@ public class SignOutDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         String title = getArguments().getString("title");
 
-        mListener = (SignOutListener) getActivity();
+        mListener = (OnSignedOutListener) getActivity();
 
         return new AlertDialog.Builder(getActivity())
                 .setTitle(title)

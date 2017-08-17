@@ -29,6 +29,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -62,11 +63,13 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import static com.ashomok.imagetotext.Settings.isAdsActive;
+import static com.ashomok.imagetotext.utils.FileUtils.prepareDirectory;
+import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
-public class MainActivity extends AppCompatActivity implements SignOutDialogFragment.SignOutListener, OnSignedInListener {
+public class MainActivity extends AppCompatActivity implements SignOutDialogFragment.OnSignedOutListener, OnSignedInListener {
 
     public static final String CHECKED_LANGUAGES = "checked_languages";
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = DEV_TAG + MainActivity.class.getSimpleName();
     private static final int LANGUAGE_ACTIVITY_REQUEST_CODE = 1;
     private static final int CaptureImage_REQUEST_CODE = 2;
     private static final int OCRAnimationActivity_REQUEST_CODE = 3;
@@ -94,21 +97,6 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
     private RecognizeImageAsyncTask recognizeImageAsyncTask;
     private TextView languageTextView;
 
-
-    public static void prepareDirectory(String path) throws Exception {
-
-        File dir = new File(path);
-        if (!dir.exists()) {
-            if (!dir.mkdirs()) {
-                Log.e(TAG, "ERROR: Creation of directory " + path
-                        + " failed");
-                throw new Exception(
-                        "Could not create folder" + path);
-            }
-        } else {
-            Log.d(TAG, "Created directory " + path);
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -296,7 +284,6 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         Menu navigationMenu = navigationView.getMenu();
 
-        navigationMenu.findItem(R.id.sign_in).setVisible(!mIsUserSignedIn);
         navigationMenu.findItem(R.id.logout).setVisible(mIsUserSignedIn);
 
         navigationMenu.findItem(R.id.remove_ads).setVisible(isAdsActive);
@@ -450,9 +437,10 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
-                            case R.id.sign_in:
-                                startSignInActivity();
-                                break;
+                            //todo // FIXME: 8/17/17
+//                            case R.id.sign_in:
+//                                startSignInActivity();
+//                                break;
                             case R.id.my_docs:
                                 // TODO:
                                 break;
@@ -476,6 +464,15 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
                         return true;
                     }
                 });
+
+        //set up login header
+        LinearLayout loginHeader = (LinearLayout) navigationView.getHeaderView(0).findViewById(R.id.propose_login_layout);
+        loginHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startSignInActivity();
+            }
+        });
     }
 
     private void startSignInActivity() {
@@ -621,6 +618,7 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
      */
     @Override
     public void onSignedOut() {
+        Log.d(TAG, "onSignedOut");
         loginManager.logout();
         mIsUserSignedIn = false;
         updateUi();
@@ -628,17 +626,36 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
 
     @Override
     public void onSignedIn() {
+        Log.d(TAG, "onSignedIn");
         mIsUserSignedIn = true;
         updateUi();
+
     }
 
     //// TODO: 8/16/17
     private void updateUi() {
-        invalidateOptionsMenu();
-        if (mIsUserSignedIn) {
+        try {
+            invalidateOptionsMenu();
+            FrameLayout signedInNavHeader = (FrameLayout) findViewById(R.id.signed_in_layout);
+            LinearLayout askSignInNavHeader = (LinearLayout) findViewById(R.id.propose_login_layout);
+            if (mIsUserSignedIn) {
 
-        } else {
+                //set signed as text
+//                loginManager.trySignInAutomatically();
+                String userEmail = loginManager.obtainEmail();
+                TextView signedAsText = (TextView) signedInNavHeader.findViewById(R.id.you_signed_as);
+                signedAsText.setText(getString(R.string.you_signed_in_as, userEmail));
 
+                //show signed in nav_header
+                signedInNavHeader.setVisibility(View.VISIBLE);
+                askSignInNavHeader.setVisibility(View.GONE);
+            } else {
+                //show propose login nav_header
+                askSignInNavHeader.setVisibility(View.VISIBLE);
+                signedInNavHeader.setVisibility(View.GONE);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
         }
     }
 

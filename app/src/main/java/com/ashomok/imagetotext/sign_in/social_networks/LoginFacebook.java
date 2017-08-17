@@ -59,13 +59,13 @@ public class LoginFacebook extends SilentLoginFacebook implements LoginProcessor
                     if (accessToken != null) {
                         isSignedIn = true;
 
-                        if (onSignedInListener != null) {
-                            onSignedInListener.onSignedIn();
-                        }
-
                         //get token string
                         token = accessToken.getToken();
                         obtainEmail(accessToken);
+
+                        if (onSignedInListener != null) {
+                            onSignedInListener.onSignedIn();
+                        }
 
                     } else {
                         Log.e(TAG, "ERROR. accessToken == null.");

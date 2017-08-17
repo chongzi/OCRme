@@ -59,10 +59,6 @@ public class SilentLoginFacebook implements SilentLogin {
             token = accessToken.getToken();
             obtainEmail(accessToken);
             isSignedIn = true;
-
-            if (onSignedInListener != null) {
-                onSignedInListener.onSignedIn();
-            }
         }
     }
 
@@ -95,6 +91,10 @@ public class SilentLoginFacebook implements SilentLogin {
                         try {
                             email = object.getString("email");
                             Log.d(TAG, "You logged as: " + email);
+
+                            if (onSignedInListener != null) {
+                                onSignedInListener.onSignedIn();
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

@@ -45,6 +45,7 @@
     <string name="error_no_connection">Cannot connect to server. Please, check your Internet connectivity.</string>
     <string name="file_not_found">Error: file not found.</string>
     <string name="sign_in">Sign in</string>
+    <string name="sign_in_captured">SIGN IN</string>
     <string name="logout">Logout</string>
     <string translatable="false" name="facebook_app_id">1921494888130800</string>
     <string translatable="false" name="fb_login_protocol_scheme">fb1921494888130800</string>
@@ -55,6 +56,6 @@
     <string name="register">Register</string>
     <string name="alert_dialog_logout">Logout</string>
     <string name="ask_sign_out">You are signed in as %1$s. Sign out?</string>
-
+    <string name="you_signed_in_as">You are signed in as %1$s</string>
 
 </resources>

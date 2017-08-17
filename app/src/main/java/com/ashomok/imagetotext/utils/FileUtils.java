@@ -10,11 +10,14 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 /**
  * Created by iuliia on 5/30/17.
@@ -22,6 +25,7 @@ import java.io.IOException;
 
 public class FileUtils {
     private static final int MaxFileSizeInMb = 2;
+    private static final String TAG = DEV_TAG + FileUtils.class.getSimpleName();
 
 
     /**
@@ -222,5 +226,20 @@ public class FileUtils {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         return stream.toByteArray();
+    }
+
+    public static void prepareDirectory(String path) throws Exception {
+
+        File dir = new File(path);
+        if (!dir.exists()) {
+            if (!dir.mkdirs()) {
+                Log.e(TAG, "ERROR: Creation of directory " + path
+                        + " failed");
+                throw new Exception(
+                        "Could not create folder" + path);
+            }
+        } else {
+            Log.d(TAG, "Created directory " + path);
+        }
     }
 }

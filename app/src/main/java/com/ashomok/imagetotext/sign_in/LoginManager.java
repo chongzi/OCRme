@@ -26,7 +26,6 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  * Works with social networks logins and native login
  */
 
-//// TODO: 8/16/17 make as singleton 
 public class LoginManager {
 
     private static final String TAG = DEV_TAG + LoginManager.class.getSimpleName();
@@ -61,6 +60,7 @@ public class LoginManager {
     public LoginManager(Context context, ArrayList<LoginProcessor> logins) {
         this.context = context;
         this.loginsInUseArray = logins;
+        Log.d(TAG, "constructor called");
     }
 
     public boolean obtainIsSignedIn() {
