@@ -633,8 +633,10 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
 
         if (mIsUserSignedIn) {
             askLoginView.setVisibility(View.GONE);
+            myDocsBtn.setVisibility(View.VISIBLE);
         } else {
             askLoginView.setVisibility(View.VISIBLE);
+            myDocsBtn.setVisibility(View.GONE);
         }
     }
 

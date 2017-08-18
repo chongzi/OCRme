@@ -124,7 +124,7 @@
                 android:layout_below="@+id/image_source_layout"
                 android:visibility="gone"
                 android:text="@string/my_docs"
-                android:gravity="center"
+                android:layout_centerHorizontal="true"
                 android:id="@+id/my_docs_btn"/>
         </RelativeLayout>
     </RelativeLayout>
