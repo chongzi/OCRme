@@ -48,7 +48,6 @@ import com.ashomok.imagetotext.sign_in.SignOutDialogFragment;
 import com.ashomok.imagetotext.sign_in.social_networks.LoginFacebook;
 import com.ashomok.imagetotext.sign_in.social_networks.LoginGoogle;
 import com.ashomok.imagetotext.sign_in.social_networks.LoginProcessor;
-import com.ashomok.imagetotext.sign_in.social_networks.silent_login.SilentSignInAsyncTask;
 import com.ashomok.imagetotext.utils.FileUtils;
 import com.ashomok.imagetotext.utils.NetworkUtils;
 import com.ashomok.imagetotext.utils.PermissionUtils;
@@ -141,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
 
         // init login manager for try to sign in
         // don't call in in onCreate - it should be called every time when activity showed to user.
-        new SilentSignInAsyncTask(loginManager).execute();
+        loginManager.trySignInAutomatically(); //// TODO: 8/19/17 add on sign in automatically failed listener 
     }
 
     @Override
