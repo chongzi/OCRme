@@ -29,7 +29,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -37,6 +37,7 @@ import android.widget.Toast;
 
 import com.ashomok.imagetotext.language_choser.LanguageActivity;
 import com.ashomok.imagetotext.language_choser.LanguageList;
+import com.ashomok.imagetotext.my_docs.MyDocsActivity;
 import com.ashomok.imagetotext.ocr_task.OCRAnimationActivity;
 import com.ashomok.imagetotext.ocr_task.RecognizeImageAsyncTask;
 import com.ashomok.imagetotext.ocr_task.RecognizeImageRESTClient;
@@ -66,7 +67,7 @@ import static com.ashomok.imagetotext.Settings.isAdsActive;
 import static com.ashomok.imagetotext.utils.FileUtils.prepareDirectory;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
-public class MainActivity extends AppCompatActivity implements SignOutDialogFragment.OnSignedOutListener, OnSignedInListener {
+public class MainActivity extends AppCompatActivity implements SignOutDialogFragment.OnSignedOutListener, OnSignedInListener, View.OnClickListener {
 
     public static final String CHECKED_LANGUAGES = "checked_languages";
     private static final String TAG = DEV_TAG + MainActivity.class.getSimpleName();
@@ -96,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
     private Uri imageUri;
     private RecognizeImageAsyncTask recognizeImageAsyncTask;
     private TextView languageTextView;
+    private Button myDocsBtn;
 
 
     @Override
@@ -112,16 +114,7 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
         languageTextView = (TextView) findViewById(R.id.language);
         languageTextView.setPaintFlags(languageTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
-        languageTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), LanguageActivity.class);
-
-                intent.putExtra(LanguageActivity.CHECKED_LANGUAGES, getCheckedLanguages());
-                startActivityForResult(intent, LANGUAGE_ACTIVITY_REQUEST_CODE);
-
-            }
-        });
+        languageTextView.setOnClickListener(this);
 
         updateLanguageTextView(getCheckedLanguages());
 
@@ -131,6 +124,12 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
 
         loginManager = new LoginManager(this.getApplicationContext(), LoginsProvider.getLogins(this));
         loginManager.setOnSignedInListener(this);
+
+        Button signInBtn = (Button) findViewById(R.id.sign_in_btn);
+        signInBtn.setOnClickListener(this);
+
+        myDocsBtn = (Button)findViewById(R.id.my_docs_btn);
+        myDocsBtn.setOnClickListener(this);
     }
 
     @Override
@@ -364,19 +363,8 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
         equalizeSides(photoBtn);
         equalizeSides(galleryBtn);
 
-        photoBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startBuildInCameraActivity();
-            }
-        });
-
-        galleryBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startGalleryChooser();
-            }
-        });
+        photoBtn.setOnClickListener(this);
+        galleryBtn.setOnClickListener(this);
     }
 
     public void startGalleryChooser() {
@@ -437,12 +425,8 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
-                            //todo // FIXME: 8/17/17
-//                            case R.id.sign_in:
-//                                startSignInActivity();
-//                                break;
                             case R.id.my_docs:
-                                // TODO:
+                                startMyDocsActivity();
                                 break;
                             case R.id.about:
                                 // TODO:
@@ -467,12 +451,13 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
 
         //set up login header
         LinearLayout loginHeader = (LinearLayout) navigationView.getHeaderView(0).findViewById(R.id.propose_login_layout);
-        loginHeader.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startSignInActivity();
-            }
-        });
+        loginHeader.setOnClickListener(this);
+    }
+
+    private void startMyDocsActivity() {
+        Intent intent = new Intent(this, MyDocsActivity.class);
+        intent.putExtra(MyDocsActivity.IS_SIGNED_IN_TAG, mIsUserSignedIn);
+        startActivity(intent);
     }
 
     private void startSignInActivity() {
@@ -632,23 +617,46 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
 
     }
 
-    //// TODO: 8/16/17
+    /**
+     * update UI if signed in/out
+     */
     private void updateUi() {
+        updateNavigationDrawer();
+        updateMainScreen();
+    }
+
+    /**
+     * show/hide SignIn proposition on the main screen
+     */
+    private void updateMainScreen() {
+        View askLoginView = findViewById(R.id.ask_login);
+
+        if (mIsUserSignedIn) {
+            askLoginView.setVisibility(View.GONE);
+        } else {
+            askLoginView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void updateNavigationDrawer() {
         try {
             invalidateOptionsMenu();
-            FrameLayout signedInNavHeader = (FrameLayout) findViewById(R.id.signed_in_layout);
-            LinearLayout askSignInNavHeader = (LinearLayout) findViewById(R.id.propose_login_layout);
-            if (mIsUserSignedIn) {
 
-                //set signed as text
-//                loginManager.trySignInAutomatically();
-                String userEmail = loginManager.obtainEmail();
-                TextView signedAsText = (TextView) signedInNavHeader.findViewById(R.id.you_signed_as);
-                signedAsText.setText(getString(R.string.you_signed_in_as, userEmail));
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            View signedInNavHeader = navigationView.getHeaderView(0).findViewById(R.id.signed_in_layout);
+            View askSignInNavHeader = navigationView.getHeaderView(0).findViewById(R.id.propose_login_layout);
+
+            if (mIsUserSignedIn) {
 
                 //show signed in nav_header
                 signedInNavHeader.setVisibility(View.VISIBLE);
                 askSignInNavHeader.setVisibility(View.GONE);
+
+                //set "signed as" text
+                String userEmail = loginManager.obtainEmail();
+                TextView signedAsText = (TextView) signedInNavHeader.findViewById(R.id.you_signed_as);
+                signedAsText.setText(getString(R.string.you_signed_in_as, userEmail));
+
             } else {
                 //show propose login nav_header
                 askSignInNavHeader.setVisibility(View.VISIBLE);
@@ -656,7 +664,41 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
             }
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
+            e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId())
+        {
+            case R.id.sign_in_btn:
+                startSignInActivity();
+                break;
+            case R.id.propose_login_layout:
+                startSignInActivity();
+                break;
+            case R.id.language:
+                onLanguageTextViewClicked();
+                break;
+            case R.id.photo_btn:
+                startBuildInCameraActivity();
+                break;
+            case R.id.gallery_btn:
+                startGalleryChooser();
+                break;
+            case R.id.my_docs_btn:
+                startMyDocsActivity();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void onLanguageTextViewClicked() {
+        Intent intent = new Intent(this, LanguageActivity.class);
+        intent.putExtra(LanguageActivity.CHECKED_LANGUAGES, getCheckedLanguages());
+        startActivityForResult(intent, LANGUAGE_ACTIVITY_REQUEST_CODE);
     }
 
     /**

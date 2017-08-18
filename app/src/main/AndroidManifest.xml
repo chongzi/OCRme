@@ -46,6 +46,16 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
+            android:name=".my_docs.MyDocsActivity"
+            android:label="@string/my_docs"
+            android:parentActivityName=".MainActivity"
+            android:exported="true"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity
             android:name=".sign_in.RegisterActivity"
             android:label="@string/register"
             android:theme="@style/AppTheme.NoActionBar" >

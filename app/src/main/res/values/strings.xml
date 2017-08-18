@@ -57,5 +57,6 @@
     <string name="alert_dialog_logout">Logout</string>
     <string name="ask_sign_out">You are signed in as %1$s. Sign out?</string>
     <string name="you_signed_in_as">You are signed in as %1$s</string>
+    <string name="please_login">Please Sign in for having access to your work history</string>
 
 </resources>

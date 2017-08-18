@@ -36,7 +36,7 @@ public class SignOutDialogFragment extends DialogFragment {
         mListener = (OnSignedOutListener) getActivity();
 
         return new AlertDialog.Builder(getActivity())
-                .setTitle(title)
+                .setMessage(title)
                 .setPositiveButton(R.string.ok,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
