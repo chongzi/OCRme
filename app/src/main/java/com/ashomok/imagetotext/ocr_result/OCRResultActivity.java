@@ -9,12 +9,14 @@ import android.view.View;
 
 import com.ashomok.imagetotext.R;
 
+import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
+
 /**
  * Created by iuliia on 5/30/17.
  */
 
 public class OCRResultActivity extends AppCompatActivity {
-    private static final String TAG = OCRResultActivity.class.getSimpleName();
+    private static final String TAG = DEV_TAG + OCRResultActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

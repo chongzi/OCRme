@@ -77,7 +77,8 @@
         <activity
             android:name=".ocr_result.OCRResultActivity"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            android:exported="true">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />

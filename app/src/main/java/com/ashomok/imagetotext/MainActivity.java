@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
         Button signInBtn = (Button) findViewById(R.id.sign_in_btn);
         signInBtn.setOnClickListener(this);
 
-        myDocsBtn = (Button)findViewById(R.id.my_docs_btn);
+        myDocsBtn = (Button) findViewById(R.id.my_docs_btn);
         myDocsBtn.setOnClickListener(this);
     }
 
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
 
         // init login manager for try to sign in
         // don't call in in onCreate - it should be called every time when activity showed to user.
-        loginManager.trySignInAutomatically(); //// TODO: 8/19/17 add on sign in automatically failed listener 
+        loginManager.trySignInAutomatically(); //// TODO: 8/19/17 add on sign in automatically failed listener
     }
 
     @Override
@@ -186,37 +186,9 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
 
         //ocr canceled
         else if (requestCode == OCRAnimationActivity_REQUEST_CODE && resultCode == Activity.RESULT_CANCELED) {
-            recognizeImageAsyncTask.cancel(true);
-//            //// TODO: 8/9/17 error here
-//            08-09 16:06:26.494 14427-14427/com.ashomok.imagetotext E/AndroidRuntime: FATAL EXCEPTION: main
-//            Process: com.ashomok.imagetotext, PID: 14427
-//            java.lang.RuntimeException: Failure delivering result ResultInfo{who=null, request=3, result=0, data=null} to activity {com.ashomok.imagetotext/com.ashomok.imagetotext.MainActivity}: java.lang.NullPointerException: Attempt to invoke virtual method 'boolean com.ashomok.imagetotext.ocr_task.RecognizeImageAsyncTask.cancel(boolean)' on a null object reference
-//            at android.app.ActivityThread.deliverResults(ActivityThread.java:4323)
-//            at android.app.ActivityThread.handleSendResult(ActivityThread.java:4366)
-//            at android.app.ActivityThread.-wrap19(Unknown Source:0)
-//            at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1649)
-//            at android.os.Handler.dispatchMessage(Handler.java:105)
-//            at android.os.Looper.loop(Looper.java:164)
-//            at android.app.ActivityThread.main(ActivityThread.java:6540)
-//            at java.lang.reflect.Method.invoke(Native Method)
-//            at com.android.internal.os.Zygote$MethodAndArgsCaller.run(Zygote.java:240)
-//            at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:767)
-//            Caused by: java.lang.NullPointerException: Attempt to invoke virtual method 'boolean com.ashomok.imagetotext.ocr_task.RecognizeImageAsyncTask.cancel(boolean)' on a null object reference
-//            at com.ashomok.imagetotext.MainActivity.onActivityResult(MainActivity.java:177)
-//            at android.app.Activity.dispatchActivityResult(Activity.java:7237)
-//            at android.app.ActivityThread.deliverResults(ActivityThread.java:4319)
-//            at android.app.ActivityThread.handleSendResult(ActivityThread.java:4366) 
-//            at android.app.ActivityThread.-wrap19(Unknown Source:0) 
-//            at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1649) 
-//            at android.os.Handler.dispatchMessage(Handler.java:105) 
-//            at android.os.Looper.loop(Looper.java:164) 
-//            at android.app.ActivityThread.main(ActivityThread.java:6540) 
-//            at java.lang.reflect.Method.invoke(Native Method) 
-//            at com.android.internal.os.Zygote$MethodAndArgsCaller.run(Zygote.java:240) 
-//            at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:767) 
-//            08-09 16:06:26.551 14427-15134/com.ashomok.imagetotext V/FA: Using measurement service
-//            08-09 16:06:26.552 14427-15134/com.ashomok.imagetotext V/FA: Connection attempt already in progress
-//
+            if (recognizeImageAsyncTask != null) {
+                recognizeImageAsyncTask.cancel(true);
+            }
         }
 
         //signed in
@@ -255,6 +227,8 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
                 recognizeImageAsyncTask.setOnTaskCompletedListener(onTaskCompletedListener);
                 recognizeImageAsyncTask.execute();
             }
+        } else {
+            //// TODO: 8/19/17 show error message in card view
         }
     }
 
@@ -671,8 +645,7 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
 
     @Override
     public void onClick(View view) {
-        switch (view.getId())
-        {
+        switch (view.getId()) {
             case R.id.sign_in_btn:
                 startSignInActivity();
                 break;
