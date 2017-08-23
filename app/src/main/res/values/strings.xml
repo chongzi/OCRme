@@ -58,5 +58,10 @@
     <string name="ask_sign_out">You are signed in as %1$s. Sign out?</string>
     <string name="you_signed_in_as">You are signed in as %1$s</string>
     <string name="please_login">Please Sign in for having access to your work history</string>
+    <string name="text">Text</string>
+    <string name="PDF" translatable="false">PDF</string>
+    <string name="bad_result">Bad result?\nChange language</string>
+    <string name="text_result" translatable="false">text result</string>
+    <string name="copied">Copied</string>
 
 </resources>

@@ -20,7 +20,8 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 /**
  * Created by iuliia on 8/4/17.
  */
-
+//// TODO: 8/21/17 use Firebase Auth UI instead https://firebase.google.com/docs/auth/
+/// https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md
 /**
  * Login manager for login, logout, etc
  * Works with social networks logins and native login

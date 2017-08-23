@@ -30,8 +30,8 @@ public class OCRResultActivity extends AppCompatActivity {
 
     private void initTabLayout() {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("Tab 1"));
-        tabLayout.addTab(tabLayout.newTab().setText("Tab 2"));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.text)));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.PDF)));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);

@@ -12,5 +12,7 @@
     <dimen name="nav_header_vertical_spacing">16dp</dimen>
 
     <dimen name="sing_in_btn_height">48dp</dimen>
-    
+    <dimen name="bottom_icon_size">36dp</dimen>
+    <dimen name="text_result_margin">9dp</dimen>
+
 </resources>
