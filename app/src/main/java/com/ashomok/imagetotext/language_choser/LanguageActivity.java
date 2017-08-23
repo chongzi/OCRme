@@ -1,7 +1,9 @@
 package com.ashomok.imagetotext.language_choser;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -28,7 +30,7 @@ public class LanguageActivity extends AppCompatActivity {
 
         initToolbar();
 
-        LinkedHashSet<String> checkedLanguages = obtainSavedData();
+        LinkedHashSet<String> checkedLanguages = obtainData();
 
         ListView listView = (ListView) findViewById(R.id.language_list);
         LanguageList data = new LanguageList(this);
@@ -36,7 +38,7 @@ public class LanguageActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
     }
 
-    private LinkedHashSet<String> obtainSavedData() {
+    private LinkedHashSet<String> obtainData() {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             ArrayList<String> data = extras.getStringArrayList(CHECKED_LANGUAGES);
@@ -45,6 +47,17 @@ public class LanguageActivity extends AppCompatActivity {
             }
         }
         return new LinkedHashSet<>();
+    }
+
+    private void saveLanguages(LinkedHashSet<String> data) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        LinkedHashSet<String> checkedLanguages = new LinkedHashSet<>();
+        for (String name : data) {
+            checkedLanguages.add(name);
+        }
+        editor.putStringSet(CHECKED_LANGUAGES, checkedLanguages);
+        editor.apply();
     }
 
     private void initToolbar() {
@@ -64,8 +77,9 @@ public class LanguageActivity extends AppCompatActivity {
                 ArrayList<String> languages = new ArrayList<>();
                 languages.addAll(adapter.getCheckedLanguages());
                 intent.putExtra(CHECKED_LANGUAGES, languages);
-
                 setResult(RESULT_OK, intent);
+
+                saveLanguages(new LinkedHashSet<>(languages));
                 finish();
             }
         });

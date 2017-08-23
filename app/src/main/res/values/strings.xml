@@ -63,5 +63,6 @@
     <string name="bad_result">Bad result?\nChange language</string>
     <string name="text_result" translatable="false">text result</string>
     <string name="copied">Copied</string>
+    <string name="send_to">Send text result to</string>
 
 </resources>

@@ -23,22 +23,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/grey_200"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:orientation="vertical">
 
-        <ScrollView
-            android:id="@+id/text_scroll_view"
+        <EditText
+            android:id="@+id/text"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
-
-            <TextView
-                android:id="@+id/text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/text_result_margin"
-                android:text=""
-                android:textColor="@color/grey_800" />
-        </ScrollView>
+            android:layout_marginLeft="@dimen/text_result_margin"
+            android:layout_marginRight="@dimen/text_result_margin"
+            android:layout_marginTop="@dimen/text_result_margin"
+            android:layout_weight="1"
+            android:background="?android:selectableItemBackground"
+            android:inputType="text|textAutoCorrect|textMultiLine"
+            android:scrollbars="vertical"
+            android:text=""
+            android:textColor="@color/grey_800" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -95,8 +96,8 @@
                 android:drawablePadding="@dimen/text_result_margin"
                 android:gravity="center_vertical"
                 android:text="@string/bad_result"
-                android:textColor="@color/grey_800"
-                android:textAllCaps="false" />
+                android:textAllCaps="false"
+                android:textColor="@color/grey_800" />
         </RelativeLayout>
     </LinearLayout>
 </com.mobidevelop.spl.widget.SplitPaneLayout>

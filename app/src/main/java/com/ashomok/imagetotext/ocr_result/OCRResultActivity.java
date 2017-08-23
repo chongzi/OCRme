@@ -1,5 +1,6 @@
 package com.ashomok.imagetotext.ocr_result;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -9,6 +10,9 @@ import android.view.View;
 
 import com.ashomok.imagetotext.R;
 
+import java.util.ArrayList;
+
+import static com.ashomok.imagetotext.language_choser.LanguageActivity.CHECKED_LANGUAGES;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 /**
@@ -17,6 +21,7 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 public class OCRResultActivity extends AppCompatActivity {
     private static final String TAG = DEV_TAG + OCRResultActivity.class.getSimpleName();
+    public static final int LANGUAGE_ACTIVITY_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,8 +29,22 @@ public class OCRResultActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ocr_result);
 
         initToolbar();
-
         initTabLayout();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == LANGUAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+            //language was changed - run ocr again for the same image
+            Bundle bundle = data.getExtras();
+            ArrayList<String> updatedLanguages = bundle.getStringArrayList(CHECKED_LANGUAGES);
+            updateOcrResult(updatedLanguages);
+        }
+    }
+
+    private void updateOcrResult(ArrayList<String> languages) {
+        //// TODO: 8/23/17
     }
 
     private void initTabLayout() {

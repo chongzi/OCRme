@@ -3,24 +3,36 @@ package com.ashomok.imagetotext.ocr_result.tab_fragments;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.view.GestureDetector;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ashomok.imagetotext.R;
+import com.ashomok.imagetotext.language_choser.LanguageActivity;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
+
 import static android.content.Context.CLIPBOARD_SERVICE;
+import static com.ashomok.imagetotext.language_choser.LanguageActivity.CHECKED_LANGUAGES;
+import static com.ashomok.imagetotext.ocr_result.OCRResultActivity.LANGUAGE_ACTIVITY_REQUEST_CODE;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 /**
@@ -28,7 +40,8 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  */
 
 public class TextFragment extends TabFragment implements View.OnClickListener {
-    private GestureDetector gestureDetector;
+
+    private long requestID = 123456789;
     private String imageLink = "gs://imagetotext-149919.appspot.com/IMG_9229.JPG";
     private String textResult = "dummy text dummy text dummy text dummy text dummy text dummy text " +
             "dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy textdummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy textdummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy textdummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy textdummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy textdummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy textdummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy textdummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text";
@@ -67,7 +80,7 @@ public class TextFragment extends TabFragment implements View.OnClickListener {
 
 
     private void initText() {
-        TextView mTextView = (TextView) getActivity().findViewById(R.id.text);
+        EditText mTextView = (EditText) getActivity().findViewById(R.id.text);
         mTextView.setText(textResult);
     }
 
@@ -95,7 +108,6 @@ public class TextFragment extends TabFragment implements View.OnClickListener {
                 scrollView.scrollTo(centreWidth, centreHeight);
             }
         });
-
     }
 
     @Override
@@ -105,24 +117,63 @@ public class TextFragment extends TabFragment implements View.OnClickListener {
                 copyTextToClipboard(textResult);
                 break;
             case R.id.translate_btn:
-              //// TODO: 8/23/17
+                onTranslateClicked();
                 break;
             case R.id.share_btn:
-                //// TODO: 8/23/17
+                onShareClicked();
                 break;
             case R.id.bad_result_btn:
-                //// TODO: 8/23/17
+                onBadResultClicked();
                 break;
             default:
                 break;
         }
     }
 
+    private void onBadResultClicked() {
+        Intent intent = new Intent(getActivity(), LanguageActivity.class);
+        intent.putExtra(CHECKED_LANGUAGES, getCurrentLanguages());
+        startActivityForResult(intent, LANGUAGE_ACTIVITY_REQUEST_CODE);
+    }
+
+    @NonNull
+    private ArrayList<String> getCurrentLanguages() {
+        Set<String> checkedLanguageNames = obtainSavedLanguages();
+        ArrayList<String> checkedLanguages = new ArrayList<>();
+        checkedLanguages.addAll(checkedLanguageNames);
+        return checkedLanguages;
+    }
+
+    private Set<String> obtainSavedLanguages() {
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        Set<String> auto = new HashSet<String>() {{
+            add(getString(R.string.auto));
+        }};
+        TreeSet<String> checkedLanguagesNames = new TreeSet<>(sharedPref.getStringSet(CHECKED_LANGUAGES, auto));
+        return checkedLanguagesNames;
+    }
+
+    private void onShareClicked() {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, textResult);
+        sendIntent.setType("text/plain");
+        startActivity(Intent.createChooser(sendIntent,
+                getActivity().getResources().getText(R.string.send_to)));
+    }
+
+    private void onTranslateClicked() {
+        //todo start translate activity and chose translate language
+    }
+
     private void copyTextToClipboard(CharSequence text) {
-        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(CLIPBOARD_SERVICE);
+        ClipboardManager clipboard =
+                (ClipboardManager) getActivity().getSystemService(CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText(getString(R.string.text_result), text);
         clipboard.setPrimaryClip(clip);
-        Toast.makeText(getActivity(), getActivity().getString(R.string.copied), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), getActivity().getString(R.string.copied),
+                Toast.LENGTH_SHORT).show();
         Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
         // Vibrate for 300 milliseconds
         v.vibrate(300);

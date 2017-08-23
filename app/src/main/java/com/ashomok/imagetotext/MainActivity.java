@@ -63,12 +63,12 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import static com.ashomok.imagetotext.Settings.isAdsActive;
+import static com.ashomok.imagetotext.language_choser.LanguageActivity.CHECKED_LANGUAGES;
 import static com.ashomok.imagetotext.utils.FileUtils.prepareDirectory;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 public class MainActivity extends AppCompatActivity implements SignOutDialogFragment.OnSignedOutListener, OnSignedInListener, View.OnClickListener {
 
-    public static final String CHECKED_LANGUAGES = "checked_languages";
     private static final String TAG = DEV_TAG + MainActivity.class.getSimpleName();
     private static final int LANGUAGE_ACTIVITY_REQUEST_CODE = 1;
     private static final int CaptureImage_REQUEST_CODE = 2;
@@ -162,10 +162,8 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
         if (requestCode == LANGUAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
 
             Bundle bundle = data.getExtras();
-            ArrayList<String> checkedLanguages = bundle.getStringArrayList(LanguageActivity.CHECKED_LANGUAGES);
+            ArrayList<String> checkedLanguages = bundle.getStringArrayList(CHECKED_LANGUAGES);
             updateLanguageTextView(checkedLanguages);
-
-            saveLanguages(new LinkedHashSet<>(checkedLanguages));
         }
 
         //making photo
@@ -560,17 +558,6 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
         return checkedLanguagesNames;
     }
 
-    private void saveLanguages(LinkedHashSet<String> data) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = preferences.edit();
-        LinkedHashSet<String> checkedLanguages = new LinkedHashSet<>();
-        for (String name : data) {
-            checkedLanguages.add(name);
-        }
-        editor.putStringSet(CHECKED_LANGUAGES, checkedLanguages);
-        editor.apply();
-    }
-
     /**
      * called by sign out DialogFragment
      */
@@ -671,7 +658,7 @@ public class MainActivity extends AppCompatActivity implements SignOutDialogFrag
 
     private void onLanguageTextViewClicked() {
         Intent intent = new Intent(this, LanguageActivity.class);
-        intent.putExtra(LanguageActivity.CHECKED_LANGUAGES, getCheckedLanguages());
+        intent.putExtra(CHECKED_LANGUAGES, getCheckedLanguages());
         startActivityForResult(intent, LANGUAGE_ACTIVITY_REQUEST_CODE);
     }
 
