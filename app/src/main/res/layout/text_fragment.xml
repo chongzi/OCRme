@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <com.mobidevelop.spl.widget.SplitPaneLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:spl="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
@@ -6,98 +7,8 @@
     spl:orientation="vertical"
     spl:splitterBackground="@color/colorAccent"
     spl:splitterPosition="33%"
-    spl:splitterSize="16dip">
+    spl:splitterSize="16dip"
+    android:id="@+id/split_pane_layout">
 
-    <ScrollView
-        android:id="@+id/image_scroll_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/image"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </ScrollView>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/grey_200"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:orientation="vertical">
-
-        <EditText
-            android:id="@+id/text"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginLeft="@dimen/text_result_margin"
-            android:layout_marginRight="@dimen/text_result_margin"
-            android:layout_marginTop="@dimen/text_result_margin"
-            android:layout_weight="1"
-            android:background="?android:selectableItemBackground"
-            android:inputType="text|textAutoCorrect|textMultiLine"
-            android:scrollbars="vertical"
-            android:text=""
-            android:textColor="@color/grey_800" />
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingEnd="@dimen/text_result_margin"
-            android:paddingStart="@dimen/text_result_margin">
-
-            <LinearLayout
-                android:id="@+id/bottom_icons"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_centerInParent="true"
-                android:orientation="horizontal">
-
-                <ImageButton
-                    android:id="@+id/copy_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?android:selectableItemBackground"
-                    android:padding="@dimen/text_result_margin"
-                    android:src="@drawable/ic_content_copy_black_24dp"
-                    android:tint="@color/grey_800" />
-
-                <ImageButton
-                    android:id="@+id/translate_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?android:selectableItemBackground"
-                    android:padding="@dimen/text_result_margin"
-                    android:src="@drawable/ic_translate_black_24dp"
-                    android:tint="@color/grey_800" />
-
-                <ImageButton
-                    android:id="@+id/share_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?android:selectableItemBackground"
-                    android:padding="@dimen/text_result_margin"
-                    android:src="@drawable/ic_share_black_24dp"
-                    android:tint="@color/grey_800" />
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/bad_result_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBaseline="@id/bottom_icons"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:background="?android:selectableItemBackground"
-                android:drawableLeft="@drawable/ic_edit_black_24dp"
-                android:drawablePadding="@dimen/text_result_margin"
-                android:gravity="center_vertical"
-                android:text="@string/bad_result"
-                android:textAllCaps="false"
-                android:textColor="@color/grey_800" />
-        </RelativeLayout>
-    </LinearLayout>
+    <include layout="@layout/split_pane_content" />
 </com.mobidevelop.spl.widget.SplitPaneLayout>

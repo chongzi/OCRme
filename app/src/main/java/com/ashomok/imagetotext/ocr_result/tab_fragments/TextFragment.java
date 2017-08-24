@@ -5,6 +5,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
@@ -24,6 +25,7 @@ import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.mobidevelop.spl.widget.SplitPaneLayout;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -39,6 +41,7 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  * Created by iuliia on 5/31/17.
  */
 
+//todo Forbidd splitter to go out of screen bounds. https://github.com/bieliaievays/OCRme/issues/2
 public class TextFragment extends TabFragment implements View.OnClickListener {
 
     private long requestID = 123456789;
@@ -62,6 +65,26 @@ public class TextFragment extends TabFragment implements View.OnClickListener {
         initImage();
         initText();
         initBottomPanel();
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.copy_btn:
+                copyTextToClipboard(textResult);
+                break;
+            case R.id.translate_btn:
+                onTranslateClicked();
+                break;
+            case R.id.share_btn:
+                onShareClicked();
+                break;
+            case R.id.bad_result_btn:
+                onBadResultClicked();
+                break;
+            default:
+                break;
+        }
     }
 
     private void initBottomPanel() {
@@ -110,25 +133,6 @@ public class TextFragment extends TabFragment implements View.OnClickListener {
         });
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.copy_btn:
-                copyTextToClipboard(textResult);
-                break;
-            case R.id.translate_btn:
-                onTranslateClicked();
-                break;
-            case R.id.share_btn:
-                onShareClicked();
-                break;
-            case R.id.bad_result_btn:
-                onBadResultClicked();
-                break;
-            default:
-                break;
-        }
-    }
 
     private void onBadResultClicked() {
         Intent intent = new Intent(getActivity(), LanguageActivity.class);
