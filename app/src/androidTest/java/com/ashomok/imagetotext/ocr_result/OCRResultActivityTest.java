@@ -1,4 +1,4 @@
-package com.ashomok.imagetotext;
+package com.ashomok.imagetotext.ocr_result;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +7,7 @@ import android.support.test.filters.SmallTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.language_choser.LanguageActivity;
 import com.ashomok.imagetotext.ocr_result.OCRResultActivity;
 
@@ -34,8 +35,7 @@ public class OCRResultActivityTest {
     @Rule
     public ActivityTestRule<OCRResultActivity> mActivityRule = new ActivityTestRule<>(
             OCRResultActivity.class, true, false);
-    
-//// TODO: 5/31/17
+
     @Before
     public void launchActivityWithPredefinedData() {
         final Context targetContext = InstrumentationRegistry.getInstrumentation()
@@ -50,13 +50,9 @@ public class OCRResultActivityTest {
     }
 
     @Test
-    public void tabSwap()
-    {
+    public void tabSwap() throws InterruptedException {
         onView(withId(R.id.pager)).perform(swipeLeft());
-//        onView(allOf(
-//                withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE),
-//                withId(R.id.container_weather)))
-//                .check(matches(isDisplayed()));
+        Thread.sleep(4000);
         onView(withId(R.id.pager)).perform(swipeRight());
     }
 }

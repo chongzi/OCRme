@@ -64,5 +64,11 @@
     <string name="text_result" translatable="false">text result</string>
     <string name="copied">Copied</string>
     <string name="send_to">Send text result to</string>
+    <string name="open_in_another_app">Open in\nanother app</string>
+    <string name="not_avalible">You disabled this feature</string>
+    <string name="allow_permissions">Please allow the permissions, otherwise this feature will not work.</string>
+    <string name="permissions_needs">Permission needs!</string>
+
+
 
 </resources>

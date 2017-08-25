@@ -158,6 +158,8 @@ public class TextFragment extends TabFragment implements View.OnClickListener {
         return checkedLanguagesNames;
     }
 
+
+    //todo add link to the app on play market
     private void onShareClicked() {
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
