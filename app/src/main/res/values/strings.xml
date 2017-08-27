@@ -61,14 +61,20 @@
     <string name="text">Text</string>
     <string name="PDF" translatable="false">PDF</string>
     <string name="bad_result">Bad result?\nChange language</string>
-    <string name="text_result" translatable="false">text result</string>
+    <string name="text_result">Text result</string>
     <string name="copied">Copied</string>
-    <string name="send_to">Send text result to</string>
+    <string name="send_text_result_to">Send text result to</string>
     <string name="open_in_another_app">Open in\nanother app</string>
     <string name="not_avalible">You disabled this feature</string>
     <string name="allow_permissions">Please allow the permissions, otherwise this feature will not work.</string>
     <string name="permissions_needs">Permission needs!</string>
-
-
-
+    <string name="no_app">You have no app to do this.</string>
+    <string name="no_file">Unexpected error. File can not be find.</string>
+    <string name="file_saved">File saved in</string>
+    <string name="error_while_saving">Error occurs while saving file</string>
+    <string name="send_pdf_to">Send PDF to</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="link_to_pdf" translatable="false">Link to PDF</string>
+    <string name="share_pdf_message"> <![CDATA[Pdf file link: %1$s<br />Provided by app: %2$s]]></string>
+    <string name="share_text_message"> <![CDATA[%1$s<br />Provided by app: %2$s]]></string>
 </resources>

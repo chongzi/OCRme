@@ -5,18 +5,19 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ashomok.imagetotext.R;
@@ -25,7 +26,6 @@ import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.mobidevelop.spl.widget.SplitPaneLayout;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import static android.content.Context.CLIPBOARD_SERVICE;
+import static com.ashomok.imagetotext.Settings.appPackageName;
 import static com.ashomok.imagetotext.language_choser.LanguageActivity.CHECKED_LANGUAGES;
 import static com.ashomok.imagetotext.ocr_result.OCRResultActivity.LANGUAGE_ACTIVITY_REQUEST_CODE;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
@@ -76,7 +77,7 @@ public class TextFragment extends TabFragment implements View.OnClickListener {
             case R.id.translate_btn:
                 onTranslateClicked();
                 break;
-            case R.id.share_btn:
+            case R.id.share_text_btn:
                 onShareClicked();
                 break;
             case R.id.bad_result_btn:
@@ -94,7 +95,7 @@ public class TextFragment extends TabFragment implements View.OnClickListener {
         View translateBtn = getActivity().findViewById(R.id.translate_btn);
         translateBtn.setOnClickListener(this);
 
-        View shareBtn = getActivity().findViewById(R.id.share_btn);
+        View shareBtn = getActivity().findViewById(R.id.share_text_btn);
         shareBtn.setOnClickListener(this);
 
         View badResult = getActivity().findViewById(R.id.bad_result_btn);
@@ -158,15 +159,27 @@ public class TextFragment extends TabFragment implements View.OnClickListener {
         return checkedLanguagesNames;
     }
 
+    @SuppressWarnings("deprecation")
+    private void onShareClicked()
+    {
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
 
-    //todo add link to the app on play market
-    private void onShareClicked() {
-        Intent sendIntent = new Intent();
-        sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT, textResult);
-        sendIntent.setType("text/plain");
-        startActivity(Intent.createChooser(sendIntent,
-                getActivity().getResources().getText(R.string.send_to)));
+        Resources res = getActivity().getResources();
+        String linkToApp = "https://play.google.com/store/apps/details?id=" + appPackageName;
+        String sharedBody =
+                String.format(res.getString(R.string.share_text_message),  textResult, linkToApp);
+
+        Spanned styledText;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            styledText = Html.fromHtml(sharedBody,Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            styledText = Html.fromHtml(sharedBody);
+        }
+
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, res.getString(R.string.text_result));
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, styledText);
+        getActivity().startActivity(Intent.createChooser(sharingIntent, res.getString(R.string.send_text_result_to)));
     }
 
     private void onTranslateClicked() {

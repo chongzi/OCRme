@@ -15,46 +15,34 @@ import android.widget.Toast;
 
 import com.ashomok.imagetotext.R;
 
-import java.util.HashMap;
-import java.util.Map;
 
-/**
- * Created by iuliia on 10/15/16.
- * TODO unstable
- * works only with one permission
- */
-
-public class RequestPermissionsToolImpl implements RequestPermissionsTool {
+public class RequestPermissionToolImpl implements RequestPermissionTool {
 
     private static final String CONFIRMATION_DIALOG = "ConfirmationDialog";
-    private static final String TAG = RequestPermissionsToolImpl.class.getSimpleName();
+    private static final String TAG = RequestPermissionToolImpl.class.getSimpleName();
     private Fragment fragment;
 
-
     @Override
-    public void requestPermissions(Fragment fragment, String[] permissions) {
-        Map<Integer, String> permissionsMap = new HashMap<>();
+    public void requestPermission(Fragment fragment, String permission, int requestCode) {
+
         this.fragment = fragment;
 
+        if (!isPermissionGranted(fragment.getActivity(), permission)) {
+            if (FragmentCompat.shouldShowRequestPermissionRationale(fragment, permission)) {
 
-        for (int i = 0; i < permissions.length; ++i) {
-            permissionsMap.put(i, permissions[i]);
-        }
-
-        for (Map.Entry<Integer, String> permission : permissionsMap.entrySet()) {
-            if (!isPermissionGranted(fragment.getActivity(), permission.getValue())) {
-                if (FragmentCompat.shouldShowRequestPermissionRationale(fragment, permission.getValue())) {
-
-                    ConfirmationDialog.newInstance(permission.getKey(), permission.getValue()).
-                            show(fragment.getFragmentManager(), CONFIRMATION_DIALOG);
-                }
-                else {
-                    FragmentCompat.requestPermissions(fragment, permissions,
-                            permission.getKey());
-                    return;
-                }
+                ConfirmationDialog.newInstance(requestCode, permission).
+                        show(fragment.getFragmentManager(), CONFIRMATION_DIALOG);
+            } else {
+                FragmentCompat.requestPermissions(fragment, new String[]{permission},
+                        requestCode);
+                return;
             }
         }
+    }
+
+    @Override
+    public void requestPermission(Fragment context, String permission) {
+        requestPermission(context, permission, 0);
     }
 
     @Override
@@ -71,10 +59,10 @@ public class RequestPermissionsToolImpl implements RequestPermissionsTool {
     @Override
     public void onPermissionDenied() {
         ErrorDialog.newInstance(fragment.getResources().getString(R.string.permissions_needs)).
-        show(fragment.getFragmentManager(), CONFIRMATION_DIALOG);
+                show(fragment.getFragmentManager(), CONFIRMATION_DIALOG);
     }
 
-    private boolean isPermissionGranted(Context context, String permission) {
+    public boolean isPermissionGranted(Context context, String permission) {
         return ActivityCompat.checkSelfPermission(context,
                 permission)
                 == PackageManager.PERMISSION_GRANTED;

@@ -50,7 +50,7 @@
                     android:tint="@color/grey_800" />
 
                 <ImageButton
-                    android:id="@+id/share_btn"
+                    android:id="@+id/share_pdf_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="?android:selectableItemBackground"

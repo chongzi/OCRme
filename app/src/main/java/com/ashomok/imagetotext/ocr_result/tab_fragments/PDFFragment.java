@@ -6,6 +6,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
@@ -21,11 +22,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.ashomok.imagetotext.BuildConfig;
 import com.ashomok.imagetotext.R;
-import com.ashomok.imagetotext.utils.RequestPermissionsTool;
-import com.ashomok.imagetotext.utils.RequestPermissionsToolImpl;
+import com.ashomok.imagetotext.utils.RequestPermissionTool;
+import com.ashomok.imagetotext.utils.RequestPermissionToolImpl;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -35,7 +37,9 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
+import static com.ashomok.imagetotext.Settings.appPackageName;
 import static com.ashomok.imagetotext.utils.FileUtils.copy;
 import static com.ashomok.imagetotext.utils.FileUtils.prepareDirectory;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
@@ -44,24 +48,32 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  * Created by iuliia on 5/31/17.
  */
 
-public class PDFFragment extends TabFragment implements View.OnClickListener, FragmentCompat.OnRequestPermissionsResultCallback {
+public class PDFFragment extends TabFragment
+        implements View.OnClickListener, FragmentCompat.OnRequestPermissionsResultCallback {
     private static final String TAG = DEV_TAG + PDFFragment.class.getSimpleName();
+    private static final int OPEN_IN_ANOTHER_APP_REQUEST_CODE = 0;
+    private static final int DOWNLOAD_REQUEST_CODE = 1;
     private String mStoreLocation = "gs://imagetotext-149919.appspot.com/ru.pdf";
     private String mDownloadURL =
             "https://firebasestorage.googleapis.com/v0/b/imagetotext-149919.appspot.com/o/ru.pdf?alt=media&token=74581dc3-4460-476a-b478-c7dc7a17a573v";
 
-    private File localPdfFile;
+    private File mPdfFile;
+
+    /**
+     * copy of pdf saved on External Storage
+     */
+    private File mPdfFileCopy;
     private PDFView mPdfView;
     private ProgressBar progressBar;
-    private RequestPermissionsTool requestTool;
-    private String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private RequestPermissionTool requestTool;
+    private String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.pdf_fragment, container, false);
         mPdfView = (PDFView) view.findViewById(R.id.pdfView);
         progressBar = (ProgressBar) view.findViewById(R.id.progress);
-        requestTool = new RequestPermissionsToolImpl();
+        requestTool = new RequestPermissionToolImpl();
         return view;
     }
 
@@ -82,18 +94,18 @@ public class PDFFragment extends TabFragment implements View.OnClickListener, Fr
     }
 
     private void downloadToLocalFile(StorageReference storageRef) throws IOException {
-        localPdfFile = File.createTempFile("temp", ".pdf");
+        mPdfFile = File.createTempFile("temp", ".pdf");
 
-        storageRef.getFile(localPdfFile).addOnSuccessListener(
+        storageRef.getFile(mPdfFile).addOnSuccessListener(
                 new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
 
                         Log.d(TAG, "Local temp file has been created");
                         showProgress(false);
-                        if (localPdfFile.exists()) {
+                        if (mPdfFile.exists()) {
                             Log.d(TAG, "file exists");
-                            setToPDFView(localPdfFile);
+                            setToPDFView(mPdfFile);
                         }
 
                     }
@@ -150,11 +162,28 @@ public class PDFFragment extends TabFragment implements View.OnClickListener, Fr
         View copyBtn = getActivity().findViewById(R.id.download_btn);
         copyBtn.setOnClickListener(this);
 
-        View shareBtn = getActivity().findViewById(R.id.share_btn);
+        View shareBtn = getActivity().findViewById(R.id.share_pdf_btn);
         shareBtn.setOnClickListener(this);
 
         View badResult = getActivity().findViewById(R.id.open_in_another_app_btn);
         badResult.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.download_btn:
+                onDownloadClicked();
+                break;
+            case R.id.share_pdf_btn:
+                onShareClicked();
+                break;
+            case R.id.open_in_another_app_btn:
+                onOpenInAnotherAppClicked();
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
@@ -172,125 +201,142 @@ public class PDFFragment extends TabFragment implements View.OnClickListener, Fr
             requestTool.onPermissionDenied();
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-           //permissions granted
-            //// TODO: 8/25/17  
+            if (requestCode == OPEN_IN_ANOTHER_APP_REQUEST_CODE) {
+                runPdfIntent();
+            } else if (requestCode == DOWNLOAD_REQUEST_CODE) {
+                saveFileAndShowMessage();
+            }
         }
-
     }
 
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.download_btn:
-                onDownloadClicked();
-                break;
-            case R.id.share_btn:
-                onShareClicked();
-                break;
-            case R.id.open_in_another_app_btn:
-                onOpenInAnotherAppClicked();
-                break;
-            default:
-                break;
+    private void onDownloadClicked() {
+        //permission granted
+        if (requestTool.isPermissionGranted(getActivity(), permission)) {
+            saveFileAndShowMessage();
+        } else {
+            //request permission and then, on onRequestPermissionsResult do the stuff
+            requestTool.requestPermission(this, permission, DOWNLOAD_REQUEST_CODE);
         }
     }
 
     private void onOpenInAnotherAppClicked() {
-        if (localPdfFile.exists()) {
-            try {
-                Uri fileUri = null;
-                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { //explanation https://inthecheesefactory.com/blog/how-to-share-access-to-file-with-fileprovider-on-android-nougat/en
+        //check if permission granted
+        if (requestTool.isPermissionGranted(getActivity(), permission)) {
+            runPdfIntent();
+        } else {
+            //request permission and then, on onRequestPermissionsResult do the stuff
+            requestTool.requestPermission(this, permission, OPEN_IN_ANOTHER_APP_REQUEST_CODE);
+        }
+    }
 
-                    fileUri = FileProvider.getUriForFile(getActivity(),
-                            BuildConfig.APPLICATION_ID + ".provider",
-                            moveToExternalStorage(localPdfFile));
-                } else {
-                    fileUri = Uri.fromFile(localPdfFile);
-                }
+    private void runPdfIntent() {
+        File pdfFile; //file should be saved in SD card for working, otherwise exception in FileProvider
+        try {
+            pdfFile = copyToExternalStorage(mPdfFile);
+            runPDFIntent(pdfFile);
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), getActivity().getString(R.string.unknown_error),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
 
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(fileUri, "application/pdf");
-                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+    //run intent for open another pdf reader
+    private void runPDFIntent(File pdfFile) {
+        if (pdfFile.exists()) {
+            Uri fileUri = null;
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { //explanation https://inthecheesefactory.com/blog/how-to-share-access-to-file-with-fileprovider-on-android-nougat/en
+
+                fileUri = FileProvider.getUriForFile(getActivity(),
+                        BuildConfig.APPLICATION_ID + ".provider",
+                        pdfFile);
+            } else {
+                fileUri = Uri.fromFile(pdfFile);
+            }
+
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(fileUri, "application/pdf");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            if (isAnyAppHandleIntent(intent)) {
                 startActivity(intent);
-            } catch (IOException e) {
-                e.printStackTrace();
-                //// TODO: 8/25/17
+            } else {
+                Toast.makeText(getActivity(), getActivity().getString(R.string.no_app),
+                        Toast.LENGTH_LONG).show();
             }
         } else {
-            //// TODO: 8/25/17
+            Toast.makeText(getActivity(), getActivity().getString(R.string.no_file),
+                    Toast.LENGTH_LONG).show();
         }
     }
 
-    private File moveToExternalStorage(File cachedFile) throws IOException {
-        requestPermissions();
+    private boolean isAnyAppHandleIntent(Intent intent) {
+        PackageManager manager = getActivity().getPackageManager();
+        List<ResolveInfo> infos = manager.queryIntentActivities(intent, 0);
+        if (infos.size() > 0) {
+            //Then there is an Application(s) can handle your intent
+            return true;
+        } else {
+            //No Application can handle your intent
+            return false;
+        }
+    }
 
-        Long tsLong = System.currentTimeMillis() / 1000;
-        String timeStamp = tsLong.toString();
-        String fileNamePrefix = timeStamp;
-        File storageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DCIM), "Camera");
+    private File copyToExternalStorage(File inputFile) throws Exception {
+        if (mPdfFileCopy != null && mPdfFileCopy.exists()) {
+            //do nothing
+            return mPdfFileCopy;
+        } else {
+            Long tsLong = System.currentTimeMillis() / 1000;
+            String fileNamePrefix = tsLong.toString();
+            File storageDir = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOWNLOADS), "Pdf_files");
 
-        File savedFile = null;
-        try {
             if (!storageDir.exists()) {
-                //// TODO: 8/25/17 ask permissions here
                 prepareDirectory(storageDir.getPath());
             }
-            savedFile = new File(storageDir, fileNamePrefix + ".pdf");
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
+            mPdfFileCopy = new File(storageDir, fileNamePrefix + ".pdf");
+
+            copy(inputFile, mPdfFileCopy);
+            Log.d(TAG, "pdf file path = " + mPdfFileCopy.getPath());
+            return mPdfFileCopy;
         }
-        copy(cachedFile, savedFile);
-
-        return savedFile;
     }
 
-    private void requestPermissions() {
-        requestTool.requestPermissions(this, permissions);
+    private void saveFileAndShowMessage() {
+        File copyedFile;
+        String textMessage;
+        try {
+            copyedFile = copyToExternalStorage(mPdfFile);
+            textMessage = getActivity().getString(R.string.file_saved) +
+                    copyedFile.getPath();
+        } catch (Exception e) {
+            e.printStackTrace();
+            textMessage = getActivity().getString(R.string.error_while_saving);
+        }
+
+        Toast.makeText(getActivity(), textMessage, Toast.LENGTH_LONG).show();
     }
 
-
-    private void onDownloadClicked() {
-        //// TODO: 8/25/17
-
-//        if (savedFile != null) {
-//            img_path = savedFile.getAbsolutePath();
-//            Log.i(TAG, "img_path = " + img_path);
-//        } else {
-//            Log.e(TAG, "image == null");
-//        }
-    }
-
-    //todo add link to the app on play market
+    @SuppressWarnings("deprecation")
     private void onShareClicked() {
-        Intent sendIntent = new Intent();
-        sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT, mDownloadURL);
-        sendIntent.setType("text/plain");
-        startActivity(Intent.createChooser(sendIntent,
-                getActivity().getResources().getText(R.string.send_to)));
-    }
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
 
-//    @SuppressWarnings("deprecation")
-//    public void share()
-//    {
-//        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-//        sharingIntent.setType("text/plain");
-//
-//        Resources res = context.getResources();
-//        String link = "https://play.google.com/store/apps/details?id=" + appPackageName;
-//        String sharedBody = String.format(res.getString(R.string.share_message), link);
-//
-//        Spanned styledText;
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-//            styledText = Html.fromHtml(sharedBody,Html.FROM_HTML_MODE_LEGACY);
-//        } else {
-//            styledText = Html.fromHtml(sharedBody);
-//        }
-//
-//        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, res.getString(R.string.i_want_to_recommend));
-//        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, styledText);
-//        context.startActivity(Intent.createChooser(sharingIntent, res.getString(R.string.share_via)));
-//    }
+        Resources res = getActivity().getResources();
+        String linkToApp = "https://play.google.com/store/apps/details?id=" + appPackageName;
+        String sharedBody =
+                String.format(res.getString(R.string.share_pdf_message), mDownloadURL, linkToApp);
+
+        Spanned styledText;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            styledText = Html.fromHtml(sharedBody, Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            styledText = Html.fromHtml(sharedBody);
+        }
+
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, res.getString(R.string.link_to_pdf));
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, styledText);
+        getActivity().startActivity(Intent.createChooser(sharingIntent, res.getString(R.string.send_pdf_to)));
+    }
 }
