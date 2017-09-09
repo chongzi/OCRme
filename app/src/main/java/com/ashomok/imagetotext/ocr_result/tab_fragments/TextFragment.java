@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.language_choser.LanguageActivity;
+import com.ashomok.imagetotext.ocr_result.translate.TranslateActivity;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.FirebaseStorage;
@@ -44,6 +45,9 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 //todo Forbidd splitter to go out of screen bounds. https://github.com/bieliaievays/OCRme/issues/2
 public class TextFragment extends TabFragment implements View.OnClickListener {
+
+    public static final String EXTRA_TEXT = "com.ashomokdev.imagetotext.TEXT";
+//    public static final String EXTRA_LANGUAGE = "com.ashomokdev.imagetotext.LANGUAGE";
 
     private long requestID = 123456789;
     private String imageLink = "gs://imagetotext-149919.appspot.com/IMG_9229.JPG";
@@ -183,7 +187,10 @@ public class TextFragment extends TabFragment implements View.OnClickListener {
     }
 
     private void onTranslateClicked() {
-        //todo start translate activity and chose translate language
+        Intent intent = new Intent(getActivity(), TranslateActivity.class);
+//        intent.putExtra(EXTRA_LANGUAGE, language);
+        intent.putExtra(EXTRA_TEXT, textResult);
+        startActivity(intent);
     }
 
     private void copyTextToClipboard(CharSequence text) {

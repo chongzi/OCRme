@@ -1,4 +1,10 @@
 <resources>
+    <string-array name="input_languages">
+        <item>Кот</item>
+        <item>Кошка</item>
+        <item>Котёнок</item>
+        <item>Животное</item>
+    </string-array>
     <string name="app_name" translatable="false">OCRme</string>
     <string name="exit_dialog_title">Do you want to exit?</string>
     <string name="alert_dialog_exit">Exit</string>
@@ -77,4 +83,5 @@
     <string name="link_to_pdf" translatable="false">Link to PDF</string>
     <string name="share_pdf_message"> <![CDATA[Pdf file link: %1$s<br />Provided by app: %2$s]]></string>
     <string name="share_text_message"> <![CDATA[%1$s<br />Provided by app: %2$s]]></string>
+    <string name="translate">Translate</string>
 </resources>

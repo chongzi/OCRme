@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
  * Created by iuliia on 12/17/16.
  */
 
+//// TODO: 8/27/17 add list from google server
 public class LanguageList {
 
 

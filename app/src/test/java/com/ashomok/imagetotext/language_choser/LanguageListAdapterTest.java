@@ -37,8 +37,6 @@ public class LanguageListAdapterTest {
 
         Context context = Mockito.mock(Context.class);
         languageListAdapter = new LanguageListAdapter(context, data, checked);
-
-        Mockito.when(context.getString(R.string.auto)).thenReturn("auto");
     }
 
 

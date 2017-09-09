@@ -58,7 +58,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -67,7 +66,8 @@ import static com.ashomok.imagetotext.language_choser.LanguageActivity.CHECKED_L
 import static com.ashomok.imagetotext.utils.FileUtils.prepareDirectory;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
-public class MainActivity extends AppCompatActivity implements SignOutDialogFragment.OnSignedOutListener, OnSignedInListener, View.OnClickListener {
+public class MainActivity extends AppCompatActivity
+        implements SignOutDialogFragment.OnSignedOutListener, OnSignedInListener, View.OnClickListener {
 
     private static final String TAG = DEV_TAG + MainActivity.class.getSimpleName();
     private static final int LANGUAGE_ACTIVITY_REQUEST_CODE = 1;
