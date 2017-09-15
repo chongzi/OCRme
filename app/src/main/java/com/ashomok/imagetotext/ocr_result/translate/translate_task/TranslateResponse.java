@@ -1,4 +1,4 @@
-package com.ashomok.imagetotext.translate_task;
+package com.ashomok.imagetotext.ocr_result.translate.translate_task;
 
 /**
  * Created by iuliia on 9/5/17.

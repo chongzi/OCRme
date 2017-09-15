@@ -1,8 +1,10 @@
-package com.ashomok.imagetotext.translate_task;
+package com.ashomok.imagetotext.ocr_result.translate.translate_task;
+
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
-import io.reactivex.annotations.Nullable;
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -18,6 +20,7 @@ public class TranslateClient {
     private static final String TAG = DEV_TAG + TranslateClient.class.getSimpleName();
     private static TranslateClient instance;
     private TranslateAPI translateAPI;
+    private static final int CONNECTION_TIMEOUT_SEC = 90;
 
     public static TranslateClient getInstance() {
         if (instance == null) {
@@ -27,7 +30,14 @@ public class TranslateClient {
     }
 
     private TranslateClient() {
+        OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
+                .connectTimeout(CONNECTION_TIMEOUT_SEC, TimeUnit.SECONDS)
+                .readTimeout(CONNECTION_TIMEOUT_SEC, TimeUnit.SECONDS)
+                .writeTimeout(CONNECTION_TIMEOUT_SEC, TimeUnit.SECONDS)
+                .build();
+
         Retrofit retrofit = new Retrofit.Builder()
+                .client(okHttpClient)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl(TranslateAPI.ENDPOINT)
@@ -43,12 +53,4 @@ public class TranslateClient {
     public Single<TranslateResponse> translate(@NonNull TranslateRequestBean translateRequest) {
         return translateAPI.translate(translateRequest);
     }
-
-
-//       supportedLanguages.subscribeOn(Schedulers.newThread())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(supportedLanguagesResponceConsumer -> {
-//                    Log.d(TAG, "Supported languages count = " + supportedLanguagesResponceConsumer.getSupportedLanguages().size());
-//                });
-
 }

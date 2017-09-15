@@ -84,4 +84,6 @@
     <string name="share_pdf_message"> <![CDATA[Pdf file link: %1$s<br />Provided by app: %2$s]]></string>
     <string name="share_text_message"> <![CDATA[%1$s<br />Provided by app: %2$s]]></string>
     <string name="translate">Translate</string>
+    <string name="can_not_get_supported_languages">Can not get supported languages.</string>
+    <string name="error_while_translating">Error while translating.</string>
 </resources>

@@ -1,8 +1,11 @@
-package com.ashomok.imagetotext.translate_task;
+package com.ashomok.imagetotext.ocr_result.translate.translate_task;
 
 /**
  * Created by iuliia on 5/22/17.
  */
+
+//TODO make as builder - use buildre pattern
+
 public class TranslateRequestBean {
     private String deviceLang;
     private String sourceLang;

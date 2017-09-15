@@ -9,116 +9,142 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <LinearLayout
-        android:id="@+id/top_layout"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_below="@+id/toolbar"
-        android:background="@color/blue"
-        android:gravity="center_vertical"
-        android:minHeight="50dp"
-        android:orientation="horizontal">
 
-        <Spinner
-            android:id="@+id/spinner_input_languages"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:entries="@array/input_languages" />
+    <ProgressBar
+        android:id="@+id/progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="8dp"
+        android:indeterminate="true"
+        android:visibility="visible" />
 
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:clickable="false"
-            android:padding="@dimen/text_result_margin"
-            android:src="@drawable/ic_forward_black_24dp"
-            android:tint="@color/grey_800" />
+    <RelativeLayout
+        android:id="@+id/content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar">
 
-        <Spinner
-            android:id="@+id/spinner_ouput_languages"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:entries="@array/input_languages" />
-    </LinearLayout>
-
-    <com.mobidevelop.spl.widget.SplitPaneLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:spl="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/split_pane_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@id/top_layout"
-        spl:orientation="vertical"
-        spl:splitterBackground="@color/colorAccent"
-        spl:splitterPosition="33%"
-        spl:splitterSize="16dip">
-
-        <ScrollView
-            android:id="@+id/image_scroll_view"
+        <LinearLayout
+            android:id="@+id/top_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="?attr/actionBarSize"
 
-            <EditText
-                android:id="@+id/input_text"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginLeft="@dimen/text_result_margin"
-                android:layout_marginRight="@dimen/text_result_margin"
-                android:layout_marginTop="@dimen/text_result_margin"
-                android:background="@null"
-                android:inputType="text|textAutoCorrect|textMultiLine"
-                android:scrollbars="vertical"
-                android:text=""
-                android:textColor="@color/grey_800" />
-        </ScrollView>
+            android:gravity="center_vertical"
+            android:minHeight="50dp"
+            android:orientation="horizontal"
+            android:paddingEnd="@dimen/text_result_margin"
+            android:paddingLeft="@dimen/text_result_margin"
+            android:paddingStart="@dimen/text_result_margin">
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/grey_200"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:orientation="vertical">
-
-            <EditText
-                android:id="@+id/output_text"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginLeft="@dimen/text_result_margin"
-                android:layout_marginRight="@dimen/text_result_margin"
-                android:layout_marginTop="@dimen/text_result_margin"
-                android:layout_weight="1"
-                android:background="@null"
-                android:inputType="text|textAutoCorrect|textMultiLine"
-                android:scrollbars="vertical"
-                android:text=""
-                android:textColor="@color/grey_800" />
-
-            <LinearLayout
-                android:id="@+id/bottom_icons"
+            <Spinner
+                android:id="@+id/spinner_source_languages"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingEnd="@dimen/text_result_margin"
-                android:paddingStart="@dimen/text_result_margin">
+                android:entries="@array/input_languages" />
 
-                <ImageButton
-                    android:id="@+id/copy_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?android:selectableItemBackground"
-                    android:padding="@dimen/text_result_margin"
-                    android:src="@drawable/ic_content_copy_black_24dp"
-                    android:tint="@color/grey_800" />
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="false"
+                android:padding="@dimen/text_result_margin"
+                android:src="@drawable/ic_forward_black_24dp"
+                android:tint="@color/grey_800" />
 
-                <ImageButton
-                    android:id="@+id/share_text_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?android:selectableItemBackground"
-                    android:padding="@dimen/text_result_margin"
-                    android:src="@drawable/ic_share_black_24dp"
-                    android:tint="@color/grey_800" />
-            </LinearLayout>
+            <Spinner
+                android:id="@+id/spinner_target_languages"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:entries="@array/input_languages" />
         </LinearLayout>
-    </com.mobidevelop.spl.widget.SplitPaneLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/top_layout"
+            android:background="@android:color/darker_gray" />
+
+        <com.mobidevelop.spl.widget.SplitPaneLayout
+            xmlns:spl="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/split_pane_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@id/top_layout"
+            spl:orientation="vertical"
+            spl:splitterBackground="@color/colorAccent"
+            spl:splitterPosition="33%"
+            spl:splitterSize="16dip">
+
+            <ScrollView
+                android:id="@+id/image_scroll_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/source_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginLeft="@dimen/text_result_margin"
+                    android:layout_marginRight="@dimen/text_result_margin"
+                    android:layout_marginTop="@dimen/text_result_margin"
+                    android:background="@null"
+                    android:inputType="text|textAutoCorrect|textMultiLine"
+                    android:scrollbars="vertical"
+                    android:text=""
+                    android:textColor="@color/grey_800" />
+            </ScrollView>
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/grey_200"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/target_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginLeft="@dimen/text_result_margin"
+                    android:layout_marginRight="@dimen/text_result_margin"
+                    android:layout_marginTop="@dimen/text_result_margin"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:inputType="text|textAutoCorrect|textMultiLine"
+                    android:scrollbars="vertical"
+                    android:text=""
+                    android:textColor="@color/grey_800" />
+
+                <LinearLayout
+                    android:id="@+id/bottom_icons"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingEnd="@dimen/text_result_margin"
+                    android:paddingStart="@dimen/text_result_margin">
+
+                    <ImageButton
+                        android:id="@+id/copy_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?android:selectableItemBackground"
+                        android:padding="@dimen/text_result_margin"
+                        android:src="@drawable/ic_content_copy_black_24dp"
+                        android:tint="@color/grey_800" />
+
+                    <ImageButton
+                        android:id="@+id/share_text_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?android:selectableItemBackground"
+                        android:padding="@dimen/text_result_margin"
+                        android:src="@drawable/ic_share_black_24dp"
+                        android:tint="@color/grey_800" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.mobidevelop.spl.widget.SplitPaneLayout>
+    </RelativeLayout>
 </RelativeLayout>

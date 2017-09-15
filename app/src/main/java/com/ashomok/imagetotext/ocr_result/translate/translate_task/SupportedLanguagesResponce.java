@@ -1,4 +1,4 @@
-package com.ashomok.imagetotext.translate_task;
+package com.ashomok.imagetotext.ocr_result.translate.translate_task;
 
 import java.io.Serializable;
 import java.util.List;

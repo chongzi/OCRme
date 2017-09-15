@@ -1,4 +1,4 @@
-package com.ashomok.imagetotext.translate_task;
+package com.ashomok.imagetotext.ocr_result.translate.translate_task;
 
 import android.util.Log;
 import android.util.Pair;
@@ -50,7 +50,7 @@ public class TranslateClientTest {
     }
 
     @Test
-    public void callInParallel() {
+    public void callInParallel() throws InterruptedException {
 
         TranslateRequestBean translateRequest = new TranslateRequestBean();
         translateRequest.setDeviceLang("de");
@@ -73,6 +73,9 @@ public class TranslateClientTest {
                         ).subscribeOn(Schedulers.io());
 
 
+        //bind to lifecycle
+        //http://blog.feedpresso.com/2016/01/25/why-you-should-use-rxjava-in-android-a-short-introduction-to-rxjava.html
+        //https://github.com/trello/RxLifecycle
         Single<Pair<SupportedLanguagesResponce, TranslateResponse>> zipped =
                 Single.zip(
                         supportedLanguagesResponceSingle,
@@ -87,6 +90,7 @@ public class TranslateClientTest {
             Log.e(TAG, throwable.getMessage());
         });
 
+        Thread.sleep(3000);
         Pair<SupportedLanguagesResponce, TranslateResponse> result = zipped.blockingGet();
 
         SupportedLanguagesResponce supportedLanguagesResponce = result.first;

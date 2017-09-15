@@ -58,13 +58,17 @@ dependencies {
     compile 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     compile 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
-    
+    compile 'com.squareup.okhttp3:okhttp:3.3.1'
 
     //rx
     compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.1.3'
     compile group: 'io.reactivex.rxjava2', name: 'rxandroid', version: '2.0.1'
-    //android extensions rx https://github.com/ReactiveX/RxAndroid/wiki
+    compile 'com.trello.rxlifecycle2:rxlifecycle:2.1.0'
+    compile 'com.trello.rxlifecycle2:rxlifecycle-android:2.1.0'
+    compile 'com.trello.rxlifecycle2:rxlifecycle-components:2.1.0'
 
+    //for using java 8 features like streams
+    compile 'com.annimon:stream:1.1.8'
 
     //firebase storage
     compile 'com.google.firebase:firebase-auth:11.0.4'
