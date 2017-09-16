@@ -1,9 +1,6 @@
 <resources>
-    <string-array name="input_languages">
-        <item>Кот</item>
-        <item>Кошка</item>
-        <item>Котёнок</item>
-        <item>Животное</item>
+    <string-array name="default_value">
+        <item>-</item>
     </string-array>
     <string name="app_name" translatable="false">OCRme</string>
     <string name="exit_dialog_title">Do you want to exit?</string>

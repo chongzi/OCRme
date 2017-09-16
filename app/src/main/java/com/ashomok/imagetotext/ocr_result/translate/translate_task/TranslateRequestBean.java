@@ -7,14 +7,9 @@ package com.ashomok.imagetotext.ocr_result.translate.translate_task;
 //TODO make as builder - use buildre pattern
 
 public class TranslateRequestBean {
-    private String deviceLang;
     private String sourceLang;
     private String targetLang;
     private String sourceText;
-
-    public void setDeviceLang(String deviceLang) {
-        this.deviceLang = deviceLang;
-    }
 
     public void setSourceLang(String sourceLang) {
         this.sourceLang = sourceLang;

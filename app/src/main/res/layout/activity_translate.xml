@@ -1,55 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:fitsSystemWindows="true"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-
-    <ProgressBar
-        android:id="@+id/progress"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginBottom="8dp"
-        android:indeterminate="true"
-        android:visibility="visible" />
+        android:orientation="vertical"
+        android:theme="@style/AppThemeLight">
 
-    <RelativeLayout
-        android:id="@+id/content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar">
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|enterAlways" />
 
         <LinearLayout
             android:id="@+id/top_layout"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-
             android:gravity="center_vertical"
             android:minHeight="50dp"
             android:orientation="horizontal"
-            android:paddingEnd="@dimen/text_result_margin"
-            android:paddingLeft="@dimen/text_result_margin"
-            android:paddingStart="@dimen/text_result_margin">
+            android:paddingEnd="@dimen/base_margin"
+            android:paddingLeft="@dimen/base_margin"
+            android:paddingStart="@dimen/base_margin"
+            app:layout_scrollFlags="scroll|enterAlways">
 
             <Spinner
                 android:id="@+id/spinner_source_languages"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:entries="@array/input_languages" />
+                android:entries="@array/default_value" />
 
             <ImageView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="false"
-                android:padding="@dimen/text_result_margin"
+                android:padding="@dimen/base_margin"
                 android:src="@drawable/ic_forward_black_24dp"
                 android:tint="@color/grey_800" />
 
@@ -57,94 +53,102 @@
                 android:id="@+id/spinner_target_languages"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:entries="@array/input_languages" />
+                android:entries="@array/default_value" />
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/top_layout"
-            android:background="@android:color/darker_gray" />
+            android:background="@android:color/darker_gray"
+            app:layout_scrollFlags="scroll|enterAlways" />
 
-        <com.mobidevelop.spl.widget.SplitPaneLayout
-            xmlns:spl="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/split_pane_layout"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+        <EditText
+            android:id="@+id/source_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@id/top_layout"
-            spl:orientation="vertical"
-            spl:splitterBackground="@color/colorAccent"
-            spl:splitterPosition="33%"
-            spl:splitterSize="16dip">
+            android:layout_margin="@dimen/base_margin"
+            android:background="@null"
+            android:inputType="text|textAutoCorrect|textMultiLine"
+            android:textSize="@dimen/default_font_size"
+            />
+    </android.support.design.widget.AppBarLayout>
 
-            <ScrollView
-                android:id="@+id/image_scroll_view"
-                android:layout_width="match_parent"
+    <ProgressBar
+        android:id="@+id/progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="8dp"
+        android:indeterminate="true"
+        android:visibility="visible" />
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/card_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            card_view:cardCornerRadius="4dp"
+            app:cardBackgroundColor="@color/blue_200"
+            android:layout_marginLeft="@dimen/base_margin"
+            android:layout_marginRight="@dimen/base_margin"
+            android:layout_marginBottom="@dimen/base_margin"
+            android:layout_marginTop="@dimen/top_margin">
+
+            <RelativeLayout
+                android:id="@+id/content"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/source_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginLeft="@dimen/text_result_margin"
-                    android:layout_marginRight="@dimen/text_result_margin"
-                    android:layout_marginTop="@dimen/text_result_margin"
-                    android:background="@null"
-                    android:inputType="text|textAutoCorrect|textMultiLine"
-                    android:scrollbars="vertical"
-                    android:text=""
-                    android:textColor="@color/grey_800" />
-            </ScrollView>
-
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/grey_200"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:orientation="vertical">
 
                 <EditText
                     android:id="@+id/target_text"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginLeft="@dimen/text_result_margin"
-                    android:layout_marginRight="@dimen/text_result_margin"
-                    android:layout_marginTop="@dimen/text_result_margin"
-                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/base_margin"
+                    android:layout_marginRight="@dimen/base_margin"
+                    android:layout_marginTop="@dimen/base_margin"
                     android:background="@null"
                     android:inputType="text|textAutoCorrect|textMultiLine"
-                    android:scrollbars="vertical"
-                    android:text=""
-                    android:textColor="@color/grey_800" />
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/default_font_size" />
 
                 <LinearLayout
                     android:id="@+id/bottom_icons"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@id/target_text"
                     android:orientation="horizontal"
-                    android:paddingEnd="@dimen/text_result_margin"
-                    android:paddingStart="@dimen/text_result_margin">
+                    android:paddingEnd="@dimen/base_margin"
+                    android:paddingStart="@dimen/base_margin">
 
                     <ImageButton
                         android:id="@+id/copy_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="?android:selectableItemBackground"
-                        android:padding="@dimen/text_result_margin"
+                        android:padding="@dimen/base_margin"
                         android:src="@drawable/ic_content_copy_black_24dp"
-                        android:tint="@color/grey_800" />
+                        android:tint="@color/white" />
 
                     <ImageButton
                         android:id="@+id/share_text_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="?android:selectableItemBackground"
-                        android:padding="@dimen/text_result_margin"
+                        android:padding="@dimen/base_margin"
                         android:src="@drawable/ic_share_black_24dp"
-                        android:tint="@color/grey_800" />
+                        android:tint="@color/white" />
                 </LinearLayout>
-            </LinearLayout>
-        </com.mobidevelop.spl.widget.SplitPaneLayout>
-    </RelativeLayout>
-</RelativeLayout>
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+    </android.support.v4.widget.NestedScrollView>
+</android.support.design.widget.CoordinatorLayout>

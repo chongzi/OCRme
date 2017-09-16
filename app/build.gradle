@@ -66,6 +66,8 @@ dependencies {
     compile 'com.trello.rxlifecycle2:rxlifecycle:2.1.0'
     compile 'com.trello.rxlifecycle2:rxlifecycle-android:2.1.0'
     compile 'com.trello.rxlifecycle2:rxlifecycle-components:2.1.0'
+//    compile 'com.jakewharton.rxbinding2:rxbinding:2.0.0' //rxviews https://code.tutsplus.com/tutorials/rxjava-for-android-apps-introducing-rxbinding-and-rxlifecycle--cms-28565
+
 
     //for using java 8 features like streams
     compile 'com.annimon:stream:1.1.8'
