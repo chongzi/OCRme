@@ -16,20 +16,20 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  */
 
 //singleton
-public class TranslateClient {
-    private static final String TAG = DEV_TAG + TranslateClient.class.getSimpleName();
-    private static TranslateClient instance;
+public class TranslateHttpClient {
+    private static final String TAG = DEV_TAG + TranslateHttpClient.class.getSimpleName();
+    private static TranslateHttpClient instance;
     private TranslateAPI translateAPI;
     private static final int CONNECTION_TIMEOUT_SEC = 90;
 
-    public static TranslateClient getInstance() {
+    public static TranslateHttpClient getInstance() {
         if (instance == null) {
-            instance = new TranslateClient();
+            instance = new TranslateHttpClient();
         }
         return instance;
     }
 
-    private TranslateClient() {
+    private TranslateHttpClient() {
         OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
                 .connectTimeout(CONNECTION_TIMEOUT_SEC, TimeUnit.SECONDS)
                 .readTimeout(CONNECTION_TIMEOUT_SEC, TimeUnit.SECONDS)

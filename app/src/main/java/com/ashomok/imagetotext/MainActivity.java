@@ -38,9 +38,8 @@ import android.widget.Toast;
 import com.ashomok.imagetotext.language_choser.LanguageActivity;
 import com.ashomok.imagetotext.language_choser.LanguageList;
 import com.ashomok.imagetotext.my_docs.MyDocsActivity;
-import com.ashomok.imagetotext.ocr_task.OCRAnimationActivity;
-import com.ashomok.imagetotext.ocr_task.RecognizeImageAsyncTask;
-import com.ashomok.imagetotext.ocr_task.RecognizeImageRESTClient;
+import com.ashomok.imagetotext.ocr.OcrActivity;
+import com.ashomok.imagetotext.ocr.RecognizeImageAsyncTask;
 import com.ashomok.imagetotext.sign_in.LoginActivity;
 import com.ashomok.imagetotext.sign_in.LoginManager;
 import com.ashomok.imagetotext.sign_in.OnSignedInListener;
@@ -48,7 +47,6 @@ import com.ashomok.imagetotext.sign_in.SignOutDialogFragment;
 import com.ashomok.imagetotext.sign_in.social_networks.LoginFacebook;
 import com.ashomok.imagetotext.sign_in.social_networks.LoginGoogle;
 import com.ashomok.imagetotext.sign_in.social_networks.LoginProcessor;
-import com.ashomok.imagetotext.utils.FileUtils;
 import com.ashomok.imagetotext.utils.NetworkUtils;
 import com.ashomok.imagetotext.utils.PermissionUtils;
 import com.facebook.CallbackManager;
@@ -199,51 +197,40 @@ public class MainActivity extends AppCompatActivity
 
         runOCRAnimation(uri);
 
+        //// TODO: 9/20/17
         //start ocr
-        if (NetworkUtils.isOnline(this)) {
-
-            ArrayList<String> languages = obtainLanguageShortcuts();
-            String path = getImagePath(uri);
-            if (path != null) {
-                recognizeImageAsyncTask = new RecognizeImageRESTClient(path, languages);
-
-                RecognizeImageAsyncTask.OnTaskCompletedListener onTaskCompletedListener = new RecognizeImageAsyncTask.OnTaskCompletedListener() {
-                    @Override
-                    public void onTaskCompleted(String result) {
-                        finishActivity(OCRAnimationActivity_REQUEST_CODE);
-
-                        //// TODO: 12/22/16
-                        //open new activity and show result
-                    }
-
-                    @Override
-                    public void onError(String message) {
-                        finishActivity(OCRAnimationActivity_REQUEST_CODE);
-                        checkForUserVisibleErrors(message);
-                    }
-                };
-                recognizeImageAsyncTask.setOnTaskCompletedListener(onTaskCompletedListener);
-                recognizeImageAsyncTask.execute();
-            }
-        } else {
-            //// TODO: 8/19/17 show error message in card view
-        }
-    }
-
-    @Nullable
-    private String getImagePath(Uri uri) {
-        String path = null;
-        try {
-            path = FileUtils.getRealPath(this, uri);
-        } catch (IOException e) {
-            e.printStackTrace();
-            checkForUserVisibleErrors(getResources().getString(R.string.file_not_found));
-        }
-        return path;
+//        if (NetworkUtils.isOnline(this)) {
+//
+//            ArrayList<String> languages = obtainLanguageShortcuts();
+//            String path = getImagePath(uri);
+//            if (path != null) {
+//                recognizeImageAsyncTask = new RecognizeImageRESTClient(path, languages);
+//
+//                RecognizeImageAsyncTask.OnTaskCompletedListener onTaskCompletedListener = new RecognizeImageAsyncTask.OnTaskCompletedListener() {
+//                    @Override
+//                    public void onTaskCompleted(String result) {
+//                        finishActivity(OCRAnimationActivity_REQUEST_CODE);
+//
+//                        //// TODO: 12/22/16
+//                        //open new activity and show result
+//                    }
+//
+//                    @Override
+//                    public void onError(String message) {
+//                        finishActivity(OCRAnimationActivity_REQUEST_CODE);
+//                        checkForUserVisibleErrors(message);
+//                    }
+//                };
+//                recognizeImageAsyncTask.setOnTaskCompletedListener(onTaskCompletedListener);
+//                recognizeImageAsyncTask.execute();
+//            }
+//        } else {
+//            //// TODO: 8/19/17 show error message in card view
+//        }
     }
 
     private void runOCRAnimation(Uri image) {
-        Intent intent = new Intent(this, OCRAnimationActivity.class);
+        Intent intent = new Intent(this, OcrActivity.class);
         intent.setData(image);
         startActivityForResult(intent, OCRAnimationActivity_REQUEST_CODE);
     }

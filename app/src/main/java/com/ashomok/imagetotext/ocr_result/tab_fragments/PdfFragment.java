@@ -48,11 +48,14 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  * Created by iuliia on 5/31/17.
  */
 
-public class PDFFragment extends TabFragment
+//todo request permissions using rx
+public class PdfFragment extends TabFragment
         implements View.OnClickListener, FragmentCompat.OnRequestPermissionsResultCallback {
-    private static final String TAG = DEV_TAG + PDFFragment.class.getSimpleName();
+    public static final String EXTRA_PDF_URL = "com.ashomokdev.imagetotext.PDF_URL";
+    private static final String TAG = DEV_TAG + PdfFragment.class.getSimpleName();
     private static final int OPEN_IN_ANOTHER_APP_REQUEST_CODE = 0;
     private static final int DOWNLOAD_REQUEST_CODE = 1;
+
     private String mStoreLocation = "gs://imagetotext-149919.appspot.com/ru.pdf";
     private String mDownloadURL =
             "https://firebasestorage.googleapis.com/v0/b/imagetotext-149919.appspot.com/o/ru.pdf?alt=media&token=74581dc3-4460-476a-b478-c7dc7a17a573v";

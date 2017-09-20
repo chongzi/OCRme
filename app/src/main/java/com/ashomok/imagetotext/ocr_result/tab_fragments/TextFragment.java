@@ -36,7 +36,7 @@ import java.util.TreeSet;
 import static android.content.Context.CLIPBOARD_SERVICE;
 import static com.ashomok.imagetotext.Settings.appPackageName;
 import static com.ashomok.imagetotext.language_choser.LanguageActivity.CHECKED_LANGUAGES;
-import static com.ashomok.imagetotext.ocr_result.OCRResultActivity.LANGUAGE_ACTIVITY_REQUEST_CODE;
+import static com.ashomok.imagetotext.ocr_result.OcrResultActivity.LANGUAGE_CHANGED_REQUEST_CODE;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 /**
@@ -45,25 +45,22 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 //todo Forbidd splitter to go out of screen bounds. https://github.com/bieliaievays/OCRme/issues/2
 public class TextFragment extends TabFragment implements View.OnClickListener {
-
     public static final String EXTRA_TEXT = "com.ashomokdev.imagetotext.TEXT";
-//    public static final String EXTRA_LANGUAGE = "com.ashomokdev.imagetotext.LANGUAGE";
+    private CharSequence textResult;
 
     private long requestID = 123456789;
     private String imageLink = "gs://imagetotext-149919.appspot.com/IMG_9229.JPG";
-    private String textResult = "dummy text dummy text dummy text dummy text dummy text dummy text " +
-            "dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy textdummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy textdummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy textdummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy textdummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy textdummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy textdummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy textdummy text dummy text dummy text dummy text dummy text dummy text dummy text dummy text";
     private static final String TAG = DEV_TAG + TextFragment.class.getSimpleName();
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.text_fragment, container, false);
+        View view = inflater.inflate(R.layout.text_fragment, container, false);
+        Bundle bundle = getArguments();
+        textResult = bundle.getCharSequence(EXTRA_TEXT);
+        return view;
     }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
 
     @Override
     protected void doStaff() {
@@ -142,7 +139,7 @@ public class TextFragment extends TabFragment implements View.OnClickListener {
     private void onBadResultClicked() {
         Intent intent = new Intent(getActivity(), LanguageActivity.class);
         intent.putExtra(CHECKED_LANGUAGES, getCurrentLanguages());
-        startActivityForResult(intent, LANGUAGE_ACTIVITY_REQUEST_CODE);
+        startActivityForResult(intent, LANGUAGE_CHANGED_REQUEST_CODE);
     }
 
     @NonNull
@@ -164,19 +161,18 @@ public class TextFragment extends TabFragment implements View.OnClickListener {
     }
 
     @SuppressWarnings("deprecation")
-    private void onShareClicked()
-    {
+    private void onShareClicked() {
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
 
         Resources res = getActivity().getResources();
         String linkToApp = "https://play.google.com/store/apps/details?id=" + appPackageName;
         String sharedBody =
-                String.format(res.getString(R.string.share_text_message),  textResult, linkToApp);
+                String.format(res.getString(R.string.share_text_message), textResult, linkToApp);
 
         Spanned styledText;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            styledText = Html.fromHtml(sharedBody,Html.FROM_HTML_MODE_LEGACY);
+            styledText = Html.fromHtml(sharedBody, Html.FROM_HTML_MODE_LEGACY);
         } else {
             styledText = Html.fromHtml(sharedBody);
         }

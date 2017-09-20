@@ -9,7 +9,7 @@ import android.support.test.runner.AndroidJUnit4;
 import android.support.v7.app.ActionBar;
 
 import com.ashomok.imagetotext.R;
-import com.ashomok.imagetotext.ocr_task.OCRAnimationActivity;
+import com.ashomok.imagetotext.ocr.OcrActivity;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -46,7 +46,7 @@ public class LanguageActivityTest {
     public void launchActivityWithPredefinedData() {
         final Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
-        Intent intent = new Intent(targetContext, OCRAnimationActivity.class);
+        Intent intent = new Intent(targetContext, OcrActivity.class);
         ArrayList<String> data = new ArrayList<String>(){{
             add(targetContext.getString(R.string.auto));
         }};

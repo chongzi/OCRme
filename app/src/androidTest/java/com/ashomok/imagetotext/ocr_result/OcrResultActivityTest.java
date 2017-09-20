@@ -9,7 +9,6 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.language_choser.LanguageActivity;
-import com.ashomok.imagetotext.ocr_result.OCRResultActivity;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -30,17 +29,17 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 
 @RunWith(AndroidJUnit4.class)
 @SmallTest
-public class OCRResultActivityTest {
+public class OcrResultActivityTest {
 
     @Rule
-    public ActivityTestRule<OCRResultActivity> mActivityRule = new ActivityTestRule<>(
-            OCRResultActivity.class, true, false);
+    public ActivityTestRule<OcrResultActivity> mActivityRule = new ActivityTestRule<>(
+            OcrResultActivity.class, true, false);
 
     @Before
     public void launchActivityWithPredefinedData() {
         final Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
-        Intent intent = new Intent(targetContext, OCRResultActivity.class);
+        Intent intent = new Intent(targetContext, OcrResultActivity.class);
 
         ArrayList<String> data = new ArrayList<String>(){{
             add(targetContext.getString(R.string.auto));

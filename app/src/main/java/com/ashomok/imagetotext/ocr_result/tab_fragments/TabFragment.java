@@ -22,6 +22,7 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  */
 
 //// TODO: 8/21/17  for better security don't sign in anonymously
+    //// TODO: 9/20/17 move it to ocresultActivity
 public abstract class TabFragment extends Fragment {
     private FirebaseAuth mAuth;
     private static final String TAG = DEV_TAG + TabFragment.class.getSimpleName();

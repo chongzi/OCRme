@@ -16,13 +16,13 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 /**
  * Created by iuliia on 9/6/17.
  */
-public class TranslateClientTest {
-    private TranslateClient client;
-    private static final String TAG = DEV_TAG + TranslateClientTest.class.getSimpleName();
+public class TranslateHttpClientTest {
+    private TranslateHttpClient client;
+    private static final String TAG = DEV_TAG + TranslateHttpClientTest.class.getSimpleName();
 
     @Before
     public void init() {
-        client = TranslateClient.getInstance();
+        client = TranslateHttpClient.getInstance();
     }
 
     @Test
@@ -37,7 +37,7 @@ public class TranslateClientTest {
     @Test
     public void translate() {
         TranslateRequestBean translateRequest = new TranslateRequestBean();
-        translateRequest.setDeviceLang("de");
+        translateRequest.setTargetLang("de");
         translateRequest.setSourceText("наша мама добрая");
 
         TranslateResponse responce =
@@ -53,7 +53,7 @@ public class TranslateClientTest {
     public void callInParallel() throws InterruptedException {
 
         TranslateRequestBean translateRequest = new TranslateRequestBean();
-        translateRequest.setDeviceLang("de");
+        translateRequest.setTargetLang("de");
         translateRequest.setSourceText("наша мама добрая");
 
         Single<SupportedLanguagesResponce> supportedLanguagesResponceSingle =
@@ -72,10 +72,6 @@ public class TranslateClientTest {
                                 }
                         ).subscribeOn(Schedulers.io());
 
-
-        //bind to lifecycle
-        //http://blog.feedpresso.com/2016/01/25/why-you-should-use-rxjava-in-android-a-short-introduction-to-rxjava.html
-        //https://github.com/trello/RxLifecycle
         Single<Pair<SupportedLanguagesResponce, TranslateResponse>> zipped =
                 Single.zip(
                         supportedLanguagesResponceSingle,

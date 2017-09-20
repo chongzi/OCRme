@@ -70,12 +70,12 @@
         <activity
             android:name=".ocr_result.translate.TranslateActivity"
             android:label="@string/translate"
-            android:parentActivityName=".ocr_result.OCRResultActivity"
+            android:parentActivityName=".ocr_result.OcrResultActivity"
             android:exported="true"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ocr_result.OCRResultActivity" />
+                android:value=".ocr_result.OcrResultActivity" />
         </activity>
         <activity
             android:name=".sign_in.RegisterActivity"
@@ -97,7 +97,7 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
-            android:name=".ocr_result.OCRResultActivity"
+            android:name=".ocr_result.OcrResultActivity"
             android:windowSoftInputMode="adjustPan"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme"
@@ -107,7 +107,7 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
-            android:name=".ocr_task.OCRAnimationActivity"
+            android:name=".ocr.OcrActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/recognizing"
             android:parentActivityName=".MainActivity"

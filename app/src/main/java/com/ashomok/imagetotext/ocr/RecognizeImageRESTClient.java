@@ -1,4 +1,4 @@
-package com.ashomok.imagetotext.ocr_task;
+package com.ashomok.imagetotext.ocr;
 
 import android.support.annotation.Nullable;
 

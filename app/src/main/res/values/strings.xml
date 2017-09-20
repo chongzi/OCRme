@@ -46,7 +46,7 @@
     <string name="text_not_found">Text not found.</string>
     <string name="select_photo">Select a photo</string>
     <string name="error_no_connection">Cannot connect to server. Please, check your Internet connectivity.</string>
-    <string name="file_not_found">Error: file not found.</string>
+    <string name="file_not_found">File not found.</string>
     <string name="sign_in">Sign in</string>
     <string name="sign_in_captured">SIGN IN</string>
     <string name="logout">Logout</string>
@@ -83,4 +83,6 @@
     <string name="translate">Translate</string>
     <string name="can_not_get_supported_languages">Can not get supported languages.</string>
     <string name="error_while_translating">Error while translating.</string>
+    <string name="network_error">Network error. Check internet connection.</string>
+    <string name="language_not_supported">Language not supported</string>
 </resources>

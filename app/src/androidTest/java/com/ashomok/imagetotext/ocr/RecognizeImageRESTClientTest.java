@@ -1,9 +1,8 @@
-package com.ashomok.imagetotext.ocr_task;
+package com.ashomok.imagetotext.ocr;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
