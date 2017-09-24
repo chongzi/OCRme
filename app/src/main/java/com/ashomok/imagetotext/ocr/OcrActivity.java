@@ -37,6 +37,13 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  * Created by Iuliia on 13.12.2015.
  */
 
+//// TODO: 9/21/17 upload file to firebase and provide url to http client
+//    docs:
+//            https://firebase.google.com/docs/storage/android/upload-files
+//            https://github.com/firebase/quickstart-android/tree/master/storage
+//            https://github.com/kotlintpoint/Firebase-Storage-Upload-Download
+//            https://github.com/firebase/FirebaseUI-Android/tree/master/storage
+
 public class OcrActivity extends RxAppCompatActivity {
 
     private Uri imageUri;
