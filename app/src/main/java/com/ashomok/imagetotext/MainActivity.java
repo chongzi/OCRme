@@ -16,14 +16,14 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.FragmentActivity;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -35,21 +35,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ashomok.imagetotext.firebaseUiAuth.BaseLoginActivity;
+import com.ashomok.imagetotext.firebaseUiAuth.SignOutDialogFragment;
 import com.ashomok.imagetotext.language_choser.LanguageActivity;
 import com.ashomok.imagetotext.language_choser.LanguageList;
 import com.ashomok.imagetotext.my_docs.MyDocsActivity;
 import com.ashomok.imagetotext.ocr.OcrActivity;
 import com.ashomok.imagetotext.ocr.RecognizeImageAsyncTask;
-import com.ashomok.imagetotext.sign_in.LoginActivity;
-import com.ashomok.imagetotext.sign_in.LoginManager;
-import com.ashomok.imagetotext.sign_in.OnSignedInListener;
-import com.ashomok.imagetotext.sign_in.SignOutDialogFragment;
-import com.ashomok.imagetotext.sign_in.social_networks.LoginFacebook;
-import com.ashomok.imagetotext.sign_in.social_networks.LoginGoogle;
-import com.ashomok.imagetotext.sign_in.social_networks.LoginProcessor;
 import com.ashomok.imagetotext.utils.NetworkUtils;
 import com.ashomok.imagetotext.utils.PermissionUtils;
-import com.facebook.CallbackManager;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.io.File;
 import java.io.IOException;
@@ -64,19 +60,17 @@ import static com.ashomok.imagetotext.language_choser.LanguageActivity.CHECKED_L
 import static com.ashomok.imagetotext.utils.FileUtils.prepareDirectory;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
-public class MainActivity extends AppCompatActivity
-        implements SignOutDialogFragment.OnSignedOutListener, OnSignedInListener, View.OnClickListener {
+public class MainActivity extends BaseLoginActivity
+        implements SignOutDialogFragment.OnSignedOutListener, View.OnClickListener {
 
     private static final String TAG = DEV_TAG + MainActivity.class.getSimpleName();
     private static final int LANGUAGE_ACTIVITY_REQUEST_CODE = 1;
     private static final int CaptureImage_REQUEST_CODE = 2;
     private static final int OCRAnimationActivity_REQUEST_CODE = 3;
-    private static final int LoginActivity_REQUEST_CODE = 4;
     private static final int CAMERA_PERMISSIONS_REQUEST = 5;
     private static final int GALLERY_IMAGE_REQUEST = 6;
     private DrawerLayout mDrawerLayout;
-    private View mErrorView;
-    private TextView mErrorMessage;
+    private NavigationView navigationView;
     private final BroadcastReceiver mConnectivityChangeReceiver = new BroadcastReceiver() {
         private boolean oldOnline = false;
 
@@ -85,20 +79,19 @@ public class MainActivity extends AppCompatActivity
             boolean isOnline = NetworkUtils.isOnline(context);
             if (isOnline != oldOnline) {
                 oldOnline = isOnline;
-                checkForUserVisibleErrors(null);
+                checkConnection();
             }
         }
     };
-    private LoginManager loginManager;
-    private boolean mIsUserSignedIn = false;
     private Uri imageUri;
     private RecognizeImageAsyncTask recognizeImageAsyncTask;
     private TextView languageTextView;
     private Button myDocsBtn;
-
+    private View mRootView;
+    private String mEmail = "No email";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -108,25 +101,22 @@ public class MainActivity extends AppCompatActivity
 
         initImageSourceBtns();
 
-        languageTextView = (TextView) findViewById(R.id.language);
+        mRootView = findViewById(R.id.drawer_layout);
+
+        languageTextView = findViewById(R.id.language);
         languageTextView.setPaintFlags(languageTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-
         languageTextView.setOnClickListener(this);
-
         updateLanguageTextView(getCheckedLanguages());
 
-        mErrorView = findViewById(R.id.ocr_error);
-        mErrorMessage = (TextView) mErrorView.findViewById(R.id.error_message);
-        checkForUserVisibleErrors(null);
+        checkConnection();
 
-        loginManager = new LoginManager(this.getApplicationContext(), LoginsProvider.getLogins(this));
-        loginManager.setOnSignedInListener(this);
-
-        Button signInBtn = (Button) findViewById(R.id.sign_in_btn);
+        Button signInBtn = findViewById(R.id.sign_in_btn);
         signInBtn.setOnClickListener(this);
 
-        myDocsBtn = (Button) findViewById(R.id.my_docs_btn);
+        myDocsBtn = findViewById(R.id.my_docs_btn);
         myDocsBtn.setOnClickListener(this);
+
+        updateUi(mIsUserSignedIn);
     }
 
     @Override
@@ -135,10 +125,6 @@ public class MainActivity extends AppCompatActivity
         // Registers BroadcastReceiver to track network connection changes.
         registerReceiver(mConnectivityChangeReceiver,
                 new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-
-        // init login manager for try to sign in
-        // don't call in in onCreate - it should be called every time when activity showed to user.
-        loginManager.trySignInAutomatically(); //// TODO: 8/19/17 add on sign in automatically failed listener
     }
 
     @Override
@@ -157,6 +143,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LANGUAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
 
             Bundle bundle = data.getExtras();
@@ -166,7 +153,6 @@ public class MainActivity extends AppCompatActivity
 
         //making photo
         else if (requestCode == CaptureImage_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-
             startOCRtask(imageUri);
         }
 
@@ -185,12 +171,16 @@ public class MainActivity extends AppCompatActivity
             if (recognizeImageAsyncTask != null) {
                 recognizeImageAsyncTask.cancel(true);
             }
-        }
 
-        //signed in
-        else if (requestCode == LoginActivity_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            onSignedIn();
+            //show ocr canseled message
         }
+    }
+
+    @Override
+    public void showError(@StringRes int errorMessageRes) {
+        Snackbar snackbar = Snackbar.make(mRootView, errorMessageRes, Snackbar.LENGTH_LONG);
+        snackbar.getView().setBackgroundColor(ContextCompat.getColor(this, R.color.red_500));
+        snackbar.show();
     }
 
     private void startOCRtask(Uri uri) {
@@ -218,7 +208,7 @@ public class MainActivity extends AppCompatActivity
 //                    @Override
 //                    public void onError(String message) {
 //                        finishActivity(OCRAnimationActivity_REQUEST_CODE);
-//                        checkForUserVisibleErrors(message);
+//                        checkConnection(message);
 //                    }
 //                };
 //                recognizeImageAsyncTask.setOnTaskCompletedListener(onTaskCompletedListener);
@@ -237,14 +227,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         Menu navigationMenu = navigationView.getMenu();
 
-        navigationMenu.findItem(R.id.logout).setVisible(mIsUserSignedIn);
-
         navigationMenu.findItem(R.id.remove_ads).setVisible(isAdsActive);
-
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -265,25 +250,10 @@ public class MainActivity extends AppCompatActivity
         return result;
     }
 
-    //todo messages will not be translated - fix it
-    //// TODO: 5/29/17 there is no mechanism to close error view - fix it
-    private void checkForUserVisibleErrors(@Nullable String forceErrorMessage) {
-
-        boolean showError = false;
-
-        // If offline, message is about the lack of connectivity:
+    private void checkConnection() {
         if (!NetworkUtils.isOnline(this)) {
-            mErrorMessage.setText(R.string.error_no_connection);
-            showError = true;
-        } else {
-            if (forceErrorMessage != null && forceErrorMessage.length() > 0) {
-                // Finally, if the caller requested to show error, show an error message:
-                mErrorMessage.setText(forceErrorMessage);
-                showError = true;
-            }
+            showError(R.string.no_internet_connection);
         }
-        mErrorView.setVisibility(showError ? View.VISIBLE : View.GONE);
-        Log.d(TAG, mErrorMessage.getText().toString());
     }
 
     private void updateLanguageTextView(ArrayList<String> checkedLanguages) {
@@ -316,8 +286,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initImageSourceBtns() {
-        final ImageButton photoBtn = (ImageButton) findViewById(R.id.photo_btn);
-        final ImageButton galleryBtn = (ImageButton) findViewById(R.id.gallery_btn);
+        final ImageButton photoBtn = findViewById(R.id.photo_btn);
+        final ImageButton galleryBtn = findViewById(R.id.gallery_btn);
         equalizeSides(photoBtn);
         equalizeSides(galleryBtn);
 
@@ -334,21 +304,17 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void equalizeSides(final View v) {
-        v.post(new Runnable() {
-
-            @Override
-            public void run() {
-                LinearLayout.LayoutParams mParams;
-                mParams = (LinearLayout.LayoutParams) v.getLayoutParams();
-                mParams.height = v.getWidth();
-                v.setLayoutParams(mParams);
-                v.postInvalidate();
-            }
+        v.post(() -> {
+            LinearLayout.LayoutParams mParams;
+            mParams = (LinearLayout.LayoutParams) v.getLayoutParams();
+            mParams.height = v.getWidth();
+            v.setLayoutParams(mParams);
+            v.postInvalidate();
         });
     }
 
     private void setUpToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -358,12 +324,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setUpNavigationDrawer() {
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
         // Set up the navigation drawer.
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        if (navigationView != null) {
+        navigationView = findViewById(R.id.nav_view);
             setupDrawerContent(navigationView);
-        }
     }
 
     @Override
@@ -379,36 +343,33 @@ public class MainActivity extends AppCompatActivity
 
     private void setupDrawerContent(final NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        switch (menuItem.getItemId()) {
-                            case R.id.my_docs:
-                                startMyDocsActivity();
-                                break;
-                            case R.id.about:
-                                // TODO:
-                                break;
-                            case R.id.remove_ads:
-                                // TODO:
-                                break;
-                            case R.id.logout:
-                                logout();
-                                break;
+                menuItem -> {
+                    switch (menuItem.getItemId()) {
+                        case R.id.my_docs:
+                            startMyDocsActivity();
+                            break;
+                        case R.id.about:
+                            // TODO:
+                            break;
+                        case R.id.remove_ads:
+                            // TODO:
+                            break;
+                        case R.id.logout:
+                            logout();
+                            break;
 
 
-                            default:
-                                break;
-                        }
-                        // Close the navigation drawer when an item is selected.
-                        menuItem.setChecked(true);
-                        mDrawerLayout.closeDrawers();
-                        return true;
+                        default:
+                            break;
                     }
+                    // Close the navigation drawer when an item is selected.
+                    menuItem.setChecked(true);
+                    mDrawerLayout.closeDrawers();
+                    return true;
                 });
 
         //set up login header
-        LinearLayout loginHeader = (LinearLayout) navigationView.getHeaderView(0).findViewById(R.id.propose_login_layout);
+        LinearLayout loginHeader = navigationView.getHeaderView(0).findViewById(R.id.propose_login_menu_item);
         loginHeader.setOnClickListener(this);
     }
 
@@ -418,13 +379,8 @@ public class MainActivity extends AppCompatActivity
         startActivity(intent);
     }
 
-    private void startSignInActivity() {
-        startActivityForResult(new Intent(this, LoginActivity.class), LoginActivity_REQUEST_CODE);
-    }
-
     private void logout() {
-        String userEmail = loginManager.obtainEmail();
-        SignOutDialogFragment dialog = SignOutDialogFragment.newInstance(getString(R.string.ask_sign_out, userEmail));
+        SignOutDialogFragment dialog = SignOutDialogFragment.newInstance(getString(R.string.ask_sign_out, mEmail));
         dialog.show(getFragmentManager(), "dialog");
     }
 
@@ -546,39 +502,28 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * called by sign out DialogFragment
-     */
-    @Override
-    public void onSignedOut() {
-        Log.d(TAG, "onSignedOut");
-        loginManager.logout();
-        mIsUserSignedIn = false;
-        updateUi();
-    }
-
-    @Override
-    public void onSignedIn() {
-        Log.d(TAG, "onSignedIn");
-        mIsUserSignedIn = true;
-        updateUi();
-
-    }
-
-    /**
      * update UI if signed in/out
      */
-    private void updateUi() {
-        updateNavigationDrawer();
-        updateMainScreen();
+    @Override
+    public void updateUi(boolean isUserSignedIn) {
+        Log.d(TAG, "updateUi called with " + isUserSignedIn);
+        try {
+            updateNavigationDrawer(isUserSignedIn);
+            updateMainScreen(isUserSignedIn);
+        } catch (NullPointerException e) {
+            Log.e(TAG, "View is not ready to be updated.");
+            //ignore
+        }
     }
 
     /**
      * show/hide SignIn proposition on the main screen
+     *
+     * @param isUserSignedIn
      */
-    private void updateMainScreen() {
+    private void updateMainScreen(boolean isUserSignedIn) {
         View askLoginView = findViewById(R.id.ask_login);
-
-        if (mIsUserSignedIn) {
+        if (isUserSignedIn) {
             askLoginView.setVisibility(View.GONE);
             myDocsBtn.setVisibility(View.VISIBLE);
         } else {
@@ -587,33 +532,26 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void updateNavigationDrawer() {
-        try {
-            invalidateOptionsMenu();
+    private void updateNavigationDrawer(boolean isUserSignedIn) {
 
-            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-            View signedInNavHeader = navigationView.getHeaderView(0).findViewById(R.id.signed_in_layout);
-            View askSignInNavHeader = navigationView.getHeaderView(0).findViewById(R.id.propose_login_layout);
+        Menu navigationMenu = navigationView.getMenu();
+        navigationMenu.findItem(R.id.logout).setVisible(isUserSignedIn);
 
-            if (mIsUserSignedIn) {
+        View signedInNavHeader = navigationView.getHeaderView(0).findViewById(R.id.signed_in_layout);
+        View askSignInNavHeader = navigationView.getHeaderView(0).findViewById(R.id.propose_login_menu_item);
 
-                //show signed in nav_header
-                signedInNavHeader.setVisibility(View.VISIBLE);
-                askSignInNavHeader.setVisibility(View.GONE);
+        askSignInNavHeader.setVisibility(isUserSignedIn ? View.GONE : View.VISIBLE);
+        signedInNavHeader.setVisibility(isUserSignedIn ? View.VISIBLE : View.GONE);
 
-                //set "signed as" text
-                String userEmail = loginManager.obtainEmail();
-                TextView signedAsText = (TextView) signedInNavHeader.findViewById(R.id.you_signed_as);
-                signedAsText.setText(getString(R.string.you_signed_in_as, userEmail));
+        if (isUserSignedIn) {
 
-            } else {
-                //show propose login nav_header
-                askSignInNavHeader.setVisibility(View.VISIBLE);
-                signedInNavHeader.setVisibility(View.GONE);
+            //set "signed as" text
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user != null) {
+                mEmail = user.getEmail();
             }
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
-            e.printStackTrace();
+            TextView signedAsText = signedInNavHeader.findViewById(R.id.you_signed_as);
+            signedAsText.setText(getString(R.string.you_signed_in_as, mEmail));
         }
     }
 
@@ -621,10 +559,10 @@ public class MainActivity extends AppCompatActivity
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.sign_in_btn:
-                startSignInActivity();
+                signIn();
                 break;
-            case R.id.propose_login_layout:
-                startSignInActivity();
+            case R.id.propose_login_menu_item:
+                signIn();
                 break;
             case R.id.language:
                 onLanguageTextViewClicked();
@@ -647,17 +585,5 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(this, LanguageActivity.class);
         intent.putExtra(CHECKED_LANGUAGES, getCheckedLanguages());
         startActivityForResult(intent, LANGUAGE_ACTIVITY_REQUEST_CODE);
-    }
-
-    /**
-     * this class provides login processors to LoginManager for auto (silent) login.
-     */
-    public static class LoginsProvider {
-        public static ArrayList<LoginProcessor> getLogins(FragmentActivity activity) {
-            ArrayList<LoginProcessor> list = new ArrayList<>();
-            list.add(new LoginGoogle(activity));
-            list.add(new LoginFacebook(CallbackManager.Factory.create()));
-            return list;
-        }
     }
 }

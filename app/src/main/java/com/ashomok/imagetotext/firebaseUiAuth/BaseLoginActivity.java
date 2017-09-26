@@ -1,6 +1,5 @@
 package com.ashomok.imagetotext.firebaseUiAuth;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,7 +7,8 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.MainThread;
 import android.support.annotation.StringRes;
 import android.support.annotation.StyleRes;
-import android.view.View;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.ashomok.imagetotext.R;
 import com.firebase.ui.auth.AuthUI;
@@ -25,7 +25,7 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  * Created by iuliia on 9/24/17.
  */
 //this class will be used by MainActivity and myDocs Activity
-public abstract class BaseLoginActivity extends Activity {
+public abstract class BaseLoginActivity extends AppCompatActivity {
     public static final String TAG = DEV_TAG + BaseLoginActivity.class.getSimpleName();
 
     private static final String UNCHANGED_CONFIG_VALUE = "CHANGE-ME";
@@ -33,6 +33,7 @@ public abstract class BaseLoginActivity extends Activity {
     private static final String FIREBASE_PRIVACY_POLICY_URL = "https://firebase.google.com/terms/analytics/#7_privacy";
 
     private static final int RC_SIGN_IN = 100;
+    public boolean mIsUserSignedIn = false;
 
     public static Intent createIntent(Context context) {
         return new Intent(context, BaseLoginActivity.class);
@@ -44,19 +45,11 @@ public abstract class BaseLoginActivity extends Activity {
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
-            startSignedInActivity();
-            finish();
-            return;
-        }
-
-        //// TODO: 9/24/17 remove later
-        if (isGoogleMisconfigured() || isFacebookMisconfigured()) {
-            showError(R.string.configuration_required);
+            onSignedIn();
         }
     }
 
-    //// TODO: 9/24/17 call from superclass when sign-in btn clicked
-    public void signIn(View view) {
+    public void signIn() {
         startActivityForResult(
                 AuthUI.getInstance().createSignInIntentBuilder()
                         .setTheme(getSelectedTheme())
@@ -70,15 +63,13 @@ public abstract class BaseLoginActivity extends Activity {
                 RC_SIGN_IN);
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             handleSignInResponse(resultCode, data);
-            return;
         }
-
-        showError(R.string.unknown_response);
     }
 
     @MainThread
@@ -87,8 +78,7 @@ public abstract class BaseLoginActivity extends Activity {
 
         // Successfully signed in
         if (resultCode == RESULT_OK) {
-            startSignedInActivity();
-            finish();
+            onSignedIn();
             return;
         } else {
             // Sign in failed
@@ -112,7 +102,6 @@ public abstract class BaseLoginActivity extends Activity {
         showError(R.string.unknown_sign_in_response);
     }
 
-
     @MainThread
     @StyleRes
     private int getSelectedTheme() {
@@ -131,17 +120,8 @@ public abstract class BaseLoginActivity extends Activity {
     private List<AuthUI.IdpConfig> getSelectedProviders() {
         List<AuthUI.IdpConfig> selectedProviders = new ArrayList<>();
 
-
-        selectedProviders.add(
-                new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER)
-                        .setPermissions(getGooglePermissions())
-                        .build());
-
-        selectedProviders.add(
-                new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER)
-                        .setPermissions(getFacebookPermissions())
-                        .build());
-
+        selectedProviders.add(new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build());
+        selectedProviders.add(new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build());
         selectedProviders.add(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build());
 
         return selectedProviders;
@@ -158,30 +138,31 @@ public abstract class BaseLoginActivity extends Activity {
     }
 
     @MainThread
-    private boolean isGoogleMisconfigured() {
-        return UNCHANGED_CONFIG_VALUE.equals(getString(R.string.default_web_client_id));
-    }
-
-    @MainThread
-    private boolean isFacebookMisconfigured() {
-        return UNCHANGED_CONFIG_VALUE.equals(getString(R.string.facebook_application_id));
-    }
-
-
-    @MainThread
     public abstract void showError(@StringRes int errorMessageRes);
 
-    //todo remove this
-    @MainThread
-    private List<String> getFacebookPermissions() {
-        return new ArrayList<>();
+    public abstract void updateUi(boolean isUserSignedIn);
+
+    public void onSignedIn() {
+        Log.d(TAG, "onSignedIn");
+        mIsUserSignedIn = true;
+        updateUi(mIsUserSignedIn);
     }
 
-    //todo remove this
-    @MainThread
-    private List<String> getGooglePermissions() {
-        return new ArrayList<>();
-    }
+    /**
+     * called by sign out DialogFragment
+     */
+    public void onSignedOutCalled() {
+        Log.d(TAG, "onSignedOutCalled");
 
-    public abstract void startSignedInActivity();
+        AuthUI.getInstance()
+                .signOut(this)
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        showError(R.string.sign_out_failed);
+                    }
+                });
+
+        mIsUserSignedIn = false;
+        updateUi(mIsUserSignedIn);
+    }
 }

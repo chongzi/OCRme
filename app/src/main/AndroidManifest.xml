@@ -78,16 +78,6 @@
                 android:value=".ocr_result.OcrResultActivity" />
         </activity>
         <activity
-            android:name=".sign_in.RegisterActivity"
-            android:label="@string/register"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
-        <activity
-            android:name=".sign_in.ForgotPassActivity"
-            android:label="@string/forgot_password"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
-        <activity
             android:name=".language_choser.LanguageActivity"
             android:label="@string/language_label"
             android:parentActivityName=".MainActivity"

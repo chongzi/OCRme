@@ -1,9 +1,8 @@
-package com.ashomok.imagetotext.sign_in;
+package com.ashomok.imagetotext.firebaseUiAuth;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.os.Bundle;
 
 import com.ashomok.imagetotext.R;
@@ -11,12 +10,10 @@ import com.ashomok.imagetotext.R;
 /**
  * Created by iuliia on 8/9/17.
  */
-
-//todo pls answer https://stackoverflow.com/questions/13338113/managing-activity-from-dialogfragment
 public class SignOutDialogFragment extends DialogFragment {
 
     public interface OnSignedOutListener {
-        void onSignedOut();
+        void onSignedOutCalled();
     }
 
     private OnSignedOutListener mListener;
@@ -38,17 +35,11 @@ public class SignOutDialogFragment extends DialogFragment {
         return new AlertDialog.Builder(getActivity())
                 .setMessage(title)
                 .setPositiveButton(R.string.ok,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                mListener.onSignedOut();
-                            }
-                        }
+                        (dialog, whichButton) -> mListener.onSignedOutCalled()
                 )
                 .setNegativeButton(R.string.cancel,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                //nothing
-                            }
+                        (dialog, whichButton) -> {
+                            //nothing
                         }
                 )
                 .create();

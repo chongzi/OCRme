@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark"
         android:background="?attr/colorButtonNormal"
-        android:id="@+id/propose_login_layout"
+        android:id="@+id/propose_login_menu_item"
         android:padding="19dp"
         android:clickable="true"
         android:orientation="horizontal"

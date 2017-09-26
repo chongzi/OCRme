@@ -45,8 +45,7 @@
     <string name="max_checked_allowed">Max %1$s languages allowed</string>
     <string name="text_not_found">Text not found.</string>
     <string name="select_photo">Select a photo</string>
-    <string name="error_no_connection">Cannot connect to server. Please, check your Internet connectivity.</string>
-    <string name="file_not_found">File not found.</string>
+     <string name="file_not_found">File not found.</string>
     <string name="sign_in_captured">SIGN IN</string>
     <string name="logout">Logout</string>
     <string name="facebook_application_id" translatable="false">1921494888130800</string>
