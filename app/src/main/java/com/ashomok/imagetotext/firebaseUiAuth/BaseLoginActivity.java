@@ -28,13 +28,13 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 public abstract class BaseLoginActivity extends AppCompatActivity {
     public static final String TAG = DEV_TAG + BaseLoginActivity.class.getSimpleName();
 
-    private static final String UNCHANGED_CONFIG_VALUE = "CHANGE-ME";
     private static final String FIREBASE_TOS_URL = "https://firebase.google.com/terms/";
     private static final String FIREBASE_PRIVACY_POLICY_URL = "https://firebase.google.com/terms/analytics/#7_privacy";
 
     private static final int RC_SIGN_IN = 100;
     public boolean mIsUserSignedIn = false;
 
+    //// TODO: 10/3/17 use this method- see firebase example
     public static Intent createIntent(Context context) {
         return new Intent(context, BaseLoginActivity.class);
     }

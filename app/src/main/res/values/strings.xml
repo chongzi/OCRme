@@ -30,7 +30,7 @@
     <string name="arabic">Arabic</string>
     <string name="assamese">Assamese</string>
     <string name="azarbaijani">Azerbaijani</string>
-    <string name="belarusian">Belarusian</string>
+    <string name="belorussian">Belorussian</string>
     <string name="bengali">Bengali</string>
     <string name="bulgarian">Bulgarian</string>
     <string name="catalan">Catalan</string>
@@ -141,4 +141,7 @@
     <string name="choose_image">Choose Image</string>
     <string name="accessibility_downloaded_image">Downloaded image</string>
     <string name="allow_new_email_acccount">Allow account creation if email does not exist.</string>
+    <string name="canceled">Canseled</string>
+    <string name="invalid_language_hints">Invalid language hints. \nRun again with Auto language.</string>
+    <string name="result">Result</string>
 </resources>

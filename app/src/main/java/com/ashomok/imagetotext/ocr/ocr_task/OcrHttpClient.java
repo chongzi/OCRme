@@ -1,16 +1,12 @@
 package com.ashomok.imagetotext.ocr.ocr_task;
 
-import android.util.Log;
+import com.annimon.stream.Optional;
 
-import java.io.File;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -53,22 +49,22 @@ public class OcrHttpClient {
         ocrAPI = retrofit.create(OcrAPI.class);
     }
 
-    public Single<OcrResponse> ocr(String filePath, List<String> languages) {
-        if (filePath != null && !filePath.isEmpty()) {
-            File file = new File(filePath);
-            if (file.exists()) {
+    /**
+     * @param gcsImageUri Google cloud storage image uri,
+     *                    example "gs://bucket-for-requests-test/2017-07-26-12-37-36-806-2017-07-26-12-37-36-806-ru.jpg";
+     * @param languages
+     * @return
+     */
+    public Single<OcrResponse> ocr(String gcsImageUri, Optional<List<String>> languages) {
 
-                // creates RequestBody instance from file
-                RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-                // MultipartBody.Part is used to send also the actual filename
-                MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
-
-                return ocrAPI.ocr(body, languages);
-            } else {
-                Log.e(TAG, "file not exists");
-            }
+        if (gcsImageUri != null && gcsImageUri.contains("gs://")) {
+            OcrRequestBean ocrRequest = new OcrRequestBean();
+            ocrRequest.setGcsImageUri(gcsImageUri);
+            languages.ifPresent(l -> ocrRequest.setLanguages(l.toArray(new String[l.size()])));
+            return ocrAPI.ocr(ocrRequest);
+        } else {
+            return Single.error(new Exception("Wrong path or file not exists."));
         }
-        return Single.error(new Exception("file not exists"));
     }
 }
 

@@ -16,6 +16,6 @@
     <dimen name="base_margin">14dp</dimen>
     <dimen name="top_margin">18dp</dimen>
     <dimen name="default_font_size">18sp</dimen>
-
+    <dimen name="empty_view_error_font_size">18sp</dimen>
 
 </resources>

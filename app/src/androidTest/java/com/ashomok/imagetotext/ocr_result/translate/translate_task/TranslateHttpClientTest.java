@@ -36,12 +36,8 @@ public class TranslateHttpClientTest {
 
     @Test
     public void translate() {
-        TranslateRequestBean translateRequest = new TranslateRequestBean();
-        translateRequest.setTargetLang("de");
-        translateRequest.setSourceText("наша мама добрая");
-
         TranslateResponse responce =
-                client.translate(translateRequest).blockingGet();
+                client.translate("de", "наша мама добрая").blockingGet();
 
         Assert.assertTrue(responce.getStatus().equals(TranslateResponse.Status.OK));
         Assert.assertTrue(responce.getSourceLanguageCode().equals("ru"));
@@ -52,10 +48,6 @@ public class TranslateHttpClientTest {
     @Test
     public void callInParallel() throws InterruptedException {
 
-        TranslateRequestBean translateRequest = new TranslateRequestBean();
-        translateRequest.setTargetLang("de");
-        translateRequest.setSourceText("наша мама добрая");
-
         Single<SupportedLanguagesResponce> supportedLanguagesResponceSingle =
                 client.getSupportedLanguages("en")
                         .doOnEvent((supportedLanguagesResponce, throwable) -> {
@@ -65,7 +57,7 @@ public class TranslateHttpClientTest {
                         ).subscribeOn(Schedulers.io());
 
         Single<TranslateResponse> translateResponseSingle =
-                client.translate(translateRequest)
+                client.translate("de", "наша мама добрая")
                         .doOnEvent((supportedLanguagesResponce, throwable) -> {
                                     Log.d(TAG, "getSupportedLanguages thread = "
                                             + Thread.currentThread().getName());

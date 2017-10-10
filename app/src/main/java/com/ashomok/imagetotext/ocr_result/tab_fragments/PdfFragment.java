@@ -4,6 +4,7 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -31,7 +32,9 @@ import com.ashomok.imagetotext.utils.RequestPermissionToolImpl;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -49,17 +52,16 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  */
 
 //todo request permissions using rx
-public class PdfFragment extends TabFragment
+public class PdfFragment extends Fragment
         implements View.OnClickListener, FragmentCompat.OnRequestPermissionsResultCallback {
-    public static final String EXTRA_PDF_URL = "com.ashomokdev.imagetotext.PDF_URL";
+    public static final String EXTRA_PDF_GS_URL = "com.ashomokdev.imagetotext.PDF_URL";
+    public static final String EXTRA_PDF_MEDIA_URL = "com.ashomokdev.imagetotext.EXTRA_PDF_MEDIA_URL";
     private static final String TAG = DEV_TAG + PdfFragment.class.getSimpleName();
     private static final int OPEN_IN_ANOTHER_APP_REQUEST_CODE = 0;
     private static final int DOWNLOAD_REQUEST_CODE = 1;
-
-    private String mStoreLocation = "gs://imagetotext-149919.appspot.com/ru.pdf";
-    private String mDownloadURL =
-            "https://firebasestorage.googleapis.com/v0/b/imagetotext-149919.appspot.com/o/ru.pdf?alt=media&token=74581dc3-4460-476a-b478-c7dc7a17a573v";
-
+    private FirebaseAuth mAuth; //needs for pdf downloading
+    private String mStoreLocation;
+    private String mDownloadURL;
     private File mPdfFile;
 
     /**
@@ -74,13 +76,24 @@ public class PdfFragment extends TabFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.pdf_fragment, container, false);
-        mPdfView = (PDFView) view.findViewById(R.id.pdfView);
-        progressBar = (ProgressBar) view.findViewById(R.id.progress);
+        mPdfView = view.findViewById(R.id.pdfView);
+        progressBar = view.findViewById(R.id.progress);
+
+        Bundle bundle = getArguments();
+        mStoreLocation = bundle.getCharSequence(EXTRA_PDF_GS_URL).toString();
+        mDownloadURL = bundle.getCharSequence(EXTRA_PDF_MEDIA_URL).toString();
+
+        //// TODO: 10/6/17 use rx instead
         requestTool = new RequestPermissionToolImpl();
         return view;
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        authenticate();
+    }
+
     protected void doStaff() {
         showProgress(true);
 
@@ -100,24 +113,17 @@ public class PdfFragment extends TabFragment
         mPdfFile = File.createTempFile("temp", ".pdf");
 
         storageRef.getFile(mPdfFile).addOnSuccessListener(
-                new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-
-                        Log.d(TAG, "Local temp file has been created");
-                        showProgress(false);
-                        if (mPdfFile.exists()) {
-                            Log.d(TAG, "file exists");
-                            setToPDFView(mPdfFile);
-                        }
-
+                taskSnapshot -> {
+                    Log.d(TAG, "Local temp file has been created");
+                    showProgress(false);
+                    if (mPdfFile.exists()) {
+                        Log.d(TAG, "file exists");
+                        setToPDFView(mPdfFile);
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                showProgress(false);
-                Log.e(TAG, "error occurs in getting file from Storage Ref.");
-            }
+
+                }).addOnFailureListener(exception -> {
+            showProgress(false);
+            Log.e(TAG, "error occurs in getting file from Storage Ref.");
         });
     }
 
@@ -130,34 +136,38 @@ public class PdfFragment extends TabFragment
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        try {
+            // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+            // for very easy animations. If available, use these APIs to fade-in
+            // the progress spinner.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+                int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mPdfView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mPdfView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mPdfView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
+                mPdfView.setVisibility(show ? View.GONE : View.VISIBLE);
+                mPdfView.animate().setDuration(shortAnimTime).alpha(
+                        show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mPdfView.setVisibility(show ? View.GONE : View.VISIBLE);
+                    }
+                });
 
-            progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
-            progressBar.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
-            mPdfView.setVisibility(show ? View.GONE : View.VISIBLE);
+                progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+                progressBar.animate().setDuration(shortAnimTime).alpha(
+                        show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+                    }
+                });
+            } else {
+                // The ViewPropertyAnimator APIs are not available, so simply show
+                // and hide the relevant UI components.
+                progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+                mPdfView.setVisibility(show ? View.GONE : View.VISIBLE);
+            }
+        } catch (IllegalStateException e) {
+            Log.e(TAG, e.getMessage());
         }
     }
 
@@ -341,5 +351,29 @@ public class PdfFragment extends TabFragment
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, res.getString(R.string.link_to_pdf));
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, styledText);
         getActivity().startActivity(Intent.createChooser(sharingIntent, res.getString(R.string.send_pdf_to)));
+    }
+
+    private void authenticate() {
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            doStaff();
+        } else {
+            signInAnonymously();
+        }
+    }
+
+    private void signInAnonymously() {
+        mAuth.signInAnonymously()
+                .addOnSuccessListener(getActivity(), authResult -> doStaff())
+                .addOnFailureListener(getActivity(), exception -> {
+                    Log.e(TAG, "signInAnonymously:FAILURE", exception);
+                    try {
+                        doStaff();
+                    } catch (Exception e) {
+                        Log.e(TAG, e.getMessage());
+                        e.printStackTrace();
+                    }
+                });
     }
 }

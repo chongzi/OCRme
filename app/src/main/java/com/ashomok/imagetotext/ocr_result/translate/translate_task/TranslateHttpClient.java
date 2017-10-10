@@ -50,7 +50,29 @@ public class TranslateHttpClient {
         return translateAPI.getSupportedLanguages(deviceLanguageCode);
     }
 
-    public Single<TranslateResponse> translate(@NonNull TranslateRequestBean translateRequest) {
+    /**
+     * @param deviceLanguageCode device Language Code
+     * @param inputText input text
+     * @return
+     */
+    public Single<TranslateResponse> translate(String deviceLanguageCode, String inputText) {
+        TranslateRequestBean translateRequest = new TranslateRequestBean();
+        translateRequest.setTargetLang(deviceLanguageCode);
+        translateRequest.setSourceText(inputText);
+        return translateAPI.translate(translateRequest);
+    }
+
+    /**
+     * @param sourceLanguageCode source language code
+     * @param targetLanguageCode target language code
+     * @param sourceText source text
+     * @return
+     */
+    public Single<TranslateResponse> translate(String sourceLanguageCode, String targetLanguageCode, String sourceText) {
+        TranslateRequestBean translateRequest = new TranslateRequestBean();
+        translateRequest.setSourceLang(sourceLanguageCode);
+        translateRequest.setTargetLang(targetLanguageCode);
+        translateRequest.setSourceText(sourceText);
         return translateAPI.translate(translateRequest);
     }
 }

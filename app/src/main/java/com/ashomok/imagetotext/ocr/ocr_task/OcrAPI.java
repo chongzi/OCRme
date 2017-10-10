@@ -22,9 +22,6 @@ import retrofit2.http.Query;
 public interface OcrAPI {
     String ENDPOINT = "https://imagetotext-149919.appspot.com";
 
-    //curl -i -X POST -H "Content-Type: multipart/form-data" -F "file=@/home/iuliia/Documents/idea_projects/ocr_me/ocrmeGVisionAppEngine/src/test/resources/test_imgs/rus.jpg" https://imagetotext-149919.appspot.com/ocr_request?language=ru
-    @Multipart
     @POST("ocr_request")
-    Single<OcrResponse> ocr(@Part MultipartBody.Part file,  @Query("language") List<String> languages);
-
+    Single<OcrResponse> ocr(@Body OcrRequestBean ocrRequest);
 }

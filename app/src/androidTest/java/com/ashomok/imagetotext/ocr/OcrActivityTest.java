@@ -33,16 +33,16 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static com.ashomok.imagetotext.utils.FilesProvider.getTestImages;
-import static java.lang.Thread.sleep;
+import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 /**
  * Created by iuliia on 12/25/16.
  */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class SetImageTest {
+public class OcrActivityTest {
 
-    private static final String TAG = SetImageTest.class.getSimpleName();
+    private static final String TAG = DEV_TAG + OcrActivityTest.class.getSimpleName();
 
     @Rule
     public ActivityTestRule<OcrActivity> mActivityRule = new ActivityTestRule<>(
@@ -54,18 +54,21 @@ public class SetImageTest {
     }
 
     @Test
+    public void testOcr() throws InterruptedException {
+        String path = getTestImages().get(0);
+        launchActivityWithPath(Uri.fromFile(new File(path)));
+        Thread.sleep(40000);
+        //// TODO: 10/2/17 add check log contains "ocr returns" 
+    }
+
+    @Test
     public void backgroundSettedProperly() throws InterruptedException {
-        ArrayList<String> imagePaths = getTestImages();
-        for (String path : imagePaths) {
-            launchActivityWithPath(Uri.fromFile(new File(path)));
+        String path = getTestImages().get(0);
+        launchActivityWithPath(Uri.fromFile(new File(path)));
 
-            onView(withId(R.id.image)).check(matches(isDisplayed()));
-            //wait while image was loaded by Picasso
-            sleep(5000);
-            onView(withId(R.id.image)).check(matches(hasDrawable()));
-
-            mActivityRule.getActivity().finish();
-        }
+        onView(withId(R.id.image)).check(matches(isDisplayed()));
+        Thread.sleep(50000);
+        onView(withId(R.id.image)).check(matches(hasDrawable()));
     }
 
     private void launchActivityWithPath(Uri uri) {
@@ -73,6 +76,10 @@ public class SetImageTest {
                 .getTargetContext();
         Intent intent = new Intent(targetContext, OcrActivity.class);
         intent.setData(uri);
+
+        ArrayList<String> languages = new ArrayList<>();
+        languages.add("ru");
+        intent.putExtra(OcrActivity.EXTRA_LANGUAGES, languages);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 

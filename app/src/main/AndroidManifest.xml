@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -26,10 +25,6 @@
                 android:resource="@xml/provider_paths"/>
         </provider>
 
-        <!--<meta-data-->
-            <!--android:name="com.facebook.sdk.ApplicationId"-->
-            <!--android:value="@string/facebook_app_id" />-->
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -46,16 +41,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".sign_in.LoginActivity"
-            android:label="@string/sign_in"
-            android:parentActivityName=".MainActivity"
-            android:exported="true"
-            android:theme="@style/AppTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
         </activity>
         <activity
             android:name=".my_docs.MyDocsActivity"
@@ -87,6 +72,7 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
+            android:label="@string/result"
             android:name=".ocr_result.OcrResultActivity"
             android:windowSoftInputMode="adjustPan"
             android:parentActivityName=".MainActivity"
@@ -99,31 +85,13 @@
         <activity
             android:name=".ocr.OcrActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/recognizing"
+            android:noHistory="true"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-
-        <!--&lt;!&ndash;START facebook part&ndash;&gt;-->
-        <!--&lt;!&ndash;TODO make hash key before relise https://developers.facebook.com/docs/facebook-loginProcessor/android&ndash;&gt;-->
-        <!--<activity android:name="com.facebook.FacebookActivity"-->
-            <!--android:configChanges=-->
-                <!--"keyboard|keyboardHidden|screenLayout|screenSize|orientation"-->
-            <!--android:label="@string/app_name" />-->
-        <!--<activity-->
-            <!--android:name="com.facebook.CustomTabActivity"-->
-            <!--android:exported="true">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.VIEW" />-->
-                <!--<category android:name="android.intent.category.DEFAULT" />-->
-                <!--<category android:name="android.intent.category.BROWSABLE" />-->
-                <!--<data android:scheme="@string/fb_login_protocol_scheme" />-->
-            <!--</intent-filter>-->
-        <!--</activity>-->
-        <!--&lt;!&ndash;END facebook part&ndash;&gt;-->
     </application>
 
 </manifest>

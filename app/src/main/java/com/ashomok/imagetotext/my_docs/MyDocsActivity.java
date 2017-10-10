@@ -13,6 +13,7 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  * Created by iuliia on 8/18/17.
  */
 
+//// TODO: 10/3/17 make extends baseloginactivity
 public class MyDocsActivity extends AppCompatActivity {
     private static final String TAG = DEV_TAG + MyDocsActivity.class.getSimpleName();
     public static final String IS_SIGNED_IN_TAG = "IS_SIGNED_IN_TAG";

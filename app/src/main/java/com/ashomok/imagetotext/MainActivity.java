@@ -41,7 +41,6 @@ import com.ashomok.imagetotext.language_choser.LanguageActivity;
 import com.ashomok.imagetotext.language_choser.LanguageList;
 import com.ashomok.imagetotext.my_docs.MyDocsActivity;
 import com.ashomok.imagetotext.ocr.OcrActivity;
-import com.ashomok.imagetotext.ocr.RecognizeImageAsyncTask;
 import com.ashomok.imagetotext.utils.NetworkUtils;
 import com.ashomok.imagetotext.utils.PermissionUtils;
 import com.google.firebase.auth.FirebaseAuth;
@@ -57,16 +56,18 @@ import java.util.TreeSet;
 
 import static com.ashomok.imagetotext.Settings.isAdsActive;
 import static com.ashomok.imagetotext.language_choser.LanguageActivity.CHECKED_LANGUAGES;
+import static com.ashomok.imagetotext.ocr.OcrActivity.RESULT_CANCELED_BY_USER;
 import static com.ashomok.imagetotext.utils.FileUtils.prepareDirectory;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
+//// TODO: 9/27/17 requset permissions using rx or pub.devrel.easypermissions;
 public class MainActivity extends BaseLoginActivity
         implements SignOutDialogFragment.OnSignedOutListener, View.OnClickListener {
 
     private static final String TAG = DEV_TAG + MainActivity.class.getSimpleName();
     private static final int LANGUAGE_ACTIVITY_REQUEST_CODE = 1;
     private static final int CaptureImage_REQUEST_CODE = 2;
-    private static final int OCRAnimationActivity_REQUEST_CODE = 3;
+    private static final int OCR_Activity_REQUEST_CODE = 3;
     private static final int CAMERA_PERMISSIONS_REQUEST = 5;
     private static final int GALLERY_IMAGE_REQUEST = 6;
     private DrawerLayout mDrawerLayout;
@@ -84,7 +85,6 @@ public class MainActivity extends BaseLoginActivity
         }
     };
     private Uri imageUri;
-    private RecognizeImageAsyncTask recognizeImageAsyncTask;
     private TextView languageTextView;
     private Button myDocsBtn;
     private View mRootView;
@@ -94,30 +94,18 @@ public class MainActivity extends BaseLoginActivity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        setUpToolbar();
-
-        setUpNavigationDrawer();
-
-        initImageSourceBtns();
-
         mRootView = findViewById(R.id.drawer_layout);
 
-        languageTextView = findViewById(R.id.language);
-        languageTextView.setPaintFlags(languageTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        languageTextView.setOnClickListener(this);
-        updateLanguageTextView(getCheckedLanguages());
+        setUpToolbar();
+        setUpNavigationDrawer();
 
         checkConnection();
 
-        Button signInBtn = findViewById(R.id.sign_in_btn);
-        signInBtn.setOnClickListener(this);
-
-        myDocsBtn = findViewById(R.id.my_docs_btn);
-        myDocsBtn.setOnClickListener(this);
-
-        updateUi(mIsUserSignedIn);
+        initImageSourceBtns();
+        initLanguageViews();
+        initMyDocsView();
     }
+
 
     @Override
     public void onStart() {
@@ -133,12 +121,27 @@ public class MainActivity extends BaseLoginActivity
         unregisterReceiver(mConnectivityChangeReceiver);
     }
 
+
+    private void initMyDocsView() {
+        Button signInBtn = findViewById(R.id.sign_in_btn);
+        signInBtn.setOnClickListener(this);
+
+        myDocsBtn = findViewById(R.id.my_docs_btn);
+        myDocsBtn.setOnClickListener(this);
+
+        updateUi(mIsUserSignedIn);
+    }
+
+    private void initLanguageViews() {
+        languageTextView = findViewById(R.id.language);
+        languageTextView.setPaintFlags(languageTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        languageTextView.setOnClickListener(this);
+        updateLanguageTextView(getCheckedLanguages());
+    }
+
     @NonNull
     private ArrayList<String> getCheckedLanguages() {
-        Set<String> checkedLanguageNames = obtainSavedLanguages();
-        ArrayList<String> checkedLanguages = new ArrayList<>();
-        checkedLanguages.addAll(checkedLanguageNames);
-        return checkedLanguages;
+        return new ArrayList<>(obtainSavedLanguages());
     }
 
     @Override
@@ -151,28 +154,25 @@ public class MainActivity extends BaseLoginActivity
             updateLanguageTextView(checkedLanguages);
         }
 
-        //making photo
+        //photo obtained from camera
         else if (requestCode == CaptureImage_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            startOCRtask(imageUri);
+            startOcrActivity(imageUri);
         }
 
         //photo obtained from gallery
         else if (requestCode == GALLERY_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
             try {
                 Uri uri = data.getData();
-                startOCRtask(uri);
+                startOcrActivity(uri);
             } catch (Exception e) {
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+                showError(R.string.file_not_found);
+                e.printStackTrace();
             }
         }
 
         //ocr canceled
-        else if (requestCode == OCRAnimationActivity_REQUEST_CODE && resultCode == Activity.RESULT_CANCELED) {
-            if (recognizeImageAsyncTask != null) {
-                recognizeImageAsyncTask.cancel(true);
-            }
-
-            //show ocr canseled message
+        else if (requestCode == OCR_Activity_REQUEST_CODE && resultCode == RESULT_CANCELED_BY_USER) {
+           showWarning(R.string.canceled);
         }
     }
 
@@ -183,46 +183,17 @@ public class MainActivity extends BaseLoginActivity
         snackbar.show();
     }
 
-    private void startOCRtask(Uri uri) {
-
-        runOCRAnimation(uri);
-
-        //// TODO: 9/20/17
-        //start ocr
-//        if (NetworkUtils.isOnline(this)) {
-//
-//            ArrayList<String> languages = obtainLanguageShortcuts();
-//            String path = getImagePath(uri);
-//            if (path != null) {
-//                recognizeImageAsyncTask = new RecognizeImageRESTClient(path, languages);
-//
-//                RecognizeImageAsyncTask.OnTaskCompletedListener onTaskCompletedListener = new RecognizeImageAsyncTask.OnTaskCompletedListener() {
-//                    @Override
-//                    public void onTaskCompleted(String result) {
-//                        finishActivity(OCRAnimationActivity_REQUEST_CODE);
-//
-//                        //// TODO: 12/22/16
-//                        //open new activity and show result
-//                    }
-//
-//                    @Override
-//                    public void onError(String message) {
-//                        finishActivity(OCRAnimationActivity_REQUEST_CODE);
-//                        checkConnection(message);
-//                    }
-//                };
-//                recognizeImageAsyncTask.setOnTaskCompletedListener(onTaskCompletedListener);
-//                recognizeImageAsyncTask.execute();
-//            }
-//        } else {
-//            //// TODO: 8/19/17 show error message in card view
-//        }
+    public void showWarning(@StringRes int errorMessageRes) {
+        Snackbar snackbar = Snackbar.make(mRootView, errorMessageRes, Snackbar.LENGTH_LONG);
+        snackbar.getView().setBackgroundColor(ContextCompat.getColor(this, R.color.orange_500));
+        snackbar.show();
     }
 
-    private void runOCRAnimation(Uri image) {
+    private void startOcrActivity(Uri uri) {
         Intent intent = new Intent(this, OcrActivity.class);
-        intent.setData(image);
-        startActivityForResult(intent, OCRAnimationActivity_REQUEST_CODE);
+        intent.setData(uri);
+        intent.putExtra(OcrActivity.EXTRA_LANGUAGES, obtainLanguageShortcuts());
+        startActivityForResult(intent, OCR_Activity_REQUEST_CODE);
     }
 
     @Override
@@ -235,7 +206,7 @@ public class MainActivity extends BaseLoginActivity
 
 
     private ArrayList<String> obtainLanguageShortcuts() {
-        ArrayList<String> languageNames = getCheckedLanguages();
+        ArrayList<String> languageNames = getCheckedLanguages(); //todo put chackedlanguages to class field
 
         LanguageList data = new LanguageList(this);
         LinkedHashMap<String, String> languages = data.getLanguages();
@@ -258,16 +229,7 @@ public class MainActivity extends BaseLoginActivity
 
     private void updateLanguageTextView(ArrayList<String> checkedLanguages) {
         String languageString = generateLanguageString(checkedLanguages);
-        updateTextView(languageTextView, languageString);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
-    private void updateTextView(TextView textView, String newValue) {
-        textView.setText(newValue);
+        languageTextView.setText(languageString);
     }
 
     @NonNull
@@ -380,7 +342,8 @@ public class MainActivity extends BaseLoginActivity
     }
 
     private void logout() {
-        SignOutDialogFragment dialog = SignOutDialogFragment.newInstance(getString(R.string.ask_sign_out, mEmail));
+        SignOutDialogFragment dialog =
+                SignOutDialogFragment.newInstance(getString(R.string.ask_sign_out, mEmail));
         dialog.show(getFragmentManager(), "dialog");
     }
 

@@ -1,11 +1,13 @@
 package com.ashomok.imagetotext.ocr_result.tab_fragments;
 
+import android.app.Fragment;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
@@ -24,9 +26,6 @@ import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.language_choser.LanguageActivity;
 import com.ashomok.imagetotext.ocr_result.translate.TranslateActivity;
 import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -44,27 +43,26 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  */
 
 //todo Forbidd splitter to go out of screen bounds. https://github.com/bieliaievays/OCRme/issues/2
-public class TextFragment extends TabFragment implements View.OnClickListener {
+public class TextFragment extends Fragment implements View.OnClickListener {
     public static final String EXTRA_TEXT = "com.ashomokdev.imagetotext.TEXT";
+    public static final String EXTRA_IMAGE_URI = "com.ashomokdev.imagetotext.IMAGE";
     private CharSequence textResult;
-
-    private long requestID = 123456789;
-    private String imageLink = "gs://imagetotext-149919.appspot.com/IMG_9229.JPG";
+    private Uri imageUri;
     private static final String TAG = DEV_TAG + TextFragment.class.getSimpleName();
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.text_fragment, container, false);
         Bundle bundle = getArguments();
         textResult = bundle.getCharSequence(EXTRA_TEXT);
+        imageUri = bundle.getParcelable(EXTRA_IMAGE_URI);
         return view;
     }
 
-
     @Override
-    protected void doStaff() {
-        initImage();
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setImage();
         initText();
         initBottomPanel();
     }
@@ -105,33 +103,27 @@ public class TextFragment extends TabFragment implements View.OnClickListener {
 
 
     private void initText() {
-        EditText mTextView = (EditText) getActivity().findViewById(R.id.text);
+        EditText mTextView = getActivity().findViewById(R.id.text);
         mTextView.setText(textResult);
     }
 
-    private void initImage() {
+    private void setImage() {
 
-        final ImageView mImageView = (ImageView) getActivity().findViewById(R.id.image);
+        final ImageView mImageView = getActivity().findViewById(R.id.image);
 
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference mStorageRef = storage.getReferenceFromUrl(imageLink);
-
-        // Load the image using Glide
-        Glide.with(getActivity())
-                .using(new FirebaseImageLoader())
-                .load(mStorageRef)
+        Glide.with(this)
+                .load(imageUri)
                 .fitCenter()
+                .crossFade()
                 .into(mImageView);
 
         //scroll to centre
-        final ScrollView scrollView = (ScrollView) getActivity().findViewById(R.id.image_scroll_view);
-        scrollView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                int centreHeight = mImageView.getHeight() / 2;
-                int centreWidth = mImageView.getWidth() / 2;
-                scrollView.scrollTo(centreWidth, centreHeight);
-            }
+        final ScrollView scrollView = getActivity().findViewById(R.id.image_scroll_view);
+        scrollView.addOnLayoutChangeListener((
+                v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+            int centreHeight = mImageView.getHeight() / 2;
+            int centreWidth = mImageView.getWidth() / 2;
+            scrollView.scrollTo(centreWidth, centreHeight);
         });
     }
 
@@ -182,6 +174,7 @@ public class TextFragment extends TabFragment implements View.OnClickListener {
         getActivity().startActivity(Intent.createChooser(sharingIntent, res.getString(R.string.send_text_result_to)));
     }
 
+    //// TODO: 10/4/17
     private void onTranslateClicked() {
         Intent intent = new Intent(getActivity(), TranslateActivity.class);
 //        intent.putExtra(EXTRA_LANGUAGE, language);

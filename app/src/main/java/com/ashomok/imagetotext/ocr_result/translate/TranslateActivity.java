@@ -168,12 +168,8 @@ public class TranslateActivity extends RxAppCompatActivity implements View.OnCli
 
 
             //second---------------------------------------------
-            TranslateRequestBean translateRequest = new TranslateRequestBean();
-            translateRequest.setTargetLang(deviceLanguageCode);
-            translateRequest.setSourceText(mInputText);
-
             Single<TranslateResponse> translateResponseSingle =
-                    translateHttpClient.translate(translateRequest)
+                    translateHttpClient.translate(deviceLanguageCode, mInputText)
                             .doOnEvent((supportedLanguagesResponce, throwable) -> {
                                         Log.d(TAG, "translate called in thread: "
                                                 + Thread.currentThread().getName());
@@ -210,13 +206,9 @@ public class TranslateActivity extends RxAppCompatActivity implements View.OnCli
             @NonNull String targetLanguageCode) {
 
         if (NetworkUtils.isOnline(this)) {
-            TranslateRequestBean translateRequest = new TranslateRequestBean();
-            translateRequest.setSourceLang(sourceLanguageCode);
-            translateRequest.setTargetLang(targetLanguageCode);
-            translateRequest.setSourceText(mInputText);
 
             Single<TranslateResponse> translateResponseSingle =
-                    translateHttpClient.translate(translateRequest)
+                    translateHttpClient.translate(sourceLanguageCode, targetLanguageCode, mInputText)
                             .subscribeOn(Schedulers.io());
 
             translateResponseSingle

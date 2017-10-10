@@ -3,7 +3,6 @@ package com.ashomok.imagetotext.ocr;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.animation.Animation;
@@ -11,25 +10,32 @@ import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.annimon.stream.Optional;
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.Settings;
 import com.ashomok.imagetotext.ocr.ocr_task.OcrHttpClient;
 import com.ashomok.imagetotext.ocr.ocr_task.OcrResponse;
 import com.ashomok.imagetotext.ocr_result.OcrResultActivity;
-import com.ashomok.imagetotext.utils.FileUtils;
 import com.ashomok.imagetotext.utils.NetworkUtils;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.jakewharton.rxbinding2.view.RxView;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.UUID;
+import java.util.concurrent.CancellationException;
 
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.ashomok.imagetotext.Settings.firebaseFolderURL;
 import static com.ashomok.imagetotext.ocr_result.OcrResultActivity.EXTRA_ERROR_MESSAGE;
 import static com.ashomok.imagetotext.ocr_result.OcrResultActivity.EXTRA_OCR_RESPONSE;
+import static com.ashomok.imagetotext.ocr_result.tab_fragments.TextFragment.EXTRA_IMAGE_URI;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 
@@ -37,16 +43,11 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  * Created by Iuliia on 13.12.2015.
  */
 
-//// TODO: 9/21/17 upload file to firebase and provide url to http client
-//    docs:
-//            https://firebase.google.com/docs/storage/android/upload-files
-//            https://github.com/firebase/quickstart-android/tree/master/storage
-//            https://github.com/kotlintpoint/Firebase-Storage-Upload-Download
-//            https://github.com/firebase/FirebaseUI-Android/tree/master/storage
-
+//// TODO: 10/2/17 dont show animated band untill image loaded - show progress bar instead
 public class OcrActivity extends RxAppCompatActivity {
-
+    public static final int RESULT_CANCELED_BY_USER = 123;
     private Uri imageUri;
+    private StorageReference mImageRef;
     private ArrayList<String> sourceLanguageCodes;
     public static final String EXTRA_LANGUAGES = "com.ashomokdev.imagetotext.LANGUAGES";
     public static final String TAG = DEV_TAG + OcrActivity.class.getSimpleName();
@@ -68,25 +69,35 @@ public class OcrActivity extends RxAppCompatActivity {
         callOcr(httpClient);
     }
 
-    private void callOcr(OcrHttpClient httpClient) {
-        if (NetworkUtils.isOnline(this)) {
-            String filePath = getImagePath(imageUri);
-            if (filePath != null) {
-                Single<OcrResponse> ocrResponseSingle =
-                        httpClient.ocr(filePath, sourceLanguageCodes);
+    public void callOcr(OcrHttpClient httpClient) {
+        if (isOnline()) {
+            if (imageUri != null) {
 
-                ocrResponseSingle.observeOn(AndroidSchedulers.mainThread())
+                //upload photo to firebase storage and call ocr on the result
+                Single<OcrResponse> ocrSingle = uploadPhoto(imageUri)
                         .subscribeOn(Schedulers.io())
                         .compose(bindToLifecycle())
-                        .subscribe(
-                                myData -> {
-                                    Log.d(TAG, "ocr returns " + myData.toString());
-                                    startOcrResultActivity(myData);
-                                },
-                                throwable -> {
-                                    String errorMessage = throwable.getMessage();
-                                    startOcrResultActivity(errorMessage);
-                                });
+                        .flatMap(gcsImageUri -> httpClient.ocr(
+                                gcsImageUri, Optional.ofNullable(sourceLanguageCodes))
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribeOn(Schedulers.io())
+                                .compose(bindToLifecycle())
+                        );
+
+                ocrSingle.subscribe(
+                        myData -> {
+                            Log.d(TAG, "ocr returns " + myData.toString());
+                            startOcrResultActivity(myData);
+                        },
+                        throwable -> {
+                            throwable.printStackTrace();
+                            String errorMessage = throwable.getMessage();
+                            if (errorMessage != null && errorMessage.length() > 0) {
+                                startOcrResultActivity(errorMessage);
+                            }
+                        });
+
+
             } else {
                 startOcrResultActivity(getString(R.string.file_not_found));
             }
@@ -95,9 +106,14 @@ public class OcrActivity extends RxAppCompatActivity {
         }
     }
 
+    boolean isOnline() {
+        return NetworkUtils.isOnline(this);
+    }
+
     private void startOcrResultActivity(OcrResponse data) {
         Intent intent = new Intent(this, OcrResultActivity.class);
         intent.putExtra(EXTRA_OCR_RESPONSE, data);
+        intent.putExtra(EXTRA_IMAGE_URI, imageUri);
         startActivity(intent);
     }
 
@@ -108,23 +124,11 @@ public class OcrActivity extends RxAppCompatActivity {
         startActivity(intent);
     }
 
-    @Nullable
-    private String getImagePath(Uri uri) {
-        String path = null;
-        try {
-            path = FileUtils.getRealPath(this, uri);
-        } catch (IOException e) {
-            e.printStackTrace();
-            startOcrResultActivity(getString(R.string.file_not_found));
-        }
-        return path;
-    }
-
     public void initAnimatedScanBand(boolean isTestMode) {
         if (isTestMode) {
             return;
         }
-        ImageView scan_band = (ImageView) findViewById(R.id.scan_band);
+        ImageView scan_band = findViewById(R.id.scan_band);
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -139,19 +143,48 @@ public class OcrActivity extends RxAppCompatActivity {
         scan_band.startAnimation(animation);  // start animation
     }
 
-    //todo use rx here
     private void initCancelBtn() {
-        Button cancel = (Button) findViewById(R.id.cancel_btn);
-        cancel.setOnClickListener(v -> {
-            setResult(RESULT_CANCELED);
-            finish();
-        });
+        Button cancel = findViewById(R.id.cancel_btn);
+        RxView.clicks(cancel)
+                .subscribe(aVoid -> {
+                    Log.d(TAG, "OCR canceled by user");
+                    setResult(RESULT_CANCELED_BY_USER);
+                    finish();
+                });
     }
 
     private void initImage() {
-        ImageView image = (ImageView) findViewById(R.id.image);
-        Picasso.with(this)
+        ImageView imageView = findViewById(R.id.image);
+        Glide.with(this)
                 .load(imageUri)
-                .into(image);
+                .crossFade()
+                .fitCenter()
+                .into(imageView);
+    }
+
+    /**
+     * async upload photo to firebase storage
+     *
+     * @param uri
+     */
+    public Single<String> uploadPhoto(Uri uri) {
+        return Single.create(emitter -> {
+            String uuid = UUID.randomUUID().toString();
+            mImageRef = FirebaseStorage.getInstance().getReference().child(
+                    "ocr_request_images/" + uuid + uri.getLastPathSegment());
+
+            mImageRef
+                    .putFile(uri)
+                    .addOnSuccessListener(taskSnapshot -> {
+                        String path = taskSnapshot.getMetadata().getReference().getPath();
+                        Log.d(TAG, "uploadPhoto:onSuccess:" + path);
+                        String gcsImageUri = firebaseFolderURL + path;
+                        emitter.onSuccess(gcsImageUri);
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e(TAG, "uploadPhoto:onError", e);
+                        emitter.onError(e);
+                    });
+        });
     }
 }

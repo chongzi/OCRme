@@ -25,7 +25,7 @@ public class LanguageList {
             put(context.getString(R.string.arabic), "ar");
             put(context.getString(R.string.assamese), "as");
             put(context.getString(R.string.azarbaijani), "az");
-            put(context.getString(R.string.belarusian), "be");
+            put(context.getString(R.string.belorussian), "be");
             put(context.getString(R.string.bengali), "bn");
             put(context.getString(R.string.bulgarian), "bg");
             put(context.getString(R.string.catalan), "ca");
