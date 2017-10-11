@@ -13,8 +13,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
 import android.support.v13.app.FragmentCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.text.Html;
 import android.text.Spanned;
@@ -27,20 +29,20 @@ import android.widget.Toast;
 
 import com.ashomok.imagetotext.BuildConfig;
 import com.ashomok.imagetotext.R;
-import com.ashomok.imagetotext.utils.RequestPermissionTool;
-import com.ashomok.imagetotext.utils.RequestPermissionToolImpl;
 import com.github.barteksc.pdfviewer.PDFView;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.jakewharton.rxbinding2.view.RxView;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
+
+import io.reactivex.Completable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.ashomok.imagetotext.Settings.appPackageName;
 import static com.ashomok.imagetotext.utils.FileUtils.copy;
@@ -51,18 +53,15 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  * Created by iuliia on 5/31/17.
  */
 
-//todo request permissions using rx
-public class PdfFragment extends Fragment
-        implements View.OnClickListener, FragmentCompat.OnRequestPermissionsResultCallback {
+public class PdfFragment extends Fragment implements FragmentCompat.OnRequestPermissionsResultCallback {
     public static final String EXTRA_PDF_GS_URL = "com.ashomokdev.imagetotext.PDF_URL";
     public static final String EXTRA_PDF_MEDIA_URL = "com.ashomokdev.imagetotext.EXTRA_PDF_MEDIA_URL";
     private static final String TAG = DEV_TAG + PdfFragment.class.getSimpleName();
-    private static final int OPEN_IN_ANOTHER_APP_REQUEST_CODE = 0;
-    private static final int DOWNLOAD_REQUEST_CODE = 1;
     private FirebaseAuth mAuth; //needs for pdf downloading
     private String mStoreLocation;
-    private String mDownloadURL;
+    private String mDownloadURL; //for sharing pdf option only
     private File mPdfFile;
+    private View mRootView;
 
     /**
      * copy of pdf saved on External Storage
@@ -70,7 +69,6 @@ public class PdfFragment extends Fragment
     private File mPdfFileCopy;
     private PDFView mPdfView;
     private ProgressBar progressBar;
-    private RequestPermissionTool requestTool;
     private String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
     @Override
@@ -78,54 +76,33 @@ public class PdfFragment extends Fragment
         View view = inflater.inflate(R.layout.pdf_fragment, container, false);
         mPdfView = view.findViewById(R.id.pdfView);
         progressBar = view.findViewById(R.id.progress);
+        mRootView = view.findViewById(R.id.root_view);
 
         Bundle bundle = getArguments();
         mStoreLocation = bundle.getCharSequence(EXTRA_PDF_GS_URL).toString();
         mDownloadURL = bundle.getCharSequence(EXTRA_PDF_MEDIA_URL).toString();
-
-        //// TODO: 10/6/17 use rx instead
-        requestTool = new RequestPermissionToolImpl();
         return view;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        authenticate();
-    }
 
-    protected void doStaff() {
         showProgress(true);
+        Completable completableAuthenticate = authenticate();
 
-        initBottomPanel();
-
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference mStorageRef = storage.getReferenceFromUrl(mStoreLocation);
-        try {
-            downloadToLocalFile(mStorageRef);
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
-            e.printStackTrace();
-        }
+        completableAuthenticate
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .andThen(initPdfView())
+                .subscribe(
+                        () -> showProgress(false),
+                        error -> {
+                            showProgress(false);
+                            showError(error);
+                        });
     }
 
-    private void downloadToLocalFile(StorageReference storageRef) throws IOException {
-        mPdfFile = File.createTempFile("temp", ".pdf");
-
-        storageRef.getFile(mPdfFile).addOnSuccessListener(
-                taskSnapshot -> {
-                    Log.d(TAG, "Local temp file has been created");
-                    showProgress(false);
-                    if (mPdfFile.exists()) {
-                        Log.d(TAG, "file exists");
-                        setToPDFView(mPdfFile);
-                    }
-
-                }).addOnFailureListener(exception -> {
-            showProgress(false);
-            Log.e(TAG, "error occurs in getting file from Storage Ref.");
-        });
-    }
 
     private void setToPDFView(File pdfFile) {
         mPdfView.fromFile(pdfFile).load();
@@ -136,6 +113,7 @@ public class PdfFragment extends Fragment
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
+        View pdfLayout = getActivity().findViewById(R.id.pdf_layout);
         try {
             // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
             // for very easy animations. If available, use these APIs to fade-in
@@ -143,12 +121,12 @@ public class PdfFragment extends Fragment
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
                 int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-                mPdfView.setVisibility(show ? View.GONE : View.VISIBLE);
-                mPdfView.animate().setDuration(shortAnimTime).alpha(
+                pdfLayout.setVisibility(show ? View.GONE : View.VISIBLE);
+                pdfLayout.animate().setDuration(shortAnimTime).alpha(
                         show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        mPdfView.setVisibility(show ? View.GONE : View.VISIBLE);
+                        pdfLayout.setVisibility(show ? View.GONE : View.VISIBLE);
                     }
                 });
 
@@ -164,7 +142,7 @@ public class PdfFragment extends Fragment
                 // The ViewPropertyAnimator APIs are not available, so simply show
                 // and hide the relevant UI components.
                 progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
-                mPdfView.setVisibility(show ? View.GONE : View.VISIBLE);
+                pdfLayout.setVisibility(show ? View.GONE : View.VISIBLE);
             }
         } catch (IllegalStateException e) {
             Log.e(TAG, e.getMessage());
@@ -172,74 +150,61 @@ public class PdfFragment extends Fragment
     }
 
     private void initBottomPanel() {
-        View copyBtn = getActivity().findViewById(R.id.download_btn);
-        copyBtn.setOnClickListener(this);
+        RxPermissions rxPermissions = new RxPermissions(getActivity());
+        rxPermissions.setLogging(true);
+
+        View downloadBtn = getActivity().findViewById(R.id.download_btn);
+        RxView.clicks(downloadBtn)
+                // Ask for permissions when button is clicked
+                .compose(rxPermissions.ensureEach(permission))
+                .subscribe(permission -> {
+                    if (permission.granted) {
+                        saveFileAndShowMessage();
+                    } else if (permission.shouldShowRequestPermissionRationale) {
+                        showWarning(R.string.file_must_be_saved_downloading);
+                    } else {
+                        showWarning(R.string.this_option_is_not_be_avalible);
+                    }
+                }, this::showError);
+
+        View openInAnotherAppBtn = getActivity().findViewById(R.id.open_in_another_app_btn);
+        RxView.clicks(openInAnotherAppBtn)
+                .compose(rxPermissions.ensureEach(permission))
+                .subscribe(permission -> {
+                    if (permission.granted) {
+                        runPdfIntent();
+                    } else if (permission.shouldShowRequestPermissionRationale) {
+                        showWarning(R.string.file_must_be_saved_opening);
+                    } else {
+                        showWarning(R.string.this_option_is_not_be_avalible);
+                    }
+                }, this::showError);
 
         View shareBtn = getActivity().findViewById(R.id.share_pdf_btn);
-        shareBtn.setOnClickListener(this);
+        RxView.clicks(shareBtn)
+                .subscribe(aVoid -> {
+                    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    sharingIntent.setType("text/plain");
 
-        View badResult = getActivity().findViewById(R.id.open_in_another_app_btn);
-        badResult.setOnClickListener(this);
-    }
+                    Resources res = getActivity().getResources();
+                    String linkToApp = "https://play.google.com/store/apps/details?id=" + appPackageName;
+                    String sharedBody = String.format(
+                            res.getString(R.string.share_pdf_message), mDownloadURL, linkToApp);
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.download_btn:
-                onDownloadClicked();
-                break;
-            case R.id.share_pdf_btn:
-                onShareClicked();
-                break;
-            case R.id.open_in_another_app_btn:
-                onOpenInAnotherAppClicked();
-                break;
-            default:
-                break;
-        }
-    }
+                    Spanned styledText;
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                        styledText = Html.fromHtml(sharedBody, Html.FROM_HTML_MODE_LEGACY);
+                    } else {
+                        styledText = Html.fromHtml(sharedBody);
+                    }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
-        boolean grantedAllPermissions = true;
-        for (int grantResult : grantResults) {
-            if (grantResult != PackageManager.PERMISSION_GRANTED) {
-                grantedAllPermissions = false;
-            }
-        }
-
-        if (grantResults.length != permissions.length || (!grantedAllPermissions)) {
-
-            requestTool.onPermissionDenied();
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-            if (requestCode == OPEN_IN_ANOTHER_APP_REQUEST_CODE) {
-                runPdfIntent();
-            } else if (requestCode == DOWNLOAD_REQUEST_CODE) {
-                saveFileAndShowMessage();
-            }
-        }
-    }
-
-    private void onDownloadClicked() {
-        //permission granted
-        if (requestTool.isPermissionGranted(getActivity(), permission)) {
-            saveFileAndShowMessage();
-        } else {
-            //request permission and then, on onRequestPermissionsResult do the stuff
-            requestTool.requestPermission(this, permission, DOWNLOAD_REQUEST_CODE);
-        }
-    }
-
-    private void onOpenInAnotherAppClicked() {
-        //check if permission granted
-        if (requestTool.isPermissionGranted(getActivity(), permission)) {
-            runPdfIntent();
-        } else {
-            //request permission and then, on onRequestPermissionsResult do the stuff
-            requestTool.requestPermission(this, permission, OPEN_IN_ANOTHER_APP_REQUEST_CODE);
-        }
+                    sharingIntent.putExtra(
+                            android.content.Intent.EXTRA_SUBJECT, res.getString(R.string.link_to_pdf));
+                    sharingIntent.putExtra(
+                            android.content.Intent.EXTRA_TEXT, styledText);
+                    getActivity().startActivity(
+                            Intent.createChooser(sharingIntent, res.getString(R.string.send_pdf_to)));
+                });
     }
 
     private void runPdfIntent() {
@@ -286,13 +251,7 @@ public class PdfFragment extends Fragment
     private boolean isAnyAppHandleIntent(Intent intent) {
         PackageManager manager = getActivity().getPackageManager();
         List<ResolveInfo> infos = manager.queryIntentActivities(intent, 0);
-        if (infos.size() > 0) {
-            //Then there is an Application(s) can handle your intent
-            return true;
-        } else {
-            //No Application can handle your intent
-            return false;
-        }
+        return infos.size() > 0;
     }
 
     private File copyToExternalStorage(File inputFile) throws Exception {
@@ -331,49 +290,73 @@ public class PdfFragment extends Fragment
         Toast.makeText(getActivity(), textMessage, Toast.LENGTH_LONG).show();
     }
 
-    @SuppressWarnings("deprecation")
-    private void onShareClicked() {
-        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-        sharingIntent.setType("text/plain");
 
-        Resources res = getActivity().getResources();
-        String linkToApp = "https://play.google.com/store/apps/details?id=" + appPackageName;
-        String sharedBody =
-                String.format(res.getString(R.string.share_pdf_message), mDownloadURL, linkToApp);
-
-        Spanned styledText;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            styledText = Html.fromHtml(sharedBody, Html.FROM_HTML_MODE_LEGACY);
-        } else {
-            styledText = Html.fromHtml(sharedBody);
-        }
-
-        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, res.getString(R.string.link_to_pdf));
-        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, styledText);
-        getActivity().startActivity(Intent.createChooser(sharingIntent, res.getString(R.string.send_pdf_to)));
+    public void showError(@StringRes int errorMessageRes) {
+        Snackbar snackbar = Snackbar.make(mRootView, errorMessageRes, Snackbar.LENGTH_LONG);
+        snackbar.getView().setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.red_500));
+        snackbar.show();
     }
 
-    private void authenticate() {
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            doStaff();
+    public void showError(Throwable throwable) {
+        String localizedMessage = throwable.getLocalizedMessage();
+        if (localizedMessage != null && localizedMessage.length() > 0) {
+            showError(throwable.getLocalizedMessage());
         } else {
-            signInAnonymously();
+            showError(throwable.getMessage());
         }
     }
 
-    private void signInAnonymously() {
-        mAuth.signInAnonymously()
-                .addOnSuccessListener(getActivity(), authResult -> doStaff())
-                .addOnFailureListener(getActivity(), exception -> {
-                    Log.e(TAG, "signInAnonymously:FAILURE", exception);
-                    try {
-                        doStaff();
-                    } catch (Exception e) {
-                        Log.e(TAG, e.getMessage());
-                        e.printStackTrace();
-                    }
-                });
+    public void showError(String errorMessage) {
+        if (errorMessage != null && errorMessage.length() > 0) {
+            Snackbar snackbar = Snackbar.make(mRootView, errorMessage, Snackbar.LENGTH_LONG);
+            snackbar.getView().setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.red_500));
+            snackbar.show();
+        }
     }
+
+    public void showWarning(@StringRes int errorMessageRes) {
+        Snackbar snackbar = Snackbar.make(mRootView, errorMessageRes, Snackbar.LENGTH_LONG);
+        snackbar.getView().setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.orange_500));
+        snackbar.show();
+    }
+
+    private Completable initPdfView() {
+        return Completable.create(emitter -> {
+            try {
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference mStorageRef = storage.getReferenceFromUrl(mStoreLocation);
+                mPdfFile = File.createTempFile("temp", ".pdf");
+                mStorageRef.getFile(mPdfFile).addOnSuccessListener(
+                        taskSnapshot -> {
+                            if (mPdfFile.exists()) {
+                                setToPDFView(mPdfFile);
+                                initBottomPanel();
+                                emitter.onComplete();
+                            } else {
+                                emitter.onError(new Throwable(
+                                        "Unable to init pdf view. Pdf file not exist."));
+                            }
+
+                        }).addOnFailureListener(emitter::onError);
+            } catch (Exception e) {
+                emitter.onError(e);
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private Completable authenticate() {
+        return Completable.create(emitter -> {
+            mAuth = FirebaseAuth.getInstance();
+            FirebaseUser user = mAuth.getCurrentUser();
+            if (user != null) {
+                emitter.onComplete();
+            } else {
+                mAuth.signInAnonymously()
+                        .addOnSuccessListener(getActivity(), authResult -> emitter.onComplete())
+                        .addOnFailureListener(getActivity(), emitter::onError);
+            }
+        });
+    }
+
 }

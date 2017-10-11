@@ -27,11 +27,11 @@ public class TranslateHttpClientTest {
 
     @Test
     public void getSupportedLanguages() {
-        SupportedLanguagesResponce response =
+        SupportedLanguagesResponse response =
                 client.getSupportedLanguages("en").blockingGet();
 
         Assert.assertTrue(response.getSupportedLanguages().size() > 0);
-        Assert.assertTrue(response.getStatus().equals(SupportedLanguagesResponce.Status.OK));
+        Assert.assertTrue(response.getStatus().equals(SupportedLanguagesResponse.Status.OK));
     }
 
     @Test
@@ -48,7 +48,7 @@ public class TranslateHttpClientTest {
     @Test
     public void callInParallel() throws InterruptedException {
 
-        Single<SupportedLanguagesResponce> supportedLanguagesResponceSingle =
+        Single<SupportedLanguagesResponse> supportedLanguagesResponceSingle =
                 client.getSupportedLanguages("en")
                         .doOnEvent((supportedLanguagesResponce, throwable) -> {
                                     Log.d(TAG, "getSupportedLanguages thread = "
@@ -64,7 +64,7 @@ public class TranslateHttpClientTest {
                                 }
                         ).subscribeOn(Schedulers.io());
 
-        Single<Pair<SupportedLanguagesResponce, TranslateResponse>> zipped =
+        Single<Pair<SupportedLanguagesResponse, TranslateResponse>> zipped =
                 Single.zip(
                         supportedLanguagesResponceSingle,
                         translateResponseSingle,
@@ -79,12 +79,12 @@ public class TranslateHttpClientTest {
         });
 
         Thread.sleep(3000);
-        Pair<SupportedLanguagesResponce, TranslateResponse> result = zipped.blockingGet();
+        Pair<SupportedLanguagesResponse, TranslateResponse> result = zipped.blockingGet();
 
-        SupportedLanguagesResponce supportedLanguagesResponce = result.first;
+        SupportedLanguagesResponse supportedLanguagesResponse = result.first;
         TranslateResponse translateResponse = result.second;
 
-        Assert.assertEquals(supportedLanguagesResponce.getStatus(), SupportedLanguagesResponce.Status.OK);
+        Assert.assertEquals(supportedLanguagesResponse.getStatus(), SupportedLanguagesResponse.Status.OK);
         Assert.assertEquals(translateResponse.getStatus(), TranslateResponse.Status.OK);
     }
 }

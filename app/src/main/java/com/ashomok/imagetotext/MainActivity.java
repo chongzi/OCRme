@@ -42,9 +42,10 @@ import com.ashomok.imagetotext.language_choser.LanguageList;
 import com.ashomok.imagetotext.my_docs.MyDocsActivity;
 import com.ashomok.imagetotext.ocr.OcrActivity;
 import com.ashomok.imagetotext.utils.NetworkUtils;
-import com.ashomok.imagetotext.utils.PermissionUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.jakewharton.rxbinding2.view.RxView;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,7 +61,6 @@ import static com.ashomok.imagetotext.ocr.OcrActivity.RESULT_CANCELED_BY_USER;
 import static com.ashomok.imagetotext.utils.FileUtils.prepareDirectory;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
-//// TODO: 9/27/17 requset permissions using rx or pub.devrel.easypermissions;
 public class MainActivity extends BaseLoginActivity
         implements SignOutDialogFragment.OnSignedOutListener, View.OnClickListener {
 
@@ -68,8 +68,7 @@ public class MainActivity extends BaseLoginActivity
     private static final int LANGUAGE_ACTIVITY_REQUEST_CODE = 1;
     private static final int CaptureImage_REQUEST_CODE = 2;
     private static final int OCR_Activity_REQUEST_CODE = 3;
-    private static final int CAMERA_PERMISSIONS_REQUEST = 5;
-    private static final int GALLERY_IMAGE_REQUEST = 6;
+    private static final int GALLERY_IMAGE_REQUEST = 4;
     private DrawerLayout mDrawerLayout;
     private NavigationView navigationView;
     private final BroadcastReceiver mConnectivityChangeReceiver = new BroadcastReceiver() {
@@ -89,6 +88,7 @@ public class MainActivity extends BaseLoginActivity
     private Button myDocsBtn;
     private View mRootView;
     private String mEmail = "No email";
+    private String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -189,6 +189,14 @@ public class MainActivity extends BaseLoginActivity
         snackbar.show();
     }
 
+    public void showError(String errorMessage) {
+        if (errorMessage != null && errorMessage.length() > 0) {
+            Snackbar snackbar = Snackbar.make(mRootView, errorMessage, Snackbar.LENGTH_LONG);
+            snackbar.getView().setBackgroundColor(ContextCompat.getColor(this, R.color.red_500));
+            snackbar.show();
+        }
+    }
+
     private void startOcrActivity(Uri uri) {
         Intent intent = new Intent(this, OcrActivity.class);
         intent.setData(uri);
@@ -248,13 +256,37 @@ public class MainActivity extends BaseLoginActivity
     }
 
     private void initImageSourceBtns() {
-        final ImageButton photoBtn = findViewById(R.id.photo_btn);
+        //gallery btn init
         final ImageButton galleryBtn = findViewById(R.id.gallery_btn);
-        equalizeSides(photoBtn);
-        equalizeSides(galleryBtn);
 
-        photoBtn.setOnClickListener(this);
+        equalizeSides(galleryBtn);
         galleryBtn.setOnClickListener(this);
+
+        //photo btn init
+        final ImageButton photoBtn = findViewById(R.id.photo_btn);
+        equalizeSides(photoBtn);
+        RxPermissions rxPermissions = new RxPermissions(this);
+        rxPermissions.setLogging(true);
+
+        RxView.clicks(photoBtn)
+                .compose(rxPermissions.ensureEach(permission))
+                .subscribe(permission -> {
+                    if (permission.granted) {
+                        startCamera();
+                    } else if (permission.shouldShowRequestPermissionRationale) {
+                        showWarning(R.string.camera_needs_to_save);
+                    } else {
+                        showWarning(R.string.this_option_is_not_be_avalible);
+                    }
+                }, throwable -> {
+                    String localizedMessage = throwable.getLocalizedMessage();
+                    if (localizedMessage != null && localizedMessage.length() > 0) {
+                        showError(throwable.getLocalizedMessage());
+                    } else {
+                        showError(throwable.getMessage());
+                    }
+                });
+
     }
 
     public void startGalleryChooser() {
@@ -365,30 +397,6 @@ public class MainActivity extends BaseLoginActivity
     public void setTitle(CharSequence title) {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(title);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(
-            int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (PermissionUtils.permissionGranted(
-                requestCode,
-                CAMERA_PERMISSIONS_REQUEST,
-                grantResults)) {
-            startCamera();
-        }
-    }
-
-    /**
-     * to get high resolution image from camera
-     */
-    private void startBuildInCameraActivity() {
-        if (PermissionUtils.requestPermission(
-                this,
-                CAMERA_PERMISSIONS_REQUEST,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            startCamera();
         }
     }
 
@@ -529,9 +537,6 @@ public class MainActivity extends BaseLoginActivity
                 break;
             case R.id.language:
                 onLanguageTextViewClicked();
-                break;
-            case R.id.photo_btn:
-                startBuildInCameraActivity();
                 break;
             case R.id.gallery_btn:
                 startGalleryChooser();

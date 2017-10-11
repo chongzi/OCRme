@@ -39,6 +39,6 @@ public class OcrHttpClientTest {
 
         Assert.assertEquals(ocrResponse.getStatus(), OcrResponse.Status.OK);
         Assert.assertTrue(ocrResponse.getTextResult().length() > 5);
-        Assert.assertTrue(ocrResponse.getPdfResultUrl().length() > 5);
+        Assert.assertTrue(ocrResponse.getPdfResultGsUrl().length() > 5);
     }
 }

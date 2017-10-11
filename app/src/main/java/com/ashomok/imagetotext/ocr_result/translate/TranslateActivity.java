@@ -30,10 +30,8 @@ import android.widget.Toast;
 import com.annimon.stream.IntStream;
 import com.annimon.stream.Stream;
 import com.ashomok.imagetotext.R;
-import com.ashomok.imagetotext.ocr_result.tab_fragments.TextFragment;
-import com.ashomok.imagetotext.ocr_result.translate.translate_task.SupportedLanguagesResponce;
+import com.ashomok.imagetotext.ocr_result.translate.translate_task.SupportedLanguagesResponse;
 import com.ashomok.imagetotext.ocr_result.translate.translate_task.TranslateHttpClient;
-import com.ashomok.imagetotext.ocr_result.translate.translate_task.TranslateRequestBean;
 import com.ashomok.imagetotext.ocr_result.translate.translate_task.TranslateResponse;
 import com.ashomok.imagetotext.utils.NetworkUtils;
 import com.trello.rxlifecycle2.android.ActivityEvent;
@@ -70,7 +68,7 @@ public class TranslateActivity extends RxAppCompatActivity implements View.OnCli
 
     private String sourceLanguageCode;
     private String targetLanguageCode;
-    private List<SupportedLanguagesResponce.Language> languages;
+    private List<SupportedLanguagesResponse.Language> languages;
     public static final String EXTRA_TEXT = "com.ashomokdev.imagetotext.TEXT";
 
     @Override
@@ -86,13 +84,13 @@ public class TranslateActivity extends RxAppCompatActivity implements View.OnCli
 
         initToolbar();
 
-        sourceLanguagesSpinner = (Spinner) findViewById(R.id.spinner_source_languages);
-        targetLanguagesSpinner = (Spinner) findViewById(R.id.spinner_target_languages);
+        sourceLanguagesSpinner = findViewById(R.id.spinner_source_languages);
+        targetLanguagesSpinner = findViewById(R.id.spinner_target_languages);
 
-        sourceEditText = (EditText) findViewById(R.id.source_text);
-        targetEditText = (EditText) findViewById(R.id.target_text);
+        sourceEditText = findViewById(R.id.source_text);
+        targetEditText = findViewById(R.id.target_text);
 
-        progress = (ProgressBar) findViewById(R.id.progress);
+        progress = findViewById(R.id.progress);
         contentLayout = findViewById(R.id.content);
 
         translateHttpClient = TranslateHttpClient.getInstance();
@@ -158,7 +156,7 @@ public class TranslateActivity extends RxAppCompatActivity implements View.OnCli
             String deviceLanguageCode = Locale.getDefault().getLanguage();
 
             //first -------------------------------------------
-            Single<SupportedLanguagesResponce> supportedLanguagesResponceSingle =
+            Single<SupportedLanguagesResponse> supportedLanguagesResponceSingle =
                     translateHttpClient.getSupportedLanguages(deviceLanguageCode)
                             .doOnEvent((supportedLanguagesResponce, throwable) -> {
                                         Log.d(TAG, "getSupportedLanguages called in thread: "
@@ -177,7 +175,7 @@ public class TranslateActivity extends RxAppCompatActivity implements View.OnCli
                             ).subscribeOn(Schedulers.io());
 
             //zipped first + second-----------------------------------------
-            Single<Pair<SupportedLanguagesResponce, TranslateResponse>> zipped =
+            Single<Pair<SupportedLanguagesResponse, TranslateResponse>> zipped =
                     Single.zip(
                             supportedLanguagesResponceSingle,
                             translateResponseSingle,
@@ -244,18 +242,18 @@ public class TranslateActivity extends RxAppCompatActivity implements View.OnCli
         Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
     }
 
-    private void updateUI(Pair<SupportedLanguagesResponce, TranslateResponse> myData) {
+    private void updateUI(Pair<SupportedLanguagesResponse, TranslateResponse> myData) {
         showProgress(false);
-        SupportedLanguagesResponce supportedLanguagesResponce = myData.first;
+        SupportedLanguagesResponse supportedLanguagesResponse = myData.first;
         TranslateResponse translateResponse = myData.second;
 
-        if (!supportedLanguagesResponce.getStatus().equals(SupportedLanguagesResponce.Status.OK)) {
+        if (!supportedLanguagesResponse.getStatus().equals(SupportedLanguagesResponse.Status.OK)) {
             updateUI(getString(R.string.can_not_get_supported_languages));
         } else if (!translateResponse.getStatus().equals(TranslateResponse.Status.OK)) {
             updateUI(getString(R.string.error_while_translating));
         } else {
             //do staff
-            languages = supportedLanguagesResponce.getSupportedLanguages();
+            languages = supportedLanguagesResponse.getSupportedLanguages();
             sourceLanguageCode = translateResponse.getSourceLanguageCode();
             targetLanguageCode = translateResponse.getTargetLanguageCode();
 
@@ -321,7 +319,7 @@ public class TranslateActivity extends RxAppCompatActivity implements View.OnCli
 
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {

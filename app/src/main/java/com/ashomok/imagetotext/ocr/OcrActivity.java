@@ -18,6 +18,9 @@ import com.ashomok.imagetotext.ocr.ocr_task.OcrResponse;
 import com.ashomok.imagetotext.ocr_result.OcrResultActivity;
 import com.ashomok.imagetotext.utils.NetworkUtils;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.jakewharton.rxbinding2.view.RxView;
@@ -25,11 +28,10 @@ import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.UUID;
-import java.util.concurrent.CancellationException;
 
+import io.reactivex.Completable;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.ashomok.imagetotext.Settings.firebaseFolderURL;
@@ -62,8 +64,7 @@ public class OcrActivity extends RxAppCompatActivity {
         sourceLanguageCodes = getIntent().getStringArrayListExtra(EXTRA_LANGUAGES);
 
         initCancelBtn();
-        initImage();
-        initAnimatedScanBand(Settings.isTestMode);
+        initImage().subscribe(() -> initAnimatedScanBand(Settings.isTestMode));
 
         OcrHttpClient httpClient = OcrHttpClient.getInstance();
         callOcr(httpClient);
@@ -77,8 +78,8 @@ public class OcrActivity extends RxAppCompatActivity {
                 Single<OcrResponse> ocrSingle = uploadPhoto(imageUri)
                         .subscribeOn(Schedulers.io())
                         .compose(bindToLifecycle())
-                        .flatMap(gcsImageUri -> httpClient.ocr(
-                                gcsImageUri, Optional.ofNullable(sourceLanguageCodes))
+                        .flatMap(gcsImageUri ->
+                                httpClient.ocr(gcsImageUri, Optional.ofNullable(sourceLanguageCodes))
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribeOn(Schedulers.io())
                                 .compose(bindToLifecycle())
@@ -153,13 +154,29 @@ public class OcrActivity extends RxAppCompatActivity {
                 });
     }
 
-    private void initImage() {
-        ImageView imageView = findViewById(R.id.image);
-        Glide.with(this)
-                .load(imageUri)
-                .crossFade()
-                .fitCenter()
-                .into(imageView);
+    private Completable initImage() {
+        return Completable.create(emitter -> {
+            ImageView imageView = findViewById(R.id.image);
+            Glide.with(this)
+                    .load(imageUri)
+                    .listener(new RequestListener<Uri, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            emitter.onError(e);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            emitter.onComplete();
+                            return false;
+                        }
+                    })
+                    .crossFade()
+                    .fitCenter()
+                    .into(imageView);
+        });
+
     }
 
     /**

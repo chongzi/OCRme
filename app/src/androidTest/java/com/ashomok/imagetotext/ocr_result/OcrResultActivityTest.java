@@ -32,7 +32,7 @@ import static com.ashomok.imagetotext.ocr_result.OcrResultActivity.EXTRA_OCR_RES
 @RunWith(AndroidJUnit4.class)
 @SmallTest
 public class OcrResultActivityTest {
-    private String longText = "long long long long long long    private String longText = \"long long long long long long long long long  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long long\";\n    private String longText = \"long long long long long long long long long  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long long\";\nong long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long long";
+    private String longText = "long long long long long long long long long long long long long long long  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long long\";\n    private String longText = \"long long long long long long long long long  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long long\";\nong long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long long";
     private String shortText ="short text";
 
     private String pdfResultUrl = "gs://imagetotext-149919.appspot.com/ru.pdf";
@@ -48,7 +48,7 @@ public class OcrResultActivityTest {
                 .getTargetContext();
         Intent intent = new Intent(targetContext, OcrResultActivity.class);
 
-        OcrResponse response = new OcrResponse(longText, pdfResultUrl, status);
+        OcrResponse response = new OcrResponse(longText, pdfResultUrl, "media url", status);
         intent.putExtra(EXTRA_OCR_RESPONSE, response);
         mActivityRule.launchActivity(intent);
     }
@@ -58,7 +58,7 @@ public class OcrResultActivityTest {
                 .getTargetContext();
         Intent intent = new Intent(targetContext, OcrResultActivity.class);
 
-        OcrResponse response = new OcrResponse(shortText, pdfResultUrl, status);
+        OcrResponse response = new OcrResponse(shortText, pdfResultUrl, "media url", status);
         intent.putExtra(EXTRA_OCR_RESPONSE, response);
         mActivityRule.launchActivity(intent);
     }
@@ -67,19 +67,19 @@ public class OcrResultActivityTest {
     public void tabSwap() throws InterruptedException {
         launchActivityWithLongText();
         onView(withId(R.id.pager)).perform(swipeLeft());
-        Thread.sleep(4000);
+        Thread.sleep(40000);
         onView(withId(R.id.pager)).perform(swipeRight());
     }
 
     @Test
     public void testLongText() throws InterruptedException {
         launchActivityWithLongText();
-        Thread.sleep(40000);
+        Thread.sleep(4000);
     }
 
     @Test
     public void testShortText() throws InterruptedException {
         launchActivityWithShortText();
-        Thread.sleep(40000);
+        Thread.sleep(4000);
     }
 }

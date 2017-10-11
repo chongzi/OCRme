@@ -7,7 +7,7 @@ import java.util.List;
  * Created by iuliia on 9/5/17.
  */
 
-public class SupportedLanguagesResponce implements Serializable {
+public class SupportedLanguagesResponse implements Serializable {
 
     private List<Language> supportedLanguages;
     private Status status;

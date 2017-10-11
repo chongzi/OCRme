@@ -73,6 +73,7 @@
         </activity>
         <activity
             android:label="@string/result"
+            android:launchMode="singleTop"
             android:name=".ocr_result.OcrResultActivity"
             android:windowSoftInputMode="adjustPan"
             android:parentActivityName=".MainActivity"

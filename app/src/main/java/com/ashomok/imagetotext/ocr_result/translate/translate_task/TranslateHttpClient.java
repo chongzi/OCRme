@@ -46,7 +46,7 @@ public class TranslateHttpClient {
         translateAPI = retrofit.create(TranslateAPI.class);
     }
 
-    public Single<SupportedLanguagesResponce> getSupportedLanguages(@NonNull String deviceLanguageCode) {
+    public Single<SupportedLanguagesResponse> getSupportedLanguages(@NonNull String deviceLanguageCode) {
         return translateAPI.getSupportedLanguages(deviceLanguageCode);
     }
 

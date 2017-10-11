@@ -17,7 +17,7 @@ public interface TranslateAPI {
 
     //curl https://imagetotext-149919.appspot.com/supported_languages?device_language_code=de
     @GET("supported_languages?")
-    Single<SupportedLanguagesResponce> getSupportedLanguages(
+    Single<SupportedLanguagesResponse> getSupportedLanguages(
             @Query("device_language_code") String device_language_code);
 
 
