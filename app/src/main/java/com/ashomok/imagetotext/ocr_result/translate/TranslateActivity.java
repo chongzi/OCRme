@@ -25,6 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.annimon.stream.IntStream;
@@ -50,18 +51,17 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 /**
  * Created by iuliia on 8/27/17.
  */
-
+//// TODO: 9/14/17 replace spinners with new Language Activity - see Google Translate APP for example
 public class TranslateActivity extends RxAppCompatActivity implements View.OnClickListener {
     private static final String TAG = DEV_TAG + TranslateActivity.class.getSimpleName();
     private String sourceText;
     private String targetText;
     private TranslateHttpClient translateHttpClient;
 
-    //// TODO: 9/14/17 replace spinners with new Language Activity - see Google Translate APP for example
     private Spinner sourceLanguagesSpinner;
     private Spinner targetLanguagesSpinner;
 
-    private EditText sourceEditText;
+    private TextView sourceEditText;
     private EditText targetEditText;
     private ProgressBar progress;
     private View contentLayout;

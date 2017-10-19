@@ -16,10 +16,7 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -59,6 +56,8 @@ import static com.ashomok.imagetotext.Settings.isAdsActive;
 import static com.ashomok.imagetotext.language_choser.LanguageActivity.CHECKED_LANGUAGES;
 import static com.ashomok.imagetotext.ocr.OcrActivity.RESULT_CANCELED_BY_USER;
 import static com.ashomok.imagetotext.utils.FileUtils.prepareDirectory;
+import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showError;
+import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showWarning;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 public class MainActivity extends BaseLoginActivity
@@ -86,7 +85,6 @@ public class MainActivity extends BaseLoginActivity
     private Uri imageUri;
     private TextView languageTextView;
     private Button myDocsBtn;
-    private View mRootView;
     private String mEmail = "No email";
     private String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
@@ -165,35 +163,14 @@ public class MainActivity extends BaseLoginActivity
                 Uri uri = data.getData();
                 startOcrActivity(uri);
             } catch (Exception e) {
-                showError(R.string.file_not_found);
+                showError(R.string.file_not_found, mRootView);
                 e.printStackTrace();
             }
         }
 
         //ocr canceled
         else if (requestCode == OCR_Activity_REQUEST_CODE && resultCode == RESULT_CANCELED_BY_USER) {
-           showWarning(R.string.canceled);
-        }
-    }
-
-    @Override
-    public void showError(@StringRes int errorMessageRes) {
-        Snackbar snackbar = Snackbar.make(mRootView, errorMessageRes, Snackbar.LENGTH_LONG);
-        snackbar.getView().setBackgroundColor(ContextCompat.getColor(this, R.color.red_500));
-        snackbar.show();
-    }
-
-    public void showWarning(@StringRes int errorMessageRes) {
-        Snackbar snackbar = Snackbar.make(mRootView, errorMessageRes, Snackbar.LENGTH_LONG);
-        snackbar.getView().setBackgroundColor(ContextCompat.getColor(this, R.color.orange_500));
-        snackbar.show();
-    }
-
-    public void showError(String errorMessage) {
-        if (errorMessage != null && errorMessage.length() > 0) {
-            Snackbar snackbar = Snackbar.make(mRootView, errorMessage, Snackbar.LENGTH_LONG);
-            snackbar.getView().setBackgroundColor(ContextCompat.getColor(this, R.color.red_500));
-            snackbar.show();
+           showWarning(R.string.canceled, mRootView);
         }
     }
 
@@ -231,7 +208,7 @@ public class MainActivity extends BaseLoginActivity
 
     private void checkConnection() {
         if (!NetworkUtils.isOnline(this)) {
-            showError(R.string.no_internet_connection);
+            showError(R.string.no_internet_connection, mRootView);
         }
     }
 
@@ -274,16 +251,16 @@ public class MainActivity extends BaseLoginActivity
                     if (permission.granted) {
                         startCamera();
                     } else if (permission.shouldShowRequestPermissionRationale) {
-                        showWarning(R.string.camera_needs_to_save);
+                        showWarning(R.string.camera_needs_to_save, mRootView);
                     } else {
-                        showWarning(R.string.this_option_is_not_be_avalible);
+                        showWarning(R.string.this_option_is_not_be_avalible, mRootView);
                     }
                 }, throwable -> {
                     String localizedMessage = throwable.getLocalizedMessage();
                     if (localizedMessage != null && localizedMessage.length() > 0) {
-                        showError(throwable.getLocalizedMessage());
+                        showError(throwable.getLocalizedMessage(), mRootView);
                     } else {
-                        showError(throwable.getMessage());
+                        showError(throwable.getMessage(), mRootView);
                     }
                 });
 

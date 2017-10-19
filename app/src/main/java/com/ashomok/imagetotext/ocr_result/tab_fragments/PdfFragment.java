@@ -47,6 +47,8 @@ import io.reactivex.schedulers.Schedulers;
 import static com.ashomok.imagetotext.Settings.appPackageName;
 import static com.ashomok.imagetotext.utils.FileUtils.copy;
 import static com.ashomok.imagetotext.utils.FileUtils.prepareDirectory;
+import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showWarning;
+import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showError;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 /**
@@ -99,7 +101,7 @@ public class PdfFragment extends Fragment implements FragmentCompat.OnRequestPer
                         () -> showProgress(false),
                         error -> {
                             showProgress(false);
-                            showError(error);
+                            showError(error, mRootView);
                         });
     }
 
@@ -161,11 +163,11 @@ public class PdfFragment extends Fragment implements FragmentCompat.OnRequestPer
                     if (permission.granted) {
                         saveFileAndShowMessage();
                     } else if (permission.shouldShowRequestPermissionRationale) {
-                        showWarning(R.string.file_must_be_saved_downloading);
+                        showWarning(R.string.file_must_be_saved_downloading, mRootView);
                     } else {
-                        showWarning(R.string.this_option_is_not_be_avalible);
+                        showWarning(R.string.this_option_is_not_be_avalible, mRootView);
                     }
-                }, this::showError);
+                }, error -> showError(error, mRootView));
 
         View openInAnotherAppBtn = getActivity().findViewById(R.id.open_in_another_app_btn);
         RxView.clicks(openInAnotherAppBtn)
@@ -174,11 +176,11 @@ public class PdfFragment extends Fragment implements FragmentCompat.OnRequestPer
                     if (permission.granted) {
                         runPdfIntent();
                     } else if (permission.shouldShowRequestPermissionRationale) {
-                        showWarning(R.string.file_must_be_saved_opening);
+                        showWarning(R.string.file_must_be_saved_opening, mRootView);
                     } else {
-                        showWarning(R.string.this_option_is_not_be_avalible);
+                        showWarning(R.string.this_option_is_not_be_avalible, mRootView);
                     }
-                }, this::showError);
+                }, error -> showError(error, mRootView));
 
         View shareBtn = getActivity().findViewById(R.id.share_pdf_btn);
         RxView.clicks(shareBtn)
@@ -290,35 +292,6 @@ public class PdfFragment extends Fragment implements FragmentCompat.OnRequestPer
         Toast.makeText(getActivity(), textMessage, Toast.LENGTH_LONG).show();
     }
 
-
-    public void showError(@StringRes int errorMessageRes) {
-        Snackbar snackbar = Snackbar.make(mRootView, errorMessageRes, Snackbar.LENGTH_LONG);
-        snackbar.getView().setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.red_500));
-        snackbar.show();
-    }
-
-    public void showError(Throwable throwable) {
-        String localizedMessage = throwable.getLocalizedMessage();
-        if (localizedMessage != null && localizedMessage.length() > 0) {
-            showError(throwable.getLocalizedMessage());
-        } else {
-            showError(throwable.getMessage());
-        }
-    }
-
-    public void showError(String errorMessage) {
-        if (errorMessage != null && errorMessage.length() > 0) {
-            Snackbar snackbar = Snackbar.make(mRootView, errorMessage, Snackbar.LENGTH_LONG);
-            snackbar.getView().setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.red_500));
-            snackbar.show();
-        }
-    }
-
-    public void showWarning(@StringRes int errorMessageRes) {
-        Snackbar snackbar = Snackbar.make(mRootView, errorMessageRes, Snackbar.LENGTH_LONG);
-        snackbar.getView().setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.orange_500));
-        snackbar.show();
-    }
 
     private Completable initPdfView() {
         return Completable.create(emitter -> {

@@ -32,8 +32,11 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.ashomok.imagetotext.utils.FilesProvider.getTestImages;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.contains;
 
 /**
  * Created by iuliia on 12/25/16.
@@ -57,8 +60,7 @@ public class OcrActivityTest {
     public void testOcr() throws InterruptedException {
         String path = getTestImages().get(0);
         launchActivityWithPath(Uri.fromFile(new File(path)));
-        Thread.sleep(40000);
-        //// TODO: 10/2/17 add check log contains "ocr returns" 
+        Thread.sleep(10000);//waiting for ocr finished
     }
 
     @Test
@@ -67,8 +69,10 @@ public class OcrActivityTest {
         launchActivityWithPath(Uri.fromFile(new File(path)));
 
         onView(withId(R.id.image)).check(matches(isDisplayed()));
-        Thread.sleep(50000);
         onView(withId(R.id.image)).check(matches(hasDrawable()));
+        Thread.sleep(10000); //waiting for ocr finished
+        onView(withId(R.id.source_image)).check(matches(hasDrawable()));
+        onView(withId(R.id.source_image)).check(matches(isDisplayed()));
     }
 
     private void launchActivityWithPath(Uri uri) {
@@ -85,7 +89,6 @@ public class OcrActivityTest {
 
         mActivityRule.launchActivity(intent);
     }
-
 
     public static Matcher<View> hasDrawable() {
         return new DrawableMatcher(DrawableMatcher.ANY);

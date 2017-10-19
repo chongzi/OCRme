@@ -14,7 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.annimon.stream.Collectors;
+import com.annimon.stream.Stream;
 import com.ashomok.imagetotext.R;
+import com.ashomok.imagetotext.ocr.OcrActivity;
 import com.ashomok.imagetotext.ocr.ocr_task.OcrResponse;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -112,21 +115,6 @@ public class OcrResultActivity extends AppCompatActivity {
 
         TextView errorMessageView = emptyResult.findViewById(R.id.error_message);
         errorMessageView.setText(errorMessage);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (requestCode == LANGUAGE_CHANGED_REQUEST_CODE && resultCode == RESULT_OK) {
-            //language was changed - run ocr again for the same image
-            Bundle bundle = data.getExtras();
-            ArrayList<String> updatedLanguages = bundle.getStringArrayList(CHECKED_LANGUAGES);
-            updateOcrResult(updatedLanguages);
-        }
-    }
-
-    private void updateOcrResult(ArrayList<String> languages) {
-        //// TODO: 8/23/17
     }
 
     private void initTabLayout(OcrResponse ocrData, Uri imageUri) {

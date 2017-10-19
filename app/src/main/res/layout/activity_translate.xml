@@ -63,14 +63,13 @@
             android:background="@android:color/darker_gray"
             app:layout_scrollFlags="scroll|enterAlways" />
 
-        <EditText
+        <TextView
             android:id="@+id/source_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/top_layout"
             android:layout_margin="@dimen/base_margin"
             android:background="@null"
-            android:inputType="text|textAutoCorrect|textMultiLine"
             app:layout_scrollFlags="scroll|enterAlways" />
     </android.support.design.widget.AppBarLayout>
 

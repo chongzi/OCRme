@@ -8,9 +8,7 @@ import java.util.LinkedHashMap;
  * Created by iuliia on 12/17/16.
  */
 
-//// TODO: 8/27/17 add list from google server
 public class LanguageList {
-
 
     private LinkedHashMap<String, String> languages;
 
@@ -35,7 +33,7 @@ public class LanguageList {
             put(context.getString(R.string.danish), "da");
             put(context.getString(R.string.dutch), "nl");
             put(context.getString(R.string.estonian), "et");
-            put(context.getString(R.string.english), null);
+            put(context.getString(R.string.english), "en");
             put("Finnish", "fi");
             put("French", "fr");
             put("German", "de");

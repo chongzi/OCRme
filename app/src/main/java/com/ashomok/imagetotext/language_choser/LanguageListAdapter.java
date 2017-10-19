@@ -1,6 +1,9 @@
 package com.ashomok.imagetotext.language_choser;
 
 import android.content.Context;
+import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +18,8 @@ import com.ashomok.imagetotext.R;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showError;
 
 /**
  * Created by iuliia on 12/11/16.
@@ -94,30 +99,26 @@ public class LanguageListAdapter extends BaseAdapter {
         }
 
         String item = getItem(position);
-        TextView languageView = (TextView) view.findViewById(R.id.language);
+        TextView languageView = view.findViewById(R.id.language);
         languageView.setText(item);
 
-        CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkbox);
+        CheckBox checkBox = view.findViewById(R.id.checkbox);
         checkBox.setTag(item);
-        checkBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CheckBox cb = (CheckBox) view;
-                String language = (String) cb.getTag();
-                if (cb.isChecked()) {
-                    if (checkedLanguages.size() < MAX_CHECKED_ALLOWED) {
-                        addToChecked(language);
-                    } else {
-                        cb.setChecked(false);
-                        String message = String.format(view.getContext().getString(R.string.max_checked_allowed),
-                                String.valueOf(MAX_CHECKED_ALLOWED));
-                        Toast.makeText(view.getContext(), message,
-                                Toast.LENGTH_SHORT).show(); //todo make cardview insteda of toast
-
-                    }
+        checkBox.setOnClickListener(view1 -> {
+            CheckBox cb = (CheckBox) view1;
+            String language = (String) cb.getTag();
+            if (cb.isChecked()) {
+                if (checkedLanguages.size() < MAX_CHECKED_ALLOWED) {
+                    addToChecked(language);
                 } else {
-                    removeFromChecked(language);
+                    cb.setChecked(false);
+
+                    String message = String.format(view1.getContext().getString(R.string.max_checked_allowed),
+                            String.valueOf(MAX_CHECKED_ALLOWED));
+                    showError (message, parent);
                 }
+            } else {
+                removeFromChecked(language);
             }
         });
 

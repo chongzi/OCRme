@@ -9,6 +9,7 @@ import android.support.annotation.StringRes;
 import android.support.annotation.StyleRes;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 
 import com.ashomok.imagetotext.R;
 import com.firebase.ui.auth.AuthUI;
@@ -19,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showError;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 /**
@@ -33,11 +35,7 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 100;
     public boolean mIsUserSignedIn = false;
-
-    //// TODO: 10/3/17 use this method- see firebase example
-    public static Intent createIntent(Context context) {
-        return new Intent(context, BaseLoginActivity.class);
-    }
+    public View mRootView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,6 +45,7 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
         if (auth.getCurrentUser() != null) {
             onSignedIn();
         }
+
     }
 
     public void signIn() {
@@ -84,24 +83,25 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
             // Sign in failed
             if (response == null) {
                 // User pressed back button
-                showError(R.string.sign_in_cancelled);
+                showError(R.string.sign_in_cancelled, mRootView);
                 return;
             }
 
             if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
-                showError(R.string.no_internet_connection);
+                showError(R.string.no_internet_connection, mRootView);
                 return;
             }
 
             if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
-                showError(R.string.unknown_error);
+                showError(R.string.unknown_error, mRootView);
                 return;
             }
         }
 
-        showError(R.string.unknown_sign_in_response);
+        showError(R.string.unknown_sign_in_response, mRootView);
     }
 
+    //// TODO: 10/11/17 return MY theme
     @MainThread
     @StyleRes
     private int getSelectedTheme() {
@@ -109,7 +109,7 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
 //            return R.style.PurpleTheme; //custom
     }
 
-    //// TODO: 9/24/17 logo should be 144x144 dp
+    //// TODO: 9/24/17 return MY logo, should be 144x144 dp
     @MainThread
     @DrawableRes
     private int getLogo() {
@@ -137,8 +137,8 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
         return FIREBASE_PRIVACY_POLICY_URL;
     }
 
-    @MainThread
-    public abstract void showError(@StringRes int errorMessageRes);
+//    @MainThread
+//    public abstract void showError(@StringRes int errorMessageRes);
 
     public abstract void updateUi(boolean isUserSignedIn);
 
@@ -158,7 +158,7 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
                 .signOut(this)
                 .addOnCompleteListener(task -> {
                     if (!task.isSuccessful()) {
-                        showError(R.string.sign_out_failed);
+                        showError(R.string.sign_out_failed, mRootView);
                     }
                 });
 

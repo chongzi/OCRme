@@ -45,7 +45,6 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  * Created by Iuliia on 13.12.2015.
  */
 
-//// TODO: 10/2/17 dont show animated band untill image loaded - show progress bar instead
 public class OcrActivity extends RxAppCompatActivity {
     public static final int RESULT_CANCELED_BY_USER = 123;
     private Uri imageUri;

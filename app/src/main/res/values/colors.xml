@@ -362,9 +362,7 @@
 
     <color name="hint_foreground_material_dark">@color/bright_foreground_disabled_material_dark</color>
     <color name="hint_foreground_material_light">@color/bright_foreground_disabled_material_light</color>
-    <!-- TODO: This is 40% alpha on the default accent color. -->
     <color name="highlighted_text_material_dark">#6640c4ff</color>
-    <!-- TODO: This is 40% alpha on the default accent color. -->
     <color name="highlighted_text_material_light">#6640c4ff</color>
 
     <!-- Text & foreground colors -->
@@ -374,17 +372,17 @@
     <color name="primary_text_default_material_light">#de000000</color>
     <!-- Black 54% -->
     <color name="secondary_text_material_light">#8a000000</color>
-    <!-- Black 54% (TODO: same as secondary?) -->
+    <!-- Black 54%
     <color name="tertiary_text_material_light">#8a000000</color>
 
-    <!-- White 87% -->
+    <!- White 87% -->
     <color name="primary_text_default_material_dark">#deffffff</color>
     <!-- White 38% -->
     <color name="secondary_text_material_dark">#61ffffff</color>
-    <!-- White 38% (TODO: same as secondary?) -->
+    <!-- White 38%
     <color name="tertiary_text_material_dark">#61ffffff</color>
 
-    <!-- Primary & accent colors -->
+    <!- Primary & accent colors -->
     <eat-comment />
 
     <color name="material_red_100">#fff4c7c3</color>
