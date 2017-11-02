@@ -26,8 +26,6 @@ import android.widget.Toast;
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.ashomok.imagetotext.R;
-import com.ashomok.imagetotext.language_choser.LanguageActivity;
-import com.ashomok.imagetotext.language_choser.LanguageList;
 import com.ashomok.imagetotext.ocr.OcrActivity;
 import com.ashomok.imagetotext.ocr_result.translate.TranslateActivity;
 import com.bumptech.glide.Glide;
@@ -41,7 +39,6 @@ import java.util.TreeSet;
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.CLIPBOARD_SERVICE;
 import static com.ashomok.imagetotext.Settings.appPackageName;
-import static com.ashomok.imagetotext.language_choser.LanguageActivity.CHECKED_LANGUAGES;
 import static com.ashomok.imagetotext.ocr.OcrActivity.RESULT_CANCELED_BY_USER;
 import static com.ashomok.imagetotext.ocr_result.OcrResultActivity.LANGUAGE_CHANGED_REQUEST_CODE;
 import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showWarning;
@@ -93,7 +90,7 @@ public class TextFragment extends Fragment implements View.OnClickListener {
                 onShareClicked();
                 break;
             case R.id.bad_result_btn:
-                onBadResultClicked();
+//                onBadResultClicked(); //todo
                 break;
             default:
                 break;
@@ -140,75 +137,78 @@ public class TextFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    private void onBadResultClicked() {
-        Intent intent = new Intent(getActivity(), LanguageActivity.class);
-        intent.putExtra(CHECKED_LANGUAGES, getCurrentLanguages());
-        startActivityForResult(intent, LANGUAGE_CHANGED_REQUEST_CODE);
-    }
+//    //todo
+//    private void onBadResultClicked() {
+//        Intent intent = new Intent(getActivity(), LanguageActivity.class);
+//        intent.putExtra(CHECKED_LANGUAGE_CODES, getCurrentLanguages());
+//        startActivityForResult(intent, LANGUAGE_CHANGED_REQUEST_CODE);
+//    }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//    //todo
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//
+//        if (requestCode == LANGUAGE_CHANGED_REQUEST_CODE && resultCode == RESULT_OK) {
+//            //language was changed - run ocr again for the same image
+//            Bundle bundle = data.getExtras();
+//            ArrayList<String> updatedLanguages = bundle.getStringArrayList(CHECKED_LANGUAGE_CODES);
+//            updateOcrResult(updatedLanguages);
+//        }
+//
+//        //ocr canceled
+//        else if (requestCode == OCR_Activity_REQUEST_CODE && resultCode == RESULT_CANCELED_BY_USER) {
+//            showWarning(R.string.canceled, mRootView);
+//        }
+//    }
+//
+//    private void updateOcrResult(ArrayList<String> languages) {
+//        String languagesList = Stream.of(languages).map(Object::toString).collect(Collectors.joining(", "));
+//        Log.d(TAG, "Ocr called with new languages: " + languagesList);
+//
+//        startOcrActivity(imageUri, languages);
+//
+//    }
 
-        if (requestCode == LANGUAGE_CHANGED_REQUEST_CODE && resultCode == RESULT_OK) {
-            //language was changed - run ocr again for the same image
-            Bundle bundle = data.getExtras();
-            ArrayList<String> updatedLanguages = bundle.getStringArrayList(CHECKED_LANGUAGES);
-            updateOcrResult(updatedLanguages);
-        }
+//    //todo
+//    private void startOcrActivity(Uri uri, ArrayList<String> languages) {
+//        Intent intent = new Intent(getActivity(), OcrActivity.class);
+//        intent.setData(uri);
+//        intent.putExtra(OcrActivity.EXTRA_LANGUAGES, obtainLanguageShortcuts(languages));
+//        startActivityForResult(intent, OCR_Activity_REQUEST_CODE);
+//    }
+//
+//    private ArrayList<String> obtainLanguageShortcuts(ArrayList<String> languages) {
+//
+//        LanguageList data = new LanguageList(getActivity());
+//        LinkedHashMap<String, String> allLanguages = data.getLanguages();
+//
+//        ArrayList<String> result = new ArrayList<>();
+//        for (String name : languages) {
+//            if (allLanguages.containsKey(name)) {
+//                result.add(allLanguages.get(name));
+//            }
+//        }
+//
+//        return result;
+//    }
 
-        //ocr canceled
-        else if (requestCode == OCR_Activity_REQUEST_CODE && resultCode == RESULT_CANCELED_BY_USER) {
-            showWarning(R.string.canceled, mRootView);
-        }
-    }
-
-    private void updateOcrResult(ArrayList<String> languages) {
-        String languagesList = Stream.of(languages).map(Object::toString).collect(Collectors.joining(", "));
-        Log.d(TAG, "Ocr called with new languages: " + languagesList);
-
-        startOcrActivity(imageUri, languages);
-
-    }
-
-    private void startOcrActivity(Uri uri, ArrayList<String> languages) {
-        Intent intent = new Intent(getActivity(), OcrActivity.class);
-        intent.setData(uri);
-        intent.putExtra(OcrActivity.EXTRA_LANGUAGES, obtainLanguageShortcuts(languages));
-        startActivityForResult(intent, OCR_Activity_REQUEST_CODE);
-    }
-
-    private ArrayList<String> obtainLanguageShortcuts(ArrayList<String> languages) {
-
-        LanguageList data = new LanguageList(getActivity());
-        LinkedHashMap<String, String> allLanguages = data.getLanguages();
-
-        ArrayList<String> result = new ArrayList<>();
-        for (String name : languages) {
-            if (allLanguages.containsKey(name)) {
-                result.add(allLanguages.get(name));
-            }
-        }
-
-        return result;
-    }
-
-    @NonNull
-    private ArrayList<String> getCurrentLanguages() {
-        Set<String> checkedLanguageNames = obtainSavedLanguages();
-        ArrayList<String> checkedLanguages = new ArrayList<>();
-        checkedLanguages.addAll(checkedLanguageNames);
-        return checkedLanguages;
-    }
-
-    private Set<String> obtainSavedLanguages() {
-
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        Set<String> auto = new HashSet<String>() {{
-            add(getString(R.string.auto));
-        }};
-        TreeSet<String> checkedLanguagesNames = new TreeSet<>(sharedPref.getStringSet(CHECKED_LANGUAGES, auto));
-        return checkedLanguagesNames;
-    }
+//    @NonNull
+//    private ArrayList<String> getCurrentLanguages() {
+//        Set<String> checkedLanguageNames = obtainSavedLanguages();
+//        ArrayList<String> checkedLanguages = new ArrayList<>();
+//        checkedLanguages.addAll(checkedLanguageNames);
+//        return checkedLanguages;
+//    }
+//
+//    private Set<String> obtainSavedLanguages() {
+//
+//        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+//        Set<String> auto = new HashSet<String>() {{
+//            add(getString(R.string.auto));
+//        }};
+//        TreeSet<String> checkedLanguagesNames = new TreeSet<>(sharedPref.getStringSet(CHECKED_LANGUAGE_CODES, auto));
+//        return checkedLanguagesNames;
+//    }
 
     @SuppressWarnings("deprecation")
     private void onShareClicked() {

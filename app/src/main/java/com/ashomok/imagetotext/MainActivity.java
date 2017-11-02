@@ -34,8 +34,6 @@ import android.widget.Toast;
 
 import com.ashomok.imagetotext.firebaseUiAuth.BaseLoginActivity;
 import com.ashomok.imagetotext.firebaseUiAuth.SignOutDialogFragment;
-import com.ashomok.imagetotext.language_choser.LanguageActivity;
-import com.ashomok.imagetotext.language_choser.LanguageList;
 import com.ashomok.imagetotext.my_docs.MyDocsActivity;
 import com.ashomok.imagetotext.ocr.OcrActivity;
 import com.ashomok.imagetotext.utils.NetworkUtils;
@@ -49,11 +47,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
 import static com.ashomok.imagetotext.Settings.isAdsActive;
-import static com.ashomok.imagetotext.language_choser.LanguageActivity.CHECKED_LANGUAGES;
 import static com.ashomok.imagetotext.ocr.OcrActivity.RESULT_CANCELED_BY_USER;
 import static com.ashomok.imagetotext.utils.FileUtils.prepareDirectory;
 import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showError;
@@ -134,26 +132,29 @@ public class MainActivity extends BaseLoginActivity
         languageTextView = findViewById(R.id.language);
         languageTextView.setPaintFlags(languageTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         languageTextView.setOnClickListener(this);
-        updateLanguageTextView(getCheckedLanguages());
+//        updateLanguageTextView(getCheckedLanguages());//todo
     }
 
-    @NonNull
-    private ArrayList<String> getCheckedLanguages() {
-        return new ArrayList<>(obtainSavedLanguages());
-    }
+    //todo
+//    @NonNull
+//    private ArrayList<String> getCheckedLanguages() {
+//        return new ArrayList<>(obtainSavedLanguages());
+//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == LANGUAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-
-            Bundle bundle = data.getExtras();
-            ArrayList<String> checkedLanguages = bundle.getStringArrayList(CHECKED_LANGUAGES);
-            updateLanguageTextView(checkedLanguages);
-        }
+        //todo
+//        if (requestCode == LANGUAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+//
+//            //todo save in shared preferanses
+//            Bundle bundle = data.getExtras();
+//            ArrayList<String> checkedLanguages = bundle.getStringArrayList(CHECKED_LANGUAGE_CODES);
+//            updateLanguageTextView(checkedLanguages);
+//        }
 
         //photo obtained from camera
-        else if (requestCode == CaptureImage_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == CaptureImage_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             startOcrActivity(imageUri);
         }
 
@@ -174,10 +175,22 @@ public class MainActivity extends BaseLoginActivity
         }
     }
 
+//    //// TODO: 10/22/17
+//    private void saveLanguages(LinkedHashSet<String> data) {
+//        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+//        SharedPreferences.Editor editor = preferences.edit();
+//        LinkedHashSet<String> checkedLanguages = new LinkedHashSet<>();
+//        for (String name : data) {
+//            checkedLanguages.add(name);
+//        }
+//        editor.putStringSet(CHECKED_LANGUAGE_CODES, checkedLanguages);
+//        editor.apply();
+//    }
+
     private void startOcrActivity(Uri uri) {
         Intent intent = new Intent(this, OcrActivity.class);
         intent.setData(uri);
-        intent.putExtra(OcrActivity.EXTRA_LANGUAGES, obtainLanguageShortcuts());
+//        intent.putExtra(OcrActivity.EXTRA_LANGUAGES, obtainLanguageShortcuts()); //todo
         startActivityForResult(intent, OCR_Activity_REQUEST_CODE);
     }
 
@@ -189,22 +202,22 @@ public class MainActivity extends BaseLoginActivity
         return super.onPrepareOptionsMenu(menu);
     }
 
-
-    private ArrayList<String> obtainLanguageShortcuts() {
-        ArrayList<String> languageNames = getCheckedLanguages(); //todo put chackedlanguages to class field
-
-        LanguageList data = new LanguageList(this);
-        LinkedHashMap<String, String> languages = data.getLanguages();
-
-        ArrayList<String> result = new ArrayList<>();
-        for (String name : languageNames) {
-            if (languages.containsKey(name)) {
-                result.add(languages.get(name));
-            }
-        }
-
-        return result;
-    }
+//todo
+//    private ArrayList<String> obtainLanguageShortcuts() {
+//        ArrayList<String> languageNames = getCheckedLanguages(); //todo put chackedlanguages to class field
+//
+//        LanguageList data = new LanguageList(this);
+//        LinkedHashMap<String, String> languages = data.getLanguages();
+//
+//        ArrayList<String> result = new ArrayList<>();
+//        for (String name : languageNames) {
+//            if (languages.containsKey(name)) {
+//                result.add(languages.get(name));
+//            }
+//        }
+//
+//        return result;
+//    }
 
     private void checkConnection() {
         if (!NetworkUtils.isOnline(this)) {
@@ -439,15 +452,16 @@ public class MainActivity extends BaseLoginActivity
         }
     }
 
-    private Set<String> obtainSavedLanguages() {
-
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        Set<String> auto = new HashSet<String>() {{
-            add(getString(R.string.auto));
-        }};
-        TreeSet<String> checkedLanguagesNames = new TreeSet<>(sharedPref.getStringSet(CHECKED_LANGUAGES, auto));
-        return checkedLanguagesNames;
-    }
+    //todo
+//    private Set<String> obtainSavedLanguages() {
+//
+//        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+//        Set<String> auto = new HashSet<String>() {{
+//            add(getString(R.string.auto));
+//        }};
+//        TreeSet<String> checkedLanguagesNames = new TreeSet<>(sharedPref.getStringSet(CHECKED_LANGUAGE_CODES, auto));
+//        return checkedLanguagesNames;
+//    }
 
     /**
      * update UI if signed in/out
@@ -513,7 +527,7 @@ public class MainActivity extends BaseLoginActivity
                 signIn();
                 break;
             case R.id.language:
-                onLanguageTextViewClicked();
+//                onLanguageTextViewClicked();//todo
                 break;
             case R.id.gallery_btn:
                 startGalleryChooser();
@@ -526,9 +540,10 @@ public class MainActivity extends BaseLoginActivity
         }
     }
 
-    private void onLanguageTextViewClicked() {
-        Intent intent = new Intent(this, LanguageActivity.class);
-        intent.putExtra(CHECKED_LANGUAGES, getCheckedLanguages());
-        startActivityForResult(intent, LANGUAGE_ACTIVITY_REQUEST_CODE);
-    }
+    //todo
+//    private void onLanguageTextViewClicked() {
+//        Intent intent = new Intent(this, LanguageActivity.class);
+//        intent.putExtra(CHECKED_LANGUAGE_CODES, getCheckedLanguages());
+//        startActivityForResult(intent, LANGUAGE_ACTIVITY_REQUEST_CODE);
+//    }
 }

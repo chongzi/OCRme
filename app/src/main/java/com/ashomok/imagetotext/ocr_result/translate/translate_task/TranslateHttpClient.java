@@ -52,13 +52,16 @@ public class TranslateHttpClient {
 
     /**
      * @param deviceLanguageCode device Language Code
-     * @param inputText input text
+     * @param sourceText input text
      * @return
      */
-    public Single<TranslateResponse> translate(String deviceLanguageCode, String inputText) {
-        TranslateRequestBean translateRequest = new TranslateRequestBean();
-        translateRequest.setTargetLang(deviceLanguageCode);
-        translateRequest.setSourceText(inputText);
+    public Single<TranslateResponse> translate(String deviceLanguageCode, String sourceText) {
+
+        TranslateRequestBean translateRequest = new TranslateRequestBean.Builder()
+                .targetLang(deviceLanguageCode)
+                .sourceText(sourceText)
+                .build();
+
         return translateAPI.translate(translateRequest);
     }
 
@@ -69,10 +72,11 @@ public class TranslateHttpClient {
      * @return
      */
     public Single<TranslateResponse> translate(String sourceLanguageCode, String targetLanguageCode, String sourceText) {
-        TranslateRequestBean translateRequest = new TranslateRequestBean();
-        translateRequest.setSourceLang(sourceLanguageCode);
-        translateRequest.setTargetLang(targetLanguageCode);
-        translateRequest.setSourceText(sourceText);
+        TranslateRequestBean translateRequest = new TranslateRequestBean.Builder()
+                .sourceText(sourceText)
+                .sourceLang(sourceLanguageCode)
+                .targetLang(targetLanguageCode)
+                .build();
         return translateAPI.translate(translateRequest);
     }
 }

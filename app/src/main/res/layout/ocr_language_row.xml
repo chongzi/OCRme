@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/details_layout_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <!--todo set custom drawable https://stackoverflow.com/questions/22666896/android-custom-checkedtextview-->
+
+    <CheckedTextView
+        android:id="@+id/language_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="@dimen/l_margin"
+        android:drawableLeft="?android:attr/listChoiceIndicatorMultiple"
+        android:layout_weight = "1"
+          />
+
+    <!--todo remove plus icon-->
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_add_black_24dp"
+        android:layout_weight = "0"
+        android:padding="@dimen/l_margin"
+        />
+
+</LinearLayout>

@@ -3,31 +3,18 @@ package com.ashomok.imagetotext.ocr_result;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.annimon.stream.Collectors;
-import com.annimon.stream.Stream;
 import com.ashomok.imagetotext.R;
-import com.ashomok.imagetotext.ocr.OcrActivity;
 import com.ashomok.imagetotext.ocr.ocr_task.OcrResponse;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
-import java.util.ArrayList;
-
-import static com.ashomok.imagetotext.language_choser.LanguageActivity.CHECKED_LANGUAGES;
 import static com.ashomok.imagetotext.ocr_result.tab_fragments.TextFragment.EXTRA_IMAGE_URI;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
@@ -156,7 +143,7 @@ public class OcrResultActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> {
             //back btn pressed
 
-            //// TODO: 5/30/17 save data if you need here
+            //save data if you need here
             finish();
         });
     }

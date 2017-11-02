@@ -53,6 +53,16 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
+            android:name=".language_choser.LanguageOcrActivity"
+            android:label="@string/language_label"
+            android:parentActivityName=".MainActivity"
+            android:exported="true"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity
             android:name=".ocr_result.translate.TranslateActivity"
             android:label="@string/translate"
             android:parentActivityName=".ocr_result.OcrResultActivity"
@@ -61,15 +71,6 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ocr_result.OcrResultActivity" />
-        </activity>
-        <activity
-            android:name=".language_choser.LanguageActivity"
-            android:label="@string/language_label"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
         </activity>
         <activity
             android:label="@string/result"

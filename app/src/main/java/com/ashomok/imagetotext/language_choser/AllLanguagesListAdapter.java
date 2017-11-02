@@ -1,9 +1,6 @@
 package com.ashomok.imagetotext.language_choser;
 
 import android.content.Context;
-import android.support.annotation.StringRes;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ashomok.imagetotext.R;
 
@@ -25,9 +21,9 @@ import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showError;
  * Created by iuliia on 12/11/16.
  */
 
-public class LanguageListAdapter extends BaseAdapter {
+public class AllLanguagesListAdapter extends BaseAdapter {
 
-    private static final String TAG = LanguageListAdapter.class.getSimpleName();
+    private static final String TAG = AllLanguagesListAdapter.class.getSimpleName();
     private final ArrayList<String> languages;
     private final Context context;
 
@@ -38,7 +34,7 @@ public class LanguageListAdapter extends BaseAdapter {
     private LinkedHashSet<String> checkedLanguages;
     private static final int MAX_CHECKED_ALLOWED = 5;
 
-    public LanguageListAdapter(Context context, Set<String> data, LinkedHashSet<String> checked) {
+    public AllLanguagesListAdapter(Context context, Set<String> data, LinkedHashSet<String> checked) {
         this.context = context;
         languages = new ArrayList<>();
         languages.addAll(data);

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:fitsSystemWindows="true"
+    android:focusableInTouchMode="true">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:theme="@style/AppThemeLight">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|enterAlways" />
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/auto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/base_margin"
+                android:layout_marginEnd="@dimen/l_margin"
+                android:layout_marginStart="@dimen/l_margin"
+                android:layout_marginTop="@dimen/base_margin">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/auto_detection"
+                    android:textColor="@color/app_primary"
+                    android:textSize="@dimen/l_text_size" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@android:color/darker_gray"
+                app:layout_scrollFlags="scroll|enterAlways" />
+
+            <RelativeLayout
+                android:id="@+id/recently_chosen"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/base_margin"
+                android:layout_marginEnd="@dimen/l_margin"
+                android:layout_marginStart="@dimen/l_margin"
+                android:layout_marginTop="@dimen/base_margin">
+
+                <TextView
+                    android:id="@+id/recently_chosen_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/recently_chosen_languages"
+                    android:textColor="@color/app_primary"
+                    android:textSize="@dimen/l_text_size" />
+
+                <ListView
+                    android:id="@+id/recently_chosen_list"
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/recently_chosen_label"
+                    android:layout_marginTop="@dimen/base_margin"
+                    android:dividerHeight="0dp" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@android:color/darker_gray"
+                app:layout_scrollFlags="scroll|enterAlways" />
+
+            <RelativeLayout
+                android:layout_weight = "1"
+                android:id="@+id/all_languages"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginBottom="@dimen/base_margin"
+                android:layout_marginEnd="@dimen/l_margin"
+                android:layout_marginStart="@dimen/l_margin"
+                android:layout_marginTop="@dimen/base_margin">
+
+                <TextView
+                    android:id="@+id/all_languages_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/all_languages"
+                    android:textColor="@color/app_primary"
+                    android:textSize="@dimen/l_text_size" />
+
+                <ListView
+                    android:id="@+id/all_languages_list"
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/all_languages_label"
+                    android:layout_marginTop="@dimen/base_margin"
+                    android:dividerHeight="0dp" />
+            </RelativeLayout>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</android.support.design.widget.CoordinatorLayout>

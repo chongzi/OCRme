@@ -148,4 +148,7 @@
     <string name="this_option_is_not_be_avalible">This option is not available until you allow permission in phone Settings.</string>
     <string name="file_must_be_saved_opening">File must be saved on SD card before open. \nPlease allow permission.</string>
     <string name="camera_needs_to_save">Camera needs to save files on SD card. \nPlease allow permission.</string>
+    <string name="auto_detection">AUTO DETECTION</string>
+    <string name="recently_chosen_languages">Recently chosen languages</string>
+    <string name="all_languages">All languages</string>
 </resources>
