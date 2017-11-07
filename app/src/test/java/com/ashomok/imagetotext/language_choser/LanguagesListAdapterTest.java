@@ -9,7 +9,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -36,7 +35,7 @@ public class LanguagesListAdapterTest {
         checked.add("1 language");
 
         Context context = Mockito.mock(Context.class);
-        languagesListAdapter = new LanguagesListAdapter(allLanguages, checked);
+        languagesListAdapter = new LanguagesListAdapter(allLanguages, checked, notifier);
     }
 
 

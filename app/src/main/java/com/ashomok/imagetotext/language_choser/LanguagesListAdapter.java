@@ -1,23 +1,22 @@
 package com.ashomok.imagetotext.language_choser;
 
-import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.CheckedTextView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.annimon.stream.IntStream;
 import com.ashomok.imagetotext.R;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 
 import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showError;
 
@@ -25,20 +24,34 @@ import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showError;
  * Created by iuliia on 12/11/16.
  */
 
-public class LanguagesListAdapter extends BaseAdapter {
+public class LanguagesListAdapter extends RecyclerView.Adapter<LanguagesListAdapter.ViewHolder> {
 
     private static final String TAG = LanguagesListAdapter.class.getSimpleName();
-    private static final int MAX_CHECKED_ALLOWED = 5;
-    List<String> allLanguages;
-    List<String> checkedLanguages;
+    private static final int MAX_CHECKED_ALLOWED = 3;
+    private final LanguageOcrActivity.StateChangedNotifier notifier;
+    private List<String> allLanguages;
+    private ResponsableList<String> checkedLanguages;
 
-    public LanguagesListAdapter(List<String> allLanguages,
-                                List<String> checkedLanguages) {
+
+    LanguagesListAdapter(@Nullable List<String> allLanguages,
+                         @Nullable ResponsableList<String> checkedLanguages,
+                         LanguageOcrActivity.StateChangedNotifier notifier) {
         this.allLanguages = allLanguages;
-        this.checkedLanguages = checkedLanguages;
+        this.notifier = notifier;
+
+        this.checkedLanguages = (checkedLanguages == null) ? new ResponsableList<>(new ArrayList<>()) : checkedLanguages;
+        this.checkedLanguages.addOnListChangedListener(o -> {
+            String checkedLanguage = (String) o;
+
+            int changedPos = IntStream.range(0, allLanguages.size())
+                    .filter(i -> checkedLanguage.equals(allLanguages.get(i)))
+                    .findFirst().orElse(-1);
+
+            notifyItemChanged(changedPos);
+        });
     }
 
-    public List<String> getCheckedLanguages() {
+    List<String> getCheckedLanguages() {
         return checkedLanguages;
     }
 
@@ -48,67 +61,135 @@ public class LanguagesListAdapter extends BaseAdapter {
         } else {
             Log.w(TAG, "attempt to add checked language when max amount reached");
         }
+
+        if (checkedLanguages.size() > 0) {
+            notifier.changeAutoState(false);
+        }
+    }
+
+    void onAutoStateChanged(boolean isAutoChecked) {
+        if (isAutoChecked) {
+            //unchecked all items
+            checkedLanguages.clear();
+            notifyDataSetChanged();
+        }
     }
 
     private void removeFromChecked(String language) {
         checkedLanguages.remove(language);
     }
 
-    @Override
-    public int getCount() {
-        return allLanguages.size();
-    }
 
-    @Override
-    public String getItem(int i) {
+    String getItem(int i) {
         return allLanguages.get(i);
     }
 
     @Override
-    public long getItemId(int i) {
-        return 0;
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        // create a new view
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.ocr_language_row, parent, false);
+
+        return new ViewHolder(view);
     }
 
     @Override
-    public View getView(int position, View convertView, final ViewGroup parent) {
-        final View view;
-
-        if (convertView == null) {
-            view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.ocr_language_row, parent, false);
-        } else {
-            view = convertView;
-        }
-
+    public void onBindViewHolder(ViewHolder holder, int position) {
         String item = getItem(position);
+        View parent = holder.languageLayout.getRootView();
 
-        CheckedTextView checkedTextView = view.findViewById(R.id.language_name);
-        checkedTextView.setText(item);
-        checkedTextView.setOnClickListener(view12 -> {
-            CheckedTextView ctv = (CheckedTextView) view12;
-            String language = (String) ctv.getText();
-            if (ctv.isChecked()) {
-                if (checkedLanguages.size() < MAX_CHECKED_ALLOWED) {
-                    addToChecked(language);
-                } else {
-                    ctv.setChecked(false); //todo reduntant
+        holder.languageName.setText(item);
 
-                    String message = String.format(view12.getContext().getString(R.string.max_checked_allowed),
-                            String.valueOf(MAX_CHECKED_ALLOWED));
-                    showError (message, parent);
-                }
+        holder.languageLayout.setOnClickListener(view -> {
+            if (checkedLanguages.contains(item)) {
+                //checked - uncheck
+                removeFromChecked(item);
+                holder.updateUi(false);
             } else {
-                removeFromChecked(language);
+                //unchecked - check
+                if (checkedLanguages.size() < MAX_CHECKED_ALLOWED) {
+                    addToChecked(item);
+                    holder.updateUi(true);
+                } else {
+                    String message = String.format(view.getContext().getString(R.string.max_checked_allowed),
+                            String.valueOf(MAX_CHECKED_ALLOWED));
+                    showError(message, parent);
+                }
             }
         });
 
-
         if (checkedLanguages.contains(item)) {
-            checkedTextView.setChecked(true);
+            holder.updateUi(true);
         } else {
-            checkedTextView.setChecked(false);
+            holder.updateUi(false);
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return allLanguages.size();
+    }
+
+    // Provide a reference to the views for each data item
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        LinearLayout languageLayout;
+        ImageView checkedIcon;
+        TextView languageName;
+        ImageView add;
+        ImageView remove;
+
+        ViewHolder(View v) {
+            super(v);
+            checkedIcon = v.findViewById(R.id.checked_icon);
+            languageName = v.findViewById(R.id.language_name);
+            add = v.findViewById(R.id.add);
+            remove = v.findViewById(R.id.remove);
+            languageLayout = v.findViewById(R.id.ocr_language_layout);
         }
 
-        return view;
+        void updateUi(boolean checked) {
+            checkedIcon.setVisibility(checked ? View.VISIBLE : View.INVISIBLE);
+            add.setVisibility(checked ? View.GONE : View.VISIBLE);
+            remove.setVisibility(checked ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    /**
+     * list with add / remove element event
+     *
+     * @param <E>
+     */
+    static class ResponsableList<E> extends ArrayList<E> {
+
+        private List<OnListChangedListener> listenerList = new ArrayList<>();
+
+        ResponsableList(@NonNull Collection<? extends E> c) {
+            super(c);
+        }
+
+        void addOnListChangedListener(OnListChangedListener listener) {
+            listenerList.add(listener);
+
+        }
+
+        @Override
+        public boolean add(E e) {
+            for (OnListChangedListener listener : listenerList) {
+                listener.onListChangedFor(e);
+            }
+            return super.add(e);
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            for (OnListChangedListener listener : listenerList) {
+                listener.onListChangedFor(o);
+            }
+            return super.remove(o);
+        }
+    }
+
+    public interface OnListChangedListener {
+        void onListChangedFor(Object o);
     }
 }

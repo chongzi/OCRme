@@ -1,20 +1,27 @@
 package com.ashomok.imagetotext.language_choser;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.widget.ListView;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.Settings;
+import com.ashomok.imagetotext.utils.LogUtil;
+import com.ashomok.imagetotext.utils.SharedPreferencesUtil;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -28,10 +35,13 @@ import java.util.Set;
 //todo add search view
 //https://developer.android.com/training/search/search.html
 
-//todo use recyclerview instead
+    //todo add async loader for fill recyclerviews LoaderManager.LoaderCallbacks<List<EN>>
 public class LanguageOcrActivity extends AppCompatActivity {
-    private static final String TAG = LanguageOcrActivity.class.getSimpleName();
+    private static final String TAG = LogUtil.DEV_TAG + LanguageOcrActivity.class.getSimpleName();
     public static final String CHECKED_LANGUAGE_CODES = "checked_languages_set";
+    private List<String> recentlyChosenLanguages;
+    private boolean isAuto;
+    private LanguagesListAdapter.ResponsableList<String> checkedLanguages;
 
 
     @Override
@@ -41,69 +51,79 @@ public class LanguageOcrActivity extends AppCompatActivity {
 
         initToolbar();
 
-        List<String> checkedLanguages = obtainCheckedLanguagesList();
+        @Nullable List<String> list = obtainCheckedLanguagesList();
+        checkedLanguages = (list == null) ?
+                new LanguagesListAdapter.ResponsableList<>(new ArrayList<>())
+                : new LanguagesListAdapter.ResponsableList<>(list);
+
+        StateChangedNotifier notifier = isAutoChecked -> {
+            if (!isAutoChecked) {
+                isAuto = false;
+                updateAutoUi(isAuto);
+            }
+        };
 
         //init recently chosen language list
-        ListView listViewRecentlyChosen = findViewById(R.id.recently_chosen_list);
-        List<String> recentlyChosenLanguagesList = obtainRecentlyChosenLanguagesList();
-        LanguagesListAdapter recentlyChosenLangAdapter = new LanguagesListAdapter(
-                recentlyChosenLanguagesList, checkedLanguages);
-        listViewRecentlyChosen.setAdapter(recentlyChosenLangAdapter);
+        recentlyChosenLanguages = obtainRecentlyChosenLanguagesList();
+        LanguagesListAdapter recentlyChosenLangAdapter = null;
+        if ( recentlyChosenLanguages.size()>0) {
+            View recentlyChosen = findViewById(R.id.recently_chosen);
+            recentlyChosen.setVisibility(View.VISIBLE);
+            RecyclerView recyclerViewRecentlyChosen = findViewById(R.id.recently_chosen_list);
+            recyclerViewRecentlyChosen.setHasFixedSize(true);
+            LinearLayoutManager recentlyChosenLayoutManager = new LinearLayoutManager(this);
+            recyclerViewRecentlyChosen.setLayoutManager(recentlyChosenLayoutManager);
+
+           recentlyChosenLangAdapter = new LanguagesListAdapter(
+                    recentlyChosenLanguages, checkedLanguages, notifier);
+            recyclerViewRecentlyChosen.setAdapter(recentlyChosenLangAdapter);
+        }
 
         //init all languages list
-        ListView listViewAllLanguages = findViewById(R.id.all_languages_list);
+        RecyclerView recyclerViewAllLanguages = findViewById(R.id.all_languages_list);
+        recyclerViewAllLanguages.setHasFixedSize(true);
+        LinearLayoutManager allLanguagesLayoutManager = new LinearLayoutManager(this);
+        recyclerViewAllLanguages.setLayoutManager(allLanguagesLayoutManager);
         List<String> allLanguages = obtainAllLanguagesList();
         LanguagesListAdapter allLangAdapter = new LanguagesListAdapter(
-                allLanguages, checkedLanguages);
-        listViewAllLanguages.setAdapter(allLangAdapter);
+                allLanguages, checkedLanguages, notifier);
+        recyclerViewAllLanguages.setAdapter(allLangAdapter);
+
+        //init auto btn
+        if (checkedLanguages.size() < 1) {
+            //check auto btn
+            isAuto = true;
+        }
+        LinearLayout autoBtn = findViewById(R.id.auto);
+        updateAutoUi(isAuto);
+
+        LanguagesListAdapter finalRecentlyChosenLangAdapter = recentlyChosenLangAdapter;
+        autoBtn.setOnClickListener(view -> {
+            isAuto = !isAuto;
+            updateAutoUi(isAuto);
+
+            if (finalRecentlyChosenLangAdapter != null) {
+                finalRecentlyChosenLangAdapter.onAutoStateChanged(isAuto);
+            }
+            allLangAdapter.onAutoStateChanged(isAuto);
+        });
     }
 
-    //todo order may nor garantee? check it
     private List<String> obtainAllLanguagesList() {
         return new ArrayList<>(Settings.getOcrLanguageSupportList(this).values());
-    }
-
-    //todo order may nor garantee? check it
-    private List<String> obtainRecentlyChosenLanguagesList() {
-        LinkedList<String> recentlyChosenLanguageKeys = obtainRecentlyChosenLanguageKeys();
-        if (recentlyChosenLanguageKeys == null) {
-            return null;
-        } else {
-            Map<String, String> allLanguages = Settings.getOcrLanguageSupportList(this);
-
-            List<String> result = Stream.of(recentlyChosenLanguageKeys)
-                    .filter(allLanguages::containsKey)
-                    .collect(Collectors.toList());
-
-            return result;
-        }
-    }
-
-    private LinkedHashMap<String, String> obtainAllLanguages() {
-        return Settings.getOcrLanguageSupportList(this);
     }
 
     /**
      * obtain recently chosen Languages from SharedPreferences in order: first - the most recently chosen.
      * Max 5 recently chosen Languages allowed.
      *
-     * @return
+     * @return recently chosen Languages
      */
-    private @Nullable
-    LinkedHashMap<String, String> obtainRecentlyChosenLanguageMap() {
-        LinkedList<String> recentlyChosenLanguageKeys = obtainRecentlyChosenLanguageKeys();
-        if (recentlyChosenLanguageKeys == null) {
-            return null;
-        } else {
-            Map<String, String> allLanguages = Settings.getOcrLanguageSupportList(this);
-
-            LinkedHashMap<String, String> result = Stream.of(recentlyChosenLanguageKeys)
-                    .filter(allLanguages::containsKey)
-                    .collect(
-                            Collectors.toMap(i -> i, allLanguages::get, LinkedHashMap::new));
-
-            return result;
-        }
+    private
+    List<String> obtainRecentlyChosenLanguagesList() {
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        return SharedPreferencesUtil.pullStringList(
+                sharedPref, getString(R.string.recently_chosen_languges_list));
     }
 
     private @Nullable
@@ -114,31 +134,10 @@ public class LanguageOcrActivity extends AppCompatActivity {
         } else {
             Map<String, String> allLanguages = Settings.getOcrLanguageSupportList(this);
 
-            List<String> result = Stream.of(checkedLanguageKeys)
+            return Stream.of(checkedLanguageKeys)
                     .filter(allLanguages::containsKey)
+                    .map(allLanguages::get)
                     .collect(Collectors.toList());
-
-            return result;
-        }
-    }
-
-    /**
-     * @return
-     */
-    private @Nullable
-    Map<String, String> obtainCheckedLanguages() {
-        Set<String> checkedLanguageKeys = obtainCheckedLanguageKeys();
-        if (checkedLanguageKeys == null) {
-            return null;
-        } else {
-            Map<String, String> allLanguages = Settings.getOcrLanguageSupportList(this);
-
-            Map<String, String> result = Stream.of(checkedLanguageKeys)
-                    .filter(allLanguages::containsKey)
-                    .collect(
-                            Collectors.toMap(i -> i, allLanguages::get));
-
-            return result;
         }
     }
 
@@ -150,27 +149,28 @@ public class LanguageOcrActivity extends AppCompatActivity {
     private @Nullable
     Set<String> obtainCheckedLanguageKeys() {
         Intent intent = getIntent();
-        HashSet<String> checkedLanguages =
-                new HashSet<>(intent.getStringArrayListExtra(CHECKED_LANGUAGE_CODES));
-        return checkedLanguages;
+        ArrayList<String> extra = intent.getStringArrayListExtra(CHECKED_LANGUAGE_CODES);
+        if (extra != null) {
+            return new HashSet<>(extra);
+        } else {
+            return null;
+        }
     }
 
     /**
-     * obtain recently chosen Language Keys from SharedPreferences in order: first - the most recently chosen.
-     * Max 5 recently chosen Language Keys allowed.
-     *
-     * @return recently chosen Language Keys
+     * call before finish activity
      */
-    private LinkedList<String> obtainRecentlyChosenLanguageKeys() {
+    private void saveRecentlyChosenLanguages() {
+        LinkedHashSet<String> languagesSet = new LinkedHashSet<>();
+        languagesSet.addAll(checkedLanguages);
+        languagesSet.addAll(recentlyChosenLanguages);
 
-        //todo
-//        There's actually a Stack class: http://java.sun.com/j2se/1.5.0/docs/api/java/util/Stack.html
-//        If you don't want to use that, the LinkedList class (http://java.sun.com/j2se/1.5.0/docs/api/java/util/LinkedList.html) has addFirst and addLast and  removeFirst and removeLast methods, making it perfect for use as a stack or queue class.
+        List<String> languagesSubList =
+                Stream.of(languagesSet).limit(5).collect(Collectors.toList());
 
-        LinkedList<String> recentlyChosenLanguageKeys = new LinkedList<>();
-        recentlyChosenLanguageKeys.addFirst("ru");
-        recentlyChosenLanguageKeys.addFirst("en");
-        return recentlyChosenLanguageKeys;
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferencesUtil.pushStringList(sharedPref,
+                languagesSubList, getString(R.string.recently_chosen_languges_list));
     }
 
     private void initToolbar() {
@@ -186,6 +186,7 @@ public class LanguageOcrActivity extends AppCompatActivity {
             Intent intent = new Intent();
 
             ArrayList<String> languageCodes = new ArrayList<>();
+            saveRecentlyChosenLanguages();
 //            languageCodes.addAll(adapter.getCheckedLanguages()); //// TODO: 10/22/17
             intent.putExtra(CHECKED_LANGUAGE_CODES, languageCodes);
             setResult(RESULT_OK, intent); //todo reduntant?
@@ -194,4 +195,14 @@ public class LanguageOcrActivity extends AppCompatActivity {
         });
     }
 
+    void updateAutoUi(boolean checked) {
+        View checkedIcon = findViewById(R.id.checked_icon);
+        checkedIcon.setVisibility(checked ? View.VISIBLE : View.GONE);
+        View autoIcon = findViewById(R.id.auto_icon);
+        autoIcon.setVisibility(checked ? View.GONE : View.VISIBLE);
+    }
+
+    public interface StateChangedNotifier {
+        void changeAutoState(boolean isAutoChecked);
+    }
 }

@@ -22,7 +22,6 @@
     <string name="language">Language:</string>
     <string name="language_label">Language</string>
     <string name="change">change</string>
-    <string name="auto">auto</string>
     <string name="my_docs">My docs</string>
     <string name="share">Share</string>
     <string name="rate">Rate</string>
@@ -151,4 +150,6 @@
     <string name="auto_detection">AUTO DETECTION</string>
     <string name="recently_chosen_languages">Recently chosen languages</string>
     <string name="all_languages">All languages</string>
+    <string name="recently_chosen_languges_list">recently_chosen_languges_set</string>
+    <string name="auto">auto</string>
 </resources>

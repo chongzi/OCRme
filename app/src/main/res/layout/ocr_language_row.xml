@@ -1,28 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/details_layout_parent"
+    android:id="@+id/ocr_language_layout"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
-    <!--todo set custom drawable https://stackoverflow.com/questions/22666896/android-custom-checkedtextview-->
+    android:orientation="horizontal"
+    android:clickable="true"
+    android:background="?android:attr/selectableItemBackground"
+    android:focusable="true"
+    android:gravity="center_vertical">
 
-    <CheckedTextView
-        android:id="@+id/language_name"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:padding="@dimen/l_margin"
-        android:drawableLeft="?android:attr/listChoiceIndicatorMultiple"
-        android:layout_weight = "1"
-          />
-
-    <!--todo remove plus icon-->
     <ImageView
+        android:clickable="false"
+        android:id="@+id/checked_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:src="@drawable/ic_check_black_36dp"
+        android:tint="@color/green_700"
+        android:layout_weight="0"
+        android:paddingStart="@dimen/base_margin"
+        android:paddingLeft="@dimen/base_margin" />
+
+    <TextView
+        android:id="@+id/language_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:text="default"
+        android:layout_weight="1"
+        android:padding="@dimen/base_margin"/>
+
+    <ImageView
+        android:clickable="false"
+        android:id="@+id/add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/base_margin"
+        android:layout_weight="0"
         android:src="@drawable/ic_add_black_24dp"
-        android:layout_weight = "0"
-        android:padding="@dimen/l_margin"
+        android:tint="@color/green_500"
+        />
+
+    <ImageView
+        android:clickable="false"
+        android:id="@+id/remove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/base_margin"
+        android:layout_weight="0"
+        android:src="@drawable/ic_clear_black_24dp"
+        android:tint="@color/red_500"
+        android:visibility="gone"
         />
 
 </LinearLayout>
