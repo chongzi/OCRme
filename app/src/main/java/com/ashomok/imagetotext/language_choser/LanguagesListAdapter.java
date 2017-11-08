@@ -69,7 +69,7 @@ public class LanguagesListAdapter extends RecyclerView.Adapter<LanguagesListAdap
 
     void onAutoStateChanged(boolean isAutoChecked) {
         if (isAutoChecked) {
-            //unchecked all items
+            //uncheck all items
             checkedLanguages.clear();
             notifyDataSetChanged();
         }
@@ -118,11 +118,7 @@ public class LanguagesListAdapter extends RecyclerView.Adapter<LanguagesListAdap
             }
         });
 
-        if (checkedLanguages.contains(item)) {
-            holder.updateUi(true);
-        } else {
-            holder.updateUi(false);
-        }
+        holder.updateUi(checkedLanguages.contains(item));
     }
 
     @Override

@@ -152,4 +152,7 @@
     <string name="all_languages">All languages</string>
     <string name="recently_chosen_languges_list">recently_chosen_languges_set</string>
     <string name="auto">auto</string>
+    <string name="search_title">Search</string>
+    <string name="search_hint">English</string>
+    <string name="saved_language_codes">saved_language_codes</string>
 </resources>

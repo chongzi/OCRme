@@ -22,26 +22,24 @@ import com.ashomok.imagetotext.utils.SharedPreferencesUtil;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 
 /**
  * Created by iuliia on 10/22/17.
  */
 
-//todo add search view
-//https://developer.android.com/training/search/search.html
-
-    //todo add async loader for fill recyclerviews LoaderManager.LoaderCallbacks<List<EN>>
+//MINOR todo add search view https://developer.android.com/training/search/search.html (add add async loader firstly because of technical reasons)
+//MINOR todo add async loader for fill recyclerviews LoaderManager.LoaderCallbacks<List<String>>
+//todo may be use rx for manipulation with two adapters
 public class LanguageOcrActivity extends AppCompatActivity {
     private static final String TAG = LogUtil.DEV_TAG + LanguageOcrActivity.class.getSimpleName();
     public static final String CHECKED_LANGUAGE_CODES = "checked_languages_set";
     private List<String> recentlyChosenLanguages;
     private boolean isAuto;
     private LanguagesListAdapter.ResponsableList<String> checkedLanguages;
+    private LanguagesListAdapter allLangAdapter;
 
 
     @Override
@@ -66,7 +64,7 @@ public class LanguageOcrActivity extends AppCompatActivity {
         //init recently chosen language list
         recentlyChosenLanguages = obtainRecentlyChosenLanguagesList();
         LanguagesListAdapter recentlyChosenLangAdapter = null;
-        if ( recentlyChosenLanguages.size()>0) {
+        if (recentlyChosenLanguages.size() > 0) {
             View recentlyChosen = findViewById(R.id.recently_chosen);
             recentlyChosen.setVisibility(View.VISIBLE);
             RecyclerView recyclerViewRecentlyChosen = findViewById(R.id.recently_chosen_list);
@@ -74,7 +72,7 @@ public class LanguageOcrActivity extends AppCompatActivity {
             LinearLayoutManager recentlyChosenLayoutManager = new LinearLayoutManager(this);
             recyclerViewRecentlyChosen.setLayoutManager(recentlyChosenLayoutManager);
 
-           recentlyChosenLangAdapter = new LanguagesListAdapter(
+            recentlyChosenLangAdapter = new LanguagesListAdapter(
                     recentlyChosenLanguages, checkedLanguages, notifier);
             recyclerViewRecentlyChosen.setAdapter(recentlyChosenLangAdapter);
         }
@@ -85,7 +83,7 @@ public class LanguageOcrActivity extends AppCompatActivity {
         LinearLayoutManager allLanguagesLayoutManager = new LinearLayoutManager(this);
         recyclerViewAllLanguages.setLayoutManager(allLanguagesLayoutManager);
         List<String> allLanguages = obtainAllLanguagesList();
-        LanguagesListAdapter allLangAdapter = new LanguagesListAdapter(
+        allLangAdapter = new LanguagesListAdapter(
                 allLanguages, checkedLanguages, notifier);
         recyclerViewAllLanguages.setAdapter(allLangAdapter);
 
@@ -109,6 +107,7 @@ public class LanguageOcrActivity extends AppCompatActivity {
         });
     }
 
+
     private List<String> obtainAllLanguagesList() {
         return new ArrayList<>(Settings.getOcrLanguageSupportList(this).values());
     }
@@ -122,8 +121,12 @@ public class LanguageOcrActivity extends AppCompatActivity {
     private
     List<String> obtainRecentlyChosenLanguagesList() {
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        return SharedPreferencesUtil.pullStringList(
+        List<String> recentlyChosenLanguagesList = SharedPreferencesUtil.pullStringList(
                 sharedPref, getString(R.string.recently_chosen_languges_list));
+        if (recentlyChosenLanguagesList == null) {
+            recentlyChosenLanguagesList = new ArrayList<>();
+        }
+        return recentlyChosenLanguagesList;
     }
 
     private @Nullable
@@ -184,12 +187,11 @@ public class LanguageOcrActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> {
             //back btn pressed
             Intent intent = new Intent();
-
-            ArrayList<String> languageCodes = new ArrayList<>();
             saveRecentlyChosenLanguages();
-//            languageCodes.addAll(adapter.getCheckedLanguages()); //// TODO: 10/22/17
-            intent.putExtra(CHECKED_LANGUAGE_CODES, languageCodes);
-            setResult(RESULT_OK, intent); //todo reduntant?
+            if (checkedLanguages != null) {
+                intent.putExtra(CHECKED_LANGUAGE_CODES, languageCodes);
+                setResult(RESULT_OK, intent);
+            }
 
             finish();
         });

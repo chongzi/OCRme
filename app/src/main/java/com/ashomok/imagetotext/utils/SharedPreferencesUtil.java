@@ -1,6 +1,7 @@
 package com.ashomok.imagetotext.utils;
 
 import android.content.SharedPreferences;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,15 +25,18 @@ public class SharedPreferencesUtil {
         editor.apply();
     }
 
-    public static List<String> pullStringList(SharedPreferences sharedPref,
-                                              String uniqueListName) {
-
-        List<String> result = new ArrayList<>();
+    public static @Nullable List<String> pullStringList(SharedPreferences sharedPref,
+                                String uniqueListName) {
         int size = sharedPref.getInt(uniqueListName + "_size", 0);
-
-        for (int i = 0; i < size; i++) {
-            result.add(sharedPref.getString(uniqueListName + i, null));
+        if (size > 0) {
+            List<String> result = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                result.add(sharedPref.getString(uniqueListName + i, null));
+            }
+            return result;
         }
-        return result;
+        else {
+            return null;
+        }
     }
 }

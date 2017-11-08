@@ -4,17 +4,17 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
+        android:name="android.support.multidex.MultiDexApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:name="android.support.multidex.MultiDexApplication">
+        android:theme="@style/AppTheme">
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -22,7 +22,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
+                android:resource="@xml/provider_paths" />
         </provider>
 
         <provider
@@ -32,21 +32,20 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
+                android:resource="@xml/provider_paths" />
         </provider>
 
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".my_docs.MyDocsActivity"
+            android:exported="true"
             android:label="@string/my_docs"
             android:parentActivityName=".MainActivity"
-            android:exported="true"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -54,9 +53,9 @@
         </activity>
         <activity
             android:name=".language_choser.LanguageOcrActivity"
+            android:exported="true"
             android:label="@string/language_label"
             android:parentActivityName=".MainActivity"
-            android:exported="true"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -64,22 +63,22 @@
         </activity>
         <activity
             android:name=".ocr_result.translate.TranslateActivity"
+            android:exported="true"
             android:label="@string/translate"
             android:parentActivityName=".ocr_result.OcrResultActivity"
-            android:exported="true"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ocr_result.OcrResultActivity" />
         </activity>
         <activity
+            android:name=".ocr_result.OcrResultActivity"
+            android:exported="true"
             android:label="@string/result"
             android:launchMode="singleTop"
-            android:name=".ocr_result.OcrResultActivity"
-            android:windowSoftInputMode="adjustPan"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme"
-            android:exported="true">
+            android:windowSoftInputMode="adjustPan">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
@@ -93,6 +92,7 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
+
         </activity>
     </application>
 

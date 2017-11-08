@@ -32,6 +32,7 @@ import static org.mockito.Matchers.anyString;
 /**
  * Created by iuliia on 10/31/17.
  */
+//MINOR todo test activity fineshed properly using roboelectric https://stackoverflow.com/a/8990947/3627736
 public class LanguageOcrActivityTest {
     @Rule
     public ActivityTestRule<LanguageOcrActivity> mActivityRule = new ActivityTestRule<>(
@@ -55,9 +56,6 @@ public class LanguageOcrActivityTest {
         intent.putStringArrayListExtra(LanguageOcrActivity.CHECKED_LANGUAGE_CODES, languageCodes);
         mActivityRule.launchActivity(intent);
 
-
-        String auto = mActivityRule.getActivity().getResources().getString(R.string.auto_detection);
-        String azarbaijani = mActivityRule.getActivity().getResources().getString(R.string.azarbaijani);
         String afrikaans = mActivityRule.getActivity().getResources().getString(R.string.afrikaans);
 
         onView(withId(R.id.recently_chosen_list))

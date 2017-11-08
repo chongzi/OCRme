@@ -13,7 +13,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -32,11 +31,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.annimon.stream.Collectors;
+import com.annimon.stream.Optional;
+import com.annimon.stream.Stream;
 import com.ashomok.imagetotext.firebaseUiAuth.BaseLoginActivity;
 import com.ashomok.imagetotext.firebaseUiAuth.SignOutDialogFragment;
+import com.ashomok.imagetotext.language_choser.LanguageOcrActivity;
 import com.ashomok.imagetotext.my_docs.MyDocsActivity;
 import com.ashomok.imagetotext.ocr.OcrActivity;
 import com.ashomok.imagetotext.utils.NetworkUtils;
+import com.ashomok.imagetotext.utils.SharedPreferencesUtil;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.jakewharton.rxbinding2.view.RxView;
@@ -45,13 +49,12 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.List;
+import java.util.Map;
 
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.ashomok.imagetotext.Settings.isAdsActive;
+import static com.ashomok.imagetotext.language_choser.LanguageOcrActivity.CHECKED_LANGUAGE_CODES;
 import static com.ashomok.imagetotext.ocr.OcrActivity.RESULT_CANCELED_BY_USER;
 import static com.ashomok.imagetotext.utils.FileUtils.prepareDirectory;
 import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showError;
@@ -84,7 +87,8 @@ public class MainActivity extends BaseLoginActivity
     private TextView languageTextView;
     private Button myDocsBtn;
     private String mEmail = "No email";
-    private String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+    private String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE; //todo use rx permissions
+    private Optional<List<String>> languageCodes;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -132,26 +136,24 @@ public class MainActivity extends BaseLoginActivity
         languageTextView = findViewById(R.id.language);
         languageTextView.setPaintFlags(languageTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         languageTextView.setOnClickListener(this);
-//        updateLanguageTextView(getCheckedLanguages());//todo
+        languageCodes = obtainSavedLanguagesCodes();
+        updateLanguageTextView(languageCodes);
     }
-
-    //todo
-//    @NonNull
-//    private ArrayList<String> getCheckedLanguages() {
-//        return new ArrayList<>(obtainSavedLanguages());
-//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //todo
-//        if (requestCode == LANGUAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-//
-//            //todo save in shared preferanses
-//            Bundle bundle = data.getExtras();
-//            ArrayList<String> checkedLanguages = bundle.getStringArrayList(CHECKED_LANGUAGE_CODES);
-//            updateLanguageTextView(checkedLanguages);
-//        }
+
+        if (requestCode == LANGUAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+            Bundle bundle = data.getExtras();
+            if (bundle != null) {
+                List<String> checkedLanguageCodes = bundle.getStringArrayList(CHECKED_LANGUAGE_CODES);
+                languageCodes = Optional.ofNullable(checkedLanguageCodes);
+                updateLanguageTextView(languageCodes);
+
+                saveLanguages();
+            }
+        }
 
         //photo obtained from camera
         if (requestCode == CaptureImage_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
@@ -171,26 +173,24 @@ public class MainActivity extends BaseLoginActivity
 
         //ocr canceled
         else if (requestCode == OCR_Activity_REQUEST_CODE && resultCode == RESULT_CANCELED_BY_USER) {
-           showWarning(R.string.canceled, mRootView);
+            showWarning(R.string.canceled, mRootView);
         }
     }
 
-//    //// TODO: 10/22/17
-//    private void saveLanguages(LinkedHashSet<String> data) {
-//        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-//        SharedPreferences.Editor editor = preferences.edit();
-//        LinkedHashSet<String> checkedLanguages = new LinkedHashSet<>();
-//        for (String name : data) {
-//            checkedLanguages.add(name);
-//        }
-//        editor.putStringSet(CHECKED_LANGUAGE_CODES, checkedLanguages);
-//        editor.apply();
-//    }
+    private void saveLanguages() {
+        if (languageCodes.isPresent()) {
+            SharedPreferences preferences = getDefaultSharedPreferences(this);
+            SharedPreferencesUtil.pushStringList(
+                    preferences, languageCodes.get(), getString(R.string.saved_language_codes));
+        }
+    }
 
     private void startOcrActivity(Uri uri) {
         Intent intent = new Intent(this, OcrActivity.class);
         intent.setData(uri);
-//        intent.putExtra(OcrActivity.EXTRA_LANGUAGES, obtainLanguageShortcuts()); //todo
+        if (languageCodes.isPresent()) {
+            intent.putStringArrayListExtra(OcrActivity.EXTRA_LANGUAGES, new ArrayList<>(languageCodes.get()));
+        }
         startActivityForResult(intent, OCR_Activity_REQUEST_CODE);
     }
 
@@ -202,47 +202,40 @@ public class MainActivity extends BaseLoginActivity
         return super.onPrepareOptionsMenu(menu);
     }
 
-//todo
-//    private ArrayList<String> obtainLanguageShortcuts() {
-//        ArrayList<String> languageNames = getCheckedLanguages(); //todo put chackedlanguages to class field
-//
-//        LanguageList data = new LanguageList(this);
-//        LinkedHashMap<String, String> languages = data.getLanguages();
-//
-//        ArrayList<String> result = new ArrayList<>();
-//        for (String name : languageNames) {
-//            if (languages.containsKey(name)) {
-//                result.add(languages.get(name));
-//            }
-//        }
-//
-//        return result;
-//    }
-
     private void checkConnection() {
         if (!NetworkUtils.isOnline(this)) {
             showError(R.string.no_internet_connection, mRootView);
         }
     }
 
-    private void updateLanguageTextView(ArrayList<String> checkedLanguages) {
-        String languageString = generateLanguageString(checkedLanguages);
+    private void updateLanguageTextView(Optional<List<String>> checkedLanguageCodes) {
+        String languageString;
+        if (checkedLanguageCodes.isPresent()) {
+            languageString = generateLanguageString(checkedLanguageCodes.get());
+        } else {
+            languageString = getString(R.string.auto);
+        }
         languageTextView.setText(languageString);
     }
 
     @NonNull
-    private String generateLanguageString(ArrayList<String> checkedLanguages) {
-        String languageString = "";
+    private String generateLanguageString(List<String> checkedLanguageCodes) {
+        Map<String, String> allLanguages = Settings.getOcrLanguageSupportList(this);
+        List<String> checkedLanguages = Stream.of(checkedLanguageCodes)
+                .filter(allLanguages::containsKey)
+                .map(allLanguages::get)
+                .collect(Collectors.toList());
 
+        StringBuilder languageString = new StringBuilder();
         for (String l : checkedLanguages) {
-            languageString += l + ", ";
+            languageString.append(l).append(", ");
         }
 
-        if (languageString.endsWith(", ")) {
-            languageString = languageString.substring(0, languageString.length() - 2);
+        if (languageString.toString().endsWith(", ")) {
+            languageString = new StringBuilder(languageString.substring(0, languageString.length() - 2));
         }
 
-        return languageString;
+        return languageString.toString();
     }
 
     private void initImageSourceBtns() {
@@ -311,7 +304,7 @@ public class MainActivity extends BaseLoginActivity
         mDrawerLayout = findViewById(R.id.drawer_layout);
         // Set up the navigation drawer.
         navigationView = findViewById(R.id.nav_view);
-            setupDrawerContent(navigationView);
+        setupDrawerContent(navigationView);
     }
 
     @Override
@@ -452,16 +445,11 @@ public class MainActivity extends BaseLoginActivity
         }
     }
 
-    //todo
-//    private Set<String> obtainSavedLanguages() {
-//
-//        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-//        Set<String> auto = new HashSet<String>() {{
-//            add(getString(R.string.auto));
-//        }};
-//        TreeSet<String> checkedLanguagesNames = new TreeSet<>(sharedPref.getStringSet(CHECKED_LANGUAGE_CODES, auto));
-//        return checkedLanguagesNames;
-//    }
+    private Optional<List<String>> obtainSavedLanguagesCodes() {
+        SharedPreferences sharedPref = getDefaultSharedPreferences(this);
+        return Optional.ofNullable(SharedPreferencesUtil.pullStringList(
+                sharedPref, getString(R.string.saved_language_codes)));
+    }
 
     /**
      * update UI if signed in/out
@@ -527,7 +515,7 @@ public class MainActivity extends BaseLoginActivity
                 signIn();
                 break;
             case R.id.language:
-//                onLanguageTextViewClicked();//todo
+                onLanguageTextViewClicked();
                 break;
             case R.id.gallery_btn:
                 startGalleryChooser();
@@ -540,10 +528,12 @@ public class MainActivity extends BaseLoginActivity
         }
     }
 
-    //todo
-//    private void onLanguageTextViewClicked() {
-//        Intent intent = new Intent(this, LanguageActivity.class);
-//        intent.putExtra(CHECKED_LANGUAGE_CODES, getCheckedLanguages());
-//        startActivityForResult(intent, LANGUAGE_ACTIVITY_REQUEST_CODE);
-//    }
+    private void onLanguageTextViewClicked() {
+        Intent intent = new Intent(this, LanguageOcrActivity.class);
+        if (languageCodes.isPresent()) {
+            ArrayList<String> extra = new ArrayList<>(languageCodes.get());
+            intent.putStringArrayListExtra(CHECKED_LANGUAGE_CODES, extra);
+        }
+        startActivityForResult(intent, LANGUAGE_ACTIVITY_REQUEST_CODE);
+    }
 }
