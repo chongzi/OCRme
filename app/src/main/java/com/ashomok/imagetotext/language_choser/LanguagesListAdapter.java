@@ -1,5 +1,6 @@
 package com.ashomok.imagetotext.language_choser;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.annimon.stream.IntStream;
 import com.ashomok.imagetotext.R;
+import com.ashomok.imagetotext.Settings;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,40 +31,44 @@ public class LanguagesListAdapter extends RecyclerView.Adapter<LanguagesListAdap
     private static final String TAG = LanguagesListAdapter.class.getSimpleName();
     private static final int MAX_CHECKED_ALLOWED = 3;
     private final LanguageOcrActivity.StateChangedNotifier notifier;
-    private List<String> allLanguages;
-    private ResponsableList<String> checkedLanguages;
+    private final Context context;
+    private List<String> allLanguageCodes;
+    private ResponsableList<String> checkedLanguageCodes;
 
 
-    LanguagesListAdapter(@Nullable List<String> allLanguages,
-                         @Nullable ResponsableList<String> checkedLanguages,
+    LanguagesListAdapter(Context context,
+                         @Nullable List<String> allLanguageCodes,
+                         @Nullable ResponsableList<String> checkedLanguageCodes,
                          LanguageOcrActivity.StateChangedNotifier notifier) {
-        this.allLanguages = allLanguages;
+        this.context = context;
+        this.allLanguageCodes = allLanguageCodes;
         this.notifier = notifier;
 
-        this.checkedLanguages = (checkedLanguages == null) ? new ResponsableList<>(new ArrayList<>()) : checkedLanguages;
-        this.checkedLanguages.addOnListChangedListener(o -> {
+        this.checkedLanguageCodes = (checkedLanguageCodes == null) ?
+                new ResponsableList<>(new ArrayList<>()) : checkedLanguageCodes;
+        this.checkedLanguageCodes.addOnListChangedListener(o -> {
             String checkedLanguage = (String) o;
 
-            int changedPos = IntStream.range(0, allLanguages.size())
-                    .filter(i -> checkedLanguage.equals(allLanguages.get(i)))
+            int changedPos = IntStream.range(0, allLanguageCodes.size())
+                    .filter(i -> checkedLanguage.equals(allLanguageCodes.get(i)))
                     .findFirst().orElse(-1);
 
             notifyItemChanged(changedPos);
         });
     }
 
-    List<String> getCheckedLanguages() {
-        return checkedLanguages;
+    List<String> getCheckedLanguageCodes() {
+        return checkedLanguageCodes;
     }
 
     private void addToChecked(String language) {
-        if (checkedLanguages.size() < MAX_CHECKED_ALLOWED) {
-            checkedLanguages.add(language);
+        if (checkedLanguageCodes.size() < MAX_CHECKED_ALLOWED) {
+            checkedLanguageCodes.add(language);
         } else {
             Log.w(TAG, "attempt to add checked language when max amount reached");
         }
 
-        if (checkedLanguages.size() > 0) {
+        if (checkedLanguageCodes.size() > 0) {
             notifier.changeAutoState(false);
         }
     }
@@ -70,18 +76,18 @@ public class LanguagesListAdapter extends RecyclerView.Adapter<LanguagesListAdap
     void onAutoStateChanged(boolean isAutoChecked) {
         if (isAutoChecked) {
             //uncheck all items
-            checkedLanguages.clear();
+            checkedLanguageCodes.clear();
             notifyDataSetChanged();
         }
     }
 
     private void removeFromChecked(String language) {
-        checkedLanguages.remove(language);
+        checkedLanguageCodes.remove(language);
     }
 
 
     String getItem(int i) {
-        return allLanguages.get(i);
+        return allLanguageCodes.get(i);
     }
 
     @Override
@@ -98,16 +104,16 @@ public class LanguagesListAdapter extends RecyclerView.Adapter<LanguagesListAdap
         String item = getItem(position);
         View parent = holder.languageLayout.getRootView();
 
-        holder.languageName.setText(item);
+        holder.languageName.setText(Settings.getOcrLanguageSupportList(context).get(item));
 
         holder.languageLayout.setOnClickListener(view -> {
-            if (checkedLanguages.contains(item)) {
+            if (checkedLanguageCodes.contains(item)) {
                 //checked - uncheck
                 removeFromChecked(item);
                 holder.updateUi(false);
             } else {
                 //unchecked - check
-                if (checkedLanguages.size() < MAX_CHECKED_ALLOWED) {
+                if (checkedLanguageCodes.size() < MAX_CHECKED_ALLOWED) {
                     addToChecked(item);
                     holder.updateUi(true);
                 } else {
@@ -118,12 +124,12 @@ public class LanguagesListAdapter extends RecyclerView.Adapter<LanguagesListAdap
             }
         });
 
-        holder.updateUi(checkedLanguages.contains(item));
+        holder.updateUi(checkedLanguageCodes.contains(item));
     }
 
     @Override
     public int getItemCount() {
-        return allLanguages.size();
+        return allLanguageCodes.size();
     }
 
     // Provide a reference to the views for each data item

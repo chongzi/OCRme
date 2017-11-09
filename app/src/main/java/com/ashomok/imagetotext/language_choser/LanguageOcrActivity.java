@@ -20,11 +20,8 @@ import com.ashomok.imagetotext.utils.LogUtil;
 import com.ashomok.imagetotext.utils.SharedPreferencesUtil;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by iuliia on 10/22/17.
@@ -36,9 +33,9 @@ import java.util.Set;
 public class LanguageOcrActivity extends AppCompatActivity {
     private static final String TAG = LogUtil.DEV_TAG + LanguageOcrActivity.class.getSimpleName();
     public static final String CHECKED_LANGUAGE_CODES = "checked_languages_set";
-    private List<String> recentlyChosenLanguages;
+    private List<String> recentlyChosenLanguageCodes;
     private boolean isAuto;
-    private LanguagesListAdapter.ResponsableList<String> checkedLanguages;
+    private LanguagesListAdapter.ResponsableList<String> checkedLanguageCodes;
     private LanguagesListAdapter allLangAdapter;
 
 
@@ -49,8 +46,8 @@ public class LanguageOcrActivity extends AppCompatActivity {
 
         initToolbar();
 
-        @Nullable List<String> list = obtainCheckedLanguagesList();
-        checkedLanguages = (list == null) ?
+        @Nullable List<String> list = obtainCheckedLanguageCodes();
+        checkedLanguageCodes = (list == null) ?
                 new LanguagesListAdapter.ResponsableList<>(new ArrayList<>())
                 : new LanguagesListAdapter.ResponsableList<>(list);
 
@@ -62,9 +59,9 @@ public class LanguageOcrActivity extends AppCompatActivity {
         };
 
         //init recently chosen language list
-        recentlyChosenLanguages = obtainRecentlyChosenLanguagesList();
+        recentlyChosenLanguageCodes = obtainRecentlyChosenLanguageCodes();
         LanguagesListAdapter recentlyChosenLangAdapter = null;
-        if (recentlyChosenLanguages.size() > 0) {
+        if (recentlyChosenLanguageCodes.size() > 0) {
             View recentlyChosen = findViewById(R.id.recently_chosen);
             recentlyChosen.setVisibility(View.VISIBLE);
             RecyclerView recyclerViewRecentlyChosen = findViewById(R.id.recently_chosen_list);
@@ -72,8 +69,8 @@ public class LanguageOcrActivity extends AppCompatActivity {
             LinearLayoutManager recentlyChosenLayoutManager = new LinearLayoutManager(this);
             recyclerViewRecentlyChosen.setLayoutManager(recentlyChosenLayoutManager);
 
-            recentlyChosenLangAdapter = new LanguagesListAdapter(
-                    recentlyChosenLanguages, checkedLanguages, notifier);
+            recentlyChosenLangAdapter = new LanguagesListAdapter(this,
+                    recentlyChosenLanguageCodes, checkedLanguageCodes, notifier);
             recyclerViewRecentlyChosen.setAdapter(recentlyChosenLangAdapter);
         }
 
@@ -82,13 +79,13 @@ public class LanguageOcrActivity extends AppCompatActivity {
         recyclerViewAllLanguages.setHasFixedSize(true);
         LinearLayoutManager allLanguagesLayoutManager = new LinearLayoutManager(this);
         recyclerViewAllLanguages.setLayoutManager(allLanguagesLayoutManager);
-        List<String> allLanguages = obtainAllLanguagesList();
-        allLangAdapter = new LanguagesListAdapter(
-                allLanguages, checkedLanguages, notifier);
+        List<String> allLanguageCodes = obtainAllLanguageCodes();
+        allLangAdapter = new LanguagesListAdapter(this,
+                allLanguageCodes, checkedLanguageCodes, notifier);
         recyclerViewAllLanguages.setAdapter(allLangAdapter);
 
         //init auto btn
-        if (checkedLanguages.size() < 1) {
+        if (checkedLanguageCodes.size() < 1) {
             //check auto btn
             isAuto = true;
         }
@@ -108,8 +105,8 @@ public class LanguageOcrActivity extends AppCompatActivity {
     }
 
 
-    private List<String> obtainAllLanguagesList() {
-        return new ArrayList<>(Settings.getOcrLanguageSupportList(this).values());
+    private List<String> obtainAllLanguageCodes() {
+        return new ArrayList<>(Settings.getOcrLanguageSupportList(this).keySet());
     }
 
     /**
@@ -119,29 +116,14 @@ public class LanguageOcrActivity extends AppCompatActivity {
      * @return recently chosen Languages
      */
     private
-    List<String> obtainRecentlyChosenLanguagesList() {
+    List<String> obtainRecentlyChosenLanguageCodes() {
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        List<String> recentlyChosenLanguagesList = SharedPreferencesUtil.pullStringList(
-                sharedPref, getString(R.string.recently_chosen_languges_list));
-        if (recentlyChosenLanguagesList == null) {
-            recentlyChosenLanguagesList = new ArrayList<>();
+        List<String> recentlyChosenLanguageCodes = SharedPreferencesUtil.pullStringList(
+                sharedPref, getString(R.string.recently_chosen_languge_codes));
+        if (recentlyChosenLanguageCodes == null) {
+            recentlyChosenLanguageCodes = new ArrayList<>();
         }
-        return recentlyChosenLanguagesList;
-    }
-
-    private @Nullable
-    List<String> obtainCheckedLanguagesList() {
-        Set<String> checkedLanguageKeys = obtainCheckedLanguageKeys();
-        if (checkedLanguageKeys == null) {
-            return null;
-        } else {
-            Map<String, String> allLanguages = Settings.getOcrLanguageSupportList(this);
-
-            return Stream.of(checkedLanguageKeys)
-                    .filter(allLanguages::containsKey)
-                    .map(allLanguages::get)
-                    .collect(Collectors.toList());
-        }
+        return recentlyChosenLanguageCodes;
     }
 
     /**
@@ -150,11 +132,11 @@ public class LanguageOcrActivity extends AppCompatActivity {
      * @return checked language keys or null, which means auto detection is checked
      */
     private @Nullable
-    Set<String> obtainCheckedLanguageKeys() {
+    List<String> obtainCheckedLanguageCodes() {
         Intent intent = getIntent();
         ArrayList<String> extra = intent.getStringArrayListExtra(CHECKED_LANGUAGE_CODES);
         if (extra != null) {
-            return new HashSet<>(extra);
+            return extra;
         } else {
             return null;
         }
@@ -165,15 +147,15 @@ public class LanguageOcrActivity extends AppCompatActivity {
      */
     private void saveRecentlyChosenLanguages() {
         LinkedHashSet<String> languagesSet = new LinkedHashSet<>();
-        languagesSet.addAll(checkedLanguages);
-        languagesSet.addAll(recentlyChosenLanguages);
+        languagesSet.addAll(checkedLanguageCodes);
+        languagesSet.addAll(recentlyChosenLanguageCodes);
 
         List<String> languagesSubList =
                 Stream.of(languagesSet).limit(5).collect(Collectors.toList());
 
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         SharedPreferencesUtil.pushStringList(sharedPref,
-                languagesSubList, getString(R.string.recently_chosen_languges_list));
+                languagesSubList, getString(R.string.recently_chosen_languge_codes));
     }
 
     private void initToolbar() {
@@ -188,8 +170,8 @@ public class LanguageOcrActivity extends AppCompatActivity {
             //back btn pressed
             Intent intent = new Intent();
             saveRecentlyChosenLanguages();
-            if (checkedLanguages != null) {
-                intent.putExtra(CHECKED_LANGUAGE_CODES, languageCodes);
+            if (checkedLanguageCodes != null) {
+                intent.putExtra(CHECKED_LANGUAGE_CODES, checkedLanguageCodes);
                 setResult(RESULT_OK, intent);
             }
 

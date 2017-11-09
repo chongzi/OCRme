@@ -41,7 +41,7 @@ public class LanguagesListAdapterTest {
 
     @Test
     public void getCheckedLanguages() throws Exception {
-        assertTrue(languagesListAdapter.getCheckedLanguages().size() > 0);
+        assertTrue(languagesListAdapter.getCheckedLanguageCodes().size() > 0);
 
     }
 

@@ -150,7 +150,7 @@
     <string name="auto_detection">AUTO DETECTION</string>
     <string name="recently_chosen_languages">Recently chosen languages</string>
     <string name="all_languages">All languages</string>
-    <string name="recently_chosen_languges_list">recently_chosen_languges_set</string>
+    <string name="recently_chosen_languge_codes">recently_chosen_languge_codes</string>
     <string name="auto">auto</string>
     <string name="search_title">Search</string>
     <string name="search_hint">English</string>
