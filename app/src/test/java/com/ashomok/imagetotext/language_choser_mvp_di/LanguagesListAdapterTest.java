@@ -1,4 +1,4 @@
-package com.ashomok.imagetotext.language_choser;
+package com.ashomok.imagetotext.language_choser_mvp_di;
 
 import android.content.Context;
 
@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(MockitoJUnitRunner.class)
 public class LanguagesListAdapterTest {
 
-    private LanguagesListAdapter languagesListAdapter;
+    private LanguageOcrActivity.LanguagesListAdapter languagesListAdapter;
 
     @Before
     public void before() throws Exception {
@@ -35,7 +35,7 @@ public class LanguagesListAdapterTest {
         checked.add("1 language");
 
         Context context = Mockito.mock(Context.class);
-        languagesListAdapter = new LanguagesListAdapter(allLanguages, checked, notifier);
+        languagesListAdapter = new LanguageOcrActivity.LanguagesListAdapter(allLanguages, checked, notifier);
     }
 
 

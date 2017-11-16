@@ -36,7 +36,7 @@ import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
 import com.ashomok.imagetotext.firebaseUiAuth.BaseLoginActivity;
 import com.ashomok.imagetotext.firebaseUiAuth.SignOutDialogFragment;
-import com.ashomok.imagetotext.language_choser.LanguageOcrActivity;
+import com.ashomok.imagetotext.language_choser_mvp_di.LanguageOcrActivity;
 import com.ashomok.imagetotext.my_docs.MyDocsActivity;
 import com.ashomok.imagetotext.ocr.OcrActivity;
 import com.ashomok.imagetotext.utils.NetworkUtils;
@@ -54,7 +54,7 @@ import java.util.Map;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.ashomok.imagetotext.Settings.isAdsActive;
-import static com.ashomok.imagetotext.language_choser.LanguageOcrActivity.CHECKED_LANGUAGE_CODES;
+import static com.ashomok.imagetotext.language_choser_mvp_di.LanguageOcrActivity.CHECKED_LANGUAGE_CODES;
 import static com.ashomok.imagetotext.ocr.OcrActivity.RESULT_CANCELED_BY_USER;
 import static com.ashomok.imagetotext.utils.FileUtils.prepareDirectory;
 import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showError;

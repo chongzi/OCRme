@@ -1,4 +1,4 @@
-package com.ashomok.imagetotext.language_choser;
+package com.ashomok.imagetotext.language_choser_mvp_di;
 
 import android.content.Context;
 import android.content.Intent;
@@ -103,6 +103,7 @@ public class LanguageOcrActivityTest {
         Thread.sleep(3000);
     }
 
+    //todo dont work as expected
     @Test
     public void launchActivityWithRecentlyLangs() throws InterruptedException {
 
