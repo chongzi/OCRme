@@ -23,16 +23,16 @@ import com.annimon.stream.IntStream;
 import com.annimon.stream.Stream;
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.Settings;
-import com.ashomok.imagetotext.utils.LogUtil;
 import com.ashomok.imagetotext.utils.SharedPreferencesUtil;
-import com.jakewharton.rxbinding2.view.RxView;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-import io.reactivex.Observable;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import io.reactivex.subjects.PublishSubject;
 
 import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showError;
@@ -42,22 +42,33 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  * Created by iuliia on 10/22/17.
  */
 
+//todo bug - when uncheck all - empty language in main Activity - fix it
 //MINOR todo add search view https://developer.android.com/training/search/search.html (add add async loader firstly because of technical reasons)
 //MINOR todo add async loader for fill recyclerviews LoaderManager.LoaderCallbacks<List<String>>
-//todo may be use rx for manipulation with two adapters
-public class LanguageOcrActivity extends AppCompatActivity {
+public class LanguageOcrActivity extends AppCompatActivity implements LanguageOcrContract.View {
     private static final String TAG = DEV_TAG + LanguageOcrActivity.class.getSimpleName();
     public static final String CHECKED_LANGUAGE_CODES = "checked_languages_set";
 
     private List<String> recentlyChosenLanguageCodes;
     private boolean isAuto;
     private LanguagesListAdapter.ResponsableList<String> checkedLanguageCodes;
+    private LanguagesListAdapter allLangAdapter;
+    private LanguagesListAdapter recentlyChosenLangAdapter;
+
+    @Inject
+    LanguageOcrPresenter mPresenter;
+
+    private StateChangedNotifier notifier = isAutoChecked -> {
+        if (!isAutoChecked) {
+            isAuto = false;
+            updateAutoView(isAuto);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_language_ocr);
-
         initToolbar();
 
         @Nullable List<String> list = obtainCheckedLanguageCodes();
@@ -65,67 +76,28 @@ public class LanguageOcrActivity extends AppCompatActivity {
                 new LanguagesListAdapter.ResponsableList<>(new ArrayList<>())
                 : new LanguagesListAdapter.ResponsableList<>(list);
 
-        StateChangedNotifier notifier = isAutoChecked -> {
-            if (!isAutoChecked) {
-                isAuto = false;
-                updateAutoUi(isAuto);
-            }
-        };
-
-        //todo move to presenter
-        //init recently chosen language list
         recentlyChosenLanguageCodes = obtainRecentlyChosenLanguageCodes();
-        LanguagesListAdapter recentlyChosenLangAdapter = null;
-        if (recentlyChosenLanguageCodes.size() > 0) {
-            View recentlyChosen = findViewById(R.id.recently_chosen);
-            recentlyChosen.setVisibility(View.VISIBLE);
-            RecyclerView recyclerViewRecentlyChosen = findViewById(R.id.recently_chosen_list);
-            recyclerViewRecentlyChosen.setHasFixedSize(true);
-            LinearLayoutManager recentlyChosenLayoutManager = new LinearLayoutManager(this);
-            recyclerViewRecentlyChosen.setLayoutManager(recentlyChosenLayoutManager);
+        List<String> allLanguageCodes = new ArrayList<>(Settings.getOcrLanguageSupportList(this).keySet()); //todo inject
 
-            recentlyChosenLangAdapter = new LanguagesListAdapter(
-                    recentlyChosenLanguageCodes, checkedLanguageCodes, notifier);
-            recyclerViewRecentlyChosen.setAdapter(recentlyChosenLangAdapter);
-
-        }
-
-        //todo move to presenter
-        //init all languages list
-        RecyclerView recyclerViewAllLanguages = findViewById(R.id.all_languages_list);
-        recyclerViewAllLanguages.setHasFixedSize(true);
-        LinearLayoutManager allLanguagesLayoutManager = new LinearLayoutManager(this);
-        recyclerViewAllLanguages.setLayoutManager(allLanguagesLayoutManager);
-        List<String> allLanguageCodes = obtainAllLanguageCodes();
-        LanguagesListAdapter allLangAdapter = new LanguagesListAdapter(
-                allLanguageCodes, checkedLanguageCodes, notifier);
-        recyclerViewAllLanguages.setAdapter(allLangAdapter);
-
-        //init auto btn
-        if (checkedLanguageCodes.size() < 1) {
-            //check auto btn
-            isAuto = true;
-        }
-        LinearLayout autoBtn = findViewById(R.id.auto);
-        updateAutoUi(isAuto);
-
-        LanguagesListAdapter finalRecentlyChosenLangAdapter = recentlyChosenLangAdapter;
-        autoBtn.setOnClickListener(view -> {
-            isAuto = !isAuto;
-            updateAutoUi(isAuto);
-
-            if (finalRecentlyChosenLangAdapter != null) {
-                finalRecentlyChosenLangAdapter.onAutoStateChanged(isAuto);
-            }
-            allLangAdapter.onAutoStateChanged(isAuto);
-        });
+//        // Create the presenter
+//        mPresenter = new LanguageOcrPresenter(checkedLanguageCodes, allLanguageCodes,
+//                recentlyChosenLanguageCodes, this);
     }
 
-
-//todo to presenter
-    private List<String> obtainAllLanguageCodes() {
-        return new ArrayList<>(Settings.getOcrLanguageSupportList(this).keySet());
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.takeView(this);
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPresenter.dropView();  //prevent leaking activity in
+        // case presenter is orchestrating a long running task
+    }
+
+    //todo inject - move to component
 
     /**
      * obtain recently chosen Languages from SharedPreferences in order: first - the most recently chosen.
@@ -133,17 +105,20 @@ public class LanguageOcrActivity extends AppCompatActivity {
      *
      * @return recently chosen Languages
      */
-    //todo to presenter
-    private
-    List<String> obtainRecentlyChosenLanguageCodes() {
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE); //todo inject
+    @NonNull
+    private List<String> obtainRecentlyChosenLanguageCodes() {
+
+        String tag = getString(R.string.recently_chosen_languge_codes);
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);//todo inject - take from app component
+
         List<String> recentlyChosenLanguageCodes = SharedPreferencesUtil.pullStringList(
-                sharedPref, getString(R.string.recently_chosen_languge_codes));
+                sharedPref, tag);
         if (recentlyChosenLanguageCodes == null) {
             recentlyChosenLanguageCodes = new ArrayList<>();
         }
         return recentlyChosenLanguageCodes;
     }
+
 
     /**
      * if returns null - auto detection is checked
@@ -198,12 +173,82 @@ public class LanguageOcrActivity extends AppCompatActivity {
         });
     }
 
-    //todo to presenter
-    void updateAutoUi(boolean checked) {
+    @Override
+    public void showCheckLanguage(String languageCode) {
+//todo
+    }
+
+    @Override
+    public void showUncheckLanguage(String languageCode) {
+//todo
+    }
+
+    @Override
+    public void showRecentlyChosenLanguages(
+            List<String> recentlyChosenLanguageCodes,
+            LanguagesListAdapter.ResponsableList<String> checkedLanguageCodes) {
+
+        //init recently chosen language list
+
+        View recentlyChosen = findViewById(R.id.recently_chosen);
+        recentlyChosen.setVisibility(View.VISIBLE);
+
+        RecyclerView recyclerViewRecentlyChosen = findViewById(R.id.recently_chosen_list);
+        recyclerViewRecentlyChosen.setHasFixedSize(true);
+        LinearLayoutManager recentlyChosenLayoutManager = new LinearLayoutManager(this);
+        recyclerViewRecentlyChosen.setLayoutManager(recentlyChosenLayoutManager);
+
+        recentlyChosenLangAdapter = new LanguagesListAdapter(
+                recentlyChosenLanguageCodes, checkedLanguageCodes, notifier);
+        recyclerViewRecentlyChosen.setAdapter(recentlyChosenLangAdapter);
+    }
+
+    @Override
+    public void showAllLanguages(
+            List<String> allLanguageCodes,
+            LanguagesListAdapter.ResponsableList<String> checkedLanguageCodes) {
+
+        //init all languages list
+        RecyclerView recyclerViewAllLanguages = findViewById(R.id.all_languages_list);
+        recyclerViewAllLanguages.setHasFixedSize(true);
+        LinearLayoutManager allLanguagesLayoutManager = new LinearLayoutManager(this);
+        recyclerViewAllLanguages.setLayoutManager(allLanguagesLayoutManager);
+        allLangAdapter = new LanguagesListAdapter(
+                allLanguageCodes, checkedLanguageCodes, notifier);
+        recyclerViewAllLanguages.setAdapter(allLangAdapter);
+    }
+
+    @Override
+    public void updateAutoView(boolean isAuto) {
         View checkedIcon = findViewById(R.id.checked_icon);
-        checkedIcon.setVisibility(checked ? View.VISIBLE : View.GONE);
+        checkedIcon.setVisibility(isAuto ? View.VISIBLE : View.GONE);
         View autoIcon = findViewById(R.id.auto_icon);
-        autoIcon.setVisibility(checked ? View.GONE : View.VISIBLE);
+        autoIcon.setVisibility(isAuto ? View.GONE : View.VISIBLE);
+    }
+
+    @Override
+    public void initAutoBtn() {
+        LinearLayout autoBtn = findViewById(R.id.auto);
+
+        autoBtn.setOnClickListener(view -> {
+            isAuto = !isAuto;
+            updateAutoView(isAuto);
+
+            if (recentlyChosenLangAdapter != null) {
+                recentlyChosenLangAdapter.onAutoStateChanged(isAuto);
+            }
+            if (allLangAdapter != null) {
+                allLangAdapter.onAutoStateChanged(isAuto);
+            }
+        });
+    }
+
+    public LanguagesListAdapter.ResponsableList<String> getCheckedLanguageCodes() {
+        return checkedLanguageCodes;
+    }
+
+    public List<String> getRecentlyChosenLanguageCodes() {
+        return recentlyChosenLanguageCodes;
     }
 
     public interface StateChangedNotifier {
@@ -220,8 +265,8 @@ public class LanguageOcrActivity extends AppCompatActivity {
         private static final int MAX_CHECKED_ALLOWED = 3;
         private final StateChangedNotifier notifier;
         private List<String> allLanguageCodes;
-        private ResponsableList<String> checkedLanguageCodes;
-        private PublishSubject<Integer> mViewClickSubject = PublishSubject.create();
+
+        ResponsableList<String> checkedLanguageCodes;
 
         LanguagesListAdapter(List<String> allLanguageCodes,
                              @Nullable ResponsableList<String> checkedLanguageCodes,

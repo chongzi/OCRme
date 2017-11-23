@@ -5,31 +5,29 @@ import android.content.Context;
 import android.support.annotation.VisibleForTesting;
 import android.support.multidex.MultiDex;
 
+import dagger.android.AndroidInjector;
+import dagger.android.DaggerApplication;
+
 /**
  * Created by iuliia on 11/14/17.
  */
 
-public class App extends Application {
-    private AppComponent component;
+/**
+ * We create a custom {@link Application} class that extends  {@link DaggerApplication}.
+ * We then override applicationInjector() which tells Dagger how to make our @Singleton Component
+ * We never have to call `component.inject(this)` as {@link DaggerApplication} will do that for us.
+ */
+public class App extends DaggerApplication {
 
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);
     }
-
-    @VisibleForTesting
-    protected AppComponent createComponent() {
-        return DaggerAppComponent.builder()
-                .appModule(new AppModule(this))
-                .build();
-    }
-
-    public static AppComponent getAppComponent(Context context) {
-        App app = (App) context.getApplicationContext();
-        if (app.component == null) {
-            app.component = app.createComponent();
-        }
-        return app.component;
+    @Override
+    protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
+        AppComponent appComponent = DaggerAppComponent.builder().application(this).build();
+        appComponent.inject(this);
+        return appComponent;
     }
 }

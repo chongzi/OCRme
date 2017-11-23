@@ -4,6 +4,9 @@ package com.ashomok.imagetotext.language_choser_mvp_di;
  * Created by iuliia on 11/15/17.
  */
 
+import java.util.List;
+import com.ashomok.imagetotext.language_choser_mvp_di.LanguageOcrActivity.LanguagesListAdapter.ResponsableList;
+
 /**
  * This specifies the contract between the view and the presenter.
  */
@@ -15,18 +18,17 @@ public interface LanguageOcrContract {
 
         void showUncheckLanguage(String languageCode);
 
-        void setLoadingIndicator(boolean active);
+        void showRecentlyChosenLanguages(List<String> recentlyChosenLanguageCodes,
+                ResponsableList<String> checkedLanguageCodes);
 
+        void showAllLanguages(List<String> allLanguageCodes,
+                              ResponsableList<String> checkedLanguageCodes);
+
+        void updateAutoView(boolean isAuto);
+
+        void initAutoBtn();
     }
 
-    interface Presenter {
-
-        void checkLanguage(String languageCode);
-
-        void uncheckLanguage(String languageCode);
-
-        void takeView(View languageOcrActivity);
-
-        void dropView();
+    interface Presenter extends BasePresenter<View>{
     }
 }
