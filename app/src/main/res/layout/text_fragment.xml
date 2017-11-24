@@ -8,7 +8,7 @@
     spl:orientation="vertical"
     spl:splitterBackground="@color/colorAccent"
     spl:splitterPosition="33%"
-    spl:splitterSize="16dip"
+    spl:splitterSize="12dip"
     android:id="@+id/split_pane_layout">
 
     <include layout="@layout/split_pane_content" />

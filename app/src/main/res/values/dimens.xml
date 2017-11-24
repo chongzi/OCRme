@@ -18,7 +18,7 @@
     <dimen name="top_margin">18dp</dimen>
     <dimen name="default_font_size">18sp</dimen>
     <dimen name="empty_view_error_font_size">18sp</dimen>
-    <dimen name="big_text_size">24sp</dimen>
-    <dimen name="l_text_size">24sp</dimen>
+    <!--<dimen name="big_text_size">24sp</dimen>-->
+    <!--<dimen name="l_text_size">24sp</dimen>-->
 
 </resources>

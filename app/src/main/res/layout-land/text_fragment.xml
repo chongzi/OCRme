@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.mobidevelop.spl.widget.SplitPaneLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.mobidevelop.spl.widget.SplitPaneLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:spl="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     spl:orientation="horizontal"
     spl:splitterBackground="@color/colorAccent"
     spl:splitterPosition="33%"
-    spl:splitterSize="16dip">
+    spl:splitterSize="16dip"
+    android:id="@+id/split_pane_layout">
 
     <include layout="@layout/split_pane_content" />
 </com.mobidevelop.spl.widget.SplitPaneLayout>
