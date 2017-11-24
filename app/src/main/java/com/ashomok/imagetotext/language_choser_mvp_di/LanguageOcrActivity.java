@@ -33,6 +33,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import dagger.android.support.DaggerAppCompatActivity;
 import io.reactivex.subjects.PublishSubject;
 
 import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showError;
@@ -45,13 +46,13 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 //todo bug - when uncheck all - empty language in main Activity - fix it
 //MINOR todo add search view https://developer.android.com/training/search/search.html (add add async loader firstly because of technical reasons)
 //MINOR todo add async loader for fill recyclerviews LoaderManager.LoaderCallbacks<List<String>>
-public class LanguageOcrActivity extends AppCompatActivity implements LanguageOcrContract.View {
+public class LanguageOcrActivity extends DaggerAppCompatActivity implements LanguageOcrContract.View {
     private static final String TAG = DEV_TAG + LanguageOcrActivity.class.getSimpleName();
     public static final String CHECKED_LANGUAGE_CODES = "checked_languages_set";
 
-    private List<String> recentlyChosenLanguageCodes;
+    private @Nullable List<String> recentlyChosenLanguageCodes;
     private boolean isAuto;
-    private LanguagesListAdapter.ResponsableList<String> checkedLanguageCodes;
+    private @Nullable LanguagesListAdapter.ResponsableList<String> checkedLanguageCodes;
     private LanguagesListAdapter allLangAdapter;
     private LanguagesListAdapter recentlyChosenLangAdapter;
 

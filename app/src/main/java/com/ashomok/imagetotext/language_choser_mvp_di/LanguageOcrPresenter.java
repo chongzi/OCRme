@@ -6,8 +6,11 @@ package com.ashomok.imagetotext.language_choser_mvp_di;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.ashomok.imagetotext.language_choser_mvp_di.LanguageOcrActivity.LanguagesListAdapter.ResponsableList;
+import com.ashomok.imagetotext.language_choser_mvp_di.di.AllLanguageCodes;
+import com.ashomok.imagetotext.language_choser_mvp_di.di.RecentlyChosenLanguageCodes;
 
 import java.util.List;
 
@@ -15,6 +18,7 @@ import javax.inject.Inject;
 
 import dagger.Lazy;
 
+import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 import static dagger.internal.Preconditions.checkNotNull;
 
 /**
@@ -31,9 +35,11 @@ import static dagger.internal.Preconditions.checkNotNull;
  */
 
 public class LanguageOcrPresenter implements LanguageOcrContract.Presenter {
+    public static final String TAG = DEV_TAG+ LanguageOcrPresenter.class.getSimpleName();
     @Nullable
     private LanguageOcrContract.View mLanguageOcrView;
-    private List<String> allLanguageCodes;
+
+    @NonNull private List<String> allLanguageCodes;
 
     // This is provided lazily because its value is determined in the Activity's onCreate. By
     // calling it in takeView(), the value is guaranteed to be set.
@@ -46,8 +52,9 @@ public class LanguageOcrPresenter implements LanguageOcrContract.Presenter {
      */
     @Inject
     LanguageOcrPresenter(Lazy<ResponsableList<String>> checkedLanguageCodesLazy,
-                         @NonNull List<String> allLanguageCodes,
-                         Lazy<List<String>> recentlyChosenLanguageCodesLazy) {
+                         @AllLanguageCodes @NonNull List<String> allLanguageCodes,
+                         @RecentlyChosenLanguageCodes Lazy<List<String>> recentlyChosenLanguageCodesLazy) {
+        Log.d(TAG, "inside constructor");
         this.checkedLanguageCodesLazy = checkedLanguageCodesLazy;
         this.allLanguageCodes = checkNotNull(allLanguageCodes);
         this.recentlyChosenLanguageCodesLazy = recentlyChosenLanguageCodesLazy;
@@ -56,7 +63,7 @@ public class LanguageOcrPresenter implements LanguageOcrContract.Presenter {
     private void showLanguages() {
         if (mLanguageOcrView != null) {
             //init recently chosen language list
-            if (recentlyChosenLanguageCodesLazy.get().size() > 0) {
+            if (recentlyChosenLanguageCodesLazy!= null && recentlyChosenLanguageCodesLazy.get().size() > 0) {
                 mLanguageOcrView.showRecentlyChosenLanguages(
                         recentlyChosenLanguageCodesLazy.get(), checkedLanguageCodesLazy.get());
 

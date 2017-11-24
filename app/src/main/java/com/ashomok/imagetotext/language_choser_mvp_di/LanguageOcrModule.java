@@ -4,8 +4,14 @@ package com.ashomok.imagetotext.language_choser_mvp_di;
  * Created by iuliia on 11/21/17.
  */
 
-import com.ashomok.imagetotext.language_choser_mvp_di.di.ActivityScoped;
+import android.support.annotation.Nullable;
 
+import com.ashomok.imagetotext.Settings;
+import com.ashomok.imagetotext.language_choser_mvp_di.di.ActivityScoped;
+import com.ashomok.imagetotext.language_choser_mvp_di.di.AllLanguageCodes;
+import com.ashomok.imagetotext.language_choser_mvp_di.di.RecentlyChosenLanguageCodes;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import dagger.Binds;
@@ -33,9 +39,17 @@ public abstract class LanguageOcrModule {
     }
 
     @Provides
+    @RecentlyChosenLanguageCodes
     @ActivityScoped
     static List<String> provideRecentlyChosenLanguageCodes(LanguageOcrActivity activity) {
         return activity.getRecentlyChosenLanguageCodes();
+    }
+
+    @Provides
+    @AllLanguageCodes
+    @ActivityScoped
+    static List<String> provideAllLanguageCodes(LanguageOcrActivity activity) {
+        return new ArrayList<>(Settings.getOcrLanguageSupportList(activity).keySet()); //todo use injected context instead
     }
 
     @ActivityScoped
