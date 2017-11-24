@@ -1,12 +1,10 @@
 package com.ashomok.imagetotext.language_choser_mvp_di;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -31,10 +29,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import dagger.android.support.DaggerAppCompatActivity;
-import io.reactivex.subjects.PublishSubject;
 
 import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showError;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
@@ -155,15 +151,19 @@ public class LanguageOcrActivity extends DaggerAppCompatActivity implements Lang
 
         toolbar.setNavigationOnClickListener(v -> {
             //back btn pressed
-            Intent intent = new Intent();
-            saveRecentlyChosenLanguages();
-            if (checkedLanguageCodes != null) {
-                intent.putExtra(CHECKED_LANGUAGE_CODES, checkedLanguageCodes);
-                setResult(RESULT_OK, intent);
-            }
-
-            finish();
+            onBackPressed();
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        saveRecentlyChosenLanguages();
+        if (checkedLanguageCodes != null) {
+            intent.putExtra(CHECKED_LANGUAGE_CODES, checkedLanguageCodes);
+            setResult(RESULT_OK, intent);
+        }
+        super.onBackPressed();
     }
 
     @Override
