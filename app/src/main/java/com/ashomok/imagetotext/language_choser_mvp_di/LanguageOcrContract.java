@@ -5,6 +5,8 @@ package com.ashomok.imagetotext.language_choser_mvp_di;
  */
 
 import java.util.List;
+
+import com.ashomok.imagetotext.di_dagger.BasePresenter;
 import com.ashomok.imagetotext.language_choser_mvp_di.LanguageOcrActivity.LanguagesListAdapter.ResponsableList;
 
 /**
@@ -13,10 +15,6 @@ import com.ashomok.imagetotext.language_choser_mvp_di.LanguageOcrActivity.Langua
 public interface LanguageOcrContract {
 
     interface View {
-
-        void showCheckLanguage(String languageCode);
-
-        void showUncheckLanguage(String languageCode);
 
         void showRecentlyChosenLanguages(List<String> recentlyChosenLanguageCodes,
                 ResponsableList<String> checkedLanguageCodes);
@@ -29,6 +27,6 @@ public interface LanguageOcrContract {
         void initAutoBtn();
     }
 
-    interface Presenter extends BasePresenter<View>{
+    interface Presenter extends BasePresenter<View> {
     }
 }

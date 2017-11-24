@@ -1,4 +1,4 @@
-package com.ashomok.imagetotext.language_choser_mvp_di.di;
+package com.ashomok.imagetotext.di_dagger;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;

@@ -1,17 +1,15 @@
-package com.ashomok.imagetotext.language_choser_mvp_di.di;
+package com.ashomok.imagetotext.di_dagger;
 
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
-import javax.inject.Singleton;
+import com.ashomok.imagetotext.R;
 
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 
-//todo reduntavt?
 /**
  * This is a Dagger module. We use this to bind our Application class as a Context in the AppComponent
  * By using Dagger Android we do not need to pass our Application instance to any module,
@@ -27,10 +25,10 @@ public abstract class ApplicationModule {
     @Binds
     abstract Context bindContext(Application application);
 
-//    @Provides
-//    @Singleton
-//    SharedPreferences provideSharedPreferences() {
-//        return PreferenceManager.getDefaultSharedPreferences(app);
-//    }
+    @Provides
+    static SharedPreferences provideSharedPrefs(Context context) {
+        return context.getSharedPreferences(
+                context.getString(R.string.preferences), Context.MODE_PRIVATE);
+    }
 }
 

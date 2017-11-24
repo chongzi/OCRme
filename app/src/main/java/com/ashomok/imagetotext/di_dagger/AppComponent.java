@@ -1,8 +1,6 @@
-package com.ashomok.imagetotext.language_choser_mvp_di.di;
+package com.ashomok.imagetotext.di_dagger;
 
 import android.app.Application;
-
-import com.ashomok.imagetotext.language_choser_mvp_di.LanguageOcrActivity;
 
 import javax.inject.Singleton;
 
@@ -28,15 +26,12 @@ import dagger.android.support.AndroidSupportInjectionModule;
  * // and location of subcomponents.
  */
 
-//todo app and application module make in one
 @Singleton
 @Component(modules = {
         ApplicationModule.class,
         ActivityBindingModule.class,
         AndroidSupportInjectionModule.class})
 public interface AppComponent extends AndroidInjector<DaggerApplication> {
-
-    void inject(App application);
 
     @Override
     void inject(DaggerApplication instance);
@@ -46,11 +41,8 @@ public interface AppComponent extends AndroidInjector<DaggerApplication> {
     // Application will just be provided into our app graph now.
     @Component.Builder
     interface Builder {
-
         @BindsInstance
         AppComponent.Builder application(Application application);
-
         AppComponent build();
     }
-//    LanguageOcrActivity inject(LanguageOcrActivity activity);
 }

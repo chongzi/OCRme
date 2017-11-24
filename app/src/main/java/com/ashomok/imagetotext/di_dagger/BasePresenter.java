@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ashomok.imagetotext.language_choser_mvp_di;
+package com.ashomok.imagetotext.di_dagger;
 
 public interface BasePresenter<T> {
 

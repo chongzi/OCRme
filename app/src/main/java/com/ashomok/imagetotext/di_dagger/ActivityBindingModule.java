@@ -1,4 +1,4 @@
-package com.ashomok.imagetotext.language_choser_mvp_di.di;
+package com.ashomok.imagetotext.di_dagger;
 
 import com.ashomok.imagetotext.language_choser_mvp_di.LanguageOcrActivity;
 import com.ashomok.imagetotext.language_choser_mvp_di.LanguageOcrModule;

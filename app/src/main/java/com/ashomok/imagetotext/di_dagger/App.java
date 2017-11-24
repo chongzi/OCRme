@@ -1,8 +1,7 @@
-package com.ashomok.imagetotext.language_choser_mvp_di.di;
+package com.ashomok.imagetotext.di_dagger;
 
 import android.app.Application;
 import android.content.Context;
-import android.support.annotation.VisibleForTesting;
 import android.support.multidex.MultiDex;
 
 import dagger.android.AndroidInjector;
@@ -24,10 +23,9 @@ public class App extends DaggerApplication {
         super.attachBaseContext(base);
         MultiDex.install(this);
     }
+
     @Override
     protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
-        AppComponent appComponent = DaggerAppComponent.builder().application(this).build();
-        appComponent.inject(this);
-        return appComponent;
+        return DaggerAppComponent.builder().application(this).build();
     }
 }

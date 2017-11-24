@@ -4,10 +4,10 @@ package com.ashomok.imagetotext.language_choser_mvp_di;
  * Created by iuliia on 11/21/17.
  */
 
-import android.support.annotation.Nullable;
+import android.content.Context;
 
 import com.ashomok.imagetotext.Settings;
-import com.ashomok.imagetotext.language_choser_mvp_di.di.ActivityScoped;
+import com.ashomok.imagetotext.di_dagger.ActivityScoped;
 import com.ashomok.imagetotext.language_choser_mvp_di.di.AllLanguageCodes;
 import com.ashomok.imagetotext.language_choser_mvp_di.di.RecentlyChosenLanguageCodes;
 
@@ -48,12 +48,11 @@ public abstract class LanguageOcrModule {
     @Provides
     @AllLanguageCodes
     @ActivityScoped
-    static List<String> provideAllLanguageCodes(LanguageOcrActivity activity) {
-        return new ArrayList<>(Settings.getOcrLanguageSupportList(activity).keySet()); //todo use injected context instead
+    static List<String> provideAllLanguageCodes(Context context) {
+        return new ArrayList<>(Settings.getOcrLanguageSupportList(context).keySet());
     }
 
     @ActivityScoped
     @Binds
     abstract LanguageOcrContract.Presenter languageOcrPresenter(LanguageOcrPresenter presenter);
-
 }

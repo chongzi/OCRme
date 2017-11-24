@@ -210,7 +210,7 @@ public class MainActivity extends BaseLoginActivity
 
     private void updateLanguageTextView(Optional<List<String>> checkedLanguageCodes) {
         String languageString;
-        if (checkedLanguageCodes.isPresent()) {
+        if (checkedLanguageCodes.isPresent() && checkedLanguageCodes.get().size() > 0) {
             languageString = generateLanguageString(checkedLanguageCodes.get());
         } else {
             languageString = getString(R.string.auto);

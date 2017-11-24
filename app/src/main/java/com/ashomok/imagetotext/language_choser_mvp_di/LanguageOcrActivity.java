@@ -50,14 +50,16 @@ public class LanguageOcrActivity extends DaggerAppCompatActivity implements Lang
     private static final String TAG = DEV_TAG + LanguageOcrActivity.class.getSimpleName();
     public static final String CHECKED_LANGUAGE_CODES = "checked_languages_set";
 
-    private @Nullable List<String> recentlyChosenLanguageCodes;
+    private List<String> recentlyChosenLanguageCodes;
     private boolean isAuto;
-    private @Nullable LanguagesListAdapter.ResponsableList<String> checkedLanguageCodes;
+    private LanguagesListAdapter.ResponsableList<String> checkedLanguageCodes;
     private LanguagesListAdapter allLangAdapter;
     private LanguagesListAdapter recentlyChosenLangAdapter;
 
     @Inject
     LanguageOcrPresenter mPresenter;
+    @Inject
+    SharedPreferences mSharedPreferences;
 
     private StateChangedNotifier notifier = isAutoChecked -> {
         if (!isAutoChecked) {
@@ -78,11 +80,6 @@ public class LanguageOcrActivity extends DaggerAppCompatActivity implements Lang
                 : new LanguagesListAdapter.ResponsableList<>(list);
 
         recentlyChosenLanguageCodes = obtainRecentlyChosenLanguageCodes();
-        List<String> allLanguageCodes = new ArrayList<>(Settings.getOcrLanguageSupportList(this).keySet()); //todo inject
-
-//        // Create the presenter
-//        mPresenter = new LanguageOcrPresenter(checkedLanguageCodes, allLanguageCodes,
-//                recentlyChosenLanguageCodes, this);
     }
 
     @Override
@@ -98,8 +95,6 @@ public class LanguageOcrActivity extends DaggerAppCompatActivity implements Lang
         // case presenter is orchestrating a long running task
     }
 
-    //todo inject - move to component
-
     /**
      * obtain recently chosen Languages from SharedPreferences in order: first - the most recently chosen.
      * Max 5 recently chosen Languages allowed.
@@ -110,10 +105,8 @@ public class LanguageOcrActivity extends DaggerAppCompatActivity implements Lang
     private List<String> obtainRecentlyChosenLanguageCodes() {
 
         String tag = getString(R.string.recently_chosen_languge_codes);
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);//todo inject - take from app component
-
         List<String> recentlyChosenLanguageCodes = SharedPreferencesUtil.pullStringList(
-                sharedPref, tag);
+                mSharedPreferences, tag);
         if (recentlyChosenLanguageCodes == null) {
             recentlyChosenLanguageCodes = new ArrayList<>();
         }
@@ -148,8 +141,7 @@ public class LanguageOcrActivity extends DaggerAppCompatActivity implements Lang
         List<String> languagesSubList =
                 Stream.of(languagesSet).limit(5).collect(Collectors.toList());
 
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        SharedPreferencesUtil.pushStringList(sharedPref,
+        SharedPreferencesUtil.pushStringList(mSharedPreferences,
                 languagesSubList, getString(R.string.recently_chosen_languge_codes));
     }
 
@@ -172,16 +164,6 @@ public class LanguageOcrActivity extends DaggerAppCompatActivity implements Lang
 
             finish();
         });
-    }
-
-    @Override
-    public void showCheckLanguage(String languageCode) {
-//todo
-    }
-
-    @Override
-    public void showUncheckLanguage(String languageCode) {
-//todo
     }
 
     @Override

@@ -155,4 +155,5 @@
     <string name="search_title">Search</string>
     <string name="search_hint">English</string>
     <string name="saved_language_codes">saved_language_codes</string>
+    <string name="preferences">preferences</string>
 </resources>
