@@ -32,14 +32,19 @@ android {
     }
 }
 
+subprojects {
+    task listAllDependencies(type: DependencyReportTask) {}
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2') {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'org.hamcrest', module: 'hamcrest-integration'
         exclude group: 'com.google.code.findbugs'
-    })
+
+    }
 
     androidTestCompile('com.android.support.test.espresso:espresso-contrib:2.2') {
         // Necessary to avoid version conflicts
@@ -47,6 +52,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-v4'
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude module: 'recyclerview-v7'
+        exclude group: 'com.google.code.findbugs'
     }
 
     testCompile 'junit:junit:4.12'
@@ -106,7 +112,7 @@ dependencies {
     compile 'com.firebaseui:firebase-ui-storage:0.6.0'
     compile 'com.google.firebase:firebase-storage:11.0.4'
 
-    compile 'com.android.support:multidex:1.0.2'
+    compile 'com.android.support:multidex:1.0.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

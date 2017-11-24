@@ -29,8 +29,8 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingEnd="@dimen/base_margin"
-            android:paddingStart="@dimen/base_margin"
+            android:paddingEnd="@dimen/my_base_margin"
+            android:paddingStart="@dimen/my_base_margin"
             android:layout_weight = "0">
 
             <LinearLayout
@@ -47,7 +47,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="?android:selectableItemBackground"
-                    android:padding="@dimen/base_margin"
+                    android:padding="@dimen/my_base_margin"
                     android:src="@drawable/ic_file_download_black_24dp"
                     android:tint="@color/grey_800" />
 
@@ -56,7 +56,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="?android:selectableItemBackground"
-                    android:padding="@dimen/base_margin"
+                    android:padding="@dimen/my_base_margin"
                     android:src="@drawable/ic_share_black_24dp"
                     android:tint="@color/grey_800" />
             </LinearLayout>
@@ -70,7 +70,7 @@
                 android:layout_alignParentRight="true"
                 android:background="?android:selectableItemBackground"
                 android:drawableLeft="@drawable/ic_open_in_new_black_24dp"
-                android:drawablePadding="@dimen/base_margin"
+                android:drawablePadding="@dimen/my_base_margin"
                 android:gravity="center_vertical"
                 android:text="@string/open_in_another_app"
                 android:textAllCaps="false"

@@ -47,7 +47,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clickable="false"
-                    android:padding="@dimen/base_margin"
+                    android:padding="@dimen/my_base_margin"
                     android:src="@drawable/ic_check_black_36dp"
                     android:tint="@color/green_700"
                     android:visibility="gone" />
@@ -56,7 +56,7 @@
                     android:id="@+id/auto_icon"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
-                    android:layout_margin="@dimen/base_margin"
+                    android:layout_margin="@dimen/my_base_margin"
                     android:src="@drawable/auto_detection_icon"
                     android:tint="@color/app_primary" />
 
@@ -65,7 +65,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/auto_detection"
                     android:textColor="@color/app_primary"
-                    android:textSize="@dimen/default_font_size" />
+                    android:textSize="@dimen/my_default_font_size" />
             </LinearLayout>
 
             <RelativeLayout
@@ -83,13 +83,13 @@
                     android:id="@+id/recently_chosen_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/base_margin"
-                    android:layout_marginEnd="@dimen/l_margin"
-                    android:layout_marginStart="@dimen/l_margin"
-                    android:layout_marginTop="@dimen/base_margin"
+                    android:layout_marginBottom="@dimen/my_base_margin"
+                    android:layout_marginEnd="@dimen/my_l_margin"
+                    android:layout_marginStart="@dimen/my_l_margin"
+                    android:layout_marginTop="@dimen/my_base_margin"
                     android:text="@string/recently_chosen_languages"
                     android:textColor="@color/app_primary"
-                    android:textSize="@dimen/default_font_size" />
+                    android:textSize="@dimen/my_default_font_size" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recently_chosen_list"
@@ -115,13 +115,13 @@
                     android:id="@+id/all_languages_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/base_margin"
-                    android:layout_marginEnd="@dimen/l_margin"
-                    android:layout_marginStart="@dimen/l_margin"
-                    android:layout_marginTop="@dimen/base_margin"
+                    android:layout_marginBottom="@dimen/my_base_margin"
+                    android:layout_marginEnd="@dimen/my_l_margin"
+                    android:layout_marginStart="@dimen/my_l_margin"
+                    android:layout_marginTop="@dimen/my_base_margin"
                     android:text="@string/all_languages"
                     android:textColor="@color/app_primary"
-                    android:textSize="@dimen/default_font_size" />
+                    android:textSize="@dimen/my_default_font_size" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/all_languages_list"
