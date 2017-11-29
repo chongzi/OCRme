@@ -16,11 +16,14 @@ import com.ashomok.imagetotext.Settings;
 import com.ashomok.imagetotext.ocr.ocr_task.OcrHttpClient;
 import com.ashomok.imagetotext.ocr.ocr_task.OcrResponse;
 import com.ashomok.imagetotext.ocr_result.OcrResultActivity;
+import com.ashomok.imagetotext.ocr_result.tab_fragments.TextFragment;
 import com.ashomok.imagetotext.utils.NetworkUtils;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.signature.StringSignature;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.jakewharton.rxbinding2.view.RxView;
@@ -50,7 +53,8 @@ public class OcrActivity extends RxAppCompatActivity {
     private Uri imageUri;
     private StorageReference mImageRef;
     private ArrayList<String> sourceLanguageCodes;
-    public static final String EXTRA_LANGUAGES = "com.ashomokdev.imagetotext.LANGUAGES";
+    public static final String EXTRA_LANGUAGES = "com.ashomokdev.imagetotext.ocr.LANGUAGES";
+    public static final String EXTRA_IMAGE_URI = "com.ashomokdev.imagetotext.ocr.IMAGE_URI";
     public static final String TAG = DEV_TAG + OcrActivity.class.getSimpleName();
 
     @Override
@@ -59,7 +63,7 @@ public class OcrActivity extends RxAppCompatActivity {
 
         setContentView(R.layout.ocr_animation_layout);
 
-        imageUri = getIntent().getData();
+        imageUri = getIntent().getParcelableExtra(EXTRA_IMAGE_URI);
         sourceLanguageCodes = getIntent().getStringArrayListExtra(EXTRA_LANGUAGES);
 
         initCancelBtn();
@@ -88,6 +92,7 @@ public class OcrActivity extends RxAppCompatActivity {
                         myData -> {
                             Log.d(TAG, "ocr returns " + myData.toString());
                             startOcrResultActivity(myData);
+                            finish();
                         },
                         throwable -> {
                             throwable.printStackTrace();
@@ -95,6 +100,7 @@ public class OcrActivity extends RxAppCompatActivity {
                             if (errorMessage != null && errorMessage.length() > 0) {
                                 startOcrResultActivity(errorMessage);
                             }
+                            finish();
                         });
 
 
@@ -113,7 +119,7 @@ public class OcrActivity extends RxAppCompatActivity {
     private void startOcrResultActivity(OcrResponse data) {
         Intent intent = new Intent(this, OcrResultActivity.class);
         intent.putExtra(EXTRA_OCR_RESPONSE, data);
-        intent.putExtra(EXTRA_IMAGE_URI, imageUri);
+        intent.putExtra(TextFragment.EXTRA_IMAGE_URI, imageUri); //todo refactor for better reading
         startActivity(intent);
     }
 
@@ -156,8 +162,10 @@ public class OcrActivity extends RxAppCompatActivity {
     private Completable initImage() {
         return Completable.create(emitter -> {
             ImageView imageView = findViewById(R.id.image);
+
             Glide.with(this)
                     .load(imageUri)
+                    .signature(new StringSignature(String.valueOf(System.currentTimeMillis()))) //needs because image url not changed. It returns the same image all the time if remove this line. It is because default build-in cashe mechanism.
                     .listener(new RequestListener<Uri, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {

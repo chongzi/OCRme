@@ -39,7 +39,7 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  * Created by iuliia on 10/22/17.
  */
 
-//todo bug - when uncheck all - empty language in main Activity - fix it
+//todo add tests
 //MINOR todo add search view https://developer.android.com/training/search/search.html (add add async loader firstly because of technical reasons)
 //MINOR todo add async loader for fill recyclerviews LoaderManager.LoaderCallbacks<List<String>>
 public class LanguageOcrActivity extends DaggerAppCompatActivity implements LanguageOcrContract.View {

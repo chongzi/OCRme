@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.mobidevelop.spl.widget.SplitPaneLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:spl="http://schemas.android.com/apk/res-auto"
+<com.ashomok.imagetotext.utils.SplitPaneLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    xmlns:spl="http://schemas.android.com/apk/res-auto"
     spl:orientation="vertical"
     spl:splitterBackground="@color/colorAccent"
     spl:splitterPosition="33%"
@@ -12,4 +11,4 @@
     android:id="@+id/split_pane_layout">
 
     <include layout="@layout/split_pane_content" />
-</com.mobidevelop.spl.widget.SplitPaneLayout>
+</com.ashomok.imagetotext.utils.SplitPaneLayout>

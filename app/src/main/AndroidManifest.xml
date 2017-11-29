@@ -52,6 +52,16 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
+            android:name=".crop_image.CropImageActivity"
+            android:exported="true"
+            android:label="@string/crop"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity
             android:name=".language_choser_mvp_di.LanguageOcrActivity"
             android:exported="true"
             android:label="@string/language_label"

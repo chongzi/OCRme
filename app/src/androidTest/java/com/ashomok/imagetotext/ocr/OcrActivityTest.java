@@ -79,7 +79,7 @@ public class OcrActivityTest {
         Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, OcrActivity.class);
-        intent.setData(uri);
+        intent.putExtra(OcrActivity.EXTRA_IMAGE_URI, uri);
 
         ArrayList<String> languages = new ArrayList<>();
         languages.add("ru");

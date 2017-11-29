@@ -18,6 +18,8 @@
     <dimen name="top_margin">18dp</dimen>
     <dimen name="my_default_font_size">18sp</dimen>
     <dimen name="empty_view_error_font_size">18sp</dimen>
+    <dimen name="spl_default_splitter_size">12dp</dimen>
+    <dimen name="fab_margin">20dp</dimen>
     <!--<dimen name="big_text_size">24sp</dimen>-->
     <!--<dimen name="l_text_size">24sp</dimen>-->
 

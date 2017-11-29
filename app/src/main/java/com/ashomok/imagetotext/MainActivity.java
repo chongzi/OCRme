@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
+import com.ashomok.imagetotext.crop_image.CropImageActivity;
 import com.ashomok.imagetotext.firebaseUiAuth.BaseLoginActivity;
 import com.ashomok.imagetotext.firebaseUiAuth.SignOutDialogFragment;
 import com.ashomok.imagetotext.language_choser_mvp_di.LanguageOcrActivity;
@@ -87,7 +88,7 @@ public class MainActivity extends BaseLoginActivity
     private TextView languageTextView;
     private Button myDocsBtn;
     private String mEmail = "No email";
-    private String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE; //todo use rx permissions
+    private String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
     private Optional<List<String>> languageCodes;
 
     @Override
@@ -157,14 +158,16 @@ public class MainActivity extends BaseLoginActivity
 
         //photo obtained from camera
         if (requestCode == CaptureImage_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            startOcrActivity(imageUri);
+//            startOcrActivity(imageUri); //todo remove
+            startCropImageActivity(imageUri);
         }
 
         //photo obtained from gallery
         else if (requestCode == GALLERY_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
             try {
                 Uri uri = data.getData();
-                startOcrActivity(uri);
+//                startOcrActivity(uri);  //todo remove
+                startCropImageActivity(uri);
             } catch (Exception e) {
                 showError(R.string.file_not_found, mRootView);
                 e.printStackTrace();
@@ -185,12 +188,18 @@ public class MainActivity extends BaseLoginActivity
         }
     }
 
-    private void startOcrActivity(Uri uri) {
-        Intent intent = new Intent(this, OcrActivity.class);
-        intent.setData(uri);
-        if (languageCodes.isPresent()) {
-            intent.putStringArrayListExtra(OcrActivity.EXTRA_LANGUAGES, new ArrayList<>(languageCodes.get()));
-        }
+//    private void startOcrActivity(Uri uri) {
+//        Intent intent = new Intent(this, OcrActivity.class);
+//        intent.setData(uri);
+//        if (languageCodes.isPresent()) {
+//            intent.putStringArrayListExtra(OcrActivity.EXTRA_LANGUAGES, new ArrayList<>(languageCodes.get()));
+//        }
+//        startActivityForResult(intent, OCR_Activity_REQUEST_CODE);
+//    }
+
+    private void startCropImageActivity(Uri uri) {
+        Intent intent = new Intent(this, CropImageActivity.class);
+        intent.putExtra(CropImageActivity.EXTRA_IMAGE_URI, uri);
         startActivityForResult(intent, OCR_Activity_REQUEST_CODE);
     }
 

@@ -29,6 +29,8 @@ import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.ocr.OcrActivity;
 import com.ashomok.imagetotext.ocr_result.translate.TranslateActivity;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.signature.StringSignature;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -123,6 +125,7 @@ public class TextFragment extends Fragment implements View.OnClickListener {
 
         Glide.with(this)
                 .load(imageUri)
+                .signature(new StringSignature(String.valueOf(System.currentTimeMillis()))) //needs because image url not changed. It returns the same image all the time if remove this line. It is because default build-in cashe mechanism.
                 .fitCenter()
                 .crossFade()
                 .into(mImageView);

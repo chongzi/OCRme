@@ -156,4 +156,6 @@
     <string name="search_hint">English</string>
     <string name="saved_language_codes">saved_language_codes</string>
     <string name="preferences">preferences</string>
+    <string name="crop">Crop</string>
+    <string name="main_action_rotate">Rotate</string>
 </resources>
