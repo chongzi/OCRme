@@ -1,34 +1,35 @@
 package com.ashomok.imagetotext.crop_image;
 
+import android.Manifest;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
-import com.ashomok.imagetotext.BuildConfig;
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.ocr.OcrActivity;
+import com.jakewharton.rxbinding2.view.RxView;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.io.File;
+import java.util.ArrayList;
 
-import static com.ashomok.imagetotext.utils.FileUtils.prepareDirectory;
+import static com.ashomok.imagetotext.ocr.OcrActivity.EXTRA_LANGUAGES;
+import static com.ashomok.imagetotext.utils.FileUtils.createFileForUri;
+import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showError;
+import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showWarning;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 /**
  * Created by iuliia on 11/28/17.
  */
 
-//todo require permisions
 public class CropImageActivity extends AppCompatActivity
         implements CropImageView.OnCropImageCompleteListener {
 
@@ -36,8 +37,11 @@ public class CropImageActivity extends AppCompatActivity
     public static final String EXTRA_IMAGE_URI = "com.ashomokdev.imagetotext.crop_image.IMAGE_URI";
     private CropImageView mCropImageView;
     private Uri imageUri;
+    private ArrayList<String> sourceLanguageCodes;
     private FloatingActionButton cropBtn;
-    private CropImageView.CropResult result;
+    private String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+    private static final String cropped_filename = "cropped.jpg";
+    private View mRootView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,42 +52,34 @@ public class CropImageActivity extends AppCompatActivity
         mCropImageView = findViewById(R.id.cropImageView);
         mCropImageView.setOnCropImageCompleteListener(this);
 
-        Uri imageUriSave;
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { //explanation https://inthecheesefactory.com/blog/how-to-share-access-to-file-with-fileprovider-on-android-nougat/en
-
-            imageUriSave = FileProvider.getUriForFile(this,
-                    BuildConfig.APPLICATION_ID + ".provider",
-                    createImageFile());
-        } else {
-            imageUriSave = Uri.fromFile(createImageFile());
-        }
-
         imageUri = getIntent().getParcelableExtra(EXTRA_IMAGE_URI);
+        sourceLanguageCodes = getIntent().getStringArrayListExtra(EXTRA_LANGUAGES);
+
         mCropImageView.setImageUriAsync(imageUri);
         cropBtn = findViewById(R.id.crop_btn);
-        cropBtn.setOnClickListener(view -> mCropImageView.saveCroppedImageAsync(imageUriSave));
-    }
+        mRootView = findViewById(R.id.root_view);
 
-    private File createImageFile() {
-        // Create an image file name
-        String imageFileName = "cropped";
-        File storageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DCIM), "Camera");
+        RxPermissions rxPermissions = new RxPermissions(this);
+        rxPermissions.setLogging(true);
 
-        File image = null;
-        try {
-            if (!storageDir.exists()) {
-                prepareDirectory(storageDir.getPath());
-            }
-
-            image = new File(storageDir, imageFileName + ".jpg");
-
-
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
-        }
-
-        return image;
+        RxView.clicks(cropBtn)
+                .compose(rxPermissions.ensureEach(permission))
+                .subscribe(permission -> {
+                    if (permission.granted) {
+                        try {
+                            mCropImageView.saveCroppedImageAsync(
+                                    createFileForUri(cropped_filename, this));
+                        } catch (Exception e) {
+                            showError(e.getMessage(), mRootView);
+                        }
+                    } else if (permission.shouldShowRequestPermissionRationale) {
+                        showWarning(R.string.needs_to_save, mRootView);
+                    } else {
+                        showWarning(R.string.this_option_is_not_be_avalible, mRootView);
+                    }
+                }, throwable -> {
+                    showError(throwable.getMessage(), mRootView);
+                });
     }
 
     @Override
@@ -95,7 +91,7 @@ public class CropImageActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-      if (item.getItemId() == R.id.main_action_rotate) {
+        if (item.getItemId() == R.id.main_action_rotate) {
             mCropImageView.rotateImage(90);
             return true;
         }
@@ -122,29 +118,27 @@ public class CropImageActivity extends AppCompatActivity
         handleCropResult(result);
     }
 
-    //todo finish activity here
+    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     private void handleCropResult(CropImageView.CropResult result) {
-        this.result = result;
         if (result.getError() == null) {
             Intent intent = new Intent(this, OcrActivity.class);
-            intent.putExtra("SAMPLE_SIZE", result.getSampleSize());
             if (result.getUri() != null) {
+
                 intent.putExtra(OcrActivity.EXTRA_IMAGE_URI, result.getUri());
+                intent.putStringArrayListExtra(OcrActivity.EXTRA_LANGUAGES, sourceLanguageCodes);
+
+                startActivity(intent);
+                finish();
             } else {
-                //todo
-//                CropResultActivity.mImage =
-//                        mCropImageView.getCropShape() == CropImageView.CropShape.OVAL
-//                                ? CropImage.toOvalBitmap(result.getBitmap())
-//                                : result.getBitmap();
+                showError(R.string.unknown_error, mRootView);
             }
-            startActivity(intent);
         } else {
-            Log.e("AIC", "Failed to crop image", result.getError());
-//            Toast.makeText(
-//                    getActivity(),
-//                    "Image crop failed: " + result.getError().getMessage(),
-//                    Toast.LENGTH_LONG)
-//                    .show();
+            String errorMessage = result.getError().getMessage();
+            if (errorMessage != null && errorMessage.length() > 0) {
+                showError(errorMessage, mRootView);
+            } else {
+                showError(R.string.unknown_error, mRootView);
+            }
         }
     }
 }

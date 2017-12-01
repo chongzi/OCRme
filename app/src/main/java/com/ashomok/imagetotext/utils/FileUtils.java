@@ -10,7 +10,12 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
+
+import com.ashomok.imagetotext.BuildConfig;
+import com.ashomok.imagetotext.R;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -19,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
+import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showWarning;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 /**
@@ -28,10 +34,45 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 public class FileUtils {
     private static final int MaxFileSizeInMb = 2;
     private static final String TAG = DEV_TAG + FileUtils.class.getSimpleName();
+    private static final String DEFAULT_DIR_NAME = "Camera";
 
+    /**
+     * create File in DEFAULT_DIR_NAME
+     *
+     * @param fileName
+     * @return File
+     */
+    public static File createFile(String fileName) throws Exception {
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DCIM), DEFAULT_DIR_NAME);
+
+        if (!storageDir.exists()) {
+            prepareDirectory(storageDir.getPath());
+        }
+
+        return new File(storageDir, fileName);
+    }
+
+    /**
+     * @param fileName
+     * @return File
+     */
+    public static Uri createFileForUri(String fileName, Context context) throws Exception {
+        Uri uri;
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { //explanation https://inthecheesefactory.com/blog/how-to-share-access-to-file-with-fileprovider-on-android-nougat/en
+
+            uri = FileProvider.getUriForFile(context,
+                    BuildConfig.APPLICATION_ID + ".provider",
+                    createFile(fileName));
+        } else {
+            uri = Uri.fromFile(createFile(fileName));
+        }
+        return uri;
+    }
 
     /**
      * Get real path for POST request. Image will be decreased if needed.
+     *
      * @param context
      * @param uri
      * @return path
@@ -50,7 +91,7 @@ public class FileUtils {
      * other file-based ContentProviders.
      *
      * @param context The context.
-     * @param uri The Uri to query.
+     * @param uri     The Uri to query.
      * @author paulburke
      */
     private static String getPath(final Context context, final Uri uri) {
@@ -96,7 +137,7 @@ public class FileUtils {
                 }
 
                 final String selection = "_id=?";
-                final String[] selectionArgs = new String[] {
+                final String[] selectionArgs = new String[]{
                         split[1]
                 };
 
@@ -119,9 +160,9 @@ public class FileUtils {
      * Get the value of the data column for this Uri. This is useful for
      * MediaStore Uris, and other file-based ContentProviders.
      *
-     * @param context The context.
-     * @param uri The Uri to query.
-     * @param selection (Optional) Filter used in the query.
+     * @param context       The context.
+     * @param uri           The Uri to query.
+     * @param selection     (Optional) Filter used in the query.
      * @param selectionArgs (Optional) Selection arguments used in the query.
      * @return The value of the _data column, which is typically a file path.
      */

@@ -158,7 +158,6 @@ public class MainActivity extends BaseLoginActivity
 
         //photo obtained from camera
         if (requestCode == CaptureImage_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-//            startOcrActivity(imageUri); //todo remove
             startCropImageActivity(imageUri);
         }
 
@@ -166,7 +165,6 @@ public class MainActivity extends BaseLoginActivity
         else if (requestCode == GALLERY_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
             try {
                 Uri uri = data.getData();
-//                startOcrActivity(uri);  //todo remove
                 startCropImageActivity(uri);
             } catch (Exception e) {
                 showError(R.string.file_not_found, mRootView);
@@ -188,18 +186,13 @@ public class MainActivity extends BaseLoginActivity
         }
     }
 
-//    private void startOcrActivity(Uri uri) {
-//        Intent intent = new Intent(this, OcrActivity.class);
-//        intent.setData(uri);
-//        if (languageCodes.isPresent()) {
-//            intent.putStringArrayListExtra(OcrActivity.EXTRA_LANGUAGES, new ArrayList<>(languageCodes.get()));
-//        }
-//        startActivityForResult(intent, OCR_Activity_REQUEST_CODE);
-//    }
-
     private void startCropImageActivity(Uri uri) {
         Intent intent = new Intent(this, CropImageActivity.class);
         intent.putExtra(CropImageActivity.EXTRA_IMAGE_URI, uri);
+        if (languageCodes.isPresent()) {
+            intent.putStringArrayListExtra(
+                    OcrActivity.EXTRA_LANGUAGES, new ArrayList<>(languageCodes.get()));
+        }
         startActivityForResult(intent, OCR_Activity_REQUEST_CODE);
     }
 
@@ -266,17 +259,12 @@ public class MainActivity extends BaseLoginActivity
                     if (permission.granted) {
                         startCamera();
                     } else if (permission.shouldShowRequestPermissionRationale) {
-                        showWarning(R.string.camera_needs_to_save, mRootView);
+                        showWarning(R.string.needs_to_save, mRootView);
                     } else {
                         showWarning(R.string.this_option_is_not_be_avalible, mRootView);
                     }
                 }, throwable -> {
-                    String localizedMessage = throwable.getLocalizedMessage();
-                    if (localizedMessage != null && localizedMessage.length() > 0) {
-                        showError(throwable.getLocalizedMessage(), mRootView);
-                    } else {
-                        showError(throwable.getMessage(), mRootView);
-                    }
+                    showError(throwable.getMessage(), mRootView);
                 });
 
     }
@@ -355,7 +343,8 @@ public class MainActivity extends BaseLoginActivity
                 });
 
         //set up login header
-        LinearLayout loginHeader = navigationView.getHeaderView(0).findViewById(R.id.propose_login_menu_item);
+        LinearLayout loginHeader =
+                navigationView.getHeaderView(0).findViewById(R.id.propose_login_menu_item);
         loginHeader.setOnClickListener(this);
     }
 
