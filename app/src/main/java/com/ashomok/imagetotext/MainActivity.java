@@ -105,6 +105,8 @@ public class MainActivity extends BaseLoginActivity
         initImageSourceBtns();
         initLanguageViews();
         initMyDocsView();
+
+        updateUi(mIsUserSignedIn);
     }
 
 
@@ -129,8 +131,6 @@ public class MainActivity extends BaseLoginActivity
 
         myDocsBtn = findViewById(R.id.my_docs_btn);
         myDocsBtn.setOnClickListener(this);
-
-        updateUi(mIsUserSignedIn);
     }
 
     private void initLanguageViews() {
@@ -157,7 +157,7 @@ public class MainActivity extends BaseLoginActivity
         }
 
         //photo obtained from camera
-        if (requestCode == CaptureImage_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        else if (requestCode == CaptureImage_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             startCropImageActivity(imageUri);
         }
 
@@ -281,7 +281,7 @@ public class MainActivity extends BaseLoginActivity
         v.post(() -> {
             LinearLayout.LayoutParams mParams;
             mParams = (LinearLayout.LayoutParams) v.getLayoutParams();
-            mParams.height = v.getWidth();
+            mParams.height = v.getWidth(); //todo bug sometimes 0 - btns not visible as a result - if screen turned off when run activity
             v.setLayoutParams(mParams);
             v.postInvalidate();
         });
@@ -350,7 +350,7 @@ public class MainActivity extends BaseLoginActivity
 
     private void startMyDocsActivity() {
         Intent intent = new Intent(this, MyDocsActivity.class);
-        intent.putExtra(MyDocsActivity.IS_SIGNED_IN_TAG, mIsUserSignedIn);
+//        intent.putExtra(MyDocsActivity.IS_SIGNED_IN_TAG, mIsUserSignedIn); //todo delete
         startActivity(intent);
     }
 
@@ -455,13 +455,8 @@ public class MainActivity extends BaseLoginActivity
     @Override
     public void updateUi(boolean isUserSignedIn) {
         Log.d(TAG, "updateUi called with " + isUserSignedIn);
-        try {
-            updateNavigationDrawer(isUserSignedIn);
-            updateMainScreen(isUserSignedIn);
-        } catch (NullPointerException e) {
-            Log.e(TAG, "View is not ready to be updated.");
-            //ignore
-        }
+        updateNavigationDrawer(isUserSignedIn);
+        updateMainScreen(isUserSignedIn);
     }
 
     /**

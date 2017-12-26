@@ -124,7 +124,7 @@ public class LanguageOcrActivityTest {
                         mActivityRule
                                 .getActivity()
                                 .getResources()
-                                .getString(R.string.recently_chosen_languge_codes),
+                                .getString(R.string.ocr_recently_chosen_languge_codes),
                         new HashSet<>())).thenReturn(recentlyChosenLanguages);
 
         Thread.sleep(300000);

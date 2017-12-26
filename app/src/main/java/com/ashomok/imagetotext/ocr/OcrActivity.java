@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.Pair;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
@@ -19,11 +20,12 @@ import com.ashomok.imagetotext.ocr_result.OcrResultActivity;
 import com.ashomok.imagetotext.ocr_result.tab_fragments.TextFragment;
 import com.ashomok.imagetotext.utils.NetworkUtils;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.StringSignature;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.jakewharton.rxbinding2.view.RxView;
@@ -40,7 +42,6 @@ import io.reactivex.schedulers.Schedulers;
 import static com.ashomok.imagetotext.Settings.firebaseFolderURL;
 import static com.ashomok.imagetotext.ocr_result.OcrResultActivity.EXTRA_ERROR_MESSAGE;
 import static com.ashomok.imagetotext.ocr_result.OcrResultActivity.EXTRA_OCR_RESPONSE;
-import static com.ashomok.imagetotext.ocr_result.tab_fragments.TextFragment.EXTRA_IMAGE_URI;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 
@@ -77,15 +78,29 @@ public class OcrActivity extends RxAppCompatActivity {
         if (isOnline()) {
             if (imageUri != null) {
 
+                //get user IdToken and upload photo in parallel:
+                Single<Pair<Optional<String>, String>> zipped =
+                        Single.zip(
+                               getIdToken().doOnEvent((a,b) -> { Log.d(TAG, "getIdToken thread = "
+                                       + Thread.currentThread().getName());
+                               }),
+                               uploadPhoto(imageUri).doOnEvent((a,b) -> { Log.d(TAG, "uploadPhoto thread = "
+                                       + Thread.currentThread().getName());
+                               }),
+                                (a, b) -> new Pair<>(a, b));
+
                 //upload photo to firebase storage and call ocr on the result
-                Single<OcrResponse> ocrSingle = uploadPhoto(imageUri)
+                Single<OcrResponse> ocrSingle = zipped
                         .subscribeOn(Schedulers.io())
                         .compose(bindToLifecycle())
-                        .flatMap(gcsImageUri ->
-                                httpClient.ocr(gcsImageUri, Optional.ofNullable(sourceLanguageCodes))
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribeOn(Schedulers.io())
-                                .compose(bindToLifecycle())
+                        .flatMap(pair ->
+                                httpClient.ocr(
+                                        pair.second,
+                                        Optional.ofNullable(sourceLanguageCodes),
+                                        pair.first)
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribeOn(Schedulers.io())
+                                        .compose(bindToLifecycle())
                         );
 
                 ocrSingle.subscribe(
@@ -209,6 +224,28 @@ public class OcrActivity extends RxAppCompatActivity {
                         Log.e(TAG, "uploadPhoto:onError", e);
                         emitter.onError(e);
                     });
+        });
+    }
+
+    /**
+     * async get idToken, docs: https://firebase.google.com/docs/auth/admin/verify-id-tokens
+     */
+    public Single<Optional<String>> getIdToken() {
+        return Single.create(emitter -> {
+            FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+            if (mUser != null) {
+                mUser.getIdToken(false)
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                String idToken = task.getResult().getToken();
+                                emitter.onSuccess(Optional.ofNullable(idToken));
+                            } else {
+                                emitter.onSuccess(Optional.empty());
+                            }
+                        });
+            } else {
+                emitter.onSuccess(Optional.empty());
+            }
         });
     }
 }

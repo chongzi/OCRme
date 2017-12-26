@@ -6,9 +6,8 @@ package com.ashomok.imagetotext.language_choser_mvp_di;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
-import com.ashomok.imagetotext.language_choser_mvp_di.LanguageOcrActivity.LanguagesListAdapter.ResponsableList;
+import com.ashomok.imagetotext.language_choser_mvp_di.LanguagesListAdapter.ResponsableList;
 import com.ashomok.imagetotext.language_choser_mvp_di.di.AllLanguageCodes;
 import com.ashomok.imagetotext.language_choser_mvp_di.di.RecentlyChosenLanguageCodes;
 

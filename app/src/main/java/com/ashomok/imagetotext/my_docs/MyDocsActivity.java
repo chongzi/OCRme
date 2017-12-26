@@ -3,9 +3,12 @@ package com.ashomok.imagetotext.my_docs;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 import com.ashomok.imagetotext.R;
+import com.ashomok.imagetotext.firebaseUiAuth.BaseLoginActivity;
 
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
@@ -13,33 +16,34 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  * Created by iuliia on 8/18/17.
  */
 
-//// TODO: 10/3/17 make extends @BaseLoginActivity
-public class MyDocsActivity extends AppCompatActivity {
+//https://www.journaldev.com/13792/android-gridlayoutmanager-example
+//        https://developer.android.com/training/material/lists-cards.html
+
+public class MyDocsActivity extends BaseLoginActivity implements View.OnClickListener {
     private static final String TAG = DEV_TAG + MyDocsActivity.class.getSimpleName();
-    public static final String IS_SIGNED_IN_TAG = "IS_SIGNED_IN_TAG";
-    private boolean isUserSignedIn;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_docs);
 
         initToolbar();
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            isUserSignedIn = getIntent().getBooleanExtra(IS_SIGNED_IN_TAG, false);
-            updateUi();
-        }
+        Button signInBtn = findViewById(R.id.sign_in_btn);
+        signInBtn.setOnClickListener(this);
     }
 
-    private void updateUi() {
+    /**
+     * update UI if signed in/out
+     */
+    @Override
+    public void updateUi(boolean isUserSignedIn) {
+        Log.d(TAG, "updateUi called with " + isUserSignedIn);
         View askLoginView = findViewById(R.id.ask_login);
-        if (isUserSignedIn) {
-            askLoginView.setVisibility(View.GONE);
-        } else {
-            askLoginView.setVisibility(View.VISIBLE);
-        }
+        View myDocsView = findViewById(R.id.my_docs);
+
+        askLoginView.setVisibility(isUserSignedIn? View.GONE: View.VISIBLE);
+        myDocsView.setVisibility(isUserSignedIn? View.VISIBLE: View.GONE);
     }
 
     private void initToolbar() {
@@ -48,6 +52,17 @@ public class MyDocsActivity extends AppCompatActivity {
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.sign_in_btn:
+                signIn();
+                break;
+            default:
+                break;
         }
     }
 }

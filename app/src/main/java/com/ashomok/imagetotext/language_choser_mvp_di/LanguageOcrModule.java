@@ -33,7 +33,7 @@ public abstract class LanguageOcrModule {
 
     @Provides
     @ActivityScoped
-    static LanguageOcrActivity.LanguagesListAdapter.ResponsableList<String> provideCheckedLanguageCodes(
+    static LanguagesListAdapter.ResponsableList<String> provideCheckedLanguageCodes(
             LanguageOcrActivity activity) {
         return activity.getCheckedLanguageCodes();
     }

@@ -53,14 +53,17 @@ public class OcrHttpClient {
      * @param gcsImageUri Google cloud storage image uri,
      *                    example "gs://bucket-for-requests-test/2017-07-26-12-37-36-806-2017-07-26-12-37-36-806-ru.jpg";
      * @param languages
+     * @param idToken firebase user token, docs: https://firebase.google.com/docs/auth/admin/verify-id-tokens
      * @return
      */
-    public Single<OcrResponse> ocr(String gcsImageUri, Optional<List<String>> languages) {
+    public Single<OcrResponse> ocr(
+            String gcsImageUri, Optional<List<String>> languages, Optional<String> idToken) {
 
         if (gcsImageUri != null && gcsImageUri.contains("gs://")) {
             OcrRequestBean ocrRequest = new OcrRequestBean();
             ocrRequest.setGcsImageUri(gcsImageUri);
             languages.ifPresent(l -> ocrRequest.setLanguages(l.toArray(new String[l.size()])));
+            idToken.ifPresent(t -> ocrRequest.setIdTokenString(t));
             return ocrAPI.ocr(ocrRequest);
         } else {
             return Single.error(new Exception("Wrong path or file not exists."));

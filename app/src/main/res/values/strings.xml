@@ -150,7 +150,7 @@
     <string name="auto_detection">AUTO DETECTION</string>
     <string name="recently_chosen_languages">Recently chosen languages</string>
     <string name="all_languages">All languages</string>
-    <string name="recently_chosen_languge_codes">recently_chosen_languge_codes</string>
+    <string name="ocr_recently_chosen_languge_codes" translatable="false">ocr_recently_chosen_languge_codes</string>
     <string name="auto">auto</string>
     <string name="search_title">Search</string>
     <string name="search_hint">English</string>
@@ -158,4 +158,5 @@
     <string name="preferences">preferences</string>
     <string name="crop">Crop</string>
     <string name="main_action_rotate">Rotate</string>
+    <string name="translate_recently_chosen_languge_codes" translatable="false">translate_recently_chosen_languge_codes</string>
 </resources>

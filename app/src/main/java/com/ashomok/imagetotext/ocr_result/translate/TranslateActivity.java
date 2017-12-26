@@ -51,7 +51,7 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 /**
  * Created by iuliia on 8/27/17.
  */
-//// TODO: 9/14/17 replace spinners with new Language Activity - see Google Translate APP for example
+//// TODO: MAJOR 9/14/17 replace spinners with new Language Activity - see Google Translate APP for example
 public class TranslateActivity extends RxAppCompatActivity implements View.OnClickListener {
     private static final String TAG = DEV_TAG + TranslateActivity.class.getSimpleName();
     private String sourceText;

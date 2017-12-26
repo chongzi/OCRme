@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(MockitoJUnitRunner.class)
 public class LanguagesListAdapterTest {
 
-    private LanguageOcrActivity.LanguagesListAdapter languagesListAdapter;
+    private LanguagesListAdapter languagesListAdapter;
 
     @Before
     public void before() throws Exception {
@@ -35,7 +35,7 @@ public class LanguagesListAdapterTest {
         checked.add("1 language");
 
         Context context = Mockito.mock(Context.class);
-        languagesListAdapter = new LanguageOcrActivity.LanguagesListAdapter(allLanguages, checked, notifier);
+        languagesListAdapter = new LanguagesListAdapter(allLanguages, checked, notifier);
     }
 
 

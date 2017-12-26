@@ -1,11 +1,9 @@
 package com.ashomok.imagetotext.firebaseUiAuth;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.MainThread;
-import android.support.annotation.StringRes;
 import android.support.annotation.StyleRes;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -38,14 +36,13 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
     public View mRootView;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onStart() {
+        super.onStart();
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
             onSignedIn();
         }
-
     }
 
     public void signIn() {
