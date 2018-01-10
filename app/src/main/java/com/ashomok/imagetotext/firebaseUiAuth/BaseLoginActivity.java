@@ -14,6 +14,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FirebaseAuth;
+import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  * Created by iuliia on 9/24/17.
  */
 //this class will be used by MainActivity and myDocs Activity
-public abstract class BaseLoginActivity extends AppCompatActivity {
+public abstract class BaseLoginActivity extends RxAppCompatActivity {
     public static final String TAG = DEV_TAG + BaseLoginActivity.class.getSimpleName();
 
     private static final String FIREBASE_TOS_URL = "https://firebase.google.com/terms/";

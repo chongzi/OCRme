@@ -159,4 +159,6 @@
     <string name="crop">Crop</string>
     <string name="main_action_rotate">Rotate</string>
     <string name="translate_recently_chosen_languge_codes" translatable="false">translate_recently_chosen_languge_codes</string>
+    <string name="menu_item_delete">Delete</string>
+    <string name="check">Check</string>
 </resources>

@@ -27,19 +27,11 @@ public class ExitDialogFragment extends DialogFragment {
         return new AlertDialog.Builder(getActivity())
                 .setTitle(title)
                 .setPositiveButton(R.string.ok,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-
-                                ActivityCompat.finishAffinity(getActivity());
-
-                            }
-                        }
+                        (dialog, whichButton) -> ActivityCompat.finishAffinity(getActivity())
                 )
                 .setNegativeButton(R.string.cancel,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                //nothing
-                            }
+                        (dialog, whichButton) -> {
+                            //nothing
                         }
                 )
                 .create();

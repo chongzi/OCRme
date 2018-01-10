@@ -1,0 +1,6 @@
+todo in v2:
+
+MyDocsActivity:
+1. add "Add to favorites" button to each card view. 
+Difficults: it needs edits on backend. Add boolean column isFavourites to db and create new Servlets: getUnfavouritasDocsServlet, getFavouritasDocsServlet.
+It also needs new Recyclerview in the Activity. 

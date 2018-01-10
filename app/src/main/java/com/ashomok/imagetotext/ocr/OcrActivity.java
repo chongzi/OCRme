@@ -3,6 +3,7 @@ package com.ashomok.imagetotext.ocr;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
@@ -81,12 +82,12 @@ public class OcrActivity extends RxAppCompatActivity {
                 //get user IdToken and upload photo in parallel:
                 Single<Pair<Optional<String>, String>> zipped =
                         Single.zip(
-                               getIdToken().doOnEvent((a,b) -> { Log.d(TAG, "getIdToken thread = "
-                                       + Thread.currentThread().getName());
-                               }),
-                               uploadPhoto(imageUri).doOnEvent((a,b) -> { Log.d(TAG, "uploadPhoto thread = "
-                                       + Thread.currentThread().getName());
-                               }),
+                               getIdToken().doOnEvent((a,b) -> Log.d(TAG,
+                                       "is main thread: "
+                                       + (Thread.currentThread() == Looper.getMainLooper().getThread()))),
+                               uploadPhoto(imageUri).doOnEvent((a,b) -> Log.d(TAG,
+                                       "is main thread: "
+                                               + (Thread.currentThread() == Looper.getMainLooper().getThread()))),
                                 (a, b) -> new Pair<>(a, b));
 
                 //upload photo to firebase storage and call ocr on the result

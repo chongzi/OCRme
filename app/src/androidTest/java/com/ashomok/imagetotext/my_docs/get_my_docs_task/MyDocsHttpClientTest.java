@@ -1,14 +1,9 @@
 package com.ashomok.imagetotext.my_docs.get_my_docs_task;
-
-import com.ashomok.imagetotext.ocr.ocr_task.OcrResponse;
 import com.ashomok.imagetotext.utils.FirebaseAuthUtil;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import io.reactivex.Single;
 
@@ -25,7 +20,6 @@ public class MyDocsHttpClientTest {
     public void init() {
         client = MyDocsHttpClient.getInstance();
     }
-
 
     @Test
     public void getMyDocs() {

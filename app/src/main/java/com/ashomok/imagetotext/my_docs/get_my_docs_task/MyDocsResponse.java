@@ -30,7 +30,7 @@ public class MyDocsResponse {
     }
 
     public static class MyDoc {
-        private String sourceImageUrl;
+        private String sourceImageUrl; //example gs://imagetotext-149919.appspot.com/ocr_request_images/659d2a80-f1fa-4b93-80fb-a83c534fc289cropped.jpg
         private String[] languages;
         private String textResult;
         private String pdfResultGsUrl;
