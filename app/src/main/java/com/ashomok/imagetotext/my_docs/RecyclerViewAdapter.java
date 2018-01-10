@@ -15,7 +15,6 @@ import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,10 +23,8 @@ import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
-    private final MyDocsActivity.RecyclerViewCallback callBack;
     private List<MyDocsResponse.MyDoc> mDataList;
     private List<MyDocsResponse.MyDoc> multiSelectDataList;
-    private boolean isMultiSelect = false;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -44,12 +41,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     //todo use MyDocsModel instead
-    public RecyclerViewAdapter(
-            List<MyDocsResponse.MyDoc> mDataList, MyDocsActivity.RecyclerViewCallback callBack) {
+    // Provide a suitable constructor (depends on the kind of dataset)
+    public RecyclerViewAdapter(List<MyDocsResponse.MyDoc> mDataList, List<MyDocsResponse.MyDoc> multiSelectDataList) {
         this.mDataList = mDataList;
-        this.callBack = callBack;
     }
 
+    // Create new views (invoked by the layout manager)
     @Override
     public RecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                              int viewType) {
@@ -79,41 +76,26 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 .fitCenter()
                 .into(imageView);
 
-        //init click behaviour
-        holder.cardView.setOnLongClickListener(view -> {
-            if (!isMultiSelect) {
-                multiSelectDataList = new ArrayList<>();
-                isMultiSelect = true;
-
-                callBack.onChoseMode();
-            }
-            multiSelect(position);
-            return false;
-        });
-
-        holder.cardView.setOnClickListener(view -> {
-            if (isMultiSelect) {
-                multiSelect(position);
-            } else {
-                //todo open Ocr Result activity for curent item
-            }
-        });
-    }
-
-    //todo increase performance if possible
-    public void refreshAdapter() {
-        notifyDataSetChanged();
-    }
-
-    public void multiSelect(int position) {
-        if (multiSelectDataList.contains(mDataList.get(position))) {
-            multiSelectDataList.remove(mDataList.get(position));
-        } else {
-            multiSelectDataList.add(mDataList.get(position));
-        }
-        callBack.updateTitle(multiSelectDataList.size());
-        refreshAdapter();
-
+        //todo
+//        holder.languageLayout.setOnClickListener(view -> {
+//            if (checkedLanguageCodes.contains(item)) {
+//                //checked - uncheck
+//                removeFromChecked(item);
+//                holder.updateUi(false);
+//            } else {
+//                //unchecked - check
+//                if (checkedLanguageCodes.size() < MAX_CHECKED_ALLOWED) {
+//                    addToChecked(item);
+//                    holder.updateUi(true);
+//                } else {
+//                    String message = String.format(view.getContext().getString(R.string.max_checked_allowed),
+//                            String.valueOf(MAX_CHECKED_ALLOWED));
+//                    showError(message, parent);
+//                }
+//            }
+//        });
+//
+//        holder.updateUi(checkedLanguageCodes.contains(item));
     }
 
     private MyDocsResponse.MyDoc getItem(int position) {

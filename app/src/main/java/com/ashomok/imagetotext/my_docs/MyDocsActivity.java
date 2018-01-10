@@ -45,7 +45,7 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 //todo add progress bar while load items - minor
 
 public class MyDocsActivity extends BaseLoginActivity implements View.OnClickListener,
-        AlertDialogHelper.AlertDialogListener, MyDocsActivity.RecyclerViewCallback {
+        AlertDialogHelper.AlertDialogListener {
 
     private static final int DELETE_TAG = 1;
     private static final String TAG = DEV_TAG + MyDocsActivity.class.getSimpleName();
@@ -53,9 +53,10 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
     private String idToken;
     private String startCursor;
     private List<MyDocsResponse.MyDoc> dataList;
-
+    private List<MyDocsResponse.MyDoc> multiSelectDataList;
     private RecyclerViewAdapter adapter;
     private ActionMode mActionMode;
+    boolean isMultiSelect = false;
     AlertDialogHelper alertDialogHelper;
 
     //"Chosen" docs action mode
@@ -134,6 +135,29 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         //todo
     }
 
+    public void refreshAdapter() {
+        //todo
+//        multiSelectAdapter.selected_usersList = multiselect_list;
+//        multiSelectAdapter.usersList = user_list;
+        adapter.notifyDataSetChanged();
+    }
+
+    public void multiSelect(int position) {
+        if (mActionMode != null) {
+            if (multiSelectDataList.contains(dataList.get(position))) {
+                multiSelectDataList.remove(dataList.get(position));
+            } else {
+                multiSelectDataList.add(dataList.get(position));
+            }
+            if (multiSelectDataList.size() > 0) {
+                mActionMode.setTitle("" + multiSelectDataList.size());
+            } else {
+                mActionMode.setTitle("");
+            }
+            refreshAdapter();
+        }
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -158,7 +182,8 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(layoutManager);
         dataList = new ArrayList<>();
-        adapter = new RecyclerViewAdapter(dataList);
+        multiSelectDataList = new ArrayList<>();
+        adapter = new RecyclerViewAdapter(dataList, multiSelectDataList);
         recyclerView.setAdapter(adapter);
 
         EndlessRecyclerViewScrollListener scrollListener =
@@ -172,6 +197,37 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
                 };
         // Adds the scroll listener to RecyclerView
         recyclerView.addOnScrollListener(scrollListener);
+
+        //todo move code to adapter
+        recyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(
+                        this, recyclerView,
+                        new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        if (isMultiSelect) {
+                            multiSelect(position);
+                        } else {
+                            //todo
+                            Toast.makeText(getApplicationContext(), "Details Page",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onItemLongClick(View view, int position) {
+                        if (!isMultiSelect) {
+                            multiSelectDataList = new ArrayList<>();
+                            isMultiSelect = true;
+
+                            if (mActionMode == null) {
+                                mActionMode = startActionMode(mActionModeCallback);
+                            }
+                        }
+
+                        multiSelect(position);
+                    }
+                }));
     }
 
     private void fillRecyclerView() {
@@ -328,7 +384,7 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
             if (multiSelectDataList.size() > 0) {
                 dataList.removeAll(multiSelectDataList);
 
-                multiSelectAdapter.notifyDataSetChanged();
+                adapter.notifyDataSetChanged();
 
                 if (mActionMode != null) {
                     mActionMode.finish();
@@ -346,29 +402,5 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
     @Override
     public void onNeutralClick(int from) {
 //redundant
-    }
-
-    @Override
-    public void onChoseMode() {
-        if (mActionMode == null) {
-            mActionMode = startActionMode(mActionModeCallback);
-        }
-    }
-
-    //todo update strings
-    @Override
-    public void updateTitle(int selectedItemsCount) {
-        if (mActionMode != null) {
-            if (selectedItemsCount > 0) {
-                mActionMode.setTitle("" + selectedItemsCount);
-            } else {
-                mActionMode.setTitle("");
-            }
-        }
-    }
-
-    interface RecyclerViewCallback {
-        void onChoseMode();
-        void updateTitle(int selectedItemsCount);
     }
 }
