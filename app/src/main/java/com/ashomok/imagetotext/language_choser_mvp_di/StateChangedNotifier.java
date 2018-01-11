@@ -5,6 +5,4 @@ package com.ashomok.imagetotext.language_choser_mvp_di;
  */
 public interface StateChangedNotifier {
     void changeAutoState(boolean isAutoChecked);
-
-
 }

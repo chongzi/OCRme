@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.MainThread;
 import android.support.annotation.StyleRes;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
@@ -18,6 +17,8 @@ import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import dagger.android.support.DaggerAppCompatActivity;
 
 import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showError;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
@@ -36,10 +37,19 @@ public abstract class BaseLoginActivity extends RxAppCompatActivity {
     public boolean mIsUserSignedIn = false;
     public View mRootView;
 
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mRootView = findViewById(android.R.id.content);
+        if (mRootView == null) {
+            mRootView = getWindow().getDecorView().findViewById(android.R.id.content);
+        }
+    }
+
     @Override
     public void onStart() {
         super.onStart();
-
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
             onSignedIn();
@@ -85,6 +95,7 @@ public abstract class BaseLoginActivity extends RxAppCompatActivity {
                 return;
             }
 
+            //todo never called - check it
             if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
                 showError(R.string.no_internet_connection, mRootView);
                 return;
@@ -134,9 +145,6 @@ public abstract class BaseLoginActivity extends RxAppCompatActivity {
     private String getSelectedPrivacyPolicyUrl() {
         return FIREBASE_PRIVACY_POLICY_URL;
     }
-
-//    @MainThread
-//    public abstract void showError(@StringRes int errorMessageRes);
 
     public abstract void updateUi(boolean isUserSignedIn);
 

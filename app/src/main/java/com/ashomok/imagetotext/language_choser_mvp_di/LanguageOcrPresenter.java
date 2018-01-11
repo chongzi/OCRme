@@ -24,21 +24,18 @@ import static dagger.internal.Preconditions.checkNotNull;
  * Listens to user actions from the UI ({@link LanguageOcrActivity}), retrieves the data and updates
  * the UI as required.
  * <p>
- * By marking the constructor with {@code @Inject}, Dagger injects the dependencies required to
- * create an instance of the TaskDetailPresenter (if it fails, it emits a compiler error). It uses
- * <p>
- * <p>
  * Dagger generated code doesn't require public access to the constructor or class, and
  * therefore, to ensure the developer doesn't instantiate the class manually and bypasses Dagger,
  * it's good practice minimise the visibility of the class/constructor as much as possible.
  */
 
 public class LanguageOcrPresenter implements LanguageOcrContract.Presenter {
-    public static final String TAG = DEV_TAG+ LanguageOcrPresenter.class.getSimpleName();
+    public static final String TAG = DEV_TAG + LanguageOcrPresenter.class.getSimpleName();
     @Nullable
     private LanguageOcrContract.View mLanguageOcrView;
 
-    @NonNull private List<String> allLanguageCodes;
+    @NonNull
+    private List<String> allLanguageCodes;
 
     // This is provided lazily because its value is determined in the Activity's onCreate. By
     // calling it in takeView(), the value is guaranteed to be set.

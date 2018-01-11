@@ -161,4 +161,5 @@
     <string name="translate_recently_chosen_languge_codes" translatable="false">translate_recently_chosen_languge_codes</string>
     <string name="menu_item_delete">Delete</string>
     <string name="check">Check</string>
+    <string name="unable_identify_user">Unable to identify user. Try login again.</string>
 </resources>

@@ -23,6 +23,8 @@ import android.net.NetworkInfo;
 /**
  * Generic reusable network methods.
  */
+
+//todo make dagger injectable and dagger singleton
 public class NetworkUtils {
     /**
      * @param context to use to check for network connectivity.

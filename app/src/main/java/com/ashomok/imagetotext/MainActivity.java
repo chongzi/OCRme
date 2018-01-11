@@ -95,7 +95,6 @@ public class MainActivity extends BaseLoginActivity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mRootView = findViewById(R.id.drawer_layout);
 
         setUpToolbar();
         setUpNavigationDrawer();

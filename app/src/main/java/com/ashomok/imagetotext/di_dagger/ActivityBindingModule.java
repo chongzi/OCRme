@@ -2,6 +2,8 @@ package com.ashomok.imagetotext.di_dagger;
 
 import com.ashomok.imagetotext.language_choser_mvp_di.LanguageOcrActivity;
 import com.ashomok.imagetotext.language_choser_mvp_di.LanguageOcrModule;
+import com.ashomok.imagetotext.my_docs.MyDocsActivity;
+import com.ashomok.imagetotext.my_docs.MyDocsModule;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -18,6 +20,10 @@ public abstract class ActivityBindingModule {
     @ActivityScoped
     @ContributesAndroidInjector(modules = LanguageOcrModule.class)
     abstract LanguageOcrActivity languageOcrActivity();
+
+    @ActivityScoped
+    @ContributesAndroidInjector(modules = MyDocsModule.class)
+    abstract MyDocsActivity myDocsActivity();
 
 //    @ActivityScoped
 //    @ContributesAndroidInjector(modules = AddEditTaskModule.class)

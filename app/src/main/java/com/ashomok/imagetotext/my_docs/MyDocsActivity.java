@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.annimon.stream.Optional;
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.firebaseUiAuth.BaseLoginActivity;
 import com.ashomok.imagetotext.my_docs.get_my_docs_task.MyDocsHttpClient;
@@ -21,16 +20,14 @@ import com.ashomok.imagetotext.my_docs.get_my_docs_task.MyDocsResponse;
 import com.ashomok.imagetotext.utils.AlertDialogHelper;
 import com.ashomok.imagetotext.utils.AutoFitGridLayoutManager;
 import com.ashomok.imagetotext.utils.EndlessRecyclerViewScrollListener;
-import com.ashomok.imagetotext.utils.NetworkUtils;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.ashomok.imagetotext.utils.InfoSnackbarUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjection;
 
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
@@ -40,24 +37,29 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 //https://www.journaldev.com/13792/android-gridlayoutmanager-example
 //        https://developer.android.com/training/material/lists-cards.html
-    //https://stackoverflow.com/questions/29831083/how-to-use-itemanimator-in-a-recyclerview
+//https://stackoverflow.com/questions/29831083/how-to-use-itemanimator-in-a-recyclerview
 
 //todo add progress bar while load items - minor
 
 public class MyDocsActivity extends BaseLoginActivity implements View.OnClickListener,
-        AlertDialogHelper.AlertDialogListener {
+        AlertDialogHelper.AlertDialogListener, MyDocsContract.View {
 
     private static final int DELETE_TAG = 1;
     private static final String TAG = DEV_TAG + MyDocsActivity.class.getSimpleName();
     private RecyclerView recyclerView;
-    private String idToken;
-    private String startCursor;
+
     private List<MyDocsResponse.MyDoc> dataList;
     private List<MyDocsResponse.MyDoc> multiSelectDataList;
     private RecyclerViewAdapter adapter;
     private ActionMode mActionMode;
     boolean isMultiSelect = false;
     AlertDialogHelper alertDialogHelper;
+
+    @Inject
+    MyDocsPresenter mPresenter;
+
+    @Inject
+    MyDocsHttpClient httpClient;
 
     //"Chosen" docs action mode
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
@@ -101,6 +103,28 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         }
     };
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        AndroidInjection.inject(this);
+
+        setContentView(R.layout.activity_my_docs);
+
+        initToolbar();
+
+        alertDialogHelper = new AlertDialogHelper(this);
+
+        Button signInBtn = findViewById(R.id.sign_in_btn);
+        signInBtn.setOnClickListener(this);
+
+        initRecyclerView();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.takeView(this);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -131,14 +155,18 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPresenter.dropView();  //prevent leaking activity in
+        // case presenter is orchestrating a long running task
+    }
+
     private void openCheck() {
         //todo
     }
 
     public void refreshAdapter() {
-        //todo
-//        multiSelectAdapter.selected_usersList = multiselect_list;
-//        multiSelectAdapter.usersList = user_list;
         adapter.notifyDataSetChanged();
     }
 
@@ -159,22 +187,6 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
     }
 
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_docs);
-
-        initToolbar();
-
-        alertDialogHelper = new AlertDialogHelper(this);
-
-        Button signInBtn = findViewById(R.id.sign_in_btn);
-        signInBtn.setOnClickListener(this);
-
-        initRecyclerView();
-        fillRecyclerView();
-    }
-
     private void initRecyclerView() {
         recyclerView = findViewById(R.id.recycler_view);
         AutoFitGridLayoutManager layoutManager =
@@ -192,156 +204,42 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
                     public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                         // Triggered only when new data needs to be appended to the list
                         // Add whatever code is needed to append new items to the bottom of the list
-                        loadNextDataFromApi();
+                        mPresenter.loadMoreDocs();
                     }
                 };
         // Adds the scroll listener to RecyclerView
         recyclerView.addOnScrollListener(scrollListener);
 
-        //todo move code to adapter
+        //todo particular move code to presenter
         recyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(
                         this, recyclerView,
                         new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        if (isMultiSelect) {
-                            multiSelect(position);
-                        } else {
-                            //todo
-                            Toast.makeText(getApplicationContext(), "Details Page",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onItemLongClick(View view, int position) {
-                        if (!isMultiSelect) {
-                            multiSelectDataList = new ArrayList<>();
-                            isMultiSelect = true;
-
-                            if (mActionMode == null) {
-                                mActionMode = startActionMode(mActionModeCallback);
+                            @Override
+                            public void onItemClick(View view, int position) {
+                                if (isMultiSelect) {
+                                    multiSelect(position);
+                                } else {
+                                    //todo
+                                    Toast.makeText(getApplicationContext(), "Details Page",
+                                            Toast.LENGTH_SHORT).show();
+                                }
                             }
-                        }
 
-                        multiSelect(position);
-                    }
-                }));
-    }
+                            @Override
+                            public void onItemLongClick(View view, int position) {
+                                if (!isMultiSelect) {
+                                    multiSelectDataList = new ArrayList<>();
+                                    isMultiSelect = true;
 
-    private void fillRecyclerView() {
-        MyDocsHttpClient httpClient = MyDocsHttpClient.getInstance();
-        callMyDocs(httpClient);
-    }
+                                    if (mActionMode == null) {
+                                        mActionMode = startActionMode(mActionModeCallback);
+                                    }
+                                }
 
-
-    // Append the next page of data into the adapter
-    // This method probably sends out a network request and appends new data items to your adapter.
-    public void loadNextDataFromApi() {
-        Log.d(TAG, "more loaded");
-        if (isOnline()) {
-            if (!loadingCompleted()) {
-                MyDocsHttpClient httpClient = MyDocsHttpClient.getInstance();
-                callApiForDocs(httpClient, idToken, startCursor);
-            }
-        } else {
-            //todo network error
-//            startOcrResultActivity(getString(R.string.network_error));
-        }
-    }
-
-    private boolean loadingCompleted() {
-        return startCursor == null;
-    }
-
-    private void callMyDocs(MyDocsHttpClient httpClient) {
-        if (isOnline()) {
-            //get user IdToken
-            Single<Optional<String>> idTokenSingle = getIdToken()
-                    .subscribeOn(Schedulers.io())
-                    .compose(bindToLifecycle());
-
-            idTokenSingle.subscribe(
-                    optionalToken -> {
-                        if (optionalToken.isPresent()) {
-                            idToken = optionalToken.get();
-                            callApiForDocs(httpClient, idToken, startCursor);
-                        } else {
-                            //todo show error unable to identify user - try login
-                        }
-                    }, throwable -> {
-                        throwable.printStackTrace();
-                        String errorMessage = throwable.getMessage();
-                        //todo show error unable to identify user - try login
-                    });
-        } else {
-            //todo network error
-//            startOcrResultActivity(getString(R.string.network_error));
-        }
-    }
-
-    private void callApiForDocs(MyDocsHttpClient httpClient, String idToken, String startCursor) {
-        Log.d(TAG, "calApiForDocs with cursor: " + startCursor);
-        Single<MyDocsResponse> myDocs =
-                httpClient.myDocs(idToken, startCursor);
-
-        myDocs.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .compose(bindToLifecycle()).subscribe(
-                myDocsResponce -> {
-                    MyDocsResponse.Status status = myDocsResponce.getStatus();
-                    if (status.equals(MyDocsResponse.Status.USER_NOT_FOUND)) {
-                        //todo show eeror user not found
-                    } else if (status.equals(MyDocsResponse.Status.UNKNOWN_ERROR)) {
-                        //todo show error unknown error
-                    } else if (status.equals(MyDocsResponse.Status.OK)) {
-                        updateCursor(myDocsResponce.getEndCursor());
-                        updateRecyclerView(myDocsResponce.getRequestList());
-                    } else {
-                        Log.e(TAG, "Unknown status received");
-                    }
-                },
-                throwable -> {
-                    throwable.printStackTrace();
-                    String errorMessage = throwable.getMessage();
-                    //todo
-                });
-    }
-
-    private void updateCursor(String cursor) {
-        startCursor = cursor;
-    }
-
-    private void updateRecyclerView(List<MyDocsResponse.MyDoc> newData) {
-        dataList.addAll(newData);
-        adapter.notifyItemInserted(dataList.size() - 1);
-    }
-
-    boolean isOnline() {
-        return NetworkUtils.isOnline(this);
-    }
-
-    /**
-     * async get idToken, docs: https://firebase.google.com/docs/auth/admin/verify-id-tokens
-     */
-    public Single<Optional<String>> getIdToken() {
-        return Single.create(emitter -> {
-            FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
-            if (mUser != null) {
-                mUser.getIdToken(false)
-                        .addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                String idToken = task.getResult().getToken();
-                                emitter.onSuccess(Optional.ofNullable(idToken));
-                            } else {
-                                emitter.onSuccess(Optional.empty());
+                                multiSelect(position);
                             }
-                        });
-            } else {
-                emitter.onSuccess(Optional.empty());
-            }
-        });
+                        }));
     }
 
     /**
@@ -402,5 +300,31 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
     @Override
     public void onNeutralClick(int from) {
 //redundant
+    }
+
+    @Override
+    public void showAllDocs(List<MyDocsResponse.MyDoc> data) {
+
+    }
+
+    @Override
+    public void choseDocs(List<MyDocsResponse.MyDoc> choseDocs) {
+
+    }
+
+    @Override
+    public void deleteDocs(List<MyDocsResponse.MyDoc> deleteDocs) {
+
+    }
+
+    @Override
+    public void showError(int errorMessageRes) {
+        InfoSnackbarUtil.showError(errorMessageRes, mRootView);
+    }
+
+    @Override
+    public void addNewLoadedDocs(List<MyDocsResponse.MyDoc> newLoadedDocs) {
+        dataList.addAll(newLoadedDocs);
+        adapter.notifyItemInserted(dataList.size() - 1);
     }
 }

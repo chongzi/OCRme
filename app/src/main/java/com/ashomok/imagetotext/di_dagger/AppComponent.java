@@ -43,6 +43,7 @@ public interface AppComponent extends AndroidInjector<DaggerApplication> {
     interface Builder {
         @BindsInstance
         AppComponent.Builder application(Application application);
+
         AppComponent build();
     }
 }
