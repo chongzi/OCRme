@@ -214,6 +214,31 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         }
     }
 
+    private RecyclerViewCallback callback = new RecyclerViewCallback() {
+        @Override
+        public void onItemClick(int position) {
+            if (isMultiSelect) {
+                multiSelect(position);
+            } else {
+                //todo
+                Toast.makeText(getApplicationContext(), "Details Page",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        public void onItemLongClick(int position) {
+            if (!isMultiSelect) {
+                multiSelectDataList = new ArrayList<>();
+                isMultiSelect = true;
+
+                if (mActionMode == null) {
+                    mActionMode = startActionMode(mActionModeCallback);
+                }
+            }
+            multiSelect(position);
+        }
+    };
 
     private void initRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
@@ -223,32 +248,6 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         recyclerView.setLayoutManager(layoutManager);
         dataList = new ArrayList<>();
         multiSelectDataList = new ArrayList<>();
-
-        RecyclerViewCallback callback = new RecyclerViewCallback() {
-            @Override
-            public void onItemClick(int position) {
-                if (isMultiSelect) {
-                    multiSelect(position);
-                } else {
-                    //todo
-                    Toast.makeText(getApplicationContext(), "Details Page",
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onItemLongClick(int position) {
-                if (!isMultiSelect) {
-                    multiSelectDataList = new ArrayList<>();
-                    isMultiSelect = true;
-
-                    if (mActionMode == null) {
-                        mActionMode = startActionMode(mActionModeCallback);
-                    }
-                }
-                multiSelect(position);
-            }
-        };
 
         adapter = new RecyclerViewAdapter(dataList, multiSelectDataList, callback);
         recyclerView.setAdapter(adapter);

@@ -93,27 +93,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             callback.onItemLongClick(position);
             return true;
         });
-
-        //todo
-//        holder.languageLayout.setOnClickListener(view -> {
-//            if (checkedLanguageCodes.contains(item)) {
-//                //checked - uncheck
-//                removeFromChecked(item);
-//                holder.updateUi(false);
-//            } else {
-//                //unchecked - check
-//                if (checkedLanguageCodes.size() < MAX_CHECKED_ALLOWED) {
-//                    addToChecked(item);
-//                    holder.updateUi(true);
-//                } else {
-//                    String message = String.format(view.getContext().getString(R.string.max_checked_allowed),
-//                            String.valueOf(MAX_CHECKED_ALLOWED));
-//                    showError(message, parent);
-//                }
-//            }
-//        });
-//
-//        holder.updateUi(checkedLanguageCodes.contains(item));
     }
 
     private void showPopupMenu(View view, int position) {
