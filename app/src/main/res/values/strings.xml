@@ -162,4 +162,6 @@
     <string name="menu_item_delete">Delete</string>
     <string name="check">Check</string>
     <string name="unable_identify_user">Unable to identify user. Try login again.</string>
+    <string name="deleted">Deleted</string>
+    <string name="error_while_delete">Error while delete</string>
 </resources>

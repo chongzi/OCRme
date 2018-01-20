@@ -26,7 +26,7 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 /**
  * Created by iuliia on 9/24/17.
  */
-//this class will be used by MainActivity and myDocs Activity
+//this class will be used by MainActivity and getMyDocs Activity
 public abstract class BaseLoginActivity extends RxAppCompatActivity {
     public static final String TAG = DEV_TAG + BaseLoginActivity.class.getSimpleName();
 

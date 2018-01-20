@@ -2,11 +2,11 @@ package com.ashomok.imagetotext.my_docs.get_my_docs_task;
 
 import android.support.annotation.Nullable;
 
-import com.ashomok.imagetotext.ocr_result.translate.translate_task.TranslateAPI;
-import com.ashomok.imagetotext.ocr_result.translate.translate_task.TranslateRequestBean;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Completable;
 import io.reactivex.Single;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -48,14 +48,23 @@ public class MyDocsHttpClient {
                 .build();
 
         myDocsAPI = retrofit.create(MyDocsAPI.class);
+
     }
 
-    public Single<MyDocsResponse> myDocs(String userToken, @Nullable String startCursor) {
+    public Single<MyDocsResponse> getMyDocs(String userToken, @Nullable String startCursor) {
         MyDocsRequestBean myDocsRequest = new MyDocsRequestBean.Builder()
                 .userToken(userToken)
                 .startCursor(startCursor)
                 .build();
 
         return myDocsAPI.getMyDocs(myDocsRequest);
+    }
+
+    public Completable deleteMyDocs(List<Long> ids) {
+        List<String> list = new ArrayList<>();
+        for (Long id : ids) {
+            list.add(String.valueOf(id));
+        }
+        return myDocsAPI.delete(list.toArray(new String[list.size()]));
     }
 }

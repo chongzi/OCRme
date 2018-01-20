@@ -9,11 +9,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.annimon.stream.Collectors;
 import com.annimon.stream.Optional;
+import com.annimon.stream.Stream;
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.my_docs.get_my_docs_task.MyDocsHttpClient;
 import com.ashomok.imagetotext.my_docs.get_my_docs_task.MyDocsResponse;
 import com.ashomok.imagetotext.utils.NetworkUtils;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -22,7 +26,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.ashomok.imagetotext.utils.FirebaseUtils.getIdToken;
-import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showError;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 import static dagger.internal.Preconditions.checkNotNull;
 
@@ -48,6 +51,7 @@ public class MyDocsPresenter implements MyDocsContract.Presenter {
     private String idToken;
     private String startCursor;
 
+
     /**
      * Dagger strictly enforces that arguments not marked with {@code @Nullable} are not injected
      * with {@code @Nullable} values.
@@ -60,28 +64,39 @@ public class MyDocsPresenter implements MyDocsContract.Presenter {
     @Override
     public void takeView(MyDocsContract.View myDocsActivity) {
         view = myDocsActivity;
-        showAllDocs();
+        initWithDocs();
     }
 
-    private void showAllDocs() {
+    private void initWithDocs() {
         if (view != null) {
             if (isOnline()) {
-                //get user IdToken
-                Single<Optional<String>> idTokenSingle = getIdToken()
-                        .subscribeOn(Schedulers.io());
+                startCursor = null;
 
-                idTokenSingle.subscribe(
-                        optionalToken -> {
-                            if (optionalToken.isPresent()) {
-                                idToken = optionalToken.get();
-                                callApiForDocs(httpClient, idToken, startCursor);
-                            } else {
-                                view.showError(R.string.unable_identify_user);
-                            }
-                        }, throwable -> {
-                            throwable.printStackTrace();
-                            view.showError(R.string.unable_identify_user);
-                        });
+                if (idToken == null) {
+                    //get user IdToken
+                    Single<Optional<String>> idTokenSingle = getIdToken();
+
+                    idTokenSingle
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnSubscribe(__ -> view.showProgress(true))
+                            .subscribe(
+                                    optionalToken -> {
+                                        view.showProgress(false);
+                                        if (optionalToken.isPresent()) {
+                                            idToken = optionalToken.get();
+                                            callApiForDocs(httpClient, idToken, startCursor);
+                                        } else {
+                                            view.showError(R.string.unable_identify_user);
+                                        }
+                                    }, throwable -> {
+                                        view.showProgress(false);
+                                        throwable.printStackTrace();
+                                        view.showError(R.string.unable_identify_user);
+                                    });
+                } else {
+                    callApiForDocs(httpClient, idToken, startCursor);
+                }
             } else {
                 view.showError(R.string.no_internet_connection);
             }
@@ -91,28 +106,33 @@ public class MyDocsPresenter implements MyDocsContract.Presenter {
     private void callApiForDocs(MyDocsHttpClient httpClient, String idToken, String startCursor) {
         if (view != null) {
             Single<MyDocsResponse> myDocs =
-                    httpClient.myDocs(idToken, startCursor);
+                    httpClient.getMyDocs(idToken, startCursor);
 
-            myDocs.subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe(
-                    myDocsResponce -> {
-                        MyDocsResponse.Status status = myDocsResponce.getStatus();
-                        if (status.equals(MyDocsResponse.Status.USER_NOT_FOUND)) {
-                            view.showError(R.string.unable_identify_user);
-                        } else if (status.equals(MyDocsResponse.Status.UNKNOWN_ERROR)) {
-                            view.showError(R.string.unknown_error);
-                        } else if (status.equals(MyDocsResponse.Status.OK)) {
-                            updateCursor(myDocsResponce.getEndCursor());
-                            view.addNewLoadedDocs(myDocsResponce.getRequestList());
-                        } else {
-                            Log.e(TAG, "Unknown status received");
-                            view.showError(R.string.unknown_error);
-                        }
-                    },
-                    throwable -> {
-                        throwable.printStackTrace();
-                        view.showError(R.string.unknown_error);
-                    });
+            myDocs
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnSubscribe(__ -> view.showProgress(true))
+                    .subscribe(
+                            myDocsResponce -> {
+                                view.showProgress(false);
+                                MyDocsResponse.Status status = myDocsResponce.getStatus();
+                                if (status.equals(MyDocsResponse.Status.USER_NOT_FOUND)) {
+                                    view.showError(R.string.unable_identify_user);
+                                } else if (status.equals(MyDocsResponse.Status.UNKNOWN_ERROR)) {
+                                    view.showError(R.string.unknown_error);
+                                } else if (status.equals(MyDocsResponse.Status.OK)) {
+                                    updateCursor(myDocsResponce.getEndCursor());
+                                    view.addNewLoadedDocs(myDocsResponce.getRequestList());
+                                } else {
+                                    Log.e(TAG, "Unknown status received");
+                                    view.showError(R.string.unknown_error);
+                                }
+                            },
+                            throwable -> {
+                                view.showProgress(false);
+                                throwable.printStackTrace();
+                                view.showError(R.string.unknown_error);
+                            });
         }
     }
 
@@ -138,12 +158,57 @@ public class MyDocsPresenter implements MyDocsContract.Presenter {
     @Override
     public void loadMoreDocs() {
         if (view != null) {
-            Log.d(TAG, "more loaded");
             if (isOnline()) {
                 if (!loadingCompleted()) {
                     MyDocsHttpClient httpClient = MyDocsHttpClient.getInstance();
                     callApiForDocs(httpClient, idToken, startCursor);
                 }
+            } else {
+                view.showError(R.string.no_internet_connection);
+            }
+        }
+    }
+
+    void deleteDocs(List<MyDocsResponse.MyDoc> multiSelectDataList) {
+        if (view != null) {
+            if (isOnline()) {
+                List<Long> ids = Stream.of(multiSelectDataList)
+                        .map(MyDocsResponse.MyDoc::getId)
+                        .collect(Collectors.toList());
+
+                startCursor = null;
+                //delete and reload my docs
+                Single<MyDocsResponse> myDocs = httpClient
+                        .deleteMyDocs(ids)
+                        .andThen(httpClient.getMyDocs(idToken, startCursor));
+
+                myDocs
+                        .doOnSubscribe(__ -> view.showProgress(true))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                myDocsResponse -> {
+                                    view.showProgress(false);
+                                    MyDocsResponse.Status status = myDocsResponse.getStatus();
+                                    if (status.equals(MyDocsResponse.Status.USER_NOT_FOUND)) {
+                                        view.showError(R.string.unable_identify_user);
+                                    } else if (status.equals(MyDocsResponse.Status.UNKNOWN_ERROR)) {
+                                        view.showError(R.string.unknown_error);
+                                    } else if (status.equals(MyDocsResponse.Status.OK)) {
+                                        //ok
+                                        view.clearDocsList();
+                                        updateCursor(myDocsResponse.getEndCursor());
+                                        view.addNewLoadedDocs(myDocsResponse.getRequestList());
+                                        view.showInfo(R.string.deleted);
+                                    } else {
+                                        view.showError(R.string.unknown_error);
+                                    }
+                                },
+                                throwable -> {
+                                    view.showProgress(false);
+                                    throwable.printStackTrace();
+                                    view.showError(R.string.unknown_error);
+                                });
             } else {
                 view.showError(R.string.no_internet_connection);
             }

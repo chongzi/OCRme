@@ -18,16 +18,19 @@ import java.util.List;
  */
 public interface MyDocsContract {
     interface View {
-
-        void showAllDocs(List<MyDocsResponse.MyDoc> data);
-
         void choseDocs(List<MyDocsResponse.MyDoc> choseDocs);
 
         void deleteDocs(List<MyDocsResponse.MyDoc> deleteDocs);
 
         void showError(@StringRes int errorMessageRes);
 
+        void showInfo (@StringRes int infoMessageRes);
+
         void addNewLoadedDocs(List<MyDocsResponse.MyDoc> newLoadedDocs);
+
+        void clearDocsList();
+
+        void showProgress(final boolean show);
     }
 
     interface Presenter extends BasePresenter<MyDocsContract.View> {

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/Not_interasted_catugury"
+        android:orderInCategory="100"
+        android:title="Never show stories from this category  " />
+
+    <item
+        android:id="@+id/No_interasted"
+        android:orderInCategory="101"
+        android:title="Not Interested" />
+
+
+</menu>

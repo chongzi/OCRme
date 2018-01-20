@@ -1,5 +1,9 @@
 package com.ashomok.imagetotext.my_docs;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.ashomok.imagetotext.R;
@@ -41,12 +46,10 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 //todo add progress bar while load items - minor
 
-public class MyDocsActivity extends BaseLoginActivity implements View.OnClickListener,
-        AlertDialogHelper.AlertDialogListener, MyDocsContract.View {
+public class MyDocsActivity extends BaseLoginActivity implements View.OnClickListener, MyDocsContract.View {
 
     private static final int DELETE_TAG = 1;
     private static final String TAG = DEV_TAG + MyDocsActivity.class.getSimpleName();
-    private RecyclerView recyclerView;
 
     private List<MyDocsResponse.MyDoc> dataList;
     private List<MyDocsResponse.MyDoc> multiSelectDataList;
@@ -54,6 +57,7 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
     private ActionMode mActionMode;
     boolean isMultiSelect = false;
     AlertDialogHelper alertDialogHelper;
+    private ProgressBar progress;
 
     @Inject
     MyDocsPresenter mPresenter;
@@ -81,13 +85,7 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.action_delete:
-                    alertDialogHelper.showAlertDialog(
-                            "",
-                            "Delete Contact",
-                            "DELETE",
-                            "CANCEL",
-                            DELETE_TAG,
-                            false);
+                    showAlertDialog();
                     return true;
                 default:
                     return false;
@@ -99,9 +97,42 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
             mActionMode = null;
             isMultiSelect = false;
             multiSelectDataList = new ArrayList<>();
-            refreshAdapter();
+            adapter.notifyDataSetChanged();
         }
     };
+
+    private void showAlertDialog() {
+        alertDialogHelper = new AlertDialogHelper(this, new AlertDialogHelper.AlertDialogListener() {
+            @Override
+            public void onPositiveClick(int from) {
+                if (from == DELETE_TAG) {
+                    if (multiSelectDataList.size() > 0) {
+
+                        mPresenter.deleteDocs(multiSelectDataList);
+                        if (mActionMode != null) {
+                            mActionMode.finish();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onNegativeClick(int from) {
+            }
+
+            @Override
+            public void onNeutralClick(int from) {
+            }
+        });
+
+        alertDialogHelper.showAlertDialog(
+                "",
+                "Delete Contact",
+                "DELETE",
+                "CANCEL",
+                DELETE_TAG,
+                false);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -112,12 +143,12 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
 
         initToolbar();
 
-        alertDialogHelper = new AlertDialogHelper(this);
-
         Button signInBtn = findViewById(R.id.sign_in_btn);
         signInBtn.setOnClickListener(this);
 
         initRecyclerView();
+
+        progress = findViewById(R.id.progress);
     }
 
     @Override
@@ -166,9 +197,6 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         //todo
     }
 
-    public void refreshAdapter() {
-        adapter.notifyDataSetChanged();
-    }
 
     public void multiSelect(int position) {
         if (mActionMode != null) {
@@ -182,20 +210,47 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
             } else {
                 mActionMode.setTitle("");
             }
-            refreshAdapter();
+            adapter.notifyItemChanged(position);
         }
     }
 
 
     private void initRecyclerView() {
-        recyclerView = findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
         AutoFitGridLayoutManager layoutManager =
                 new AutoFitGridLayoutManager(this, 500);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(layoutManager);
         dataList = new ArrayList<>();
         multiSelectDataList = new ArrayList<>();
-        adapter = new RecyclerViewAdapter(dataList, multiSelectDataList);
+
+        RecyclerViewCallback callback = new RecyclerViewCallback() {
+            @Override
+            public void onItemClick(int position) {
+                if (isMultiSelect) {
+                    multiSelect(position);
+                } else {
+                    //todo
+                    Toast.makeText(getApplicationContext(), "Details Page",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onItemLongClick(int position) {
+                if (!isMultiSelect) {
+                    multiSelectDataList = new ArrayList<>();
+                    isMultiSelect = true;
+
+                    if (mActionMode == null) {
+                        mActionMode = startActionMode(mActionModeCallback);
+                    }
+                }
+                multiSelect(position);
+            }
+        };
+
+        adapter = new RecyclerViewAdapter(dataList, multiSelectDataList, callback);
         recyclerView.setAdapter(adapter);
 
         EndlessRecyclerViewScrollListener scrollListener =
@@ -209,37 +264,6 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
                 };
         // Adds the scroll listener to RecyclerView
         recyclerView.addOnScrollListener(scrollListener);
-
-        //todo particular move code to presenter
-        recyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(
-                        this, recyclerView,
-                        new RecyclerItemClickListener.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(View view, int position) {
-                                if (isMultiSelect) {
-                                    multiSelect(position);
-                                } else {
-                                    //todo
-                                    Toast.makeText(getApplicationContext(), "Details Page",
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                            }
-
-                            @Override
-                            public void onItemLongClick(View view, int position) {
-                                if (!isMultiSelect) {
-                                    multiSelectDataList = new ArrayList<>();
-                                    isMultiSelect = true;
-
-                                    if (mActionMode == null) {
-                                        mActionMode = startActionMode(mActionModeCallback);
-                                    }
-                                }
-
-                                multiSelect(position);
-                            }
-                        }));
     }
 
     /**
@@ -275,38 +299,6 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         }
     }
 
-    // AlertDialog Callback Functions
-    @Override
-    public void onPositiveClick(int from) {
-        if (from == DELETE_TAG) {
-            if (multiSelectDataList.size() > 0) {
-                dataList.removeAll(multiSelectDataList);
-
-                adapter.notifyDataSetChanged();
-
-                if (mActionMode != null) {
-                    mActionMode.finish();
-                }
-                Toast.makeText(getApplicationContext(), "Delete Click", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    @Override
-    public void onNegativeClick(int from) {
-//redundant
-    }
-
-    @Override
-    public void onNeutralClick(int from) {
-//redundant
-    }
-
-    @Override
-    public void showAllDocs(List<MyDocsResponse.MyDoc> data) {
-
-    }
-
     @Override
     public void choseDocs(List<MyDocsResponse.MyDoc> choseDocs) {
 
@@ -323,8 +315,53 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
     }
 
     @Override
+    public void showInfo(int infoMessageRes) {
+        InfoSnackbarUtil.showInfo(infoMessageRes, mRootView);
+    }
+
+    @Override
     public void addNewLoadedDocs(List<MyDocsResponse.MyDoc> newLoadedDocs) {
         dataList.addAll(newLoadedDocs);
         adapter.notifyItemInserted(dataList.size() - 1);
+    }
+
+    @Override
+    public void clearDocsList() {
+        int size = dataList.size();
+        dataList.clear();
+        adapter.notifyItemRangeRemoved(0, size);
+    }
+
+    /**
+     * Shows the progress UI
+     */
+    @Override
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    public void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            progress.setVisibility(show ? View.VISIBLE : View.GONE);
+            progress.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    progress.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            progress.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    interface RecyclerViewCallback {
+        void onItemClick(int position);
+
+        void onItemLongClick(int position);
     }
 }

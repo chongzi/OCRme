@@ -14,15 +14,13 @@ import android.widget.Button;
  */
 
 public class AlertDialogHelper {
-    Context context;
     AlertDialog alertDialog = null;
     AlertDialogListener callBack;
-    Activity current_activity;
+    Activity activity;
 
-    public AlertDialogHelper(Context context) {
-        this.context = context;
-        this.current_activity = (Activity) context;
-        callBack = (AlertDialogListener) context;
+    public AlertDialogHelper(Activity activity, AlertDialogListener callBack) {
+        this.activity = activity;
+        this.callBack = callBack;
     }
 
     /**
@@ -46,7 +44,7 @@ public class AlertDialogHelper {
             String neutral,
             final int from,
             boolean isCancelable) {
-        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(current_activity);
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(activity);
 
         if (!TextUtils.isEmpty(title))
             alertDialogBuilder.setTitle(title);

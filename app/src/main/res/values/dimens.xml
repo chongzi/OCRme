@@ -21,6 +21,8 @@
     <dimen name="spl_default_splitter_size">12dp</dimen>
     <dimen name="fab_margin">20dp</dimen>
     <dimen name="margin10">10dp</dimen>
+    <dimen name="margin3">3dp</dimen>
+    <dimen name="margin5">7dp</dimen>
     <!--<dimen name="big_text_size">24sp</dimen>-->
     <!--<dimen name="l_text_size">24sp</dimen>-->
 

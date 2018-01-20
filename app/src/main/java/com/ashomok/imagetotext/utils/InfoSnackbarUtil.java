@@ -43,10 +43,18 @@ public class InfoSnackbarUtil {
         }
     }
 
-    public static void showWarning(@StringRes int errorMessageRes, View mRootView) {
+    public static void showWarning(@StringRes int messageRes, View mRootView) {
         if (mRootView != null) {
-            Snackbar snackbar = Snackbar.make(mRootView, errorMessageRes, Snackbar.LENGTH_LONG);
+            Snackbar snackbar = Snackbar.make(mRootView, messageRes, Snackbar.LENGTH_LONG);
             snackbar.getView().setBackgroundColor(ContextCompat.getColor(mRootView.getContext(), R.color.orange_500));
+            snackbar.show();
+        }
+    }
+
+    public static void showInfo(@StringRes int messageRes, View mRootView) {
+        if (mRootView != null) {
+            Snackbar snackbar = Snackbar.make(mRootView, messageRes, Snackbar.LENGTH_LONG);
+            snackbar.getView().setBackgroundColor(ContextCompat.getColor(mRootView.getContext(), R.color.green_500));
             snackbar.show();
         }
     }
