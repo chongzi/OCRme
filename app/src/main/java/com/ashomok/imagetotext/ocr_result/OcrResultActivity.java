@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.ocr.ocr_task.OcrResponse;
 
-import static com.ashomok.imagetotext.ocr_result.tab_fragments.TextFragment.EXTRA_IMAGE_URI;
+import static com.ashomok.imagetotext.ocr_result.tab_fragments.TextFragment.EXTRA_IMAGE_URL;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 /**
@@ -24,7 +24,6 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 public class OcrResultActivity extends AppCompatActivity {
     private static final String TAG = DEV_TAG + OcrResultActivity.class.getSimpleName();
-    public static final int LANGUAGE_CHANGED_REQUEST_CODE = 1;
     public static final String EXTRA_OCR_RESPONSE = "com.ashomokdev.imagetotext.OCR_RESPONCE";
     public static final String EXTRA_ERROR_MESSAGE = "com.ashomokdev.imagetotext.ERROR_MESSAGE";
 
@@ -46,8 +45,7 @@ public class OcrResultActivity extends AppCompatActivity {
             }
             if (ocrData != null) {
                 if (ocrData.getStatus().equals(OcrResponse.Status.OK)) {
-                    Uri imageUri = intent.getParcelableExtra(EXTRA_IMAGE_URI);
-                    initTabLayout(ocrData, imageUri);
+                    initTabLayout(ocrData);
                 } else {
                     showError(ocrData.getStatus());
                 }
@@ -104,14 +102,14 @@ public class OcrResultActivity extends AppCompatActivity {
         errorMessageView.setText(errorMessage);
     }
 
-    private void initTabLayout(OcrResponse ocrData, Uri imageUri) {
+    private void initTabLayout(OcrResponse ocrData) {
         TabLayout tabLayout = findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.text)));
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.PDF)));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         final ViewPager viewPager = findViewById(R.id.pager);
-        final MyPagerAdapter adapter = new MyPagerAdapter(getFragmentManager(), ocrData, imageUri);
+        final MyPagerAdapter adapter = new MyPagerAdapter(getFragmentManager(), ocrData);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

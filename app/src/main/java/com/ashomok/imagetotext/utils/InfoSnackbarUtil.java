@@ -58,4 +58,12 @@ public class InfoSnackbarUtil {
             snackbar.show();
         }
     }
+
+    public static void showInfo(String message, View mRootView) {
+        if (mRootView != null) {
+            Snackbar snackbar = Snackbar.make(mRootView, message, Snackbar.LENGTH_LONG);
+            snackbar.getView().setBackgroundColor(ContextCompat.getColor(mRootView.getContext(), R.color.green_500));
+            snackbar.show();
+        }
+    }
 }

@@ -15,6 +15,7 @@ import com.annimon.stream.Stream;
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.my_docs.get_my_docs_task.MyDocsHttpClient;
 import com.ashomok.imagetotext.my_docs.get_my_docs_task.MyDocsResponse;
+import com.ashomok.imagetotext.ocr.ocr_task.OcrResult;
 import com.ashomok.imagetotext.utils.NetworkUtils;
 
 import java.util.List;
@@ -71,15 +72,16 @@ public class MyDocsPresenter implements MyDocsContract.Presenter {
         if (view != null) {
             if (isOnline()) {
                 startCursor = null;
+                view.clearDocsList();
 
                 if (idToken == null) {
                     //get user IdToken
                     Single<Optional<String>> idTokenSingle = getIdToken();
 
+                    view.showProgress(true);
                     idTokenSingle
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
-                            .doOnSubscribe(__ -> view.showProgress(true))
                             .subscribe(
                                     optionalToken -> {
                                         view.showProgress(false);
@@ -108,10 +110,10 @@ public class MyDocsPresenter implements MyDocsContract.Presenter {
             Single<MyDocsResponse> myDocs =
                     httpClient.getMyDocs(idToken, startCursor);
 
+            view.showProgress(true);
             myDocs
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doOnSubscribe(__ -> view.showProgress(true))
                     .subscribe(
                             myDocsResponce -> {
                                 view.showProgress(false);
@@ -169,11 +171,11 @@ public class MyDocsPresenter implements MyDocsContract.Presenter {
         }
     }
 
-    void deleteDocs(List<MyDocsResponse.MyDoc> multiSelectDataList) {
+    void deleteDocs(List<OcrResult> multiSelectDataList) {
         if (view != null) {
             if (isOnline()) {
                 List<Long> ids = Stream.of(multiSelectDataList)
-                        .map(MyDocsResponse.MyDoc::getId)
+                        .map(OcrResult::getId)
                         .collect(Collectors.toList());
 
                 startCursor = null;
@@ -182,9 +184,8 @@ public class MyDocsPresenter implements MyDocsContract.Presenter {
                         .deleteMyDocs(ids)
                         .andThen(httpClient.getMyDocs(idToken, startCursor));
 
-                myDocs
-                        .doOnSubscribe(__ -> view.showProgress(true))
-                        .subscribeOn(Schedulers.io())
+                view.showProgress(true);
+                myDocs.subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 myDocsResponse -> {

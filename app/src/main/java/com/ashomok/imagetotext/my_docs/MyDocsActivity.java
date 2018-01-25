@@ -3,6 +3,7 @@ package com.ashomok.imagetotext.my_docs;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -16,12 +17,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.firebaseUiAuth.BaseLoginActivity;
 import com.ashomok.imagetotext.my_docs.get_my_docs_task.MyDocsHttpClient;
-import com.ashomok.imagetotext.my_docs.get_my_docs_task.MyDocsResponse;
+import com.ashomok.imagetotext.ocr.ocr_task.OcrResult;
+import com.ashomok.imagetotext.ocr.ocr_task.OcrResponse;
+import com.ashomok.imagetotext.ocr_result.OcrResultActivity;
 import com.ashomok.imagetotext.utils.AlertDialogHelper;
 import com.ashomok.imagetotext.utils.AutoFitGridLayoutManager;
 import com.ashomok.imagetotext.utils.EndlessRecyclerViewScrollListener;
@@ -34,25 +36,23 @@ import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 
+import static com.ashomok.imagetotext.ocr_result.OcrResultActivity.EXTRA_OCR_RESPONSE;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 /**
  * Created by iuliia on 8/18/17.
  */
 
-//https://www.journaldev.com/13792/android-gridlayoutmanager-example
-//        https://developer.android.com/training/material/lists-cards.html
+//todo add empty view
+//todo add animation when item deleted/reloaded
 //https://stackoverflow.com/questions/29831083/how-to-use-itemanimator-in-a-recyclerview
-
-//todo add progress bar while load items - minor
-
 public class MyDocsActivity extends BaseLoginActivity implements View.OnClickListener, MyDocsContract.View {
 
     private static final int DELETE_TAG = 1;
     private static final String TAG = DEV_TAG + MyDocsActivity.class.getSimpleName();
 
-    private List<MyDocsResponse.MyDoc> dataList;
-    private List<MyDocsResponse.MyDoc> multiSelectDataList;
+    private List<OcrResult> dataList;
+    private List<OcrResult> multiSelectDataList;
     private RecyclerViewAdapter adapter;
     private ActionMode mActionMode;
     boolean isMultiSelect = false;
@@ -65,7 +65,7 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
     @Inject
     MyDocsHttpClient httpClient;
 
-    //"Chosen" docs action mode
+    //"Select" docs action mode
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
 
         @Override
@@ -84,6 +84,10 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
+                case R.id.action_select_all:
+                    selectAll();
+                    return true;
+
                 case R.id.action_delete:
                     showAlertDialog();
                     return true;
@@ -100,6 +104,66 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
             adapter.notifyDataSetChanged();
         }
     };
+
+    private void selectAll() {
+        multiSelectDataList.addAll(dataList);
+        mActionMode.setTitle(multiSelectDataList.size() + getString(R.string.selected));
+        adapter.notifyItemChanged(0, dataList.size());
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        AndroidInjection.inject(this);
+        setContentView(R.layout.activity_my_docs);
+        initToolbar();
+        Button signInBtn = findViewById(R.id.sign_in_btn);
+        signInBtn.setOnClickListener(this);
+        initRecyclerView();
+        progress = findViewById(R.id.progress);
+        mPresenter.takeView(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.my_docs_common, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.select:
+                onSelectMode();
+                return true;
+            //todo add more menu items - see my_docs_common
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPresenter.dropView();  //prevent leaking activity in
+        // case presenter is orchestrating a long running task
+    }
+
+    private void onSelectMode() {
+        if (!isMultiSelect) {
+            multiSelectDataList = new ArrayList<>();
+            isMultiSelect = true;
+
+            if (mActionMode == null) {
+                mActionMode = startActionMode(mActionModeCallback);
+            }
+
+            mActionMode.setTitle(multiSelectDataList.size() + getString(R.string.selected));
+        }
+    }
 
     private void showAlertDialog() {
         alertDialogHelper = new AlertDialogHelper(this, new AlertDialogHelper.AlertDialogListener() {
@@ -127,76 +191,12 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
 
         alertDialogHelper.showAlertDialog(
                 "",
-                "Delete Contact",
-                "DELETE",
-                "CANCEL",
+                getString(R.string.delete_docs, String.valueOf(multiSelectDataList.size())),
+                getString(R.string.delete),
+                getString(R.string.cancel),
                 DELETE_TAG,
                 false);
     }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        AndroidInjection.inject(this);
-
-        setContentView(R.layout.activity_my_docs);
-
-        initToolbar();
-
-        Button signInBtn = findViewById(R.id.sign_in_btn);
-        signInBtn.setOnClickListener(this);
-
-        initRecyclerView();
-
-        progress = findViewById(R.id.progress);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mPresenter.takeView(this);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.my_docs_common, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        switch (id) {
-            //todo reduntant
-//            case android.R.id.home:
-//                onBackPressed();
-//                return true;
-
-            case R.id.check:
-                openCheck();
-                return true;
-            //todo add more menu items - see my_docs_common
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mPresenter.dropView();  //prevent leaking activity in
-        // case presenter is orchestrating a long running task
-    }
-
-    private void openCheck() {
-        //todo
-    }
-
 
     public void multiSelect(int position) {
         if (mActionMode != null) {
@@ -205,11 +205,8 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
             } else {
                 multiSelectDataList.add(dataList.get(position));
             }
-            if (multiSelectDataList.size() > 0) {
-                mActionMode.setTitle("" + multiSelectDataList.size());
-            } else {
-                mActionMode.setTitle("");
-            }
+            mActionMode.setTitle(multiSelectDataList.size() + getString(R.string.selected));
+
             adapter.notifyItemChanged(position);
         }
     }
@@ -220,22 +217,14 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
             if (isMultiSelect) {
                 multiSelect(position);
             } else {
-                //todo
-                Toast.makeText(getApplicationContext(), "Details Page",
-                        Toast.LENGTH_SHORT).show();
+                OcrResult doc = dataList.get(position);
+                startOcrResultActivity(new OcrResponse(doc, OcrResponse.Status.OK));
             }
         }
 
         @Override
         public void onItemLongClick(int position) {
-            if (!isMultiSelect) {
-                multiSelectDataList = new ArrayList<>();
-                isMultiSelect = true;
-
-                if (mActionMode == null) {
-                    mActionMode = startActionMode(mActionModeCallback);
-                }
-            }
+            onSelectMode();
             multiSelect(position);
         }
     };
@@ -251,7 +240,6 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
 
         adapter = new RecyclerViewAdapter(dataList, multiSelectDataList, callback);
         recyclerView.setAdapter(adapter);
-
         EndlessRecyclerViewScrollListener scrollListener =
                 new EndlessRecyclerViewScrollListener(layoutManager) {
                     @Override
@@ -263,6 +251,12 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
                 };
         // Adds the scroll listener to RecyclerView
         recyclerView.addOnScrollListener(scrollListener);
+    }
+
+    private void startOcrResultActivity(OcrResponse data) {
+        Intent intent = new Intent(this, OcrResultActivity.class);
+        intent.putExtra(EXTRA_OCR_RESPONSE, data);
+        startActivity(intent);
     }
 
     /**
@@ -299,12 +293,12 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
     }
 
     @Override
-    public void choseDocs(List<MyDocsResponse.MyDoc> choseDocs) {
+    public void choseDocs(List<OcrResult> choseDocs) {
 
     }
 
     @Override
-    public void deleteDocs(List<MyDocsResponse.MyDoc> deleteDocs) {
+    public void deleteDocs(List<OcrResult> deleteDocs) {
 
     }
 
@@ -319,7 +313,7 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
     }
 
     @Override
-    public void addNewLoadedDocs(List<MyDocsResponse.MyDoc> newLoadedDocs) {
+    public void addNewLoadedDocs(List<OcrResult> newLoadedDocs) {
         dataList.addAll(newLoadedDocs);
         adapter.notifyItemInserted(dataList.size() - 1);
     }

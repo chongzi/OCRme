@@ -3,7 +3,7 @@ package com.ashomok.imagetotext.ocr;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Looper;
+import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
@@ -18,13 +18,13 @@ import com.ashomok.imagetotext.Settings;
 import com.ashomok.imagetotext.ocr.ocr_task.OcrHttpClient;
 import com.ashomok.imagetotext.ocr.ocr_task.OcrResponse;
 import com.ashomok.imagetotext.ocr_result.OcrResultActivity;
-import com.ashomok.imagetotext.ocr_result.tab_fragments.TextFragment;
 import com.ashomok.imagetotext.utils.NetworkUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.StringSignature;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
@@ -52,11 +52,15 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 public class OcrActivity extends RxAppCompatActivity {
     public static final int RESULT_CANCELED_BY_USER = 123;
-    private Uri imageUri;
+    @Nullable
+    private Uri imageUri; //image stored on device - will be uploaded
+    @Nullable
+    private String imageUrl; //Url of image, stored in firebase storage
     private StorageReference mImageRef;
     private ArrayList<String> sourceLanguageCodes;
     public static final String EXTRA_LANGUAGES = "com.ashomokdev.imagetotext.ocr.LANGUAGES";
-    public static final String EXTRA_IMAGE_URI = "com.ashomokdev.imagetotext.ocr.IMAGE_URI";
+    public static final String EXTRA_IMAGE_URI = "com.ashomokdev.imagetotext.ocr.IMAGE_URI"; //image stored on device
+    public static final String EXTRA_IMAGE_URL = "com.ashomokdev.imagetotext.ocr.IMAGE_URL"; //image stored on Firebase storage
     public static final String TAG = DEV_TAG + OcrActivity.class.getSimpleName();
 
     @Override
@@ -66,6 +70,7 @@ public class OcrActivity extends RxAppCompatActivity {
         setContentView(R.layout.ocr_animation_layout);
 
         imageUri = getIntent().getParcelableExtra(EXTRA_IMAGE_URI);
+        imageUrl = getIntent().getStringExtra(EXTRA_IMAGE_URL);
         sourceLanguageCodes = getIntent().getStringArrayListExtra(EXTRA_LANGUAGES);
 
         initCancelBtn();
@@ -77,55 +82,46 @@ public class OcrActivity extends RxAppCompatActivity {
 
     public void callOcr(OcrHttpClient httpClient) {
         if (isOnline()) {
-            if (imageUri != null) {
 
-                //get user IdToken and upload photo in parallel:
-                Single<Pair<Optional<String>, String>> zipped =
-                        Single.zip(
-                               getIdToken().doOnEvent((a,b) -> Log.d(TAG,
-                                       "is main thread: "
-                                       + (Thread.currentThread() == Looper.getMainLooper().getThread()))),
-                               uploadPhoto(imageUri).doOnEvent((a,b) -> Log.d(TAG,
-                                       "is main thread: "
-                                               + (Thread.currentThread() == Looper.getMainLooper().getThread()))),
-                                (a, b) -> new Pair<>(a, b));
+            //get user IdToken and upload photo to firebase storage in parallel:
+            Single<Pair<Optional<String>, String>> zipped =
+                    Single.zip(
+                            getIdToken(),
+                            uploadPhoto(),
+                            Pair::new);
 
-                //upload photo to firebase storage and call ocr on the result
-                Single<OcrResponse> ocrSingle = zipped
-                        .subscribeOn(Schedulers.io())
-                        .compose(bindToLifecycle())
-                        .flatMap(pair ->
-                                httpClient.ocr(
-                                        pair.second,
-                                        Optional.ofNullable(sourceLanguageCodes),
-                                        pair.first)
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribeOn(Schedulers.io())
-                                        .compose(bindToLifecycle())
-                        );
+            //call ocr on the result
+            Single<OcrResponse> ocrSingle = zipped
+                    .subscribeOn(Schedulers.io())
+                    .compose(bindToLifecycle())
+                    .flatMap(pair ->
+                            httpClient.ocr(
+                                    pair.second,
+                                    Optional.ofNullable(sourceLanguageCodes),
+                                    pair.first)
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribeOn(Schedulers.io())
+                                    .compose(bindToLifecycle())
+                    );
 
-                ocrSingle.subscribe(
-                        myData -> {
-                            Log.d(TAG, "ocr returns " + myData.toString());
-                            startOcrResultActivity(myData);
-                            finish();
-                        },
-                        throwable -> {
-                            throwable.printStackTrace();
-                            String errorMessage = throwable.getMessage();
-                            if (errorMessage != null && errorMessage.length() > 0) {
-                                startOcrResultActivity(errorMessage);
-                            }
-                            finish();
-                        });
-
-
-            } else {
-                startOcrResultActivity(getString(R.string.file_not_found));
-            }
+            ocrSingle.subscribe(
+                    myData -> {
+                        Log.d(TAG, "ocr returns " + myData.toString());
+                        startOcrResultActivity(myData);
+                        finish();
+                    },
+                    throwable -> {
+                        throwable.printStackTrace();
+                        String errorMessage = throwable.getMessage();
+                        if (errorMessage != null && errorMessage.length() > 0) {
+                            startOcrResultActivity(errorMessage);
+                        }
+                        finish();
+                    });
         } else {
             startOcrResultActivity(getString(R.string.network_error));
         }
+
     }
 
     boolean isOnline() {
@@ -135,7 +131,6 @@ public class OcrActivity extends RxAppCompatActivity {
     private void startOcrResultActivity(OcrResponse data) {
         Intent intent = new Intent(this, OcrResultActivity.class);
         intent.putExtra(EXTRA_OCR_RESPONSE, data);
-        intent.putExtra(TextFragment.EXTRA_IMAGE_URI, imageUri); //todo refactor for better reading
         startActivity(intent);
     }
 
@@ -179,53 +174,99 @@ public class OcrActivity extends RxAppCompatActivity {
         return Completable.create(emitter -> {
             ImageView imageView = findViewById(R.id.image);
 
-            Glide.with(this)
-                    .load(imageUri)
-                    .signature(new StringSignature(String.valueOf(System.currentTimeMillis()))) //needs because image url not changed. It returns the same image all the time if remove this line. It is because default build-in cashe mechanism.
-                    .listener(new RequestListener<Uri, GlideDrawable>() {
-                        @Override
-                        public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            emitter.onError(e);
-                            return false;
-                        }
+            if (isUploaded()) {
+                //init image for uploaded source - url
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference gsReference = storage.getReferenceFromUrl(imageUrl);
+                Glide.with(this)
+                        .using(new FirebaseImageLoader())
+                        .load(gsReference)
+                        .error(R.drawable.ic_broken_image)
+                        .listener(new RequestListener<StorageReference, GlideDrawable>() {
+                            @Override
+                            public boolean onException(Exception e, StorageReference model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                emitter.onError(e);
+                                return false;
+                            }
 
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            emitter.onComplete();
-                            return false;
-                        }
-                    })
-                    .crossFade()
-                    .fitCenter()
-                    .into(imageView);
+                            @Override
+                            public boolean onResourceReady(GlideDrawable resource, StorageReference model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                emitter.onComplete();
+                                return false;
+                            }
+                        })
+                        .crossFade()
+                        .fitCenter()
+                        .into(imageView);
+            } else {
+                //init image from device
+                Glide.with(this)
+                        .load(imageUri)
+                        .error(R.drawable.ic_broken_image)
+                        .signature(new StringSignature(String.valueOf(System.currentTimeMillis()))) //needs because image url not changed. It returns the same image all the time if remove this line. It is because default build-in cashe mechanism.
+                        .listener(new RequestListener<Uri, GlideDrawable>() {
+                            @Override
+                            public boolean onException(
+                                    Exception e, Uri model, Target<GlideDrawable> target,
+                                    boolean isFirstResource) {
+                                emitter.onError(e);
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(
+                                    GlideDrawable resource, Uri model, Target<GlideDrawable> target,
+                                    boolean isFromMemoryCache, boolean isFirstResource) {
+                                emitter.onComplete();
+                                return false;
+                            }
+                        })
+                        .crossFade()
+                        .fitCenter()
+                        .into(imageView);
+            }
         });
-
     }
 
     /**
-     * async upload photo to firebase storage
-     *
-     * @param uri
+     * async upload photo to firebase storage if not yet uploaded
      */
-    public Single<String> uploadPhoto(Uri uri) {
-        return Single.create(emitter -> {
-            String uuid = UUID.randomUUID().toString();
-            mImageRef = FirebaseStorage.getInstance().getReference().child(
-                    "ocr_request_images/" + uuid + uri.getLastPathSegment());
+    public Single<String> uploadPhoto() {
+        if (isUploaded()) {
+            return Single.just(imageUrl);
+        } else {
+            return Single.create(emitter -> {
+                String uuid = UUID.randomUUID().toString();
 
-            mImageRef
-                    .putFile(uri)
-                    .addOnSuccessListener(taskSnapshot -> {
-                        String path = taskSnapshot.getMetadata().getReference().getPath();
-                        Log.d(TAG, "uploadPhoto:onSuccess:" + path);
-                        String gcsImageUri = firebaseFolderURL + path;
-                        emitter.onSuccess(gcsImageUri);
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e(TAG, "uploadPhoto:onError", e);
-                        emitter.onError(e);
-                    });
-        });
+                //generate image ref
+                mImageRef = FirebaseStorage.getInstance().getReference().child(
+                        "ocr_request_images/" + uuid + imageUri.getLastPathSegment());
+
+                mImageRef
+                        .putFile(imageUri)
+                        .addOnSuccessListener(taskSnapshot -> {
+                            String path = taskSnapshot.getMetadata().getReference().getPath();
+                            Log.d(TAG, "uploadPhoto:onSuccess:" + path);
+                            String gcsImageUri = firebaseFolderURL + path;
+                            emitter.onSuccess(gcsImageUri);
+                        })
+                        .addOnFailureListener(e -> {
+                            Log.e(TAG, "uploadPhoto:onError", e);
+                            emitter.onError(e);
+                        });
+            });
+        }
+    }
+
+    private boolean isUploaded() {
+        if (imageUri != null && imageUrl == null) {
+            return false;
+        } else if (imageUri == null && imageUrl != null) {
+            return true;
+        } else {
+            Log.e(TAG, "ERROR. Can not check image status.");
+            return false;
+        }
     }
 
     /**

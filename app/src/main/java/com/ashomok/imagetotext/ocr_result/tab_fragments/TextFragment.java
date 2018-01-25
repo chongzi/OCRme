@@ -5,16 +5,11 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.text.Html;
 import android.text.Spanned;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,24 +21,21 @@ import android.widget.Toast;
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.ashomok.imagetotext.R;
+import com.ashomok.imagetotext.language_choser_mvp_di.LanguageOcrActivity;
 import com.ashomok.imagetotext.ocr.OcrActivity;
 import com.ashomok.imagetotext.ocr_result.translate.TranslateActivity;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.signature.StringSignature;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.Arrays;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.CLIPBOARD_SERVICE;
 import static com.ashomok.imagetotext.Settings.appPackageName;
-import static com.ashomok.imagetotext.ocr.OcrActivity.RESULT_CANCELED_BY_USER;
-import static com.ashomok.imagetotext.ocr_result.OcrResultActivity.LANGUAGE_CHANGED_REQUEST_CODE;
-import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showWarning;
+import static com.ashomok.imagetotext.language_choser_mvp_di.LanguageOcrActivity.CHECKED_LANGUAGE_CODES;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 /**
@@ -53,21 +45,21 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 //todo Forbidd splitter to go out of screen bounds. https://github.com/bieliaievays/OCRme/issues/2
 public class TextFragment extends Fragment implements View.OnClickListener {
     public static final String EXTRA_TEXT = "com.ashomokdev.imagetotext.TEXT";
-    public static final String EXTRA_IMAGE_URI = "com.ashomokdev.imagetotext.IMAGE";
+    public static final String EXTRA_IMAGE_URL = "com.ashomokdev.imagetotext.IMAGE";
+    public static final String EXTRA_LANGUAGES = "com.ashomokdev.imagetotext.LANGUAGES";
+    private static final int LANGUAGE_ACTIVITY_REQUEST_CODE = 1;
     private CharSequence textResult;
-    private Uri imageUri;
+    private CharSequence imageUrl;
+    private String[] languages;
     private static final String TAG = DEV_TAG + TextFragment.class.getSimpleName();
-    private static final int OCR_Activity_REQUEST_CODE = 2;
-    private View mRootView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.text_fragment, container, false);
         Bundle bundle = getArguments();
         textResult = bundle.getCharSequence(EXTRA_TEXT);
-        imageUri = bundle.getParcelable(EXTRA_IMAGE_URI);
-
-        mRootView = view;
+        imageUrl = bundle.getCharSequence(EXTRA_IMAGE_URL);
+        languages = bundle.getStringArray(EXTRA_LANGUAGES);
         return view;
     }
 
@@ -92,11 +84,21 @@ public class TextFragment extends Fragment implements View.OnClickListener {
                 onShareClicked();
                 break;
             case R.id.bad_result_btn:
-//                onBadResultClicked(); //todo
+                onBadResultClicked();
                 break;
             default:
                 break;
         }
+    }
+
+    private void onBadResultClicked() {
+        Intent intent = new Intent(getActivity(), LanguageOcrActivity.class);
+        if (languages != null && languages.length > 0) {
+            ArrayList<String> extra = Stream.of(Arrays.asList(languages))
+                    .collect(Collectors.toCollection(ArrayList::new));
+            intent.putStringArrayListExtra(CHECKED_LANGUAGE_CODES, extra);
+        }
+        startActivityForResult(intent, LANGUAGE_ACTIVITY_REQUEST_CODE);
     }
 
     private void initBottomPanel() {
@@ -123,9 +125,12 @@ public class TextFragment extends Fragment implements View.OnClickListener {
 
         final ImageView mImageView = getActivity().findViewById(R.id.source_image);
 
-        Glide.with(this)
-                .load(imageUri)
-                .signature(new StringSignature(String.valueOf(System.currentTimeMillis()))) //needs because image url not changed. It returns the same image all the time if remove this line. It is because default build-in cashe mechanism.
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference gsReference = storage.getReferenceFromUrl(imageUrl.toString());
+        Glide.with(this.getActivity())
+                .using(new FirebaseImageLoader())
+                .load(gsReference)
+                .error(R.drawable.ic_broken_image)
                 .fitCenter()
                 .crossFade()
                 .into(mImageView);
@@ -140,78 +145,28 @@ public class TextFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-//    //todo
-//    private void onBadResultClicked() {
-//        Intent intent = new Intent(getActivity(), LanguageActivity.class);
-//        intent.putExtra(CHECKED_LANGUAGE_CODES, getCurrentLanguages());
-//        startActivityForResult(intent, LANGUAGE_CHANGED_REQUEST_CODE);
-//    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-//    //todo
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//
-//        if (requestCode == LANGUAGE_CHANGED_REQUEST_CODE && resultCode == RESULT_OK) {
-//            //language was changed - run ocr again for the same image
-//            Bundle bundle = data.getExtras();
-//            ArrayList<String> updatedLanguages = bundle.getStringArrayList(CHECKED_LANGUAGE_CODES);
-//            updateOcrResult(updatedLanguages);
-//        }
-//
-//        //ocr canceled
-//        else if (requestCode == OCR_Activity_REQUEST_CODE && resultCode == RESULT_CANCELED_BY_USER) {
-//            showWarning(R.string.canceled, mRootView);
-//        }
-//    }
-//
-//    private void updateOcrResult(ArrayList<String> languages) {
-//        String languagesList = Stream.of(languages).map(Object::toString).collect(Collectors.joining(", "));
-//        Log.d(TAG, "Ocr called with new languages: " + languagesList);
-//
-//        startOcrActivity(imageUri, languages);
-//
-//    }
+        if (requestCode == LANGUAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+            //language was changed - run ocr again for the same image
+            Bundle bundle = data.getExtras();
+            ArrayList<String> newLanguages = bundle.getStringArrayList(CHECKED_LANGUAGE_CODES);
+            runOcr(newLanguages);
+        }
+    }
 
-//    //todo
-//    private void startOcrActivity(Uri uri, ArrayList<String> languages) {
-//        Intent intent = new Intent(getActivity(), OcrActivity.class);
-//        intent.setData(uri);
-//        intent.putExtra(OcrActivity.EXTRA_LANGUAGES, obtainLanguageShortcuts(languages));
-//        startActivityForResult(intent, OCR_Activity_REQUEST_CODE);
-//    }
-//
-//    private ArrayList<String> obtainLanguageShortcuts(ArrayList<String> languages) {
-//
-//        LanguageList data = new LanguageList(getActivity());
-//        LinkedHashMap<String, String> allLanguages = data.getLanguages();
-//
-//        ArrayList<String> result = new ArrayList<>();
-//        for (String name : languages) {
-//            if (allLanguages.containsKey(name)) {
-//                result.add(allLanguages.get(name));
-//            }
-//        }
-//
-//        return result;
-//    }
+    private void runOcr(ArrayList<String> languages) {
+        if (imageUrl != null) {
+            Intent intent = new Intent(getActivity(), OcrActivity.class);
+            intent.putExtra(OcrActivity.EXTRA_IMAGE_URL, imageUrl);
+            intent.putStringArrayListExtra(OcrActivity.EXTRA_LANGUAGES, languages);
 
-//    @NonNull
-//    private ArrayList<String> getCurrentLanguages() {
-//        Set<String> checkedLanguageNames = obtainSavedLanguages();
-//        ArrayList<String> checkedLanguages = new ArrayList<>();
-//        checkedLanguages.addAll(checkedLanguageNames);
-//        return checkedLanguages;
-//    }
-//
-//    private Set<String> obtainSavedLanguages() {
-//
-//        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-//        Set<String> auto = new HashSet<String>() {{
-//            add(getString(R.string.auto));
-//        }};
-//        TreeSet<String> checkedLanguagesNames = new TreeSet<>(sharedPref.getStringSet(CHECKED_LANGUAGE_CODES, auto));
-//        return checkedLanguagesNames;
-//    }
+            startActivity(intent);
+
+            getActivity().finish();
+        }
+    }
 
     @SuppressWarnings("deprecation")
     private void onShareClicked() {

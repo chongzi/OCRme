@@ -164,4 +164,10 @@
     <string name="unable_identify_user">Unable to identify user. Try login again.</string>
     <string name="deleted">Deleted</string>
     <string name="error_while_delete">Error while delete</string>
+    <string name="selected">\u0020selected</string>
+    <string name="select_all">Select all</string>
+    <string name="select">Select</string>
+    <string name="delete_docs">Delete %1$s docs?</string>
+    <string name="delete">delete</string>
+    <string name="languages_selected">%1$s languages selected</string>
 </resources>

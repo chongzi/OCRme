@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import dagger.android.support.DaggerAppCompatActivity;
 
 import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showError;
+import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showInfo;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 /**
@@ -67,6 +68,9 @@ public class LanguageOcrActivity extends DaggerAppCompatActivity implements Lang
                 new LanguagesListAdapter.ResponsableList<>(new ArrayList<>())
                 : new LanguagesListAdapter.ResponsableList<>(list);
 
+        checkedLanguageCodes.addOnListChangedListener(o -> showInfo(
+                getString(R.string.languages_selected, String.valueOf(checkedLanguageCodes.size())),
+                findViewById(R.id.base_view)));
         recentlyChosenLanguageCodes = obtainRecentlyChosenLanguageCodes();
     }
 

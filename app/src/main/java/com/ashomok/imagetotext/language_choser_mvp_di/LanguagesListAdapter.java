@@ -44,9 +44,7 @@ public class LanguagesListAdapter extends RecyclerView.Adapter<LanguagesListAdap
 
         this.checkedLanguageCodes = (checkedLanguageCodes == null) ?
                 new ResponsableList<>(new ArrayList<>()) : checkedLanguageCodes;
-        this.checkedLanguageCodes.addOnListChangedListener(o -> {
-            String checkedLanguage = (String) o;
-
+        this.checkedLanguageCodes.addOnListChangedListener(checkedLanguage -> {
             int changedPos = IntStream.range(0, allLanguageCodes.size())
                     .filter(i -> checkedLanguage.equals(allLanguageCodes.get(i)))
                     .findFirst().orElse(-1);
@@ -174,18 +172,20 @@ public class LanguagesListAdapter extends RecyclerView.Adapter<LanguagesListAdap
 
         @Override
         public boolean add(E e) {
+            boolean res = super.add(e);
             for (OnListChangedListener listener : listenerList) {
                 listener.onListChangedFor(e);
             }
-            return super.add(e);
+            return res;
         }
 
         @Override
         public boolean remove(Object o) {
+            boolean res = super.remove(o);
             for (OnListChangedListener listener : listenerList) {
                 listener.onListChangedFor(o);
             }
-            return super.remove(o);
+            return res;
         }
     }
 

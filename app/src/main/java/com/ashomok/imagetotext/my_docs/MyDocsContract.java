@@ -7,9 +7,7 @@ package com.ashomok.imagetotext.my_docs;
 import android.support.annotation.StringRes;
 
 import com.ashomok.imagetotext.di_dagger.BasePresenter;
-import com.ashomok.imagetotext.language_choser_mvp_di.LanguageOcrContract;
-import com.ashomok.imagetotext.language_choser_mvp_di.LanguagesListAdapter;
-import com.ashomok.imagetotext.my_docs.get_my_docs_task.MyDocsResponse;
+import com.ashomok.imagetotext.ocr.ocr_task.OcrResult;
 
 import java.util.List;
 
@@ -18,15 +16,15 @@ import java.util.List;
  */
 public interface MyDocsContract {
     interface View {
-        void choseDocs(List<MyDocsResponse.MyDoc> choseDocs);
+        void choseDocs(List<OcrResult> choseDocs);
 
-        void deleteDocs(List<MyDocsResponse.MyDoc> deleteDocs);
+        void deleteDocs(List<OcrResult> deleteDocs);
 
         void showError(@StringRes int errorMessageRes);
 
         void showInfo (@StringRes int infoMessageRes);
 
-        void addNewLoadedDocs(List<MyDocsResponse.MyDoc> newLoadedDocs);
+        void addNewLoadedDocs(List<OcrResult> newLoadedDocs);
 
         void clearDocsList();
 

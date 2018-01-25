@@ -2,12 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/check"
-        android:icon="@drawable/ic_check_box_black_24dp"
-        android:title="@string/check"
+    <item android:id="@+id/select"
+        android:title="@string/select"
         app:showAsAction="always"/>
 
     <!--new menu items - todo-->
+
     <!--<item android:id="@+id/action_create_new_folder"-->
     <!--android:icon="@drawable/some_draw"-->
     <!--android:title="@string/create_new_folder"-->

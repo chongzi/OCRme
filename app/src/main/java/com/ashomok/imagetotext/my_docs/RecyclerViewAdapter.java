@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ashomok.imagetotext.R;
-import com.ashomok.imagetotext.my_docs.get_my_docs_task.MyDocsResponse;
+import com.ashomok.imagetotext.ocr.ocr_task.OcrResult;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.FirebaseStorage;
@@ -34,15 +34,15 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     private final MyDocsActivity.RecyclerViewCallback callback;
-    private List<MyDocsResponse.MyDoc> mDataList;
-    private List<MyDocsResponse.MyDoc> multiSelectDataList;
+    private List<OcrResult> mDataList;
+    private List<OcrResult> multiSelectDataList;
     public static final String TAG = DEV_TAG + RecyclerViewAdapter.class.getSimpleName();
 
 
     //todo use MyDocsModel instead
     // Provide a suitable constructor (depends on the kind of dataset)
-    public RecyclerViewAdapter(List<MyDocsResponse.MyDoc> mDataList,
-                               List<MyDocsResponse.MyDoc> multiSelectDataList,
+    public RecyclerViewAdapter(List<OcrResult> mDataList,
+                               List<OcrResult> multiSelectDataList,
                                MyDocsActivity.RecyclerViewCallback callback) {
         this.mDataList = mDataList;
         this.multiSelectDataList = multiSelectDataList;
@@ -62,7 +62,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(RecyclerViewAdapter.ViewHolder holder, int position) {
-        MyDocsResponse.MyDoc item = getItem(position);
+        OcrResult item = getItem(position);
         Context context = holder.cardView.getContext();
 
         //timestamp
@@ -104,7 +104,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         popup.show();
     }
 
-    private MyDocsResponse.MyDoc getItem(int position) {
+    private OcrResult getItem(int position) {
         return mDataList.get(position);
     }
 
