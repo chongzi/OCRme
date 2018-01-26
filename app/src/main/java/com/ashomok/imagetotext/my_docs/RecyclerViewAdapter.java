@@ -1,6 +1,5 @@
 package com.ashomok.imagetotext.my_docs;
 
-import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ashomok.imagetotext.R;
@@ -30,7 +30,6 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  * Created by iuliia on 12/26/17.
  */
 
-//todo animate view apearence
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     private final MyDocsActivity.RecyclerViewCallback callback;
@@ -38,9 +37,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private List<OcrResult> multiSelectDataList;
     public static final String TAG = DEV_TAG + RecyclerViewAdapter.class.getSimpleName();
 
-
-    //todo use MyDocsModel instead
-    // Provide a suitable constructor (depends on the kind of dataset)
     public RecyclerViewAdapter(List<OcrResult> mDataList,
                                List<OcrResult> multiSelectDataList,
                                MyDocsActivity.RecyclerViewCallback callback) {
@@ -63,7 +59,24 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(RecyclerViewAdapter.ViewHolder holder, int position) {
         OcrResult item = getItem(position);
-        Context context = holder.cardView.getContext();
+
+        //check if select mode and update design
+        if (multiSelectDataList.size() > 0) {
+            //select mode
+
+            holder.checkbox.setVisibility(View.VISIBLE);
+            holder.darkHint.setVisibility(View.VISIBLE);
+            if (multiSelectDataList.contains(item)) {
+                //current card selected - check checkbox
+                holder.checkbox.setChecked(true);
+            } else {
+                holder.checkbox.setChecked(false);
+            }
+        } else {
+            //not select mode
+            holder.checkbox.setVisibility(View.GONE);
+            holder.darkHint.setVisibility(View.GONE);
+        }
 
         //timestamp
         holder.timeStamp.setText(item.getTimeStamp());
@@ -73,7 +86,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         StorageReference gsReference =
                 FirebaseStorage.getInstance().getReferenceFromUrl(item.getSourceImageUrl());
         // Load the image using Glide
-        Glide.with(context)
+        Glide.with(holder.cardView.getContext())
                 .using(new FirebaseImageLoader())
                 .load(gsReference)
                 .crossFade()
@@ -83,16 +96,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         //card menu
         holder.menuBtn.setOnClickListener(view -> showPopupMenu(holder.menuBtn, position));
 
-        //checkbox
-        //todo
-
         //cardview init click callback
-        holder.cardView.setOnClickListener(view -> callback.onItemClick(position)
-        );
+        holder.cardView.setOnClickListener(view -> callback.onItemClick(position));
         holder.cardView.setOnLongClickListener(view -> {
             callback.onItemLongClick(position);
             return true;
         });
+
     }
 
     private void showPopupMenu(View view, int position) {
@@ -149,6 +159,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         TextView timeStamp;
         ImageButton menuBtn;
         CheckBox checkbox;
+        ImageView darkHint;
 
         ViewHolder(View v) {
             super(v);
@@ -157,6 +168,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             cardView = v.findViewById(R.id.cardView);
             menuBtn = v.findViewById(R.id.card_menu_btn);
             checkbox = v.findViewById(R.id.checkBox);
+            darkHint = v.findViewById(R.id.hint);
         }
     }
 }

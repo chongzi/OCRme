@@ -9,8 +9,13 @@
 
     <item
         android:id="@+id/action_select_all"
-        android:checkable="true"
         android:title="@string/select_all"
+        app:showAsAction="withText" />
+
+    <item
+        android:id="@+id/action_unselect_all"
+        android:title="@string/unselect_all"
+        android:visible="false"
         app:showAsAction="withText" />
     <item
         android:id="@+id/action_delete"

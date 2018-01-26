@@ -280,9 +280,12 @@ public class MainActivity extends BaseLoginActivity
         v.post(() -> {
             LinearLayout.LayoutParams mParams;
             mParams = (LinearLayout.LayoutParams) v.getLayoutParams();
-            mParams.height = v.getWidth(); //todo bug sometimes 0 - btns not visible as a result - if screen turned off when run activity
-            v.setLayoutParams(mParams);
-            v.postInvalidate();
+            int width = v.getWidth();
+            if (width > 0) {
+                mParams.height = v.getWidth();
+                v.setLayoutParams(mParams);
+                v.postInvalidate();
+            }
         });
     }
 
@@ -349,7 +352,6 @@ public class MainActivity extends BaseLoginActivity
 
     private void startMyDocsActivity() {
         Intent intent = new Intent(this, MyDocsActivity.class);
-//        intent.putExtra(MyDocsActivity.IS_SIGNED_IN_TAG, mIsUserSignedIn); //todo delete
         startActivity(intent);
     }
 

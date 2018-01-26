@@ -21,8 +21,8 @@ import android.widget.ProgressBar;
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.firebaseUiAuth.BaseLoginActivity;
 import com.ashomok.imagetotext.my_docs.get_my_docs_task.MyDocsHttpClient;
-import com.ashomok.imagetotext.ocr.ocr_task.OcrResult;
 import com.ashomok.imagetotext.ocr.ocr_task.OcrResponse;
+import com.ashomok.imagetotext.ocr.ocr_task.OcrResult;
 import com.ashomok.imagetotext.ocr_result.OcrResultActivity;
 import com.ashomok.imagetotext.utils.AlertDialogHelper;
 import com.ashomok.imagetotext.utils.AutoFitGridLayoutManager;
@@ -44,8 +44,6 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  */
 
 //todo add empty view
-//todo add animation when item deleted/reloaded
-//https://stackoverflow.com/questions/29831083/how-to-use-itemanimator-in-a-recyclerview
 public class MyDocsActivity extends BaseLoginActivity implements View.OnClickListener, MyDocsContract.View {
 
     private static final int DELETE_TAG = 1;
@@ -85,9 +83,11 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.action_select_all:
-                    selectAll();
+                    selectAll(mode);
                     return true;
-
+                case R.id.action_unselect_all:
+                    unselectAll(mode);
+                    return true;
                 case R.id.action_delete:
                     showAlertDialog();
                     return true;
@@ -100,15 +100,34 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         public void onDestroyActionMode(ActionMode mode) {
             mActionMode = null;
             isMultiSelect = false;
-            multiSelectDataList = new ArrayList<>();
+            multiSelectDataList.clear();
             adapter.notifyDataSetChanged();
         }
     };
 
-    private void selectAll() {
+    private void unselectAll(ActionMode mode) {
+        multiSelectDataList.clear();
+        mode.setTitle(multiSelectDataList.size() + getString(R.string.selected));
+
+        //update menu buttons
+        Menu menu = mode.getMenu();
+        menu.findItem(R.id.action_select_all).setVisible(true);
+        menu.findItem(R.id.action_unselect_all).setVisible(false);
+
+        adapter.notifyItemRangeChanged(0, dataList.size());
+    }
+
+    private void selectAll(ActionMode mode) {
+        multiSelectDataList.clear();
         multiSelectDataList.addAll(dataList);
-        mActionMode.setTitle(multiSelectDataList.size() + getString(R.string.selected));
-        adapter.notifyItemChanged(0, dataList.size());
+        mode.setTitle(multiSelectDataList.size() + getString(R.string.selected));
+
+        //update menu buttons
+        Menu menu = mode.getMenu();
+        menu.findItem(R.id.action_select_all).setVisible(false);
+        menu.findItem(R.id.action_unselect_all).setVisible(true);
+
+        adapter.notifyItemRangeChanged(0, dataList.size());
     }
 
     @Override
@@ -154,7 +173,7 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
 
     private void onSelectMode() {
         if (!isMultiSelect) {
-            multiSelectDataList = new ArrayList<>();
+            multiSelectDataList.clear();
             isMultiSelect = true;
 
             if (mActionMode == null) {
@@ -207,7 +226,7 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
             }
             mActionMode.setTitle(multiSelectDataList.size() + getString(R.string.selected));
 
-            adapter.notifyItemChanged(position);
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -290,16 +309,6 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
             default:
                 break;
         }
-    }
-
-    @Override
-    public void choseDocs(List<OcrResult> choseDocs) {
-
-    }
-
-    @Override
-    public void deleteDocs(List<OcrResult> deleteDocs) {
-
     }
 
     @Override

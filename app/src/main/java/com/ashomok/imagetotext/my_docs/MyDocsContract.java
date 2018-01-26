@@ -16,9 +16,6 @@ import java.util.List;
  */
 public interface MyDocsContract {
     interface View {
-        void choseDocs(List<OcrResult> choseDocs);
-
-        void deleteDocs(List<OcrResult> deleteDocs);
 
         void showError(@StringRes int errorMessageRes);
 
