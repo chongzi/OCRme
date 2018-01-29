@@ -48,8 +48,8 @@ public class TextFragment extends Fragment implements View.OnClickListener {
     public static final String EXTRA_IMAGE_URL = "com.ashomokdev.imagetotext.IMAGE";
     public static final String EXTRA_LANGUAGES = "com.ashomokdev.imagetotext.LANGUAGES";
     private static final int LANGUAGE_ACTIVITY_REQUEST_CODE = 1;
-    private CharSequence textResult;
-    private CharSequence imageUrl;
+    private String textResult;
+    private String imageUrl;
     private String[] languages;
     private static final String TAG = DEV_TAG + TextFragment.class.getSimpleName();
 
@@ -57,8 +57,8 @@ public class TextFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.text_fragment, container, false);
         Bundle bundle = getArguments();
-        textResult = bundle.getCharSequence(EXTRA_TEXT);
-        imageUrl = bundle.getCharSequence(EXTRA_IMAGE_URL);
+        textResult = bundle.getString(EXTRA_TEXT);
+        imageUrl = bundle.getString(EXTRA_IMAGE_URL);
         languages = bundle.getStringArray(EXTRA_LANGUAGES);
         return view;
     }
@@ -126,7 +126,7 @@ public class TextFragment extends Fragment implements View.OnClickListener {
         final ImageView mImageView = getActivity().findViewById(R.id.source_image);
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference gsReference = storage.getReferenceFromUrl(imageUrl.toString());
+        StorageReference gsReference = storage.getReferenceFromUrl(imageUrl);
         Glide.with(this.getActivity())
                 .using(new FirebaseImageLoader())
                 .load(gsReference)

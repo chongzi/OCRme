@@ -11,10 +11,6 @@ import com.ashomok.imagetotext.ocr.ocr_task.OcrResult;
 import com.ashomok.imagetotext.ocr_result.tab_fragments.PdfFragment;
 import com.ashomok.imagetotext.ocr_result.tab_fragments.TextFragment;
 
-import java.sql.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import static com.ashomok.imagetotext.ocr_result.tab_fragments.PdfFragment.EXTRA_PDF_GS_URL;
 import static com.ashomok.imagetotext.ocr_result.tab_fragments.PdfFragment.EXTRA_PDF_MEDIA_URL;
 import static com.ashomok.imagetotext.ocr_result.tab_fragments.TextFragment.EXTRA_IMAGE_URL;
@@ -51,8 +47,8 @@ public class MyPagerAdapter extends FragmentPagerAdapter {
     private PdfFragment initPDFFragment(OcrResult ocrResult) {
         PdfFragment fragment = new PdfFragment();
         Bundle bundle = new Bundle();
-        bundle.putCharSequence(EXTRA_PDF_GS_URL, ocrResult.getPdfResultGsUrl());
-        bundle.putCharSequence(EXTRA_PDF_MEDIA_URL, ocrResult.getPdfResultGsUrl());
+        bundle.putString(EXTRA_PDF_GS_URL, ocrResult.getPdfResultGsUrl());
+        bundle.putString(EXTRA_PDF_MEDIA_URL, ocrResult.getPdfResultGsUrl());
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -60,8 +56,8 @@ public class MyPagerAdapter extends FragmentPagerAdapter {
     private TextFragment initTextFragment(OcrResult ocrResult) {
         TextFragment fragment = new TextFragment();
         Bundle bundle = new Bundle();
-        bundle.putCharSequence(EXTRA_TEXT, ocrResult.getTextResult());
-        bundle.putCharSequence(EXTRA_IMAGE_URL, ocrResult.getSourceImageUrl());
+        bundle.putString(EXTRA_TEXT, ocrResult.getTextResult());
+        bundle.putString(EXTRA_IMAGE_URL, ocrResult.getSourceImageUrl());
         bundle.putStringArray(EXTRA_LANGUAGES, ocrResult.getLanguages());
         fragment.setArguments(bundle);
         return fragment;

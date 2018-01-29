@@ -22,6 +22,9 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  * Created by iuliia on 5/30/17.
  */
 
+//todo add custom layouts to tabs of tablayout to notify how many free requests still avalible today
+//    https://github.com/codepath/android_guides/wiki/Google-Play-Style-Tabs-using-TabLayout
+
 public class OcrResultActivity extends AppCompatActivity {
     private static final String TAG = DEV_TAG + OcrResultActivity.class.getSimpleName();
     public static final String EXTRA_OCR_RESPONSE = "com.ashomokdev.imagetotext.OCR_RESPONCE";

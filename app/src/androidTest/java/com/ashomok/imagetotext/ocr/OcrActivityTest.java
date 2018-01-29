@@ -32,11 +32,8 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.ashomok.imagetotext.utils.FilesProvider.getTestImages;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.contains;
 
 /**
  * Created by iuliia on 12/25/16.
@@ -69,6 +66,7 @@ public class OcrActivityTest {
         launchActivityWithPath(Uri.fromFile(new File(path)));
 
         onView(withId(R.id.image)).check(matches(isDisplayed()));
+        Thread.sleep(3000); //waiting for image setted
         onView(withId(R.id.image)).check(matches(hasDrawable()));
         Thread.sleep(10000); //waiting for ocr finished
         onView(withId(R.id.source_image)).check(matches(hasDrawable()));

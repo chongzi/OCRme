@@ -81,8 +81,8 @@ public class PdfFragment extends Fragment implements FragmentCompat.OnRequestPer
         mRootView = view.findViewById(R.id.root_view);
 
         Bundle bundle = getArguments();
-        mStoreLocation = bundle.getCharSequence(EXTRA_PDF_GS_URL).toString();
-        mDownloadURL = bundle.getCharSequence(EXTRA_PDF_MEDIA_URL).toString();
+        mStoreLocation = bundle.getString(EXTRA_PDF_GS_URL);
+        mDownloadURL = bundle.getString(EXTRA_PDF_MEDIA_URL);
         return view;
     }
 

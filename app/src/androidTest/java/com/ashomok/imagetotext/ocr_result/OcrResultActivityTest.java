@@ -9,6 +9,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.ocr.ocr_task.OcrResponse;
+import com.ashomok.imagetotext.ocr.ocr_task.OcrResult;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -28,10 +29,48 @@ import static com.ashomok.imagetotext.ocr_result.OcrResultActivity.EXTRA_OCR_RES
 @RunWith(AndroidJUnit4.class)
 @SmallTest
 public class OcrResultActivityTest {
-    private String longText = "long long long long long long long long long long long long long long long  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long long\";\n    private String longText = \"long long long long long long long long long  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long long\";\nong long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong  long long long long long long long long longlong longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long longlong long long long long";
+    private String longText = "long long long long long long long long long long long long long long" +
+            " long  long long long long long long long long longlong  long long long long long long" +
+            " long long longlong  long long long long long long long long longlong  long long long " +
+            "long long long long long longlong  long long long long long long long long longlong  " +
+            "long long long long long long long long longlong  long long long long long long long" +
+            " long longlong  long long long long long long long long longlong longlong long long " +
+            "long longlong long long long longlong long long long longlong long long long longlong" +
+            " long long long longlong long long long longlong long long long longlong long long long" +
+            " longlong long long long longlong long long long longlong long long long longlong long " +
+            "long long longlong long long long longlong long long long longlong long long long long" +
+            "long long long long longlong long long long longlong long long long longlong long long" +
+            " long longlong long long long longlong long long long longlong long long long longlong long" +
+            " long long longlong long long long longlong long long long long\";\n    private String " +
+            "longText = \"long long long long long long long long long  long long long long long lo" +
+            "ng long long longlong  long long long long long long long long longlong  long long lo" +
+            "ng long long long long long longlong  long long long long long long long long longlo" +
+            "ng  long long long long long long long long longlong  long long long long long long" +
+            " long long longlong  long long long long long long long long longlong  long long l" +
+            "ong long long long long long longlong longlong long long long longlong long long lo" +
+            "ng longlong long long long longlong long long long longlong long long long longlong" +
+            " long long long longlong long long long longlong long long long longlong long long" +
+            " long longlong long long long longlong long long long longlong long long long lon" +
+            "glong long long long longlong long long long longlong long long long longlong lon" +
+            "g long long longlong long long long longlong long long long longlong long long lo" +
+            "ng longlong long long long longlong long long long longlong long long long longlo" +
+            "ng long long long longlong long long long longlong long long long long\";\nong lo" +
+            "ng long long long long long long longlong  long long long long long long long long" +
+            " longlong  long long long long long long long long longlong  long long long long " +
+            "long long long long longlong  long long long long long long long long longlong  lo" +
+            "ng long long long long long long long longlong  long long long long long long long" +
+            " long longlong  long long long long long long long long longlong longlong long lon" +
+            "g long longlong long long long longlong long long long longlong long long long lon" +
+            "glong long long long longlong long long long longlong long long long longlong long lo" +
+            "ng long longlong long long long longlong long long long longlong long long long lon" +
+            "glong long long long longlong long long long longlong long long long longlong long lo" +
+            "ng long longlong long long long longlong long long long longlong long long long longlo" +
+            "ng long long long longlong long long long longlong long long long longlong long long l" +
+            "ong longlong long long long longlong long long long longlong long long long long";
     private String shortText ="short text";
-
-    private String pdfResultUrl = "gs://imagetotext-149919.appspot.com/ru.pdf";
+    private String pdfResultGsUrl = "gs://imagetotext-149919.appspot.com/ru.pdf";
+    private String imageUrl =
+            "gs://imagetotext-149919.appspot.com/ocr_request_images/659d2a80-f1fa-4b93-80fb-a83c534fc289cropped.jpg";
     private OcrResponse.Status status = OcrResponse.Status.OK;
 
     @Rule
@@ -43,8 +82,13 @@ public class OcrResultActivityTest {
         final Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, OcrResultActivity.class);
-
-        OcrResponse response = new OcrResponse(longText, pdfResultUrl, "media url", status);
+        OcrResult ocrResult =new OcrResult.Builder()
+                .textResult(longText)
+                .pdfResultGsUrl(pdfResultGsUrl)
+                .pdfResultMediaUrl( "media url")
+                .sourceImageUrl(imageUrl)
+                .build();
+        OcrResponse response = new OcrResponse(ocrResult, status);
         intent.putExtra(EXTRA_OCR_RESPONSE, response);
         mActivityRule.launchActivity(intent);
     }
@@ -53,8 +97,13 @@ public class OcrResultActivityTest {
         final Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, OcrResultActivity.class);
-
-        OcrResponse response = new OcrResponse(shortText, pdfResultUrl, "media url", status);
+        OcrResult ocrResult =new OcrResult.Builder()
+                .textResult(shortText)
+                .pdfResultGsUrl(pdfResultGsUrl)
+                .pdfResultMediaUrl( "media url")
+                .sourceImageUrl(imageUrl)
+                .build();
+        OcrResponse response = new OcrResponse(ocrResult, status);
         intent.putExtra(EXTRA_OCR_RESPONSE, response);
         mActivityRule.launchActivity(intent);
     }
@@ -63,7 +112,7 @@ public class OcrResultActivityTest {
     public void tabSwap() throws InterruptedException {
         launchActivityWithLongText();
         onView(withId(R.id.pager)).perform(swipeLeft());
-        Thread.sleep(40000);
+        Thread.sleep(4000);
         onView(withId(R.id.pager)).perform(swipeRight());
     }
 

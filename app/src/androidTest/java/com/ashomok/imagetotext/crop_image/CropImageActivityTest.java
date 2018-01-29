@@ -41,7 +41,7 @@ public class CropImageActivityTest {
     public void testCrop() throws InterruptedException {
         String path = getTestImages().get(1);
         launchActivityWithPath(Uri.fromFile(new File(path)));
-        Thread.sleep(100000);
+        Thread.sleep(1000);
     }
 
 //    @Test

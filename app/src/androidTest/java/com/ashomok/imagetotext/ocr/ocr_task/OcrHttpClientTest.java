@@ -44,8 +44,8 @@ public class OcrHttpClientTest {
         OcrResponse ocrResponse = response.blockingGet();
 
         Assert.assertEquals(ocrResponse.getStatus(), OcrResponse.Status.OK);
-        Assert.assertTrue(ocrResponse.getTextResult().length() > 5);
-        Assert.assertTrue(ocrResponse.getPdfResultGsUrl().length() > 5);
+        Assert.assertTrue(ocrResponse.getOcrResult().getTextResult().length() > 5);
+        Assert.assertTrue(ocrResponse.getOcrResult().getPdfResultGsUrl().length() > 5);
     }
 
     @Test
@@ -58,7 +58,7 @@ public class OcrHttpClientTest {
         OcrResponse ocrResponse = response.blockingGet();
 
         Assert.assertEquals(ocrResponse.getStatus(), OcrResponse.Status.OK);
-        Assert.assertTrue(ocrResponse.getTextResult().length() > 5);
-        Assert.assertTrue(ocrResponse.getPdfResultGsUrl().length() > 5);
+        Assert.assertTrue(ocrResponse.getOcrResult().getTextResult().length() > 5);
+        Assert.assertTrue(ocrResponse.getOcrResult().getPdfResultGsUrl().length() > 5);
     }
 }

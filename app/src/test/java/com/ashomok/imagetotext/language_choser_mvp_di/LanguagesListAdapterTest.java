@@ -1,11 +1,8 @@
 package com.ashomok.imagetotext.language_choser_mvp_di;
 
-import android.content.Context;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
@@ -13,6 +10,11 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.spy;
 
 /**
  * Created by iuliia on 1/11/17.
@@ -31,27 +33,35 @@ public class LanguagesListAdapterTest {
         allLanguages.add("4 language");
         allLanguages.add("5 language");
 
-        List<String> checked = new ArrayList<>();
+        LanguagesListAdapter.ResponsableList<String> checked =
+                new LanguagesListAdapter.ResponsableList<>(new ArrayList<>());
         checked.add("1 language");
 
-        Context context = Mockito.mock(Context.class);
-        languagesListAdapter = new LanguagesListAdapter(allLanguages, checked, notifier);
+        languagesListAdapter = spy(new LanguagesListAdapter(allLanguages, checked, isAutoChecked -> {
+            //auto checked
+        }));
     }
-
 
     @Test
     public void getCheckedLanguages() throws Exception {
         assertTrue(languagesListAdapter.getCheckedLanguageCodes().size() > 0);
-
-    }
-
-    @Test
-    public void getCount() throws Exception {
-        assertTrue(languagesListAdapter.getCount() > 0);
     }
 
     @Test
     public void getItem() throws Exception {
         assertEquals(languagesListAdapter.getItem(0), "1 language");
+    }
+
+    @Test
+    public void getCheckedLanguageCodes() throws Exception {
+        LanguagesListAdapter.ResponsableList<String> checked =
+                new LanguagesListAdapter.ResponsableList<>(new ArrayList<>());
+        checked.add("1 language");
+        assertEquals(languagesListAdapter.getCheckedLanguageCodes(), checked);
+    }
+
+    @Test
+    public void getItemCount() throws Exception {
+        assertTrue(languagesListAdapter.getItemCount() > 0);
     }
 }
