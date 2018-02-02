@@ -23,7 +23,9 @@
     <dimen name="margin10">10dp</dimen>
     <dimen name="margin3">3dp</dimen>
     <dimen name="margin9">9dp</dimen>
-    <!--<dimen name="big_text_size">24sp</dimen>-->
-    <!--<dimen name="l_text_size">24sp</dimen>-->
+    <dimen name="update_to_premium_backdrop_height">256dp</dimen>
+    <dimen name="card_margin">16dp</dimen>
+    <dimen name="base_text_size">16sp</dimen>
+    <dimen name="xl_text_size">26sp</dimen>
 
 </resources>

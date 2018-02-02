@@ -43,7 +43,8 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  * Created by iuliia on 8/18/17.
  */
 
-//todo add empty view
+//todo add empty view (for no docs)
+//todo fix bug if user not segned in -error Unable to identify user try login shows
 public class MyDocsActivity extends BaseLoginActivity implements View.OnClickListener, MyDocsContract.View {
 
     private static final int DELETE_TAG = 1;
@@ -104,31 +105,6 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
             adapter.notifyDataSetChanged();
         }
     };
-
-    private void unselectAll(ActionMode mode) {
-        multiSelectDataList.clear();
-        mode.setTitle(multiSelectDataList.size() + getString(R.string.selected));
-
-        //update menu buttons
-        Menu menu = mode.getMenu();
-        menu.findItem(R.id.action_select_all).setVisible(true);
-        menu.findItem(R.id.action_unselect_all).setVisible(false);
-
-        adapter.notifyItemRangeChanged(0, dataList.size());
-    }
-
-    private void selectAll(ActionMode mode) {
-        multiSelectDataList.clear();
-        multiSelectDataList.addAll(dataList);
-        mode.setTitle(multiSelectDataList.size() + getString(R.string.selected));
-
-        //update menu buttons
-        Menu menu = mode.getMenu();
-        menu.findItem(R.id.action_select_all).setVisible(false);
-        menu.findItem(R.id.action_unselect_all).setVisible(true);
-
-        adapter.notifyItemRangeChanged(0, dataList.size());
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -276,6 +252,31 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         Intent intent = new Intent(this, OcrResultActivity.class);
         intent.putExtra(EXTRA_OCR_RESPONSE, data);
         startActivity(intent);
+    }
+
+    private void unselectAll(ActionMode mode) {
+        multiSelectDataList.clear();
+        mode.setTitle(multiSelectDataList.size() + getString(R.string.selected));
+
+        //update menu buttons
+        Menu menu = mode.getMenu();
+        menu.findItem(R.id.action_select_all).setVisible(true);
+        menu.findItem(R.id.action_unselect_all).setVisible(false);
+
+        adapter.notifyItemRangeChanged(0, dataList.size());
+    }
+
+    private void selectAll(ActionMode mode) {
+        multiSelectDataList.clear();
+        multiSelectDataList.addAll(dataList);
+        mode.setTitle(multiSelectDataList.size() + getString(R.string.selected));
+
+        //update menu buttons
+        Menu menu = mode.getMenu();
+        menu.findItem(R.id.action_select_all).setVisible(false);
+        menu.findItem(R.id.action_unselect_all).setVisible(true);
+
+        adapter.notifyItemRangeChanged(0, dataList.size());
     }
 
     /**

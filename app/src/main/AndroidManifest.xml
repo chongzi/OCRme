@@ -42,6 +42,16 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".update_to_premium.UpdateToPremiumActivity"
+            android:exported="true"
+            android:label="@string/update_to_premium"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity
             android:name=".my_docs.MyDocsActivity"
             android:exported="true"
             android:label="@string/my_docs"

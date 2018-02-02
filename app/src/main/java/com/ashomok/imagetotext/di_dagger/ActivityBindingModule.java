@@ -4,6 +4,8 @@ import com.ashomok.imagetotext.language_choser_mvp_di.LanguageOcrActivity;
 import com.ashomok.imagetotext.language_choser_mvp_di.LanguageOcrModule;
 import com.ashomok.imagetotext.my_docs.MyDocsActivity;
 import com.ashomok.imagetotext.my_docs.MyDocsModule;
+import com.ashomok.imagetotext.update_to_premium.UpdateToPremiumActivity;
+import com.ashomok.imagetotext.update_to_premium.UpdateToPremiumModule;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -24,6 +26,10 @@ public abstract class ActivityBindingModule {
     @ActivityScoped
     @ContributesAndroidInjector(modules = MyDocsModule.class)
     abstract MyDocsActivity myDocsActivity();
+
+    @ActivityScoped
+    @ContributesAndroidInjector(modules = UpdateToPremiumModule.class)
+    abstract UpdateToPremiumActivity updateToPremiumActivity();
 
 //    @ActivityScoped
 //    @ContributesAndroidInjector(modules = AddEditTaskModule.class)

@@ -14,9 +14,9 @@
             android:icon="@drawable/ic_android_black_24dp"
             android:title="@string/about" />
         <item
-            android:id="@+id/remove_ads"
+            android:id="@+id/update_to_premium"
             android:icon="@drawable/ic_android_black_24dp"
-            android:title="@string/remove_ads" />
+            android:title="@string/update_to_premium" />
     </group>
     <group
         android:id="@+id/logout_group"

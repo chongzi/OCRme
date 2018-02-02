@@ -1,8 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE resources [
+    <!ENTITY appname "OCRme">
+    <!ENTITY author "AshomokDev">
+    ]>
+
 <resources>
     <string-array name="default_value">
         <item>-</item>
     </string-array>
-    <string name="app_name" translatable="false">OCRme</string>
+    <string name="app_name" translatable="false">&appname;</string>
     <string name="exit_dialog_title">Do you want to exit?</string>
     <string name="alert_dialog_exit">Exit</string>
     <string name="cancel">Cancel</string>
@@ -171,4 +177,12 @@
     <string name="delete">delete</string>
     <string name="languages_selected">%1$s languages selected</string>
     <string name="unselect_all">Unselect all</string>
+    <string name="update_to_premium">Update to premium</string>
+    <string name="premium_account">Premium account \n&appname;</string>
+    <string name="update_to_premium_account">Update to premium account for getting more features, developed especially for you!</string>
+    <string name="one_month">One month</string>
+    <string name="one_month_price">USD 1.99</string>
+    <string name="one_year_price">USD 19.99</string>
+    <string name="one_year">One year</string>
+    <string name="usd_per_month">USD 1.66/month</string>
 </resources>

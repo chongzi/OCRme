@@ -21,6 +21,8 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,6 +42,7 @@ import com.ashomok.imagetotext.firebaseUiAuth.SignOutDialogFragment;
 import com.ashomok.imagetotext.language_choser_mvp_di.LanguageOcrActivity;
 import com.ashomok.imagetotext.my_docs.MyDocsActivity;
 import com.ashomok.imagetotext.ocr.OcrActivity;
+import com.ashomok.imagetotext.update_to_premium.UpdateToPremiumActivity;
 import com.ashomok.imagetotext.utils.NetworkUtils;
 import com.ashomok.imagetotext.utils.SharedPreferencesUtil;
 import com.google.firebase.auth.FirebaseAuth;
@@ -54,7 +57,7 @@ import java.util.List;
 import java.util.Map;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
-import static com.ashomok.imagetotext.Settings.isAdsActive;
+import static com.ashomok.imagetotext.Settings.isPremium;
 import static com.ashomok.imagetotext.language_choser_mvp_di.LanguageOcrActivity.CHECKED_LANGUAGE_CODES;
 import static com.ashomok.imagetotext.ocr.OcrActivity.RESULT_CANCELED_BY_USER;
 import static com.ashomok.imagetotext.utils.FileUtils.prepareDirectory;
@@ -199,8 +202,21 @@ public class MainActivity extends BaseLoginActivity
     public boolean onPrepareOptionsMenu(Menu menu) {
         Menu navigationMenu = navigationView.getMenu();
 
-        navigationMenu.findItem(R.id.remove_ads).setVisible(isAdsActive);
+        updateUpdateToPremiumMenuItem(navigationMenu);
         return super.onPrepareOptionsMenu(menu);
+    }
+
+    private void updateUpdateToPremiumMenuItem(Menu navigationMenu) {
+        MenuItem updateToPremiumMenuItem = navigationMenu.findItem(R.id.update_to_premium);
+        CharSequence menuItemText = updateToPremiumMenuItem.getTitle();
+        SpannableString spannableString = new SpannableString(menuItemText);
+        spannableString.setSpan(
+                new ForegroundColorSpan(getResources().getColor(R.color.orange_600)),
+                0,
+                spannableString.length(),
+                0);
+        updateToPremiumMenuItem.setTitle(spannableString);
+        updateToPremiumMenuItem.setVisible(!isPremium); //todo depends of subscription status
     }
 
     private void checkConnection() {
@@ -327,8 +343,8 @@ public class MainActivity extends BaseLoginActivity
                         case R.id.about:
                             // TODO:
                             break;
-                        case R.id.remove_ads:
-                            // TODO:
+                        case R.id.update_to_premium:
+                            startUpdateToPremiumActivity();
                             break;
                         case R.id.logout:
                             logout();
@@ -348,6 +364,11 @@ public class MainActivity extends BaseLoginActivity
         LinearLayout loginHeader =
                 navigationView.getHeaderView(0).findViewById(R.id.propose_login_menu_item);
         loginHeader.setOnClickListener(this);
+    }
+
+    private void startUpdateToPremiumActivity() {
+        Intent intent = new Intent(this, UpdateToPremiumActivity.class);
+        startActivity(intent);
     }
 
     private void startMyDocsActivity() {
