@@ -6,16 +6,11 @@ package com.ashomok.imagetotext.update_to_premium.model;
 
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
-import android.util.Log;
 
 import com.ashomok.imagetotext.R;
-import com.ashomok.imagetotext.di_dagger.ActivityScoped;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
@@ -23,17 +18,16 @@ public class FeaturesList {
     public static final String TAG = DEV_TAG + FeaturesList.class.getSimpleName();
 
     public FeaturesList() {
-        Log.d(TAG, "constructor call");
     }
 
     public List<FeatureModel> getList() {
         List<FeatureModel> result = new ArrayList<>();
-        result.add(new FeatureModel(R.drawable.ic_android_black_24dp, R.string.allow_new_email_acccount));
-        result.add(new FeatureModel(R.drawable.ic_android_black_24dp, R.string.allow_new_email_acccount));
-        result.add(new FeatureModel(R.drawable.ic_android_black_24dp, R.string.allow_new_email_acccount));
-        result.add(new FeatureModel(R.drawable.ic_android_black_24dp, R.string.allow_new_email_acccount));
-        result.add(new FeatureModel(R.drawable.ic_android_black_24dp, R.string.allow_new_email_acccount));
-        result.add(new FeatureModel(R.drawable.ic_android_black_24dp, R.string.allow_new_email_acccount));
+        result.add(new FeatureModel(R.drawable.ic_translate_black_24dp, R.string.no_ads));
+        result.add(new FeatureModel(R.drawable.ic_translate_black_24dp, R.string.unlimited_ocr_requests));
+        result.add(new FeatureModel(R.drawable.ic_translate_black_24dp, R.string.unlimited_translate_requests));
+        result.add(new FeatureModel(R.drawable.ic_translate_black_24dp, R.string.languages_supported_for_ocr));
+        result.add(new FeatureModel(R.drawable.ic_translate_black_24dp, R.string.languages_supported_for_translate));
+        result.add(new FeatureModel(R.drawable.ic_translate_black_24dp, R.string.highprecision_recognition_system));
         return result;
     }
 

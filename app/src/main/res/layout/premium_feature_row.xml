@@ -10,7 +10,6 @@
         android:id="@+id/icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_check_black_36dp"
         android:tint="@color/grey_700"
         android:layout_weight="0"
         android:paddingStart="@dimen/my_base_margin"
