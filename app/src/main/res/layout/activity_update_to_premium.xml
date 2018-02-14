@@ -123,9 +123,9 @@
                             android:textSize="@dimen/base_text_size" />
 
                         <TextView
+                            android:id="@+id/one_month_price"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/one_month_price"
                             android:textColor="@color/green_a700"
                             android:textSize="@dimen/xl_text_size" />
 
@@ -165,16 +165,17 @@
                                 android:textSize="@dimen/base_text_size" />
 
                             <TextView
+                                android:id="@+id/price_per_month"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/usd_per_month"
+                                android:text="@string/price_per_month"
                                 android:textSize="14sp" />
                         </LinearLayout>
 
                         <TextView
+                            android:id="@+id/one_year_price"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/one_year_price"
                             android:textColor="@color/green_a700"
                             android:textSize="@dimen/xl_text_size" />
 
@@ -192,10 +193,10 @@
                 android:id="@+id/premium_features_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_margin="@dimen/my_base_margin"
                 android:cursorVisible="false"
                 android:dividerHeight="1dp"
-                android:scrollbars="vertical"
-                android:layout_margin="@dimen/my_base_margin"/>
+                android:scrollbars="vertical" />
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>

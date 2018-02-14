@@ -181,14 +181,14 @@
     <string name="premium_account">Premium account \n&appname;</string>
     <string name="update_to_premium_account">Update to premium account for getting more features, developed especially for you!</string>
     <string name="one_month">One month</string>
-    <string name="one_month_price">USD 1.99</string>
-    <string name="one_year_price">USD 19.99</string>
     <string name="one_year">One year</string>
-    <string name="usd_per_month">USD 1.66/month</string>
+    <string name="price_per_month">%1$s %2$s/month</string>
     <string name="no_ads">No ads</string>
     <string name="unlimited_ocr_requests">Unlimited Image recognition requests</string>
     <string name="unlimited_translate_requests">Unlimited Translate requests</string>
     <string name="languages_supported_for_ocr">100+ languages supported for Image recognition</string>
     <string name="languages_supported_for_translate">100+ languages supported for Translation</string>
     <string name="highprecision_recognition_system">High-precision recognition system</string>
+    <string name="error_no_skus">We didn\\\'t find any SKUs to display</string>
+    <string name="error_billing_unavailable">Billing unavailable</string>
 </resources>
