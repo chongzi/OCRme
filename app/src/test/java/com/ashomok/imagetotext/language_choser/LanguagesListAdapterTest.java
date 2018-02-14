@@ -1,4 +1,4 @@
-package com.ashomok.imagetotext.language_choser_mvp_di;
+package com.ashomok.imagetotext.language_choser;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,8 +10,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doCallRealMethod;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.spy;

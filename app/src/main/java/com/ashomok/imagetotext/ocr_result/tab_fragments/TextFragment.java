@@ -21,7 +21,7 @@ import android.widget.Toast;
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.ashomok.imagetotext.R;
-import com.ashomok.imagetotext.language_choser_mvp_di.LanguageOcrActivity;
+import com.ashomok.imagetotext.language_choser.LanguageOcrActivity;
 import com.ashomok.imagetotext.ocr.OcrActivity;
 import com.ashomok.imagetotext.ocr_result.translate.TranslateActivity;
 import com.bumptech.glide.Glide;
@@ -35,7 +35,7 @@ import java.util.Arrays;
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.CLIPBOARD_SERVICE;
 import static com.ashomok.imagetotext.Settings.appPackageName;
-import static com.ashomok.imagetotext.language_choser_mvp_di.LanguageOcrActivity.CHECKED_LANGUAGE_CODES;
+import static com.ashomok.imagetotext.language_choser.LanguageOcrActivity.CHECKED_LANGUAGE_CODES;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 /**

@@ -1,4 +1,4 @@
-package com.ashomok.imagetotext;
+package com.ashomok.imagetotext.main;
 
 import android.Manifest;
 import android.app.Activity;
@@ -6,15 +6,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
@@ -31,20 +29,19 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.annimon.stream.Collectors;
-import com.annimon.stream.Optional;
-import com.annimon.stream.Stream;
+import com.ashomok.imagetotext.BuildConfig;
+import com.ashomok.imagetotext.ExitDialogFragment;
+import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.crop_image.CropImageActivity;
 import com.ashomok.imagetotext.firebaseUiAuth.BaseLoginActivity;
 import com.ashomok.imagetotext.firebaseUiAuth.SignOutDialogFragment;
-import com.ashomok.imagetotext.language_choser_mvp_di.LanguageOcrActivity;
+import com.ashomok.imagetotext.language_choser.LanguageOcrActivity;
 import com.ashomok.imagetotext.my_docs.MyDocsActivity;
 import com.ashomok.imagetotext.ocr.OcrActivity;
 import com.ashomok.imagetotext.update_to_premium.UpdateToPremiumActivity;
+import com.ashomok.imagetotext.utils.InfoSnackbarUtil;
 import com.ashomok.imagetotext.utils.NetworkUtils;
-import com.ashomok.imagetotext.utils.SharedPreferencesUtil;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.jakewharton.rxbinding2.view.RxView;
@@ -54,27 +51,41 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjection;
+
 import static com.ashomok.imagetotext.Settings.isPremium;
-import static com.ashomok.imagetotext.language_choser_mvp_di.LanguageOcrActivity.CHECKED_LANGUAGE_CODES;
+import static com.ashomok.imagetotext.language_choser.LanguageOcrActivity.CHECKED_LANGUAGE_CODES;
 import static com.ashomok.imagetotext.ocr.OcrActivity.RESULT_CANCELED_BY_USER;
-import static com.ashomok.imagetotext.utils.FileUtils.prepareDirectory;
-import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showError;
+import static com.ashomok.imagetotext.utils.FileUtils.createFile;
 import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showWarning;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 public class MainActivity extends BaseLoginActivity
-        implements SignOutDialogFragment.OnSignedOutListener, View.OnClickListener {
+        implements SignOutDialogFragment.OnSignedOutListener, View.OnClickListener, MainContract.View {
 
     private static final String TAG = DEV_TAG + MainActivity.class.getSimpleName();
+
+    @Inject
+    MainPresenter mPresenter;
+
     private static final int LANGUAGE_ACTIVITY_REQUEST_CODE = 1;
     private static final int CaptureImage_REQUEST_CODE = 2;
     private static final int OCR_Activity_REQUEST_CODE = 3;
     private static final int GALLERY_IMAGE_REQUEST = 4;
     private DrawerLayout mDrawerLayout;
     private NavigationView navigationView;
+
+    private Uri imageUri;
+    private TextView languageTextView;
+    private Button myDocsBtn;
+    private String mEmail = "No email";
+    private String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+    private static final String imageFileNameFromCamera = "ocr.jpg";
+
+
     private final BroadcastReceiver mConnectivityChangeReceiver = new BroadcastReceiver() {
         private boolean oldOnline = false;
 
@@ -87,28 +98,23 @@ public class MainActivity extends BaseLoginActivity
             }
         }
     };
-    private Uri imageUri;
-    private TextView languageTextView;
-    private Button myDocsBtn;
-    private String mEmail = "No email";
-    private String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-    private Optional<List<String>> languageCodes;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AndroidInjection.inject(this);
         setContentView(R.layout.activity_main);
 
         setUpToolbar();
         setUpNavigationDrawer();
-
-        checkConnection();
 
         initImageSourceBtns();
         initLanguageViews();
         initMyDocsView();
 
         updateUi(mIsUserSignedIn);
+
+        mPresenter.takeView(this);
     }
 
 
@@ -120,10 +126,54 @@ public class MainActivity extends BaseLoginActivity
                 new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == LANGUAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+            Bundle bundle = data.getExtras();
+            if (bundle != null) {
+                @Nullable List<String> checkedLanguageCodes =
+                        bundle.getStringArrayList(CHECKED_LANGUAGE_CODES);
+
+                mPresenter.onCheckedLanguageCodesObtained(checkedLanguageCodes);
+            }
+        }
+
+        //photo obtained from camera
+        else if (requestCode == CaptureImage_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            startCropImageActivity(imageUri);
+        }
+
+        //photo obtained from gallery
+        else if (requestCode == GALLERY_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
+            try {
+                Uri uri = data.getData();
+                startCropImageActivity(uri);
+            } catch (Exception e) {
+                showError(R.string.file_not_found);
+                e.printStackTrace();
+            }
+        }
+
+        //ocr canceled
+        else if (requestCode == OCR_Activity_REQUEST_CODE && resultCode == RESULT_CANCELED_BY_USER) {
+            showWarning(R.string.canceled, mRootView);
+        }
+    }
+
     @Override
     public void onStop() {
         super.onStop();
         unregisterReceiver(mConnectivityChangeReceiver);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPresenter.dropView();  //prevent leaking activity in
+        // case presenter is orchestrating a long running task
     }
 
 
@@ -139,61 +189,30 @@ public class MainActivity extends BaseLoginActivity
         languageTextView = findViewById(R.id.language);
         languageTextView.setPaintFlags(languageTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         languageTextView.setOnClickListener(this);
-        languageCodes = obtainSavedLanguagesCodes();
-        updateLanguageTextView(languageCodes);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == LANGUAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            Bundle bundle = data.getExtras();
-            if (bundle != null) {
-                List<String> checkedLanguageCodes = bundle.getStringArrayList(CHECKED_LANGUAGE_CODES);
-                languageCodes = Optional.ofNullable(checkedLanguageCodes);
-                updateLanguageTextView(languageCodes);
-
-                saveLanguages();
-            }
-        }
-
-        //photo obtained from camera
-        else if (requestCode == CaptureImage_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            startCropImageActivity(imageUri);
-        }
-
-        //photo obtained from gallery
-        else if (requestCode == GALLERY_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
-            try {
-                Uri uri = data.getData();
-                startCropImageActivity(uri);
-            } catch (Exception e) {
-                showError(R.string.file_not_found, mRootView);
-                e.printStackTrace();
-            }
-        }
-
-        //ocr canceled
-        else if (requestCode == OCR_Activity_REQUEST_CODE && resultCode == RESULT_CANCELED_BY_USER) {
-            showWarning(R.string.canceled, mRootView);
+    private void checkConnection() {
+        if (!NetworkUtils.isOnline(this)) {
+            showError(R.string.no_internet_connection);
         }
     }
 
-    private void saveLanguages() {
-        if (languageCodes.isPresent()) {
-            SharedPreferences preferences = getDefaultSharedPreferences(this);
-            SharedPreferencesUtil.pushStringList(
-                    preferences, languageCodes.get(), getString(R.string.saved_language_codes));
+    private void setUpToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
 
     private void startCropImageActivity(Uri uri) {
         Intent intent = new Intent(this, CropImageActivity.class);
         intent.putExtra(CropImageActivity.EXTRA_IMAGE_URI, uri);
-        if (languageCodes.isPresent()) {
+        if (mPresenter.getLanguageCodes().isPresent()) {
             intent.putStringArrayListExtra(
-                    OcrActivity.EXTRA_LANGUAGES, new ArrayList<>(languageCodes.get()));
+                    OcrActivity.EXTRA_LANGUAGES, new ArrayList<>(mPresenter.getLanguageCodes().get()));
         }
         startActivityForResult(intent, OCR_Activity_REQUEST_CODE);
     }
@@ -219,41 +238,6 @@ public class MainActivity extends BaseLoginActivity
         updateToPremiumMenuItem.setVisible(!isPremium); //todo depends of subscription status
     }
 
-    private void checkConnection() {
-        if (!NetworkUtils.isOnline(this)) {
-            showError(R.string.no_internet_connection, mRootView);
-        }
-    }
-
-    private void updateLanguageTextView(Optional<List<String>> checkedLanguageCodes) {
-        String languageString;
-        if (checkedLanguageCodes.isPresent() && checkedLanguageCodes.get().size() > 0) {
-            languageString = generateLanguageString(checkedLanguageCodes.get());
-        } else {
-            languageString = getString(R.string.auto);
-        }
-        languageTextView.setText(languageString);
-    }
-
-    @NonNull
-    private String generateLanguageString(List<String> checkedLanguageCodes) {
-        Map<String, String> allLanguages = Settings.getOcrLanguageSupportList(this);
-        List<String> checkedLanguages = Stream.of(checkedLanguageCodes)
-                .filter(allLanguages::containsKey)
-                .map(allLanguages::get)
-                .collect(Collectors.toList());
-
-        StringBuilder languageString = new StringBuilder();
-        for (String l : checkedLanguages) {
-            languageString.append(l).append(", ");
-        }
-
-        if (languageString.toString().endsWith(", ")) {
-            languageString = new StringBuilder(languageString.substring(0, languageString.length() - 2));
-        }
-
-        return languageString.toString();
-    }
 
     private void initImageSourceBtns() {
         //gallery btn init
@@ -278,10 +262,7 @@ public class MainActivity extends BaseLoginActivity
                     } else {
                         showWarning(R.string.this_option_is_not_be_avalible, mRootView);
                     }
-                }, throwable -> {
-                    showError(throwable.getMessage(), mRootView);
-                });
-
+                }, throwable -> showError(throwable.getMessage()));
     }
 
     public void startGalleryChooser() {
@@ -305,15 +286,6 @@ public class MainActivity extends BaseLoginActivity
         });
     }
 
-    private void setUpToolbar() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-    }
 
     private void setUpNavigationDrawer() {
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -411,64 +383,33 @@ public class MainActivity extends BaseLoginActivity
         }
     }
 
-    private File createImageFile() {
-        // Create an image file name
-        String imageFileName = "ocr";
-        File storageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DCIM), "Camera");
-
-        File image = null;
-        try {
-            if (!storageDir.exists()) {
-                prepareDirectory(storageDir.getPath());
-            }
-
-            image = new File(storageDir, imageFileName + ".jpg");
-
-
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
-        }
-
-        return image;
-    }
-
     private void dispatchTakePictureIntent() throws IOException {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             // Create the File where the photo should go
-            File photoFile = null;
+            File photoFile;
             try {
-                photoFile = createImageFile();
+                photoFile = createFile(imageFileNameFromCamera);
             } catch (Exception ex) {
-                Log.e(TAG, "Error occurred while creating the File ");
+                showError(R.string.error_while_creating_file);
                 return;
             }
+
             // Continue only if the File was successfully created
-            if (photoFile != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { //explanation https://inthecheesefactory.com/blog/how-to-share-access-to-file-with-fileprovider-on-android-nougat/en
 
-                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { //explanation https://inthecheesefactory.com/blog/how-to-share-access-to-file-with-fileprovider-on-android-nougat/en
-
-                    imageUri = FileProvider.getUriForFile(this,
-                            BuildConfig.APPLICATION_ID + ".provider",
-                            createImageFile());
-                } else {
-                    imageUri = Uri.fromFile(createImageFile());
-                }
-
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                startActivityForResult(takePictureIntent, CaptureImage_REQUEST_CODE);
+                imageUri = FileProvider.getUriForFile(this,
+                        BuildConfig.APPLICATION_ID + ".provider", photoFile);
+            } else {
+                imageUri = Uri.fromFile(photoFile);
             }
-        } else {
-            Toast.makeText(this, getResources().getString(R.string.camera_not_found), Toast.LENGTH_SHORT).show();
-        }
-    }
 
-    private Optional<List<String>> obtainSavedLanguagesCodes() {
-        SharedPreferences sharedPref = getDefaultSharedPreferences(this);
-        return Optional.ofNullable(SharedPreferencesUtil.pullStringList(
-                sharedPref, getString(R.string.saved_language_codes)));
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+            startActivityForResult(takePictureIntent, CaptureImage_REQUEST_CODE);
+        } else {
+            showError(R.string.camera_not_found);
+        }
     }
 
     /**
@@ -545,10 +486,29 @@ public class MainActivity extends BaseLoginActivity
 
     private void onLanguageTextViewClicked() {
         Intent intent = new Intent(this, LanguageOcrActivity.class);
-        if (languageCodes.isPresent()) {
-            ArrayList<String> extra = new ArrayList<>(languageCodes.get());
+        if (mPresenter.getLanguageCodes().isPresent()) {
+            ArrayList<String> extra = new ArrayList<>(mPresenter.getLanguageCodes().get());
             intent.putStringArrayListExtra(CHECKED_LANGUAGE_CODES, extra);
         }
         startActivityForResult(intent, LANGUAGE_ACTIVITY_REQUEST_CODE);
+    }
+
+    private void showError(String message) {
+        InfoSnackbarUtil.showError(message, mRootView);
+    }
+
+    @Override
+    public void showError(int errorMessageRes) {
+        InfoSnackbarUtil.showError(errorMessageRes, mRootView);
+    }
+
+    @Override
+    public void showInfo(int infoMessageRes) {
+        InfoSnackbarUtil.showInfo(infoMessageRes, mRootView);
+    }
+
+    @Override
+    public void updateLanguageString(String languageString) {
+        languageTextView.setText(languageString);
     }
 }

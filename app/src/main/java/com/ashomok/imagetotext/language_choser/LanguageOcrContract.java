@@ -1,4 +1,4 @@
-package com.ashomok.imagetotext.language_choser_mvp_di;
+package com.ashomok.imagetotext.language_choser;
 
 /**
  * Created by iuliia on 11/15/17.
@@ -7,7 +7,7 @@ package com.ashomok.imagetotext.language_choser_mvp_di;
 import java.util.List;
 
 import com.ashomok.imagetotext.di_dagger.BasePresenter;
-import com.ashomok.imagetotext.language_choser_mvp_di.LanguagesListAdapter.ResponsableList;
+import com.ashomok.imagetotext.language_choser.LanguagesListAdapter.ResponsableList;
 
 /**
  * This specifies the contract between the view and the presenter.

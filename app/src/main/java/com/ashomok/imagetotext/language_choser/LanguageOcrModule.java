@@ -1,4 +1,4 @@
-package com.ashomok.imagetotext.language_choser_mvp_di;
+package com.ashomok.imagetotext.language_choser;
 
 /**
  * Created by iuliia on 11/21/17.
@@ -8,8 +8,8 @@ import android.content.Context;
 
 import com.ashomok.imagetotext.Settings;
 import com.ashomok.imagetotext.di_dagger.ActivityScoped;
-import com.ashomok.imagetotext.language_choser_mvp_di.di.AllLanguageCodes;
-import com.ashomok.imagetotext.language_choser_mvp_di.di.RecentlyChosenLanguageCodes;
+import com.ashomok.imagetotext.language_choser.di.AllLanguageCodes;
+import com.ashomok.imagetotext.language_choser.di.RecentlyChosenLanguageCodes;
 
 import java.util.ArrayList;
 import java.util.List;

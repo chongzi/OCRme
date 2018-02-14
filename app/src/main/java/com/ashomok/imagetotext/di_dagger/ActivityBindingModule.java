@@ -1,7 +1,9 @@
 package com.ashomok.imagetotext.di_dagger;
 
-import com.ashomok.imagetotext.language_choser_mvp_di.LanguageOcrActivity;
-import com.ashomok.imagetotext.language_choser_mvp_di.LanguageOcrModule;
+import com.ashomok.imagetotext.language_choser.LanguageOcrActivity;
+import com.ashomok.imagetotext.language_choser.LanguageOcrModule;
+import com.ashomok.imagetotext.main.MainActivity;
+import com.ashomok.imagetotext.main.MainModule;
 import com.ashomok.imagetotext.my_docs.MyDocsActivity;
 import com.ashomok.imagetotext.my_docs.MyDocsModule;
 import com.ashomok.imagetotext.update_to_premium.UpdateToPremiumActivity;
@@ -20,6 +22,10 @@ import dagger.android.ContributesAndroidInjector;
 @Module
 public abstract class ActivityBindingModule {
     @ActivityScoped
+    @ContributesAndroidInjector(modules = MainModule.class)
+    abstract MainActivity mainActivity();
+
+    @ActivityScoped
     @ContributesAndroidInjector(modules = LanguageOcrModule.class)
     abstract LanguageOcrActivity languageOcrActivity();
 
@@ -30,16 +36,4 @@ public abstract class ActivityBindingModule {
     @ActivityScoped
     @ContributesAndroidInjector(modules = UpdateToPremiumModule.class)
     abstract UpdateToPremiumActivity updateToPremiumActivity();
-
-//    @ActivityScoped
-//    @ContributesAndroidInjector(modules = AddEditTaskModule.class)
-//    abstract AddEditTaskActivity addEditTaskActivity();
-//
-//    @ActivityScoped
-//    @ContributesAndroidInjector(modules = StatisticsModule.class)
-//    abstract StatisticsActivity statisticsActivity();
-//
-//    @ActivityScoped
-//    @ContributesAndroidInjector(modules = TaskDetailPresenterModule.class)
-//    abstract TaskDetailActivity taskDetailActivity();
 }

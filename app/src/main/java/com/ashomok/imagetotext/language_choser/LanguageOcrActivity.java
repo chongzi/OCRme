@@ -1,4 +1,4 @@
-package com.ashomok.imagetotext.language_choser_mvp_di;
+package com.ashomok.imagetotext.language_choser;
 
 import android.content.Intent;
 import android.content.SharedPreferences;

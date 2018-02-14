@@ -17,12 +17,10 @@ import com.android.billingclient.api.SkuDetails;
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.update_to_premium.billing.BillingManager;
 import com.ashomok.imagetotext.update_to_premium.billing.BillingProvider;
-import com.ashomok.imagetotext.update_to_premium.billing.SkuRowData;
+import com.ashomok.imagetotext.update_to_premium.model.SkuRowData;
 import com.ashomok.imagetotext.utils.InfoSnackbarUtil;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
