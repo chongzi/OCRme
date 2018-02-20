@@ -4,12 +4,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.Settings;
+import com.ashomok.imagetotext.main.billing.BillingProviderCallback;
+import com.ashomok.imagetotext.main.billing.BillingProviderImpl;
 import com.ashomok.imagetotext.utils.NetworkUtils;
 import com.ashomok.imagetotext.utils.SharedPreferencesUtil;
 
@@ -33,9 +36,11 @@ public class MainPresenter implements MainContract.Presenter {
     @Inject
     SharedPreferences mSharedPreferences;
 
+    @Inject
+    BillingProviderImpl billingProvider;
+
     @Nullable
     private MainContract.View view;
-
     private Optional<List<String>> languageCodes;
 
     /**
@@ -43,10 +48,7 @@ public class MainPresenter implements MainContract.Presenter {
      * with {@code @Nullable} values.
      */
     @Inject
-    MainPresenter() {
-
-    }
-
+    MainPresenter() {}
 
     @Override
     public void takeView(MainContract.View mainActivity) {
@@ -59,12 +61,28 @@ public class MainPresenter implements MainContract.Presenter {
             checkConnection();
             languageCodes = obtainSavedLanguagesCodes();
             updateLanguageTextView(languageCodes);
+
+            initBilling();
+        }
+    }
+
+    private void initBilling() {
+        if (billingProvider != null) {
+            Log.d(TAG, "billingProvider != null");
         }
     }
 
     @Override
     public Optional<List<String>> getLanguageCodes() {
         return languageCodes;
+    }
+
+    @Override
+    public BillingProviderCallback getBillingProviderCallback() {
+        return () -> {
+            Log.d(TAG, "onPurchasesUpdated");
+            //todo update view
+        };
     }
 
     private boolean isOnline() {
@@ -88,7 +106,7 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void dropView() {
-//todo
+        view = null;
     }
 
     private Optional<List<String>> obtainSavedLanguagesCodes() {

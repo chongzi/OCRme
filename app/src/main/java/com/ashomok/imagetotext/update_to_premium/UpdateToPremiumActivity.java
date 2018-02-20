@@ -45,7 +45,6 @@ public class UpdateToPremiumActivity extends RxAppCompatActivity
     @Inject
     FeaturesListAdapter featuresListAdapter;
 
-    private BillingProvider mBillingProvider;
     private BillingManager mBillingManager;
     private View mRootView;
     public static final String SKU_ID_PREMIUM_MONTHLY = "one_month_subscription";
@@ -68,21 +67,19 @@ public class UpdateToPremiumActivity extends RxAppCompatActivity
         // Create and initialize BillingManager which talks to BillingLibrary
         mBillingManager = new BillingManager(this, mPresenter.getUpdateListener()); //todo inject
 
-        if (mBillingManager != null
-                && mBillingManager.getBillingClientResponseCode()
-                > BILLING_MANAGER_NOT_INITIALIZED) {
+        if (mBillingManager.getBillingClientResponseCode() > BILLING_MANAGER_NOT_INITIALIZED) {
             onManagerReady(this);
         }
 
-        if (mBillingProvider != null) {
-            handleManagerAndUiReady();
-        }
+        handleManagerAndUiReady();
     }
 
     /**
      * Executes query for SKU details at the background thread
      */
     private void handleManagerAndUiReady() {
+        //todo called tvice - fix it
+        Log.d(TAG, "handleManagerAndUiReady called");
         // If Billing Manager was successfully initialized - start querying for SKUs
 //        setWaitScreen(true);
         querySkuDetails();
@@ -102,9 +99,10 @@ public class UpdateToPremiumActivity extends RxAppCompatActivity
     }
 
     private void addSkuRows(final List<SkuRowData> inList, List<String> skusList,
-                            final @BillingClient.SkuType String billingType, final Runnable executeWhenFinished) {
+                            final @BillingClient.SkuType String billingType,
+                            final Runnable executeWhenFinished) {
 
-        mBillingProvider.getBillingManager().querySkuDetailsAsync(billingType, skusList,
+        getBillingManager().querySkuDetailsAsync(billingType, skusList,
                 (responseCode, skuDetailsList) -> {
 
                     if (responseCode != BillingClient.BillingResponse.OK) {
@@ -155,7 +153,7 @@ public class UpdateToPremiumActivity extends RxAppCompatActivity
 
         String subTitle = getString(R.string.price_per_month,
                 item.getPriceCurrencyCode(),
-                String.format("%.2f", (double)item.getPriceAmountMicros() / 12000000));
+                String.format("%.2f", (double) item.getPriceAmountMicros() / 12000000));
         pricePerMonth.setText(subTitle);
         oneYearLayout.setOnClickListener(view -> onOneYearClicked(item));
     }
@@ -169,14 +167,14 @@ public class UpdateToPremiumActivity extends RxAppCompatActivity
 
     private void onOneYearClicked(SkuRowData data) {
         if (data != null) {
-            if (mBillingProvider.isPremiumMonthlySubscribed()) {
+            if (isPremiumMonthlySubscribed()) {
                 // If we already subscribed to monthly premium, launch replace flow
                 ArrayList<String> currentSubscriptionSku = new ArrayList<>();
                 currentSubscriptionSku.add(SKU_ID_PREMIUM_MONTHLY);
-                mBillingProvider.getBillingManager().initiatePurchaseFlow(data.getSku(),
+                getBillingManager().initiatePurchaseFlow(data.getSku(),
                         currentSubscriptionSku, data.getSkuType());
             } else {
-                mBillingProvider.getBillingManager().initiatePurchaseFlow(data.getSku(),
+                getBillingManager().initiatePurchaseFlow(data.getSku(),
                         data.getSkuType());
             }
         }
@@ -184,21 +182,21 @@ public class UpdateToPremiumActivity extends RxAppCompatActivity
 
     private void onOneMonthClicked(SkuRowData data) {
         if (data != null) {
-            if (mBillingProvider.isPremiumYearlySubscribed()) {
+            if (isPremiumYearlySubscribed()) {
                 // If we already subscribed to yearly premium, launch replace flow
                 ArrayList<String> currentSubscriptionSku = new ArrayList<>();
                 currentSubscriptionSku.add(SKU_ID_PREMIUM_YEARLY);
-                mBillingProvider.getBillingManager().initiatePurchaseFlow(data.getSku(),
+                getBillingManager().initiatePurchaseFlow(data.getSku(),
                         currentSubscriptionSku, data.getSkuType());
             } else {
-                mBillingProvider.getBillingManager().initiatePurchaseFlow(data.getSku(),
+                getBillingManager().initiatePurchaseFlow(data.getSku(),
                         data.getSkuType());
             }
         }
     }
 
     private void displayBillingError() {
-        int billingResponseCode = mBillingProvider.getBillingManager()
+        int billingResponseCode = getBillingManager()
                 .getBillingClientResponseCode();
 
         switch (billingResponseCode) {
@@ -220,7 +218,6 @@ public class UpdateToPremiumActivity extends RxAppCompatActivity
      * instance to access it
      */
     public void onManagerReady(BillingProvider billingProvider) {
-        mBillingProvider = billingProvider;
         handleManagerAndUiReady();
     }
 
@@ -366,24 +363,5 @@ public class UpdateToPremiumActivity extends RxAppCompatActivity
     public boolean isPremiumYearlySubscribed() {
         return mPresenter.isGoldYearlySubscribed();
     }
-
-//    @Override
-//    public void onPurchasesUpdated(@BillingClient.BillingResponse int responseCode,
-//                                   List<Purchase> purchases) {
-//        if (responseCode == BillingClient.BillingResponse.OK
-//                && purchases != null) {
-//            for (Purchase purchase : purchases) {
-//                handlePurchase(purchase);
-//            }
-//        } else if (responseCode == BillingClient.BillingResponse.USER_CANCELED) {
-//            // Handle an error caused by a user cancelling the purchase flow.
-//        } else {
-//            // Handle any other error codes.
-//        }
-//    }
-
-//    private void handlePurchase(Purchase purchase) {
-//        //todo
-//    }
 }
 

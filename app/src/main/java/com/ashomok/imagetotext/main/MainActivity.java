@@ -40,6 +40,8 @@ import com.ashomok.imagetotext.language_choser.LanguageOcrActivity;
 import com.ashomok.imagetotext.my_docs.MyDocsActivity;
 import com.ashomok.imagetotext.ocr.OcrActivity;
 import com.ashomok.imagetotext.update_to_premium.UpdateToPremiumActivity;
+import com.ashomok.imagetotext.update_to_premium.billing.BillingManager;
+import com.ashomok.imagetotext.update_to_premium.billing.BillingProvider;
 import com.ashomok.imagetotext.utils.InfoSnackbarUtil;
 import com.ashomok.imagetotext.utils.NetworkUtils;
 import com.google.firebase.auth.FirebaseAuth;
@@ -64,7 +66,8 @@ import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showWarning;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 public class MainActivity extends BaseLoginActivity
-        implements SignOutDialogFragment.OnSignedOutListener, View.OnClickListener, MainContract.View {
+        implements SignOutDialogFragment.OnSignedOutListener, View.OnClickListener,
+        MainContract.View {
 
     private static final String TAG = DEV_TAG + MainActivity.class.getSimpleName();
 

@@ -62,7 +62,7 @@ public class UpdateToPremiumPresenter implements UpdateToPremiumContract.Present
     /**
      * Handler to billing updates
      */
-    private class UpdateListener implements BillingManager.BillingUpdatesListener {
+    public class UpdateListener implements BillingManager.BillingUpdatesListener {
         @Override
         public void onBillingClientSetupFinished() {
             if (view != null) {
