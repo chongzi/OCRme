@@ -1,4 +1,4 @@
-package com.ashomok.imagetotext.main.billing;
+package com.ashomok.imagetotext.billing;
 
 /**
  * Created by iuliia on 2/19/18.

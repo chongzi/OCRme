@@ -7,15 +7,7 @@ package com.ashomok.imagetotext.main;
 import android.app.Activity;
 
 import com.ashomok.imagetotext.di_dagger.ActivityScoped;
-import com.ashomok.imagetotext.language_choser.LanguageOcrActivity;
-import com.ashomok.imagetotext.language_choser.LanguagesListAdapter;
-import com.ashomok.imagetotext.language_choser.di.RecentlyChosenLanguageCodes;
-import com.ashomok.imagetotext.main.billing.BillingProviderCallback;
-import com.ashomok.imagetotext.main.billing.BillingProviderImpl;
-import com.ashomok.imagetotext.my_docs.MyDocsContract;
 import com.ashomok.imagetotext.my_docs.MyDocsPresenter;
-
-import java.util.List;
 
 import dagger.Binds;
 import dagger.Module;

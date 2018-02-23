@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.Purchase;
-import com.ashomok.imagetotext.update_to_premium.billing.BillingManager;
+import com.ashomok.imagetotext.billing.BillingManager;
 
 import java.util.List;
 
@@ -23,6 +23,8 @@ public class UpdateToPremiumPresenter implements UpdateToPremiumContract.Present
     @Nullable
     private UpdateToPremiumContract.View view;
 
+
+
     private UpdateListener mUpdateListener;
 
     // Tracks if we currently own subscriptions SKUs
@@ -32,9 +34,7 @@ public class UpdateToPremiumPresenter implements UpdateToPremiumContract.Present
     public static final String goldYearly_SKU_ID = "one_year_subscription";
 
     @Inject
-    UpdateToPremiumPresenter() {
-        Log.d(TAG, "on Constructor");
-    }
+    UpdateToPremiumPresenter() {}
 
     @Override
     public void takeView(UpdateToPremiumContract.View updateToPremiumActivity) {

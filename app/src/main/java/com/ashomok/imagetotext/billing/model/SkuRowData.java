@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ashomok.imagetotext.update_to_premium.model;
+package com.ashomok.imagetotext.billing.model;
 
 import com.android.billingclient.api.BillingClient.SkuType;
 import com.android.billingclient.api.SkuDetails;

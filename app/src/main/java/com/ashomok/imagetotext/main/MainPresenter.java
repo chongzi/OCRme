@@ -10,8 +10,8 @@ import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.Settings;
-import com.ashomok.imagetotext.main.billing.BillingProviderCallback;
-import com.ashomok.imagetotext.main.billing.BillingProviderImpl;
+import com.ashomok.imagetotext.billing.BillingProviderCallback;
+import com.ashomok.imagetotext.billing.BillingProviderImpl;
 import com.ashomok.imagetotext.utils.NetworkUtils;
 import com.ashomok.imagetotext.utils.SharedPreferencesUtil;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ashomok.imagetotext.update_to_premium.billing;
+package com.ashomok.imagetotext.billing;
 
 import android.text.TextUtils;
 import android.util.Base64;

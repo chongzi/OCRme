@@ -4,17 +4,9 @@ package com.ashomok.imagetotext.update_to_premium;
  * Created by iuliia on 1/29/18.
  */
 
-import android.app.Application;
 import android.content.Context;
 
 import com.ashomok.imagetotext.di_dagger.ActivityScoped;
-import com.ashomok.imagetotext.my_docs.MyDocsContract;
-import com.ashomok.imagetotext.my_docs.MyDocsPresenter;
-import com.ashomok.imagetotext.update_to_premium.model.FeaturesList;
-
-import java.util.List;
-
-import javax.inject.Singleton;
 
 import dagger.Binds;
 import dagger.Module;

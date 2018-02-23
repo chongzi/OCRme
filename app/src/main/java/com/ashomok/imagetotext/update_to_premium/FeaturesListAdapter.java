@@ -9,10 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ashomok.imagetotext.R;
-import com.ashomok.imagetotext.di_dagger.ActivityScoped;
-import com.ashomok.imagetotext.update_to_premium.model.FeaturesList;
-
-import javax.inject.Inject;
 
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 

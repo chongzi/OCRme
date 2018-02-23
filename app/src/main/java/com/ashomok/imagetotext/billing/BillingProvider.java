@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ashomok.imagetotext.update_to_premium.billing;
+package com.ashomok.imagetotext.billing;
 
 
+import com.ashomok.imagetotext.billing.BillingManager;
 
 /**
  * An interface that provides an access to BillingLibrary methods

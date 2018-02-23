@@ -9,9 +9,7 @@ import android.support.annotation.StringRes;
 
 import com.annimon.stream.Optional;
 import com.ashomok.imagetotext.di_dagger.BasePresenter;
-import com.ashomok.imagetotext.main.billing.BillingProviderCallback;
-import com.ashomok.imagetotext.my_docs.MyDocsContract;
-import com.ashomok.imagetotext.ocr.ocr_task.OcrResult;
+import com.ashomok.imagetotext.billing.BillingProviderCallback;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.ashomok.imagetotext.update_to_premium.model;
+package com.ashomok.imagetotext.update_to_premium;
 
 /**
  * Created by iuliia on 2/2/18.
@@ -17,8 +17,7 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 public class FeaturesList {
     public static final String TAG = DEV_TAG + FeaturesList.class.getSimpleName();
 
-    public FeaturesList() {
-    }
+    public FeaturesList() {}
 
     public List<FeatureModel> getList() {
         List<FeatureModel> result = new ArrayList<>();

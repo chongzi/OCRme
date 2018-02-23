@@ -1,4 +1,4 @@
-package com.ashomok.imagetotext.main.billing;
+package com.ashomok.imagetotext.billing;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
@@ -9,8 +9,6 @@ import android.util.Log;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.Purchase;
 import com.ashomok.imagetotext.R;
-import com.ashomok.imagetotext.update_to_premium.billing.BillingManager;
-import com.ashomok.imagetotext.update_to_premium.billing.BillingProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +26,8 @@ public class BillingProviderImpl implements BillingProvider {
     private BillingManager mBillingManager;
     private boolean mGoldMonthly;
     private boolean mGoldYearly;
-    public static final String goldMonthly_SKU_ID = "one_month_subscription";
-    public static final String goldYearly_SKU_ID = "one_year_subscription";
+    public static final String Premium_Monthly_SKU_ID = "one_month_subscription";
+    public static final String Premium_Yearly_SKU_ID = "one_year_subscription";
     public static final String TAG = DEV_TAG + BillingProviderImpl.class.getSimpleName();
 
     @Nullable BillingProviderCallback callback;
@@ -53,8 +51,8 @@ public class BillingProviderImpl implements BillingProvider {
 
     private void updatePurchaseData() {
         List<String> subscriptionsSkus = new ArrayList<>();
-        subscriptionsSkus.add(goldMonthly_SKU_ID);
-        subscriptionsSkus.add(goldYearly_SKU_ID);
+        subscriptionsSkus.add(Premium_Monthly_SKU_ID);
+        subscriptionsSkus.add(Premium_Yearly_SKU_ID);
 
         getBillingManager().querySkuDetailsAsync(BillingClient.SkuType.SUBS, subscriptionsSkus,
                 (responseCode, skuDetailsList) -> {
@@ -152,10 +150,10 @@ public class BillingProviderImpl implements BillingProvider {
 
             for (Purchase purchase : purchaseList) {
                 switch (purchase.getSku()) {
-                    case goldMonthly_SKU_ID:
+                    case Premium_Monthly_SKU_ID:
                         mGoldMonthly = true;
                         break;
-                    case goldYearly_SKU_ID:
+                    case Premium_Yearly_SKU_ID:
                         mGoldYearly = true;
                         break;
                 }

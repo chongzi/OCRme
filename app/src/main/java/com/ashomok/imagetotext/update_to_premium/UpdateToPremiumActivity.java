@@ -15,9 +15,9 @@ import android.widget.TextView;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.SkuDetails;
 import com.ashomok.imagetotext.R;
-import com.ashomok.imagetotext.update_to_premium.billing.BillingManager;
-import com.ashomok.imagetotext.update_to_premium.billing.BillingProvider;
-import com.ashomok.imagetotext.update_to_premium.model.SkuRowData;
+import com.ashomok.imagetotext.billing.BillingManager;
+import com.ashomok.imagetotext.billing.BillingProvider;
+import com.ashomok.imagetotext.billing.model.SkuRowData;
 import com.ashomok.imagetotext.utils.InfoSnackbarUtil;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
@@ -28,7 +28,7 @@ import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 
-import static com.ashomok.imagetotext.update_to_premium.billing.BillingManager.BILLING_MANAGER_NOT_INITIALIZED;
+import static com.ashomok.imagetotext.billing.BillingManager.BILLING_MANAGER_NOT_INITIALIZED;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 /**
