@@ -33,6 +33,7 @@ public class UpdateToPremiumPresenter implements UpdateToPremiumContract.Present
 
     @Inject
     UpdateToPremiumPresenter() {
+        Log.d(TAG, "on Constructor");
     }
 
     @Override

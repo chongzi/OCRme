@@ -2,25 +2,24 @@ package com.ashomok.imagetotext.main.billing;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.util.Log;
 
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.Purchase;
-import com.android.billingclient.api.SkuDetails;
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.update_to_premium.billing.BillingManager;
 import com.ashomok.imagetotext.update_to_premium.billing.BillingProvider;
-import com.ashomok.imagetotext.update_to_premium.model.SkuRowData;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 import dagger.Lazy;
 
-import static com.ashomok.imagetotext.update_to_premium.billing.BillingManager.BILLING_MANAGER_NOT_INITIALIZED;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 /**
@@ -36,98 +35,44 @@ public class BillingProviderImpl implements BillingProvider {
     public static final String goldYearly_SKU_ID = "one_year_subscription";
     public static final String TAG = DEV_TAG + BillingProviderImpl.class.getSimpleName();
 
-    private Lazy<BillingProviderCallback> callback;
+    @Nullable BillingProviderCallback callback;
 
     @NonNull
     private Activity activity;
 
     @Inject
-    public BillingProviderImpl(@NonNull Activity activity, Lazy<BillingProviderCallback> callback) {
+    public BillingProviderImpl(@NonNull Activity activity) {
         this.activity = activity;
-        this.callback = callback;
-        init();
     }
 
-    private void init() {
+    public void init() {
         // Create and initialize BillingManager which talks to BillingLibrary
         mBillingManager = new BillingManager(activity, new UpdateListener());
-
-        if (mBillingManager.getBillingClientResponseCode() > BILLING_MANAGER_NOT_INITIALIZED) {
-            onManagerReady(this);
-        }
-
-        handleManagerAndUiReady();
     }
 
-    /**
-     * Executes query for SKU details at the background thread
-     */
-    private void handleManagerAndUiReady() {
-        // If Billing Manager was successfully initialized - start querying for SKUs
-        querySkuDetails();
+    public void setCallback(@Nullable BillingProviderCallback callback) {
+        this.callback = callback;
     }
 
-    //todo do nothing reduntant method?
-    /**
-     * Queries for in-app and subscriptions SKU details and updates an adapter with new data
-     */
-    private void querySkuDetails() {
-        final List<SkuRowData> dataList = new ArrayList<>();
-
-        // Filling the list with all the data to render subscription rows
+    private void updatePurchaseData() {
         List<String> subscriptionsSkus = new ArrayList<>();
         subscriptionsSkus.add(goldMonthly_SKU_ID);
         subscriptionsSkus.add(goldYearly_SKU_ID);
-        addSkuRows(dataList, subscriptionsSkus, BillingClient.SkuType.SUBS, null);
-    }
 
-    private void addSkuRows(final List<SkuRowData> inList, List<String> skusList,
-                            final @BillingClient.SkuType String billingType,
-                            final Runnable executeWhenFinished) {
-
-        getBillingManager().querySkuDetailsAsync(billingType, skusList,
+        getBillingManager().querySkuDetailsAsync(BillingClient.SkuType.SUBS, subscriptionsSkus,
                 (responseCode, skuDetailsList) -> {
 
                     if (responseCode != BillingClient.BillingResponse.OK) {
-                        Log.w(TAG, "Unsuccessful query for type: " + billingType
+                        Log.e(TAG, "Unsuccessful query for type: " + BillingClient.SkuType.SUBS
                                 + ". Error code: " + responseCode);
-                    } else if (skuDetailsList != null && skuDetailsList.size() > 0) {
-                        // If we successfully got SKUs - fill all rows
-                        for (SkuDetails details : skuDetailsList) {
-                            Log.i(TAG, "Adding sku: " + details);
-                            inList.add(new SkuRowData(details, billingType));
-                        }
-
-                        if (inList.size() == 0) {
-                            onBillingError();
-                        } else if (inList.size() == 2) {
-                            for (SkuRowData item : inList) {
-                                //todo do nothing reduntant method?
-
-//                                switch (item.getSku()) {
-//                                    case SKU_ID_PREMIUM_MONTHLY:
-//                                        initPremiumMonthRow(item);
-//                                        break;
-//                                    case SKU_ID_PREMIUM_YEARLY:
-//                                        initPremiumYearRow(item);
-//                                        break;
-//                                    default:
-//                                        showError(R.string.unknown_error);
-//                                        break;
-//                                }
-                            }
-                        }
-
-                    } else {
+                        onBillingError();
+                    } else if (skuDetailsList == null || skuDetailsList.size() == 0) {
                         Log.e(TAG, "skuDetailsList is empty");
-                        showError(R.string.unknown_error);
-                    }
-
-                    if (executeWhenFinished != null) {
-                        executeWhenFinished.run();
+                        onBillingError();
                     }
                 });
     }
+
 
     private void onBillingError() {
         int billingResponseCode = getBillingManager()
@@ -142,22 +87,14 @@ public class BillingProviderImpl implements BillingProvider {
                 showError(R.string.error_billing_unavailable);
                 break;
             default:
-                showError(R.string.error_billing_unavailable);
+                showError(R.string.unknown_error);
         }
     }
 
     private void showError(@StringRes int stringResId) {
-        //todo use lisnener to return result
-    }
-
-    //todo simplyfy-refactoring needed
-
-    /**
-     * Notifies the fragment that billing manager is ready and provides a BillingProviders
-     * instance to access it
-     */
-    public void onManagerReady(BillingProvider billingProvider) {
-        handleManagerAndUiReady();
+        if (callback != null) {
+            callback.showError(stringResId);
+        }
     }
 
     @Override
@@ -181,7 +118,7 @@ public class BillingProviderImpl implements BillingProvider {
     public class UpdateListener implements BillingManager.BillingUpdatesListener {
         @Override
         public void onBillingClientSetupFinished() {
-            onBillingManagerSetupFinished();
+            updatePurchaseData();
         }
 
         @Override
@@ -226,12 +163,9 @@ public class BillingProviderImpl implements BillingProvider {
                         break;
                 }
             }
-
-            callback.get().onPurchasesUpdated();
+            if (callback != null) {
+                callback.onPurchasesUpdated();
+            }
         }
-    }
-
-    private void onBillingManagerSetupFinished() {
-        querySkuDetails();
     }
 }

@@ -6,4 +6,5 @@ package com.ashomok.imagetotext.main.billing;
 
 public interface BillingProviderCallback {
     void onPurchasesUpdated();
+    void showError(int stringResId);
 }

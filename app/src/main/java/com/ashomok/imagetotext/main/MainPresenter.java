@@ -40,8 +40,27 @@ public class MainPresenter implements MainContract.Presenter {
     BillingProviderImpl billingProvider;
 
     @Nullable
-    private MainContract.View view;
+    public MainContract.View view;
     private Optional<List<String>> languageCodes;
+
+    private BillingProviderCallback billingProviderCallback = new BillingProviderCallback() {
+        @Override
+        public void onPurchasesUpdated() {
+            if (view != null) {
+                boolean j = billingProvider.isPremiumMonthlySubscribed();
+                boolean k = billingProvider.isPremiumYearlySubscribed();
+                view.showInfo(R.string.afrikaans);
+            }
+//todo update view
+        }
+
+        @Override
+        public void showError(int stringResId) {
+            if (view != null) {
+                view.showError(stringResId);
+            }
+        }
+    };
 
     /**
      * Dagger strictly enforces that arguments not marked with {@code @Nullable} are not injected
@@ -52,37 +71,25 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void takeView(MainContract.View mainActivity) {
-        this.view = mainActivity;
+        view = mainActivity;
         init();
     }
 
     private void init() {
+        billingProvider.setCallback(billingProviderCallback);
+        billingProvider.init();
+
         if (view != null) {
             checkConnection();
             languageCodes = obtainSavedLanguagesCodes();
             updateLanguageTextView(languageCodes);
-
-            initBilling();
         }
     }
 
-    private void initBilling() {
-        if (billingProvider != null) {
-            Log.d(TAG, "billingProvider != null");
-        }
-    }
 
     @Override
     public Optional<List<String>> getLanguageCodes() {
         return languageCodes;
-    }
-
-    @Override
-    public BillingProviderCallback getBillingProviderCallback() {
-        return () -> {
-            Log.d(TAG, "onPurchasesUpdated");
-            //todo update view
-        };
     }
 
     private boolean isOnline() {

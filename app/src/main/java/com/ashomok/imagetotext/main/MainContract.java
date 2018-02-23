@@ -32,7 +32,5 @@ public class MainContract {
         void onCheckedLanguageCodesObtained(@Nullable List<String> checkedLanguageCodes);
 
         Optional<List<String>> getLanguageCodes();
-
-        BillingProviderCallback getBillingProviderCallback();
     }
 }
