@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark"
         android:background="?attr/colorButtonNormal"
-        android:id="@+id/propose_login_menu_item"
+        android:id="@+id/propose_sign_in_layout"
         android:padding="19dp"
         android:clickable="true"
         android:orientation="horizontal"
@@ -45,11 +45,23 @@
         android:padding="16dp"
         android:visibility="gone">
 
+        <ImageView
+            android:id="@+id/premium_btn"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/premium"
+            android:scaleType="centerInside"
+            android:layout_gravity="end|top"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_margin="@dimen/btn_padding"
+            android:visibility="gone"/>
+
         <TextView
             android:id="@+id/you_signed_as"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
+            android:layout_gravity="bottom"
             android:text="@string/you_signed_in_as"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
     </FrameLayout>

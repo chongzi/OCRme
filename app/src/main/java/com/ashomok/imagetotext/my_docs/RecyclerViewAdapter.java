@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ashomok.imagetotext.R;
@@ -82,16 +81,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.timeStamp.setText(item.getTimeStamp());
 
         //source image
-        // Create a reference to a file from a Google Cloud Storage URI
-        StorageReference gsReference =
-                FirebaseStorage.getInstance().getReferenceFromUrl(item.getSourceImageUrl());
-        // Load the image using Glide
-        Glide.with(holder.cardView.getContext())
-                .using(new FirebaseImageLoader())
-                .load(gsReference)
-                .crossFade()
-                .centerCrop()
-                .into(holder.sourceImage);
+        try {
+            // Create a reference to a file from a Google Cloud Storage URI
+            StorageReference gsReference =
+                    FirebaseStorage.getInstance().getReferenceFromUrl(item.getSourceImageUrl());
+            // Load the image using Glide
+            Glide.with(holder.cardView.getContext())
+                    .using(new FirebaseImageLoader())
+                    .load(gsReference)
+                    .crossFade()
+                    .centerCrop()
+                    .into(holder.sourceImage);
+        } catch (Exception e) {
+            //ignore
+            e.printStackTrace();
+        }
 
         //card menu
         holder.menuBtn.setOnClickListener(view -> showPopupMenu(holder.menuBtn, position));

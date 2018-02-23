@@ -16,9 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
-
-import dagger.Lazy;
 
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 

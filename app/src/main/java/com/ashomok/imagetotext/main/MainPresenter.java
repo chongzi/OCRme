@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Optional;
@@ -47,11 +46,11 @@ public class MainPresenter implements MainContract.Presenter {
         @Override
         public void onPurchasesUpdated() {
             if (view != null) {
-                boolean j = billingProvider.isPremiumMonthlySubscribed();
-                boolean k = billingProvider.isPremiumYearlySubscribed();
-                view.showInfo(R.string.afrikaans);
+                boolean isPremium = billingProvider.isPremiumMonthlySubscribed()
+                        || billingProvider.isPremiumYearlySubscribed();
+
+                view.updateView(isPremium);
             }
-//todo update view
         }
 
         @Override
@@ -67,7 +66,8 @@ public class MainPresenter implements MainContract.Presenter {
      * with {@code @Nullable} values.
      */
     @Inject
-    MainPresenter() {}
+    MainPresenter() {
+    }
 
     @Override
     public void takeView(MainContract.View mainActivity) {

@@ -192,4 +192,5 @@
     <string name="error_no_skus">We didn\\\'t find any SKUs to display</string>
     <string name="error_billing_unavailable">Billing unavailable</string>
     <string name="error_while_creating_file">Error occurred while creating the File</string>
+    <string name="my_premium">My premium</string>
 </resources>

@@ -27,12 +27,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ashomok.imagetotext.BuildConfig;
 import com.ashomok.imagetotext.ExitDialogFragment;
 import com.ashomok.imagetotext.R;
+import com.ashomok.imagetotext.Settings;
 import com.ashomok.imagetotext.crop_image.CropImageActivity;
 import com.ashomok.imagetotext.firebaseUiAuth.BaseLoginActivity;
 import com.ashomok.imagetotext.firebaseUiAuth.SignOutDialogFragment;
@@ -40,8 +42,6 @@ import com.ashomok.imagetotext.language_choser.LanguageOcrActivity;
 import com.ashomok.imagetotext.my_docs.MyDocsActivity;
 import com.ashomok.imagetotext.ocr.OcrActivity;
 import com.ashomok.imagetotext.update_to_premium.UpdateToPremiumActivity;
-import com.ashomok.imagetotext.update_to_premium.billing.BillingManager;
-import com.ashomok.imagetotext.update_to_premium.billing.BillingProvider;
 import com.ashomok.imagetotext.utils.InfoSnackbarUtil;
 import com.ashomok.imagetotext.utils.NetworkUtils;
 import com.google.firebase.auth.FirebaseAuth;
@@ -58,6 +58,7 @@ import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 
+import static com.ashomok.imagetotext.Settings.isAdsActive;
 import static com.ashomok.imagetotext.Settings.isPremium;
 import static com.ashomok.imagetotext.language_choser.LanguageOcrActivity.CHECKED_LANGUAGE_CODES;
 import static com.ashomok.imagetotext.ocr.OcrActivity.RESULT_CANCELED_BY_USER;
@@ -65,8 +66,10 @@ import static com.ashomok.imagetotext.utils.FileUtils.createFile;
 import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showWarning;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
-public class MainActivity extends BaseLoginActivity
-        implements SignOutDialogFragment.OnSignedOutListener, View.OnClickListener,
+//todo use butterknife
+public class MainActivity extends BaseLoginActivity implements
+        SignOutDialogFragment.OnSignedOutListener,
+        View.OnClickListener,
         MainContract.View {
 
     private static final String TAG = DEV_TAG + MainActivity.class.getSimpleName();
@@ -83,6 +86,7 @@ public class MainActivity extends BaseLoginActivity
 
     private Uri imageUri;
     private TextView languageTextView;
+    private ImageView premiumButton;
     private Button myDocsBtn;
     private String mEmail = "No email";
     private String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -238,7 +242,6 @@ public class MainActivity extends BaseLoginActivity
                 spannableString.length(),
                 0);
         updateToPremiumMenuItem.setTitle(spannableString);
-        updateToPremiumMenuItem.setVisible(!isPremium); //todo depends of subscription status
     }
 
 
@@ -337,7 +340,7 @@ public class MainActivity extends BaseLoginActivity
 
         //set up login header
         LinearLayout loginHeader =
-                navigationView.getHeaderView(0).findViewById(R.id.propose_login_menu_item);
+                navigationView.getHeaderView(0).findViewById(R.id.propose_sign_in_layout);
         loginHeader.setOnClickListener(this);
     }
 
@@ -381,8 +384,8 @@ public class MainActivity extends BaseLoginActivity
     void startCamera() {
         try {
             dispatchTakePictureIntent();
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
+        } catch (Exception e) {
+            showError(e.getMessage());
         }
     }
 
@@ -421,7 +424,7 @@ public class MainActivity extends BaseLoginActivity
     @Override
     public void updateUi(boolean isUserSignedIn) {
         Log.d(TAG, "updateUi called with " + isUserSignedIn);
-        updateNavigationDrawer(isUserSignedIn);
+        updateNavigationDrawerForSignIn(isUserSignedIn);
         updateMainScreen(isUserSignedIn);
     }
 
@@ -441,13 +444,15 @@ public class MainActivity extends BaseLoginActivity
         }
     }
 
-    private void updateNavigationDrawer(boolean isUserSignedIn) {
+    private void updateNavigationDrawerForSignIn(boolean isUserSignedIn) {
 
         Menu navigationMenu = navigationView.getMenu();
         navigationMenu.findItem(R.id.logout).setVisible(isUserSignedIn);
 
-        View signedInNavHeader = navigationView.getHeaderView(0).findViewById(R.id.signed_in_layout);
-        View askSignInNavHeader = navigationView.getHeaderView(0).findViewById(R.id.propose_login_menu_item);
+        View signedInNavHeader =
+                navigationView.getHeaderView(0).findViewById(R.id.signed_in_layout);
+        View askSignInNavHeader =
+                navigationView.getHeaderView(0).findViewById(R.id.propose_sign_in_layout);
 
         askSignInNavHeader.setVisibility(isUserSignedIn ? View.GONE : View.VISIBLE);
         signedInNavHeader.setVisibility(isUserSignedIn ? View.VISIBLE : View.GONE);
@@ -464,13 +469,28 @@ public class MainActivity extends BaseLoginActivity
         }
     }
 
+    private void updateNavigationDrawerForPremium(boolean isPremium) {
+        if (isPremium) {
+            //in header
+            View signedInNavHeader =
+                    navigationView.getHeaderView(0).findViewById(R.id.signed_in_layout);
+            View premiumBtn = signedInNavHeader.findViewById(R.id.premium_btn);
+            premiumBtn.setVisibility(View.VISIBLE);
+            premiumBtn.setOnClickListener(view -> startUpdateToPremiumActivity());
+
+            //in menu
+            Menu navigationMenu = navigationView.getMenu();
+            navigationMenu.findItem(R.id.update_to_premium).setTitle(R.string.my_premium);
+        }
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.sign_in_btn:
                 signIn();
                 break;
-            case R.id.propose_login_menu_item:
+            case R.id.propose_sign_in_layout:
                 signIn();
                 break;
             case R.id.language:
@@ -513,5 +533,22 @@ public class MainActivity extends BaseLoginActivity
     @Override
     public void updateLanguageString(String languageString) {
         languageTextView.setText(languageString);
+    }
+
+    @Override
+    public void updateView(boolean isPremium) {
+        Log.d(TAG, "updateUi called with " + isPremium);
+        Settings.isPremium = isPremium;
+        Settings.isAdsActive = !isPremium; //todo what if not premium but bought no ads
+
+        if (isAdsActive) {
+            showAds();
+        }
+
+        updateNavigationDrawerForPremium(isPremium);
+    }
+
+    private void showAds() {
+        //todo
     }
 }

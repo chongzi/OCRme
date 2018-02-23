@@ -26,6 +26,8 @@ public class MainContract {
         void showInfo (@StringRes int infoMessageRes);
 
         void updateLanguageString(String languageString);
+
+        void updateView(boolean isPremium);
     }
 
     interface Presenter extends BasePresenter<MainContract.View> {
