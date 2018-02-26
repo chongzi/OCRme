@@ -2,7 +2,10 @@ package com.ashomok.imagetotext.update_to_premium;
 
 import android.support.annotation.StringRes;
 
+import com.ashomok.imagetotext.billing.model.SkuRowData;
 import com.ashomok.imagetotext.di_dagger.BasePresenter;
+
+import java.util.List;
 
 /**
  * Created by iuliia on 1/29/18.
@@ -18,12 +21,18 @@ public interface UpdateToPremiumContract {
 
         void showInfo (@StringRes int infoMessageRes);
 
-        void onBillingManagerSetupFinished();
-
         void showRefreshedUi();
 
+        void updateView(boolean isPremium);
+
+        void initPremiumMonthRow(SkuRowData item);
+
+        void initPremiumYearRow(SkuRowData item);
     }
 
     interface Presenter extends BasePresenter<UpdateToPremiumContract.View> {
+        void onOneYearClicked(SkuRowData item);
+
+        void onOneMonthClicked(SkuRowData item);
     }
 }

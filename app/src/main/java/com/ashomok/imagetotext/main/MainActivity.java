@@ -535,6 +535,8 @@ public class MainActivity extends BaseLoginActivity implements
         languageTextView.setText(languageString);
     }
 
+
+    //todo it touch premium only - delete code about ads
     @Override
     public void updateView(boolean isPremium) {
         Log.d(TAG, "updateUi called with " + isPremium);

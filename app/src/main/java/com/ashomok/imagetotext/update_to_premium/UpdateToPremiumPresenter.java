@@ -1,16 +1,22 @@
 package com.ashomok.imagetotext.update_to_premium;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.android.billingclient.api.BillingClient;
-import com.android.billingclient.api.Purchase;
-import com.ashomok.imagetotext.billing.BillingManager;
+import com.ashomok.imagetotext.R;
+import com.ashomok.imagetotext.billing.BillingProviderCallback;
+import com.ashomok.imagetotext.billing.BillingProviderImpl;
+import com.ashomok.imagetotext.billing.model.SkuRowData;
+import com.ashomok.imagetotext.utils.NetworkUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.ashomok.imagetotext.billing.BillingProviderImpl.Premium_Monthly_SKU_ID;
+import static com.ashomok.imagetotext.billing.BillingProviderImpl.Premium_Yearly_SKU_ID;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 /**
@@ -23,100 +29,102 @@ public class UpdateToPremiumPresenter implements UpdateToPremiumContract.Present
     @Nullable
     private UpdateToPremiumContract.View view;
 
-
-
-    private UpdateListener mUpdateListener;
-
-    // Tracks if we currently own subscriptions SKUs
-    private boolean mGoldMonthly;
-    private boolean mGoldYearly;
-    public static final String goldMonthly_SKU_ID = "one_month_subscription";
-    public static final String goldYearly_SKU_ID = "one_year_subscription";
+    @Inject
+    BillingProviderImpl billingProvider;
 
     @Inject
-    UpdateToPremiumPresenter() {}
+    Context context;
+
+    private BillingProviderCallback billingProviderCallback = new BillingProviderCallback() {
+        @Override
+        public void onPurchasesUpdated() {
+            if (view != null) {
+                boolean isPremium = billingProvider.isPremiumMonthlySubscribed()
+                        || billingProvider.isPremiumYearlySubscribed();
+
+                view.updateView(isPremium);
+            }
+        }
+
+        @Override
+        public void showError(int stringResId) {
+            if (view != null) {
+                view.showError(stringResId);
+            }
+        }
+
+        @Override
+        public void onSkuRowDataUpdated() {
+            updateSkuRows(billingProvider.getSkuRowDataListForSubscriptions());
+        }
+    };
+
+
+    @Inject
+    UpdateToPremiumPresenter() {
+    }
+
+    /**
+     * update sku rows for subscriptions
+     *
+     * @param skuRowDataListForSubscriptions
+     */
+    private void updateSkuRows(List<SkuRowData> skuRowDataListForSubscriptions) {
+        if (view != null) {
+            if (skuRowDataListForSubscriptions.size() == 2) {
+                for (SkuRowData item : skuRowDataListForSubscriptions) {
+                    switch (item.getSku()) {
+                        case Premium_Monthly_SKU_ID:
+                            view.initPremiumMonthRow(item);
+                            break;
+                        case Premium_Yearly_SKU_ID:
+                            view.initPremiumYearRow(item);
+                            break;
+                        default:
+                            view.showError(R.string.unknown_error);
+                            break;
+                    }
+                }
+            }
+        }
+    }
+
 
     @Override
     public void takeView(UpdateToPremiumContract.View updateToPremiumActivity) {
         view = updateToPremiumActivity;
-        mUpdateListener = new UpdateListener();
 //        loadData(); //load amount of free requests //todo reduntant
+        init();
+    }
+
+    private void init() {
+        billingProvider.setCallback(billingProviderCallback);
+        billingProvider.init();
+
+        if (view != null) {
+            checkConnection();
+        }
     }
 
     @Override
     public void dropView() {
         view = null;
+        billingProvider.destroy();
     }
 
-    public UpdateListener getUpdateListener() {
-        return mUpdateListener;
+
+    private boolean isOnline() {
+        return NetworkUtils.isOnline(context);
     }
 
-    public boolean isGoldMonthlySubscribed() {
-        return mGoldMonthly;
-    }
-
-    public boolean isGoldYearlySubscribed() {
-        return mGoldYearly;
-    }
-
-    /**
-     * Handler to billing updates
-     */
-    public class UpdateListener implements BillingManager.BillingUpdatesListener {
-        @Override
-        public void onBillingClientSetupFinished() {
-            if (view != null) {
-                view.onBillingManagerSetupFinished();
+    private void checkConnection() {
+        if (view != null) {
+            if (!isOnline()) {
+                view.showError(R.string.no_internet_connection);
             }
         }
-
-        @Override
-        public void onConsumeFinished(String token, @BillingClient.BillingResponse int result) {
-            Log.d(TAG, "Consumption finished. Purchase token: " + token + ", result: " + result);
-            //todo redintant - we consume nothing
-
-//            // Note: We know this is the SKU_GAS, because it's the only one we consume, so we don't
-//            // check if token corresponding to the expected sku was consumed.
-//            // If you have more than one sku, you probably need to validate that the token matches
-//            // the SKU you expect.
-//            // It could be done by maintaining a map (updating it every time you call consumeAsync)
-//            // of all tokens into SKUs which were scheduled to be consumed and then looking through
-//            // it here to check which SKU corresponds to a consumed token.
-//            if (result == BillingClient.BillingResponse.OK) {
-//                // Successfully consumed, so we apply the effects of the item in our
-//                // game world's logic, which in our case means filling the gas tank a bit
-//                Log.d(TAG, "Consumption successful. Provisioning.");
-//                mTank = mTank == TANK_MAX ? TANK_MAX : mTank + 1;
-//                saveData();
-//                mActivity.alert(R.string.alert_fill_gas, mTank);
-//            } else {
-//                mActivity.alert(R.string.alert_error_consuming, result);
-//            }
-//
-//            mActivity.showRefreshedUi();
-//            Log.d(TAG, "End consumption flow.");
-        }
-
-        @Override
-        public void onPurchasesUpdated(List<Purchase> purchaseList) {
-            mGoldMonthly = false;
-            mGoldYearly = false;
-
-            for (Purchase purchase : purchaseList) {
-                switch (purchase.getSku()) {
-                    case goldMonthly_SKU_ID:
-                        mGoldMonthly = true;
-                        break;
-                    case goldYearly_SKU_ID:
-                        mGoldYearly = true;
-                        break;
-                }
-            }
-
-            view.showRefreshedUi();
-        }
     }
+
 
     /**
      * Save current amount of free requests
@@ -139,5 +147,37 @@ public class UpdateToPremiumPresenter implements UpdateToPremiumContract.Present
 //        SharedPreferences sp = mActivity.getPreferences(MODE_PRIVATE);
 //        mTank = sp.getInt("tank", 2);
 //        Log.d(TAG, "Loaded data: tank = " + String.valueOf(mTank));
+    }
+
+    @Override
+    public void onOneYearClicked(SkuRowData data) {
+        if (data != null) {
+            if (billingProvider.isPremiumMonthlySubscribed()) {
+                // If we already subscribed to monthly premium, launch replace flow
+                ArrayList<String> currentSubscriptionSku = new ArrayList<>();
+                currentSubscriptionSku.add(Premium_Monthly_SKU_ID);
+                billingProvider.getBillingManager().initiatePurchaseFlow(data.getSku(),
+                        currentSubscriptionSku, data.getSkuType());
+            } else {
+                billingProvider.getBillingManager().initiatePurchaseFlow(data.getSku(),
+                        data.getSkuType());
+            }
+        }
+    }
+
+    @Override
+    public void onOneMonthClicked(SkuRowData data) {
+        if (data != null) {
+            if (billingProvider.isPremiumYearlySubscribed()) {
+                // If we already subscribed to yearly premium, launch replace flow
+                ArrayList<String> currentSubscriptionSku = new ArrayList<>();
+                currentSubscriptionSku.add(Premium_Yearly_SKU_ID);
+                billingProvider.getBillingManager().initiatePurchaseFlow(data.getSku(),
+                        currentSubscriptionSku, data.getSkuType());
+            } else {
+                billingProvider.getBillingManager().initiatePurchaseFlow(data.getSku(),
+                        data.getSkuType());
+            }
+        }
     }
 }

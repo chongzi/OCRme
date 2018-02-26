@@ -8,7 +8,10 @@ import android.util.Log;
 
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.SkuDetails;
+import com.annimon.stream.Stream;
 import com.ashomok.imagetotext.R;
+import com.ashomok.imagetotext.billing.model.SkuRowData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +33,10 @@ public class BillingProviderImpl implements BillingProvider {
     public static final String Premium_Yearly_SKU_ID = "one_year_subscription";
     public static final String TAG = DEV_TAG + BillingProviderImpl.class.getSimpleName();
 
-    @Nullable BillingProviderCallback callback;
+    private List<SkuRowData> skuRowDataList = new ArrayList<>();
+
+    @Nullable
+    BillingProviderCallback callback;
 
     @NonNull
     private Activity activity;
@@ -49,25 +55,64 @@ public class BillingProviderImpl implements BillingProvider {
         this.callback = callback;
     }
 
+    public List<SkuRowData> getSkuRowDataList() {
+        return skuRowDataList;
+    }
+
+    public List<SkuRowData> getSkuRowDataListForSubscriptions() {
+        Log.d(TAG, "");
+        return Stream.of(skuRowDataList)
+                .filter(i -> i.getSkuType().equals(BillingClient.SkuType.SUBS))
+                .toList();
+    }
+
     private void updatePurchaseData() {
         List<String> subscriptionsSkus = new ArrayList<>();
         subscriptionsSkus.add(Premium_Monthly_SKU_ID);
         subscriptionsSkus.add(Premium_Yearly_SKU_ID);
 
-        getBillingManager().querySkuDetailsAsync(BillingClient.SkuType.SUBS, subscriptionsSkus,
+        processSkuRows(
+                skuRowDataList, subscriptionsSkus, BillingClient.SkuType.SUBS, null);
+    }
+
+    private void processSkuRows(List<SkuRowData> inList, List<String> skusList,
+                                final @BillingClient.SkuType String billingType,
+                                final Runnable executeWhenFinished) {
+        getBillingManager().querySkuDetailsAsync(billingType, skusList,
                 (responseCode, skuDetailsList) -> {
 
                     if (responseCode != BillingClient.BillingResponse.OK) {
-                        Log.e(TAG, "Unsuccessful query for type: " + BillingClient.SkuType.SUBS
+                        Log.e(TAG, "Unsuccessful query for type: " + billingType
                                 + ". Error code: " + responseCode);
                         onBillingError();
                     } else if (skuDetailsList == null || skuDetailsList.size() == 0) {
                         Log.e(TAG, "skuDetailsList is empty");
                         onBillingError();
+                    } else {
+                        // If we successfully got SKUs - fill all rows
+                        for (SkuDetails details : skuDetailsList) {
+                            Log.i(TAG, "Adding sku: " + details);
+                            inList.add(new SkuRowData(details, billingType));
+                        }
+                        if (inList.size() == 0) {
+                            onBillingError();
+                        }
+                        if (callback != null) {
+                            callback.onSkuRowDataUpdated();
+                        }
+                    }
+
+                    if (executeWhenFinished != null) {
+                        executeWhenFinished.run();
                     }
                 });
     }
 
+    public void destroy() {
+        if (mBillingManager != null) {
+            mBillingManager.destroy();
+        }
+    }
 
     private void onBillingError() {
         int billingResponseCode = getBillingManager()

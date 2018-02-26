@@ -46,7 +46,7 @@
                     app:layout_collapseMode="parallax" />
 
                 <LinearLayout
-                    android:id="@+id/backdrop_text_layout"
+                    android:id="@+id/backdrop_text_update_to_premium_propose"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -69,6 +69,19 @@
                         android:textSize="15sp" />
 
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/backdrop_text_you_are_premium"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:text="@string/you_are_premium"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"/>
             </LinearLayout>
 
             <android.support.v7.widget.Toolbar

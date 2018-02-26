@@ -59,6 +59,10 @@ public class MainPresenter implements MainContract.Presenter {
                 view.showError(stringResId);
             }
         }
+
+        @Override
+        public void onSkuRowDataUpdated() { //nothing
+        }
     };
 
     /**
@@ -114,6 +118,7 @@ public class MainPresenter implements MainContract.Presenter {
     @Override
     public void dropView() {
         view = null;
+        billingProvider.destroy();
     }
 
     private Optional<List<String>> obtainSavedLanguagesCodes() {
