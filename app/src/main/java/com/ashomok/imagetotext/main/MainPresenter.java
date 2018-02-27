@@ -61,6 +61,13 @@ public class MainPresenter implements MainContract.Presenter {
         }
 
         @Override
+        public void showInfo(String message) {
+            if (view != null) {
+                view.showInfo(message);
+            }
+        }
+
+        @Override
         public void onSkuRowDataUpdated() { //nothing
         }
     };

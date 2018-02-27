@@ -22,10 +22,12 @@ public class MainContract {
         void showError(@StringRes int errorMessageRes);
 
         void showInfo (@StringRes int infoMessageRes);
+        void showInfo(String message);
 
         void updateLanguageString(String languageString);
 
         void updateView(boolean isPremium);
+
     }
 
     interface Presenter extends BasePresenter<MainContract.View> {

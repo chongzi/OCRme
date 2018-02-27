@@ -23,9 +23,8 @@ import com.ashomok.imagetotext.billing.BillingManager;
  */
 public interface BillingProvider {
     BillingManager getBillingManager();
-//    boolean isPremiumPurchased(); // Tracks if we currently own a premium car //todo delete
     boolean isPremiumMonthlySubscribed();
-//    boolean isTankFull(); //todo delete
+    boolean isOcrRequestsAvailable(); //user have at last 5 free requests per day
     boolean isPremiumYearlySubscribed();
 }
 

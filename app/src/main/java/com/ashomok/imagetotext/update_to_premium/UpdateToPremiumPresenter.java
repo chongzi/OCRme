@@ -54,6 +54,11 @@ public class UpdateToPremiumPresenter implements UpdateToPremiumContract.Present
         }
 
         @Override
+        public void showInfo(String message) {
+            //todo
+        }
+
+        @Override
         public void onSkuRowDataUpdated() {
             updateSkuRows(billingProvider.getSkuRowDataListForSubscriptions());
         }
@@ -81,7 +86,6 @@ public class UpdateToPremiumPresenter implements UpdateToPremiumContract.Present
                             view.initPremiumYearRow(item);
                             break;
                         default:
-                            view.showError(R.string.unknown_error);
                             break;
                     }
                 }
@@ -123,30 +127,6 @@ public class UpdateToPremiumPresenter implements UpdateToPremiumContract.Present
                 view.showError(R.string.no_internet_connection);
             }
         }
-    }
-
-
-    /**
-     * Save current amount of free requests
-     * <p>
-     * Note: In a real application, we recommend you save data in a secure way to
-     * prevent tampering.
-     * For simplicity in this sample, we simply store the data using a
-     * SharedPreferences.
-     */
-    private void saveData() {
-        //todo reduntant
-//        SharedPreferences.Editor spe = mActivity.getPreferences(MODE_PRIVATE).edit();
-//        spe.putInt("tank", mTank);
-//        spe.apply();
-//        Log.d(TAG, "Saved data: tank = " + String.valueOf(mTank));
-    }
-
-    private void loadData() {
-        //todo reduntant
-//        SharedPreferences sp = mActivity.getPreferences(MODE_PRIVATE);
-//        mTank = sp.getInt("tank", 2);
-//        Log.d(TAG, "Loaded data: tank = " + String.valueOf(mTank));
     }
 
     @Override

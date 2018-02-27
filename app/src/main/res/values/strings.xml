@@ -194,4 +194,5 @@
     <string name="error_while_creating_file">Error occurred while creating the File</string>
     <string name="my_premium">My premium</string>
     <string name="you_are_premium">You are premium!</string>
+    <string name="you_get_ocr_requests">You get %1$s scan image requests.</string>
 </resources>

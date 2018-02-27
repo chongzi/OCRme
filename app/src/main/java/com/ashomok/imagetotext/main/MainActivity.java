@@ -86,7 +86,6 @@ public class MainActivity extends BaseLoginActivity implements
 
     private Uri imageUri;
     private TextView languageTextView;
-    private ImageView premiumButton;
     private Button myDocsBtn;
     private String mEmail = "No email";
     private String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -528,6 +527,11 @@ public class MainActivity extends BaseLoginActivity implements
     @Override
     public void showInfo(int infoMessageRes) {
         InfoSnackbarUtil.showInfo(infoMessageRes, mRootView);
+    }
+
+    @Override
+    public void showInfo(String message) {
+        InfoSnackbarUtil.showInfo(message, mRootView);
     }
 
     @Override
