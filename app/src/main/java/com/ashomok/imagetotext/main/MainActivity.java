@@ -85,6 +85,7 @@ public class MainActivity extends BaseLoginActivity implements
     private Uri imageUri;
     private TextView languageTextView;
     private Button myDocsBtn;
+    private  View requestCounterLayout;
     private String mEmail = "No email";
     private String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
     private static final String imageFileNameFromCamera = "ocr.jpg";
@@ -536,22 +537,6 @@ public class MainActivity extends BaseLoginActivity implements
         languageTextView.setText(languageString);
     }
 
-    //todo if premium - now show at all
-    @Override
-    public void setRequestsCounter(int requestCount) {
-        Log.d(TAG, "initRequestsCounter()");
-        View requestCounterLayout = findViewById(R.id.requests_counter_layout);
-        requestCounterLayout.setOnClickListener(view -> {
-            RequestsCounterDialogFragment requestsCounterDialogFragment =
-                    RequestsCounterDialogFragment.newInstance(R.string.you_have_requests, requestCount);
-
-            requestsCounterDialogFragment.show(getFragmentManager(), "dialog");
-        });
-
-        TextView textCounter = findViewById(R.id.requests_counter_text);
-        textCounter.setText(String.valueOf(requestCount));
-    }
-
     //todo it touch premium only - delete code about ads
     @Override
     public void updateView(boolean isPremium) {
@@ -564,6 +549,25 @@ public class MainActivity extends BaseLoginActivity implements
         }
 
         updateNavigationDrawerForPremium(isPremium);
+    }
+
+    @Override
+    public void updateRequestsCounter(boolean isVisible) {
+        requestCounterLayout.setVisibility(isVisible? View.VISIBLE : View.INVISIBLE);
+    }
+
+    @Override
+    public void initRequestsCounter(int requestCount) {
+        requestCounterLayout = findViewById(R.id.requests_counter_layout);
+        requestCounterLayout.setOnClickListener(view -> {
+            RequestsCounterDialogFragment requestsCounterDialogFragment =
+                    RequestsCounterDialogFragment.newInstance(R.string.you_have_requests, requestCount);
+
+            requestsCounterDialogFragment.show(getFragmentManager(), "dialog");
+        });
+
+        TextView textCounter = findViewById(R.id.requests_counter_text);
+        textCounter.setText(String.valueOf(requestCount));
     }
 
 

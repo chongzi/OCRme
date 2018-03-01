@@ -45,12 +45,9 @@ public class MainPresenter implements MainContract.Presenter {
     private BillingProviderCallback billingProviderCallback = new BillingProviderCallback() {
         @Override
         public void onPurchasesUpdated() {
-            if (view != null) {
-                boolean isPremium = billingProvider.isPremiumMonthlySubscribed()
-                        || billingProvider.isPremiumYearlySubscribed();
-
-                view.updateView(isPremium);
-            }
+            boolean isPremium = billingProvider.isPremiumMonthlySubscribed()
+                    || billingProvider.isPremiumYearlySubscribed();
+            onPremiumStatusUpdated(isPremium);
         }
 
         @Override
@@ -80,6 +77,13 @@ public class MainPresenter implements MainContract.Presenter {
     MainPresenter() {
     }
 
+    private void onPremiumStatusUpdated(boolean isPremium) {
+        if (view != null) {
+            view.updateView(isPremium);
+            view.updateRequestsCounter(!isPremium);
+        }
+    }
+
     @Override
     public void takeView(MainContract.View mainActivity) {
         view = mainActivity;
@@ -94,7 +98,14 @@ public class MainPresenter implements MainContract.Presenter {
             checkConnection();
             languageCodes = obtainSavedLanguagesCodes();
             updateLanguageTextView(languageCodes);
-            updateRequestsCounter();
+            initRequestCounter();
+        }
+    }
+
+    private void initRequestCounter() {
+        if (view != null) {
+            int requestCount = getRequestsCount();
+            view.initRequestsCounter(requestCount);
         }
     }
 
@@ -143,11 +154,6 @@ public class MainPresenter implements MainContract.Presenter {
 
     private int getRequestsCount() {
         return billingProvider.getAvailableOcrRequests();
-    }
-
-    private void updateRequestsCounter() {
-        int requestCount = getRequestsCount();
-        view.setRequestsCounter(requestCount);
     }
 
     private void updateLanguageTextView(Optional<List<String>> checkedLanguageCodes) {

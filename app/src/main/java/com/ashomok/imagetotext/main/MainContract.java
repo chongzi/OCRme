@@ -28,7 +28,9 @@ public class MainContract {
 
         void updateView(boolean isPremium);
 
-        void setRequestsCounter(int requestCount);
+        void updateRequestsCounter(boolean isVisible);
+
+        void initRequestsCounter(int requestCount);
     }
 
     interface Presenter extends BasePresenter<MainContract.View> {
