@@ -2,7 +2,6 @@ package com.ashomok.imagetotext.update_to_premium;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.billing.BillingProviderCallback;
@@ -15,8 +14,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.ashomok.imagetotext.billing.BillingProviderImpl.Premium_Monthly_SKU_ID;
-import static com.ashomok.imagetotext.billing.BillingProviderImpl.Premium_Yearly_SKU_ID;
+import static com.ashomok.imagetotext.billing.BillingProviderImpl.PREMIUM_MONTHLY_SKU_ID;
+import static com.ashomok.imagetotext.billing.BillingProviderImpl.PREMIUM_YEARLY_SKU_ID;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 /**
@@ -55,7 +54,9 @@ public class UpdateToPremiumPresenter implements UpdateToPremiumContract.Present
 
         @Override
         public void showInfo(String message) {
-            //todo
+            if (view != null) {
+                view.showInfo(message);
+            }
         }
 
         @Override
@@ -79,10 +80,10 @@ public class UpdateToPremiumPresenter implements UpdateToPremiumContract.Present
             if (skuRowDataListForSubscriptions.size() == 2) {
                 for (SkuRowData item : skuRowDataListForSubscriptions) {
                     switch (item.getSku()) {
-                        case Premium_Monthly_SKU_ID:
+                        case PREMIUM_MONTHLY_SKU_ID:
                             view.initPremiumMonthRow(item);
                             break;
-                        case Premium_Yearly_SKU_ID:
+                        case PREMIUM_YEARLY_SKU_ID:
                             view.initPremiumYearRow(item);
                             break;
                         default:
@@ -97,7 +98,6 @@ public class UpdateToPremiumPresenter implements UpdateToPremiumContract.Present
     @Override
     public void takeView(UpdateToPremiumContract.View updateToPremiumActivity) {
         view = updateToPremiumActivity;
-//        loadData(); //load amount of free requests //todo reduntant
         init();
     }
 
@@ -135,7 +135,7 @@ public class UpdateToPremiumPresenter implements UpdateToPremiumContract.Present
             if (billingProvider.isPremiumMonthlySubscribed()) {
                 // If we already subscribed to monthly premium, launch replace flow
                 ArrayList<String> currentSubscriptionSku = new ArrayList<>();
-                currentSubscriptionSku.add(Premium_Monthly_SKU_ID);
+                currentSubscriptionSku.add(PREMIUM_MONTHLY_SKU_ID);
                 billingProvider.getBillingManager().initiatePurchaseFlow(data.getSku(),
                         currentSubscriptionSku, data.getSkuType());
             } else {
@@ -151,7 +151,7 @@ public class UpdateToPremiumPresenter implements UpdateToPremiumContract.Present
             if (billingProvider.isPremiumYearlySubscribed()) {
                 // If we already subscribed to yearly premium, launch replace flow
                 ArrayList<String> currentSubscriptionSku = new ArrayList<>();
-                currentSubscriptionSku.add(Premium_Yearly_SKU_ID);
+                currentSubscriptionSku.add(PREMIUM_YEARLY_SKU_ID);
                 billingProvider.getBillingManager().initiatePurchaseFlow(data.getSku(),
                         currentSubscriptionSku, data.getSkuType());
             } else {

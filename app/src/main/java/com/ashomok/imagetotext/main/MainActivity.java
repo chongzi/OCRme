@@ -27,7 +27,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -59,7 +58,6 @@ import javax.inject.Inject;
 import dagger.android.AndroidInjection;
 
 import static com.ashomok.imagetotext.Settings.isAdsActive;
-import static com.ashomok.imagetotext.Settings.isPremium;
 import static com.ashomok.imagetotext.language_choser.LanguageOcrActivity.CHECKED_LANGUAGE_CODES;
 import static com.ashomok.imagetotext.ocr.OcrActivity.RESULT_CANCELED_BY_USER;
 import static com.ashomok.imagetotext.utils.FileUtils.createFile;
@@ -197,6 +195,7 @@ public class MainActivity extends BaseLoginActivity implements
         languageTextView.setOnClickListener(this);
     }
 
+
     private void checkConnection() {
         if (!NetworkUtils.isOnline(this)) {
             showError(R.string.no_internet_connection);
@@ -326,8 +325,6 @@ public class MainActivity extends BaseLoginActivity implements
                         case R.id.logout:
                             logout();
                             break;
-
-
                         default:
                             break;
                     }
@@ -539,6 +536,21 @@ public class MainActivity extends BaseLoginActivity implements
         languageTextView.setText(languageString);
     }
 
+    //todo if premium - now show at all
+    @Override
+    public void setRequestsCounter(int requestCount) {
+        Log.d(TAG, "initRequestsCounter()");
+        View requestCounterLayout = findViewById(R.id.requests_counter_layout);
+        requestCounterLayout.setOnClickListener(view -> {
+            RequestsCounterDialogFragment requestsCounterDialogFragment =
+                    RequestsCounterDialogFragment.newInstance(R.string.you_have_requests, requestCount);
+
+            requestsCounterDialogFragment.show(getFragmentManager(), "dialog");
+        });
+
+        TextView textCounter = findViewById(R.id.requests_counter_text);
+        textCounter.setText(String.valueOf(requestCount));
+    }
 
     //todo it touch premium only - delete code about ads
     @Override
@@ -553,6 +565,7 @@ public class MainActivity extends BaseLoginActivity implements
 
         updateNavigationDrawerForPremium(isPremium);
     }
+
 
     private void showAds() {
         //todo

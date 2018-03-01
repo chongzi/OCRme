@@ -28,11 +28,13 @@ public class MainContract {
 
         void updateView(boolean isPremium);
 
+        void setRequestsCounter(int requestCount);
     }
 
     interface Presenter extends BasePresenter<MainContract.View> {
         void onCheckedLanguageCodesObtained(@Nullable List<String> checkedLanguageCodes);
 
         Optional<List<String>> getLanguageCodes();
+
     }
 }

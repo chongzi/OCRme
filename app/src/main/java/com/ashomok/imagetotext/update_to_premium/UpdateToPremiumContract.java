@@ -21,13 +21,13 @@ public interface UpdateToPremiumContract {
 
         void showInfo (@StringRes int infoMessageRes);
 
-        void showRefreshedUi();
-
         void updateView(boolean isPremium);
 
         void initPremiumMonthRow(SkuRowData item);
 
         void initPremiumYearRow(SkuRowData item);
+
+        void showInfo(String message);
     }
 
     interface Presenter extends BasePresenter<UpdateToPremiumContract.View> {

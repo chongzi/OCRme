@@ -13,7 +13,6 @@ import com.android.billingclient.api.SkuDetails;
 import com.annimon.stream.Stream;
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.billing.model.SkuRowData;
-import com.ashomok.imagetotext.utils.SharedPreferencesUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +31,10 @@ public class BillingProviderImpl implements BillingProvider {
     private BillingManager mBillingManager;
     private boolean mGoldMonthly;
     private boolean mGoldYearly;
-    public static final String Premium_Monthly_SKU_ID = "one_month_subscription";
-    public static final String Premium_Yearly_SKU_ID = "one_year_subscription";
-    public static final String Scan_Image_requests_SKU_ID = "5_scan_image_requests";
-    private static final int Scan_Image_Requests_MAX = 5;
+    public static final String PREMIUM_MONTHLY_SKU_ID = "one_month_subscription";
+    public static final String PREMIUM_YEARLY_SKU_ID = "one_year_subscription";
+    public static final String SCAN_IMAGE_REQUESTS_SKU_ID = "5_scan_image_requests";
+    private static final int SCAN_IMAGE_REQUESTS_BATCH_SIZE = 5;
     public static final String TAG = DEV_TAG + BillingProviderImpl.class.getSimpleName();
 
     private List<SkuRowData> skuRowDataList = new ArrayList<>();
@@ -83,8 +82,8 @@ public class BillingProviderImpl implements BillingProvider {
 
     private void updatePurchaseData() {
         List<String> subscriptionsSkus = new ArrayList<>();
-        subscriptionsSkus.add(Premium_Monthly_SKU_ID);
-        subscriptionsSkus.add(Premium_Yearly_SKU_ID);
+        subscriptionsSkus.add(PREMIUM_MONTHLY_SKU_ID);
+        subscriptionsSkus.add(PREMIUM_YEARLY_SKU_ID);
 
         processSkuRows(
                 skuRowDataList, subscriptionsSkus, BillingClient.SkuType.SUBS,
@@ -92,7 +91,7 @@ public class BillingProviderImpl implements BillingProvider {
                     @Override
                     public void run() {
                         List<String> inAppSkus = new ArrayList<>();
-                        inAppSkus.add(Scan_Image_requests_SKU_ID);
+                        inAppSkus.add(SCAN_IMAGE_REQUESTS_SKU_ID);
                         processSkuRows(skuRowDataList, inAppSkus, BillingClient.SkuType.INAPP, null);
                     }
                 });
@@ -143,8 +142,9 @@ public class BillingProviderImpl implements BillingProvider {
     }
 
     private void loadData() {
+        Log.d(TAG, "loadData()");
        availableOcrRequests =
-               sharedPreferences.getInt(AVAILABLE_OCR_REQUESTS_COUNT_TAG, Scan_Image_Requests_MAX);
+               sharedPreferences.getInt(AVAILABLE_OCR_REQUESTS_COUNT_TAG, SCAN_IMAGE_REQUESTS_BATCH_SIZE);
     }
 
     public void destroy() {
@@ -214,7 +214,7 @@ public class BillingProviderImpl implements BillingProvider {
         @Override
         public void onConsumeFinished(String token, @BillingClient.BillingResponse int result) {
             Log.d(TAG, "Consumption finished. Purchase token: " + token + ", result: " + result);
-            // Note: We know this is the Scan_Image_requests_SKU_ID, because it's the only one we
+            // Note: We know this is the SCAN_IMAGE_REQUESTS_SKU_ID, because it's the only one we
             // consume, so we don't
             // check if token corresponding to the expected sku was consumed.
             // If you have more than one sku, you probably need to validate that the token matches
@@ -226,11 +226,11 @@ public class BillingProviderImpl implements BillingProvider {
                 // Successfully consumed, so we apply the effects of the item in our
                 // game world's logic, which in our case means filling the gas tank a bit
                 Log.d(TAG, "Consumption successful. Provisioning.");
-                availableOcrRequests = Scan_Image_Requests_MAX;
+                availableOcrRequests += SCAN_IMAGE_REQUESTS_BATCH_SIZE;
                 saveData();
 
                 String message = activity.getString(R.string.you_get_ocr_requests,
-                        String.valueOf(Scan_Image_Requests_MAX));
+                        String.valueOf(SCAN_IMAGE_REQUESTS_BATCH_SIZE));
                 showInfo(message);
             } else {
                 showError(R.string.unknown_error);
@@ -248,13 +248,13 @@ public class BillingProviderImpl implements BillingProvider {
 
             for (Purchase purchase : purchaseList) {
                 switch (purchase.getSku()) {
-                    case Premium_Monthly_SKU_ID:
+                    case PREMIUM_MONTHLY_SKU_ID:
                         mGoldMonthly = true;
                         break;
-                    case Premium_Yearly_SKU_ID:
+                    case PREMIUM_YEARLY_SKU_ID:
                         mGoldYearly = true;
                         break;
-                    case Scan_Image_requests_SKU_ID:
+                    case SCAN_IMAGE_REQUESTS_SKU_ID:
                         // We should consume the purchase and fill up the requests once it was consumed
                         getBillingManager().consumeAsync(purchase.getPurchaseToken());
                         break;

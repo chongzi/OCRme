@@ -77,16 +77,6 @@ public class UpdateToPremiumActivity extends RxAppCompatActivity
     }
 
     @Override
-    public void showRefreshedUi() {
-        Log.d(TAG, "Looks like purchases list might have been updated - refreshing the UI");
-        //todo
-//        if (mAdapter != null) {
-//            mAdapter.notifyDataSetChanged();
-//        }
-
-    }
-
-    @Override
     public void updateView(boolean isPremium) {
         View truePremium = findViewById(R.id.backdrop_text_you_are_premium);
         View falsePremium = findViewById(R.id.backdrop_text_update_to_premium_propose);
@@ -143,6 +133,11 @@ public class UpdateToPremiumActivity extends RxAppCompatActivity
     @Override
     public void showInfo(int infoMessageRes) {
         InfoSnackbarUtil.showInfo(infoMessageRes, mRootView);
+    }
+
+    @Override
+    public void showInfo(String message) {
+        InfoSnackbarUtil.showInfo(message, mRootView);
     }
 }
 

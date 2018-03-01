@@ -94,9 +94,9 @@ public class MainPresenter implements MainContract.Presenter {
             checkConnection();
             languageCodes = obtainSavedLanguagesCodes();
             updateLanguageTextView(languageCodes);
+            updateRequestsCounter();
         }
     }
-
 
     @Override
     public Optional<List<String>> getLanguageCodes() {
@@ -141,6 +141,15 @@ public class MainPresenter implements MainContract.Presenter {
         saveLanguages();
     }
 
+    private int getRequestsCount() {
+        return billingProvider.getAvailableOcrRequests();
+    }
+
+    private void updateRequestsCounter() {
+        int requestCount = getRequestsCount();
+        view.setRequestsCounter(requestCount);
+    }
+
     private void updateLanguageTextView(Optional<List<String>> checkedLanguageCodes) {
         if (view != null) {
             String languageString;
@@ -173,4 +182,5 @@ public class MainPresenter implements MainContract.Presenter {
 
         return languageString.toString();
     }
+
 }
