@@ -42,9 +42,6 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 /**
  * Created by iuliia on 8/18/17.
  */
-
-//todo add empty view (for no docs)
-//todo fix bug if user not segned in -error Unable to identify user try login shows
 public class MyDocsActivity extends BaseLoginActivity implements View.OnClickListener, MyDocsContract.View {
 
     private static final int DELETE_TAG = 1;
@@ -112,11 +109,18 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         AndroidInjection.inject(this);
         setContentView(R.layout.activity_my_docs);
         initToolbar();
-        Button signInBtn = findViewById(R.id.sign_in_btn);
-        signInBtn.setOnClickListener(this);
+        initSignInView();
         initRecyclerView();
         progress = findViewById(R.id.progress);
+
+        updateUi(mIsUserSignedIn);
+
         mPresenter.takeView(this);
+    }
+
+    private void initSignInView() {
+        Button signInBtn = findViewById(R.id.sign_in_btn);
+        signInBtn.setOnClickListener(this);
     }
 
     @Override
@@ -284,12 +288,17 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
      */
     @Override
     public void updateUi(boolean isUserSignedIn) {
-        Log.d(TAG, "updateUi called with " + isUserSignedIn);
+        Log.d(TAG, "Update UI. Is user signed in " + isUserSignedIn);
         View askLoginView = findViewById(R.id.ask_login);
         View myDocsView = findViewById(R.id.my_docs);
 
         askLoginView.setVisibility(isUserSignedIn ? View.GONE : View.VISIBLE);
         myDocsView.setVisibility(isUserSignedIn ? View.VISIBLE : View.GONE);
+
+        if (isUserSignedIn) {
+            //load docs
+            mPresenter.initWithDocs();
+        }
     }
 
     private void initToolbar() {
@@ -324,8 +333,15 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
 
     @Override
     public void addNewLoadedDocs(List<OcrResult> newLoadedDocs) {
+        int positionStart = dataList.size() - 1;
         dataList.addAll(newLoadedDocs);
-        adapter.notifyItemInserted(dataList.size() - 1);
+        adapter.notifyItemRangeInserted(positionStart, newLoadedDocs.size());
+
+        if (dataList.size() == 0) {
+            //show empty view
+            View emptyView = findViewById(R.id.empty_result_layout);
+            emptyView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

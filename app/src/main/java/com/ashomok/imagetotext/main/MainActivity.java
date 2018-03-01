@@ -85,7 +85,7 @@ public class MainActivity extends BaseLoginActivity implements
     private Uri imageUri;
     private TextView languageTextView;
     private Button myDocsBtn;
-    private  View requestCounterLayout;
+    private View requestCounterLayout;
     private String mEmail = "No email";
     private String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
     private static final String imageFileNameFromCamera = "ocr.jpg";
@@ -420,7 +420,7 @@ public class MainActivity extends BaseLoginActivity implements
      */
     @Override
     public void updateUi(boolean isUserSignedIn) {
-        Log.d(TAG, "updateUi called with " + isUserSignedIn);
+        Log.d(TAG, "Update UI. Is user signed in " + isUserSignedIn);
         updateNavigationDrawerForSignIn(isUserSignedIn);
         updateMainScreen(isUserSignedIn);
     }
@@ -432,13 +432,8 @@ public class MainActivity extends BaseLoginActivity implements
      */
     private void updateMainScreen(boolean isUserSignedIn) {
         View askLoginView = findViewById(R.id.ask_login);
-        if (isUserSignedIn) {
-            askLoginView.setVisibility(View.GONE);
-            myDocsBtn.setVisibility(View.VISIBLE);
-        } else {
-            askLoginView.setVisibility(View.VISIBLE);
-            myDocsBtn.setVisibility(View.GONE);
-        }
+        askLoginView.setVisibility(isUserSignedIn ? View.GONE : View.VISIBLE);
+        myDocsBtn.setVisibility(isUserSignedIn ? View.VISIBLE : View.GONE);
     }
 
     private void updateNavigationDrawerForSignIn(boolean isUserSignedIn) {
@@ -540,7 +535,7 @@ public class MainActivity extends BaseLoginActivity implements
     //todo it touch premium only - delete code about ads
     @Override
     public void updateView(boolean isPremium) {
-        Log.d(TAG, "updateUi called with " + isPremium);
+        Log.d(TAG, "Update UI. Is premium " + isPremium);
         Settings.isPremium = isPremium;
         Settings.isAdsActive = !isPremium; //todo what if not premium but bought no ads
 
@@ -553,7 +548,7 @@ public class MainActivity extends BaseLoginActivity implements
 
     @Override
     public void updateRequestsCounter(boolean isVisible) {
-        requestCounterLayout.setVisibility(isVisible? View.VISIBLE : View.INVISIBLE);
+        requestCounterLayout.setVisibility(isVisible ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override

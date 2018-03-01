@@ -68,7 +68,7 @@ public class MyDocsPresenter implements MyDocsContract.Presenter {
         initWithDocs();
     }
 
-    private void initWithDocs() {
+    void initWithDocs() {
         if (view != null) {
             if (isOnline()) {
                 startCursor = null;
@@ -88,8 +88,6 @@ public class MyDocsPresenter implements MyDocsContract.Presenter {
                                         if (optionalToken.isPresent()) {
                                             idToken = optionalToken.get();
                                             callApiForDocs(httpClient, idToken, startCursor);
-                                        } else {
-                                            view.showError(R.string.unable_identify_user);
                                         }
                                     }, throwable -> {
                                         view.showProgress(false);
@@ -197,9 +195,9 @@ public class MyDocsPresenter implements MyDocsContract.Presenter {
                                         view.showError(R.string.unknown_error);
                                     } else if (status.equals(MyDocsResponse.Status.OK)) {
                                         //ok
-                                        view.clearDocsList();
-                                        updateCursor(myDocsResponse.getEndCursor());
-                                        view.addNewLoadedDocs(myDocsResponse.getRequestList());
+                                        view.clearDocsList(); //empty view
+                                        view.addNewLoadedDocs(myDocsResponse.getRequestList()); //reload
+                                        updateCursor(myDocsResponse.getEndCursor()); //update cursor
                                         view.showInfo(R.string.deleted);
                                     } else {
                                         view.showError(R.string.unknown_error);

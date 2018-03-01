@@ -18,9 +18,8 @@ import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-import dagger.android.support.DaggerAppCompatActivity;
-
 import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showError;
+import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showInfo;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 /**
@@ -66,8 +65,7 @@ public abstract class BaseLoginActivity extends RxAppCompatActivity {
                         .setPrivacyPolicyUrl(getSelectedPrivacyPolicyUrl())
                         .setIsSmartLockEnabled(true, true)
                         .setAllowNewEmailAccounts(true)
-                        .build(),
-                RC_SIGN_IN);
+                        .build(), RC_SIGN_IN);
     }
 
 
@@ -86,28 +84,22 @@ public abstract class BaseLoginActivity extends RxAppCompatActivity {
         // Successfully signed in
         if (resultCode == RESULT_OK) {
             onSignedIn();
-            return;
         } else {
             // Sign in failed
             if (response == null) {
                 // User pressed back button
                 showError(R.string.sign_in_cancelled, mRootView);
-                return;
             }
-
-            //todo never called - check it
-            if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
+            else if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
                 showError(R.string.no_internet_connection, mRootView);
-                return;
             }
-
-            if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
+            else if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
                 showError(R.string.unknown_error, mRootView);
-                return;
+            }
+            else {
+                showError(R.string.unknown_sign_in_response, mRootView);
             }
         }
-
-        showError(R.string.unknown_sign_in_response, mRootView);
     }
 
     //// TODO: 10/11/17 return MY theme
@@ -170,5 +162,6 @@ public abstract class BaseLoginActivity extends RxAppCompatActivity {
 
         mIsUserSignedIn = false;
         updateUi(mIsUserSignedIn);
+        showInfo(R.string.logged_out, mRootView);
     }
 }

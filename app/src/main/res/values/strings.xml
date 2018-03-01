@@ -198,4 +198,7 @@
     <string name="get_more_for_free">Get more for free</string>
     <string name="check_premium_price">Check premium price</string>
     <string name="you_have_requests">You have %1$s Image Scan Requests. You can get more FREE or check premium account price.</string>
+    <string name="you_have_no_docs">You have no docs yet</string>
+    <string name="signed_in">Signed in</string>
+    <string name="logged_out">Logged out</string>
 </resources>

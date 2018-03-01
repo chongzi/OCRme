@@ -31,6 +31,48 @@
         android:background="@color/grey_300"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <RelativeLayout
+            android:id="@+id/empty_result_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/image_empty"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_centerInParent="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/cat_hungry" />
+
+            <TextView
+                android:id="@+id/error_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/image_empty"
+                android:layout_centerInParent="true"
+                android:clickable="false"
+                android:gravity="center"
+                android:maxWidth="300dp"
+                android:text="@string/you_have_no_docs"
+                android:textColor="@color/grey_600"
+                android:textSize="@dimen/empty_view_error_font_size" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/my_docs"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical"
+                android:layout_margin="@dimen/margin9"/>
+
+        </RelativeLayout>
+
         <LinearLayout
             android:id="@+id/ask_login"
             android:layout_width="match_parent"
@@ -48,22 +90,10 @@
                 android:id="@+id/sign_in_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/sign_in_captured" />
+                android:text="@string/sign_in_captured"
+                android:clickable="true"
+                android:focusable="true" />
         </LinearLayout>
-
-        <RelativeLayout
-            android:id="@+id/my_docs"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scrollbars="vertical"
-                android:layout_margin="@dimen/margin9"/>
-
-        </RelativeLayout>
     </RelativeLayout>
 
     <ProgressBar
