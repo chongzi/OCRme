@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.ashomok.imagetotext.R;
+import com.ashomok.imagetotext.get_more_requests.GetMoreRequestsActivity;
 import com.ashomok.imagetotext.update_to_premium.UpdateToPremiumActivity;
 
 /**
@@ -74,7 +75,8 @@ public class RequestsCounterDialogFragment extends DialogFragment {
     }
 
     private void startGetMoreRequestsActivity() {
-        //todo
+        Intent intent = new Intent(getActivity(), GetMoreRequestsActivity.class);
+        startActivity(intent);
     }
 
     private void startUpdateToPremiumActivity() {
