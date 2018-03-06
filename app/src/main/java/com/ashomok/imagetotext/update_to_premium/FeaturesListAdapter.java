@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.ashomok.imagetotext.R;
 
+import java.util.List;
+
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 /**
@@ -18,10 +20,10 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 public class FeaturesListAdapter extends RecyclerView.Adapter<FeaturesListAdapter.ViewHolder> {
     private static final String TAG = DEV_TAG + FeaturesListAdapter.class.getSimpleName();
-    private final FeaturesList dataList;
+    private final List<FeaturesList.FeatureModel> dataList;
     private final Context context;
 
-    FeaturesListAdapter(FeaturesList featuresList, Context context) {
+    FeaturesListAdapter(List<FeaturesList.FeatureModel> featuresList, Context context) {
         this.dataList = featuresList;
         this.context = context;
     }
@@ -43,12 +45,12 @@ public class FeaturesListAdapter extends RecyclerView.Adapter<FeaturesListAdapte
     }
 
     private FeaturesList.FeatureModel getItem(int position) {
-        return dataList.getList().get(position);
+        return dataList.get(position);
     }
 
     @Override
     public int getItemCount() {
-        return dataList.getList().size();
+        return dataList.size();
     }
 
 

@@ -17,6 +17,9 @@ package com.ashomok.imagetotext.billing;
 
 
 import com.ashomok.imagetotext.billing.BillingManager;
+import com.ashomok.imagetotext.billing.model.SkuRowData;
+
+import java.util.List;
 
 /**
  * An interface that provides an access to BillingLibrary methods
@@ -26,5 +29,8 @@ public interface BillingProvider {
     boolean isPremiumMonthlySubscribed();
     boolean isOcrRequestsAvailable(); //user have at last 5 free requests per day
     boolean isPremiumYearlySubscribed();
+
+    List<SkuRowData> getSkuRowDataListForSubscriptions();
+    List<SkuRowData> getSkuRowDataListForInAppPurchases();
 }
 

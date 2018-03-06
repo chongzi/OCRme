@@ -1,5 +1,7 @@
 package com.ashomok.imagetotext.di_dagger;
 
+import com.ashomok.imagetotext.get_more_requests.GetMoreRequestsActivity;
+import com.ashomok.imagetotext.get_more_requests.GetMoreRequestsModule;
 import com.ashomok.imagetotext.language_choser.LanguageOcrActivity;
 import com.ashomok.imagetotext.language_choser.LanguageOcrModule;
 import com.ashomok.imagetotext.main.MainActivity;
@@ -36,4 +38,8 @@ public abstract class ActivityBindingModule {
     @ActivityScoped
     @ContributesAndroidInjector(modules = UpdateToPremiumModule.class)
     abstract UpdateToPremiumActivity updateToPremiumActivity();
+
+    @ActivityScoped
+    @ContributesAndroidInjector(modules = GetMoreRequestsModule.class)
+    abstract GetMoreRequestsActivity getMoreRequestsActivity();
 }

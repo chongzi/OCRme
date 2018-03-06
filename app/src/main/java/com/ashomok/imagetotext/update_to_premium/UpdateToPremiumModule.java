@@ -10,6 +10,8 @@ import android.content.Context;
 import com.ashomok.imagetotext.di_dagger.ActivityScoped;
 import com.ashomok.imagetotext.main.MainActivity;
 
+import java.util.List;
+
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
@@ -27,12 +29,13 @@ public abstract class UpdateToPremiumModule {
 
 
     @Provides
-    static FeaturesList provideFeaturesList(){
-        return new FeaturesList();
+    static List<FeaturesList.FeatureModel> provideFeaturesList(){
+        return FeaturesList.getList();
     }
 
     @Provides
-    static FeaturesListAdapter provideFeaturesListAdapter(FeaturesList featuresList, Context context){
+    static FeaturesListAdapter provideFeaturesListAdapter(
+            List<FeaturesList.FeatureModel> featuresList, Context context){
         return new FeaturesListAdapter(featuresList, context);
     }
 

@@ -11,6 +11,7 @@ import com.ashomok.imagetotext.R;
  * Created by iuliia on 10/5/16.
  */
 
+//todo never used
 public class RateAppAsker {
 
     /**

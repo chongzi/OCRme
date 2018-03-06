@@ -67,8 +67,7 @@ public class UpdateToPremiumPresenter implements UpdateToPremiumContract.Present
 
 
     @Inject
-    UpdateToPremiumPresenter() {
-    }
+    UpdateToPremiumPresenter() {}
 
     /**
      * update sku rows for subscriptions

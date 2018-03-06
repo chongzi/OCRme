@@ -71,6 +71,16 @@
                 android:value=".main.MainActivity" />
         </activity>
         <activity
+            android:name=".get_more_requests.GetMoreRequestsActivity"
+            android:exported="true"
+            android:label="@string/get_free_requests"
+            android:parentActivityName=".main.MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".main.MainActivity" />
+        </activity>
+        <activity
             android:name=".crop_image.CropImageActivity"
             android:exported="true"
             android:label="@string/crop"

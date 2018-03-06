@@ -26,6 +26,7 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  * Created by iuliia on 1/29/18.
  */
 
+//todo create absctract class for whole app BaseActivity
 public class UpdateToPremiumActivity extends RxAppCompatActivity
         implements UpdateToPremiumContract.View {
 
@@ -88,8 +89,8 @@ public class UpdateToPremiumActivity extends RxAppCompatActivity
     private void initFeaturesList() {
         RecyclerView recyclerView = findViewById(R.id.premium_features_list);
         recyclerView.setHasFixedSize(true);
-        LinearLayoutManager recentlyChosenLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(recentlyChosenLayoutManager);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
 
         recyclerView.setAdapter(featuresListAdapter);
     }

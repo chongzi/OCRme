@@ -201,4 +201,12 @@
     <string name="you_have_no_docs">You have no docs yet</string>
     <string name="signed_in">Signed in</string>
     <string name="logged_out">Logged out</string>
+    <string name="get_free_requests">Get FREE Image Scan Requests</string>
+    <string name="watch_video_ads">Watch one video ad</string>
+    <string name="best_choise">Best choice</string>
+    <string name="login_to_system">Login to system</string>
+    <string name="write_feedback">Write feedback</string>
+    <string name="follow_us_on_fb">Follow us on Facebook</string>
+    <string name="requests_cost">+%1$s</string>
+    <string name="task_is_done">Task is done</string>
 </resources>

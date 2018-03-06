@@ -73,10 +73,17 @@ public class BillingProviderImpl implements BillingProvider {
         return skuRowDataList;
     }
 
+    @Override
     public List<SkuRowData> getSkuRowDataListForSubscriptions() {
-        Log.d(TAG, "");
         return Stream.of(skuRowDataList)
                 .filter(i -> i.getSkuType().equals(BillingClient.SkuType.SUBS))
+                .toList();
+    }
+
+    @Override
+    public List<SkuRowData> getSkuRowDataListForInAppPurchases() {
+        return Stream.of(skuRowDataList)
+                .filter(i -> i.getSkuType().equals(BillingClient.SkuType.INAPP))
                 .toList();
     }
 

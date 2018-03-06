@@ -19,7 +19,7 @@ public class FeaturesList {
 
     public FeaturesList() {}
 
-    public List<FeatureModel> getList() {
+    public static List<FeatureModel> getList() {
         List<FeatureModel> result = new ArrayList<>();
         result.add(new FeatureModel(R.drawable.ic_translate_black_24dp, R.string.no_ads));
         result.add(new FeatureModel(R.drawable.ic_translate_black_24dp, R.string.unlimited_ocr_requests));
@@ -30,7 +30,7 @@ public class FeaturesList {
         return result;
     }
 
-    public class FeatureModel {
+    public static class FeatureModel {
         @DrawableRes
         private int drawableId;
         @StringRes
