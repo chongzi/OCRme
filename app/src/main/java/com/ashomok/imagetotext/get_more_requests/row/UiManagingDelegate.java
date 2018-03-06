@@ -19,19 +19,17 @@ import android.widget.Toast;
 
 import com.ashomok.imagetotext.R;
 
-import javax.inject.Inject;
-
 /**
  * Implementations of this abstract class are responsible to render UI and handle user actions for
  * promo rows to render RecyclerView
  */
 public abstract class UiManagingDelegate {
 
-    @Inject
-    Context context;
+    private Context context;
 
-    @Inject
-    public UiManagingDelegate() {}
+    public UiManagingDelegate(Context context) {
+        this.context = context;
+    }
 
     public void onBindViewHolder(PromoRowData item, RowViewHolder holder) {
         holder.icon.setImageDrawable(context.getResources().getDrawable(item.getDrawableIconId()));
@@ -56,14 +54,15 @@ public abstract class UiManagingDelegate {
 
     /**
      * task may be done and not available any more
+     *
      * @return
      */
     public boolean isTaskAvailable() {
         return true;
     }
 
-    public void onRowClicked(PromoRowData data){
-        if (isTaskAvailable()){
+    public void onRowClicked() {
+        if (isTaskAvailable()) {
             startTask();
         } else {
             showTaskIsDoneToast();

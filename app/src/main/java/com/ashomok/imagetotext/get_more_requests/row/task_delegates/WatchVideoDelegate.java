@@ -1,5 +1,6 @@
 package com.ashomok.imagetotext.get_more_requests.row.task_delegates;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.ashomok.imagetotext.get_more_requests.row.PromoRowData;
@@ -18,8 +19,10 @@ public class WatchVideoDelegate extends UiManagingDelegate {
     public static final String TAG = DEV_TAG + WatchVideoDelegate.class.getSimpleName();
     public static final String ID = "watch_video";
 
-    @Inject
-    public WatchVideoDelegate(){}
+    public WatchVideoDelegate(Context context){
+        super(context);
+        Log.d(TAG, "in constructor");
+    }
 
     @Override
     public void onBindViewHolder(PromoRowData data, RowViewHolder holder) {

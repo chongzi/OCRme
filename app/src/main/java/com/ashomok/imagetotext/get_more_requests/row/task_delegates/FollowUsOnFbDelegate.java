@@ -1,5 +1,6 @@
 package com.ashomok.imagetotext.get_more_requests.row.task_delegates;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.ashomok.imagetotext.get_more_requests.row.PromoRowData;
@@ -18,8 +19,9 @@ public class FollowUsOnFbDelegate extends UiManagingDelegate {
     public static final String TAG = DEV_TAG + FollowUsOnFbDelegate.class.getSimpleName();
     public static final String ID = "follow_us_on_fb";
 
-    @Inject
-    public FollowUsOnFbDelegate(){}
+    public FollowUsOnFbDelegate(Context context){
+        super(context);
+    }
 
     @Override
     public void onBindViewHolder(PromoRowData data, RowViewHolder holder) {

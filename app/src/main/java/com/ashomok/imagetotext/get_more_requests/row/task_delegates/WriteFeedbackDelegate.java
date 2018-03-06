@@ -1,5 +1,6 @@
 package com.ashomok.imagetotext.get_more_requests.row.task_delegates;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.ashomok.imagetotext.get_more_requests.row.PromoRowData;
@@ -18,8 +19,9 @@ public class WriteFeedbackDelegate extends UiManagingDelegate {
     public static final String TAG = DEV_TAG + WriteFeedbackDelegate.class.getSimpleName();
     public static final String ID = "write_feedback";
 
-    @Inject
-    public WriteFeedbackDelegate(){}
+    public WriteFeedbackDelegate(Context context){
+        super(context);
+    }
 
     @Override
     public void onBindViewHolder(PromoRowData data, RowViewHolder holder) {

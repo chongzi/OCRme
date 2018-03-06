@@ -32,13 +32,13 @@ public abstract class GetMoreRequestsModule {
 
     @Provides
     static List<PromoRowData> providePromoList(){
-        return new PromoList().getList();
+        return PromoList.getList();
     }
 
-    @Provides
-    static PromoListAdapter providePromoListAdapter(List<PromoRowData> promoList, Context context){
-        return new PromoListAdapter(promoList, context);
-    }
+//    @Provides
+//    static PromoListAdapter providePromoListAdapter(List<PromoRowData> promoList){
+//        return new PromoListAdapter(promoList);
+//    }
 
     @Provides
     @ActivityScoped
