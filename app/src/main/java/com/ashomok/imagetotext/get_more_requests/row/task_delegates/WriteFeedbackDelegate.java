@@ -19,6 +19,7 @@ public class WriteFeedbackDelegate extends UiManagingDelegate {
     public static final String TAG = DEV_TAG + WriteFeedbackDelegate.class.getSimpleName();
     public static final String ID = "write_feedback";
 
+    @Inject
     public WriteFeedbackDelegate(Context context){
         super(context);
     }

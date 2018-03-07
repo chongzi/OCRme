@@ -19,6 +19,7 @@ public class WatchVideoDelegate extends UiManagingDelegate {
     public static final String TAG = DEV_TAG + WatchVideoDelegate.class.getSimpleName();
     public static final String ID = "watch_video";
 
+    @Inject
     public WatchVideoDelegate(Context context){
         super(context);
         Log.d(TAG, "in constructor");

@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.billing.model.SkuRowData;
+import com.ashomok.imagetotext.firebaseUiAuth.BaseLoginActivity;
 import com.ashomok.imagetotext.get_more_requests.row.PromoListAdapter;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
@@ -23,7 +24,7 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  * Created by iuliia on 3/2/18.
  */
 
-public class GetMoreRequestsActivity extends RxAppCompatActivity
+public class GetMoreRequestsActivity extends BaseLoginActivity
         implements GetMoreRequestsContract.View{
 
     private static final String TAG = DEV_TAG + GetMoreRequestsActivity.class.getSimpleName();
@@ -49,6 +50,12 @@ public class GetMoreRequestsActivity extends RxAppCompatActivity
         initPromoList();
         initPaidOption();
         mPresenter.takeView(this);
+    }
+
+    @Override
+    public void updateUi(boolean isUserSignedIn) {
+        //todo refresh list
+        //todo
     }
 
     private void initPaidOption() {

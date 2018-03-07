@@ -19,6 +19,7 @@ public class FollowUsOnFbDelegate extends UiManagingDelegate {
     public static final String TAG = DEV_TAG + FollowUsOnFbDelegate.class.getSimpleName();
     public static final String ID = "follow_us_on_fb";
 
+    @Inject
     public FollowUsOnFbDelegate(Context context){
         super(context);
     }

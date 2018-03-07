@@ -15,9 +15,6 @@
  */
 package com.ashomok.imagetotext.get_more_requests.row;
 
-import android.content.Context;
-import android.util.Log;
-
 import com.ashomok.imagetotext.get_more_requests.row.task_delegates.FollowUsOnFbDelegate;
 import com.ashomok.imagetotext.get_more_requests.row.task_delegates.LoginToSystemDelegate;
 import com.ashomok.imagetotext.get_more_requests.row.task_delegates.WatchVideoDelegate;
@@ -41,13 +38,8 @@ public class UiDelegatesFactory {
     private final Map<String, UiManagingDelegate> uiDelegates;
 
     @Inject
-    public UiDelegatesFactory(Context context) {
-        Log.d(TAG, "inConstructor");
-        uiDelegates = new HashMap<>();
-        uiDelegates.put(WatchVideoDelegate.ID, new WatchVideoDelegate(context));
-        uiDelegates.put(LoginToSystemDelegate.ID, new LoginToSystemDelegate(context));
-        uiDelegates.put(WriteFeedbackDelegate.ID, new WriteFeedbackDelegate(context));
-        uiDelegates.put(FollowUsOnFbDelegate.ID, new FollowUsOnFbDelegate(context));
+    public UiDelegatesFactory(Map<String, UiManagingDelegate> uiDelegates) {
+        this.uiDelegates = uiDelegates;
     }
 
     public void onBindViewHolder(PromoRowData data, RowViewHolder holder) {

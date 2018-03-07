@@ -20,6 +20,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import static com.ashomok.imagetotext.Settings.isRequestCounterVisible;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 /**
@@ -80,7 +81,11 @@ public class MainPresenter implements MainContract.Presenter {
     private void onPremiumStatusUpdated(boolean isPremium) {
         if (view != null) {
             view.updateView(isPremium);
-            view.updateRequestsCounter(!isPremium);
+            if (isRequestCounterVisible) {
+                view.updateRequestsCounter(true);
+            } else {
+                view.updateRequestsCounter(!isPremium);
+            }
         }
     }
 

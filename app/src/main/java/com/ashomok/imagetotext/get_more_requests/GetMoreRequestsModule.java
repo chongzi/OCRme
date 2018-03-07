@@ -10,9 +10,16 @@ import android.content.Context;
 import com.ashomok.imagetotext.di_dagger.ActivityScoped;
 import com.ashomok.imagetotext.get_more_requests.row.PromoListAdapter;
 import com.ashomok.imagetotext.get_more_requests.row.PromoRowData;
+import com.ashomok.imagetotext.get_more_requests.row.UiManagingDelegate;
+import com.ashomok.imagetotext.get_more_requests.row.task_delegates.FollowUsOnFbDelegate;
+import com.ashomok.imagetotext.get_more_requests.row.task_delegates.LoginToSystemDelegate;
+import com.ashomok.imagetotext.get_more_requests.row.task_delegates.WatchVideoDelegate;
+import com.ashomok.imagetotext.get_more_requests.row.task_delegates.WriteFeedbackDelegate;
 import com.ashomok.imagetotext.update_to_premium.UpdateToPremiumPresenter;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import dagger.Binds;
 import dagger.Module;
@@ -35,14 +42,25 @@ public abstract class GetMoreRequestsModule {
         return PromoList.getList();
     }
 
-//    @Provides
-//    static PromoListAdapter providePromoListAdapter(List<PromoRowData> promoList){
-//        return new PromoListAdapter(promoList);
-//    }
-
     @Provides
     @ActivityScoped
     static Activity provideActivity(GetMoreRequestsActivity activity) {
         return activity;
     }
+
+    @Provides
+    @ActivityScoped
+    static Map<String, UiManagingDelegate> provideUiDelegates(
+            LoginToSystemDelegate loginToSystemDelegate,
+            WatchVideoDelegate watchVideoDelegate,
+            WriteFeedbackDelegate writeFeedbackDelegate,
+            FollowUsOnFbDelegate followUsOnFbDelegate){
+        Map<String, UiManagingDelegate> uiDelegates = new HashMap<>();
+        uiDelegates.put(WatchVideoDelegate.ID, watchVideoDelegate);
+        uiDelegates.put(LoginToSystemDelegate.ID, loginToSystemDelegate);
+        uiDelegates.put(WriteFeedbackDelegate.ID, writeFeedbackDelegate);
+        uiDelegates.put(FollowUsOnFbDelegate.ID, followUsOnFbDelegate);
+        return uiDelegates;
+    }
+
 }

@@ -38,7 +38,7 @@ public abstract class UiManagingDelegate {
             holder.subtitle.setVisibility(View.VISIBLE);
             holder.subtitle.setText(item.getSubtitleStringId());
         } else {
-            holder.subtitle.setVisibility(View.INVISIBLE);
+            holder.subtitle.setVisibility(View.GONE);
         }
 
         holder.isDone.setVisibility(item.isDone ? View.VISIBLE : View.GONE);
