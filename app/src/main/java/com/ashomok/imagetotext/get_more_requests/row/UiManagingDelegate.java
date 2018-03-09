@@ -87,9 +87,6 @@ public abstract class UiManagingDelegate {
         int availableOcrRequests = ocrRequestsCounter.getAvailableOcrRequests();
         availableOcrRequests += requestsCost;
         ocrRequestsCounter.saveAvailableOcrRequests(availableOcrRequests);
-
-        activity.showInfo(
-                activity.getString(R.string.you_get_ocr_requests, String.valueOf(requestsCost)));
     }
 
     protected abstract void startTask();

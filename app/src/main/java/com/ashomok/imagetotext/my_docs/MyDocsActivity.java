@@ -4,11 +4,14 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -36,6 +39,7 @@ import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 
+import static com.ashomok.imagetotext.Settings.appPackageName;
 import static com.ashomok.imagetotext.ocr_result.OcrResultActivity.EXTRA_OCR_RESPONSE;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
@@ -138,7 +142,7 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
             case R.id.select:
                 onSelectMode();
                 return true;
-            //todo add more menu items - see my_docs_common
+            //add more menu items - see my_docs_common
         }
 
         return super.onOptionsItemSelected(item);
@@ -226,7 +230,75 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
             onSelectMode();
             multiSelect(position);
         }
+
+        @Override
+        public void onItemDelete(int position) {
+            multiSelectDataList.add(dataList.get(position));
+            mPresenter.deleteDocs(multiSelectDataList);
+            multiSelectDataList.clear();
+        }
+
+        @Override
+        public void onItemShareText(int position) {
+            OcrResult doc = dataList.get(position);
+            String textResult = doc.getTextResult();
+            onShareTextClicked(textResult);
+        }
+
+        @Override
+        public void onItemSharePdf(int position) {
+            OcrResult doc = dataList.get(position);
+            String mDownloadURL = doc.getPdfResultMediaUrl();
+            onSharePdfClicked(mDownloadURL);
+        }
     };
+
+    @SuppressWarnings("deprecation")
+    private void onShareTextClicked(String textResult) {
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+
+        Resources res = getResources();
+        String linkToApp = "https://play.google.com/store/apps/details?id=" + appPackageName;
+        String sharedBody =
+                String.format(res.getString(R.string.share_text_message), textResult, linkToApp);
+
+        Spanned styledText;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            styledText = Html.fromHtml(sharedBody, Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            styledText = Html.fromHtml(sharedBody);
+        }
+
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, res.getString(R.string.text_result));
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, styledText);
+        startActivity(Intent.createChooser(sharingIntent, res.getString(R.string.send_text_result_to)));
+    }
+
+    private void onSharePdfClicked(String mDownloadURL) {
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+
+        Resources res = getResources();
+        String linkToApp = "https://play.google.com/store/apps/details?id=" + appPackageName;
+        String sharedBody = String.format(
+                res.getString(R.string.share_pdf_message), mDownloadURL, linkToApp);
+
+        Spanned styledText;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            styledText = Html.fromHtml(sharedBody, Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            styledText = Html.fromHtml(sharedBody);
+        }
+
+        sharingIntent.putExtra(
+                android.content.Intent.EXTRA_SUBJECT, res.getString(R.string.link_to_pdf));
+        sharingIntent.putExtra(
+                android.content.Intent.EXTRA_TEXT, styledText);
+        startActivity(
+                Intent.createChooser(sharingIntent, res.getString(R.string.send_pdf_to)));
+
+    }
 
     private void initRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
@@ -382,5 +454,11 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         void onItemClick(int position);
 
         void onItemLongClick(int position);
+
+        void onItemDelete(int position);
+
+        void onItemShareText(int position);
+
+        void onItemSharePdf(int position);
     }
 }

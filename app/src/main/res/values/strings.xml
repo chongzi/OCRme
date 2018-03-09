@@ -174,7 +174,7 @@
     <string name="select_all">Select all</string>
     <string name="select">Select</string>
     <string name="delete_docs">Delete %1$s docs?</string>
-    <string name="delete">delete</string>
+    <string name="delete">Delete</string>
     <string name="languages_selected">%1$s languages selected</string>
     <string name="unselect_all">Unselect all</string>
     <string name="update_to_premium">Update to premium</string>
@@ -213,4 +213,6 @@
     <string name="you_have_n_requests">You have %1$s requests</string>
     <string name="or_you_can">Or you can</string>
     <string name="buy_5_requests">Buy 5 requests</string>
+    <string name="share_text">Share text</string>
+    <string name="share_pdf">Share PDF</string>
 </resources>

@@ -74,7 +74,8 @@ public class GetMoreRequestsActivity extends BaseLoginActivity
         //ignore
     }
 
-    private void updateToolbarText() {
+    @Override
+    public void updateToolbarText() {
         TextView youHaveRequestsTextView = findViewById(R.id.you_have_requests_text);
         youHaveRequestsTextView.setText(
                 getString(R.string.you_have_n_requests,

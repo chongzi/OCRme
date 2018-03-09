@@ -39,6 +39,9 @@ public class GetMoreRequestsPresenter implements GetMoreRequestsContract.Present
     private BillingProviderCallback billingProviderCallback = new BillingProviderCallback() {
         @Override
         public void onPurchasesUpdated() {
+            if (view != null) {
+                view.updateToolbarText();
+            }
         }
 
         @Override

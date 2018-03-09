@@ -23,6 +23,8 @@ public class GetMoreRequestsContract {
         void initBuyRequestsRow(SkuRowData item);
 
         void showInfo(String message);
+
+        void updateToolbarText();
     }
 
     interface Presenter extends BasePresenter<GetMoreRequestsContract.View> {

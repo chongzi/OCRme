@@ -139,16 +139,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
             switch (menuItem.getItemId()) {
-
-                case R.id.Not_interasted_catugury:
-
-                    //todo
-                    Log.d(TAG, "message 1");
+                case R.id.delete:
+                    callback.onItemDelete(position);
                     return true;
-                case R.id.No_interasted:
-
-                    //todo
-                    Log.d(TAG, "message 2");
+                case R.id.share_text:
+                    callback.onItemShareText(position);
+                    return true;
+                case R.id.share_pdf:
+                    callback.onItemSharePdf(position);
                     return true;
                 default:
             }
