@@ -131,6 +131,16 @@ public class MainActivity extends BaseLoginActivity implements
                 new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateCounterText();
+    }
+
+    private void updateCounterText() {
+        TextView textCounter = findViewById(R.id.requests_counter_text);
+        textCounter.setText(String.valueOf(mPresenter.getRequestsCount()));
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -243,7 +253,6 @@ public class MainActivity extends BaseLoginActivity implements
         updateToPremiumMenuItem.setTitle(spannableString);
     }
 
-
     private void initImageSourceBtns() {
         //gallery btn init
         final ImageButton galleryBtn = findViewById(R.id.gallery_btn);
@@ -261,7 +270,12 @@ public class MainActivity extends BaseLoginActivity implements
                 .compose(rxPermissions.ensureEach(permission))
                 .subscribe(permission -> {
                     if (permission.granted) {
-                        startCamera();
+                        if (mPresenter.isRequestsAvailable()) {
+                            startCamera();
+                            mPresenter.consumeRequest();
+                        } else {
+                            showRequestsCounterDialog(mPresenter.getRequestsCount());
+                        }
                     } else if (permission.shouldShowRequestPermissionRationale) {
                         showWarning(R.string.needs_to_save, mRootView);
                     } else {
@@ -269,6 +283,7 @@ public class MainActivity extends BaseLoginActivity implements
                     }
                 }, throwable -> showError(throwable.getMessage()));
     }
+
 
     public void startGalleryChooser() {
         Intent intent = new Intent();
@@ -489,13 +504,22 @@ public class MainActivity extends BaseLoginActivity implements
                 onLanguageTextViewClicked();
                 break;
             case R.id.gallery_btn:
-                startGalleryChooser();
+                onGalleryChooserClicked();
                 break;
             case R.id.my_docs_btn:
                 startMyDocsActivity();
                 break;
             default:
                 break;
+        }
+    }
+
+    private void onGalleryChooserClicked() {
+        if (mPresenter.isRequestsAvailable()) {
+            startGalleryChooser();
+            mPresenter.consumeRequest();
+        } else {
+            showRequestsCounterDialog(mPresenter.getRequestsCount());
         }
     }
 
@@ -555,14 +579,18 @@ public class MainActivity extends BaseLoginActivity implements
     public void initRequestsCounter(int requestCount) {
         requestCounterLayout = findViewById(R.id.requests_counter_layout);
         requestCounterLayout.setOnClickListener(view -> {
-            RequestsCounterDialogFragment requestsCounterDialogFragment =
-                    RequestsCounterDialogFragment.newInstance(R.string.you_have_requests, requestCount);
-
-            requestsCounterDialogFragment.show(getFragmentManager(), "dialog");
+            showRequestsCounterDialog(requestCount);
         });
 
         TextView textCounter = findViewById(R.id.requests_counter_text);
         textCounter.setText(String.valueOf(requestCount));
+    }
+
+    private void showRequestsCounterDialog(int requestCount) {
+        RequestsCounterDialogFragment requestsCounterDialogFragment =
+                RequestsCounterDialogFragment.newInstance(R.string.you_have_requests, requestCount);
+
+        requestsCounterDialogFragment.show(getFragmentManager(), "dialog");
     }
 
 

@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.ashomok.imagetotext.OcrRequestsCounter;
 import com.ashomok.imagetotext.R;
+import com.ashomok.imagetotext.get_more_requests.GetMoreRequestsActivity;
 
 /**
  * Implementations of this abstract class are responsible to render UI and handle user actions for
@@ -82,10 +83,13 @@ public abstract class UiManagingDelegate {
         }
     }
 
-    public void onTaskDone(OcrRequestsCounter ocrRequestsCounter) {
+    public void onTaskDone(OcrRequestsCounter ocrRequestsCounter, GetMoreRequestsActivity activity) {
         int availableOcrRequests = ocrRequestsCounter.getAvailableOcrRequests();
         availableOcrRequests += requestsCost;
         ocrRequestsCounter.saveAvailableOcrRequests(availableOcrRequests);
+
+        activity.showInfo(
+                activity.getString(R.string.you_get_ocr_requests, String.valueOf(requestsCost)));
     }
 
     protected abstract void startTask();

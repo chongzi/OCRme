@@ -1,6 +1,5 @@
 package com.ashomok.imagetotext.get_more_requests.row.task_delegates;
 
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.ashomok.imagetotext.OcrRequestsCounter;
@@ -93,7 +92,7 @@ public class WatchVideoDelegate extends UiManagingDelegate implements RewardedVi
     }
 
     private void addRequests(int amount) {
-       onTaskDone(ocrRequestsCounter);
+       onTaskDone(ocrRequestsCounter, activity);
     }
 
     @Override

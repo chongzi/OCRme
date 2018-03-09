@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Optional;
@@ -162,7 +163,15 @@ public class MainPresenter implements MainContract.Presenter {
         saveLanguages();
     }
 
-    private int getRequestsCount() {return ocrRequestsCounter.getAvailableOcrRequests();}
+    @Override
+    public int getRequestsCount() {
+        return ocrRequestsCounter.getAvailableOcrRequests();
+    }
+
+    @Override
+    public void consumeRequest() {
+        ocrRequestsCounter.consumeRequest();
+    }
 
     private void updateLanguageTextView(Optional<List<String>> checkedLanguageCodes) {
         if (view != null) {
@@ -195,5 +204,13 @@ public class MainPresenter implements MainContract.Presenter {
         }
 
         return languageString.toString();
+    }
+
+    @Override
+    public boolean isRequestsAvailable() {
+        boolean isPremium = Settings.isPremium;
+        Log.d(TAG, "isPremium = " + String.valueOf(isPremium));
+
+        return isPremium || getRequestsCount() > 0;
     }
 }

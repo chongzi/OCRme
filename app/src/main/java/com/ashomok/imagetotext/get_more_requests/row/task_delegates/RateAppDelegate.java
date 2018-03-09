@@ -10,8 +10,6 @@ import android.widget.Toast;
 import com.ashomok.imagetotext.OcrRequestsCounter;
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.get_more_requests.GetMoreRequestsActivity;
-import com.ashomok.imagetotext.get_more_requests.row.PromoRowData;
-import com.ashomok.imagetotext.get_more_requests.row.RowViewHolder;
 import com.ashomok.imagetotext.get_more_requests.row.UiManagingDelegate;
 
 import javax.inject.Inject;
@@ -44,7 +42,7 @@ public class RateAppDelegate extends UiManagingDelegate {
         saveData();
         rate();
 
-        onTaskDone(ocrRequestsCounter);
+        onTaskDone(ocrRequestsCounter, activity);
     }
 
     @Override

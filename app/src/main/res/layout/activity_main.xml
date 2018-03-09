@@ -18,113 +18,118 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <RelativeLayout
+        <ScrollView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/toolbar"
-            android:layout_margin="@dimen/activity_horizontal_margin">
+            android:layout_below="@id/toolbar">
 
-            <LinearLayout
-                android:id="@+id/top_line_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
-
-                <TextView
-                    android:id="@+id/language_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="false"
-                    android:text="@string/language" />
-
-                <TextView
-                    android:id="@+id/language"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="3dp"
-                    android:layout_marginStart="3dp"
-                    android:text="@string/auto"
-                    android:layout_weight="1"/>
-
-                <RelativeLayout
-                    android:id="@+id/requests_counter_layout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_margin="8dp"
-                        android:src="@drawable/circle"
-                        android:tint="@color/green_600"
-                        android:layout_centerInParent="true"/>
-
-                    <TextView
-                        android:id="@+id/requests_counter_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:text="00"
-                        android:textColor="@color/white" />
-                </RelativeLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/image_source_layout"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/top_line_layout"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <ImageButton
-                    android:id="@+id/photo_btn"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_camera" />
-
-                <ImageButton
-                    android:id="@+id/gallery_btn"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_gallery" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ask_login"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/image_source_layout"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/please_login" />
-
-                <Button
-                    android:id="@+id/sign_in_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sign_in_captured" />
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/my_docs_btn"
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/image_source_layout"
-                android:layout_centerHorizontal="true"
-                android:text="@string/my_docs"
-                android:visibility="gone" />
-        </RelativeLayout>
+                android:layout_margin="@dimen/activity_horizontal_margin">
+
+                <LinearLayout
+                    android:id="@+id/top_line_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/language_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:text="@string/language" />
+
+                    <TextView
+                        android:id="@+id/language"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="3dp"
+                        android:layout_marginStart="3dp"
+                        android:layout_weight="1"
+                        android:text="@string/auto" />
+
+                    <RelativeLayout
+                        android:id="@+id/requests_counter_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_centerInParent="true"
+                            android:layout_margin="8dp"
+                            android:src="@drawable/circle"
+                            android:tint="@color/green_600" />
+
+                        <TextView
+                            android:id="@+id/requests_counter_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="00"
+                            android:textColor="@color/white" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/image_source_layout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/top_line_layout"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <ImageButton
+                        android:id="@+id/photo_btn"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_camera" />
+
+                    <ImageButton
+                        android:id="@+id/gallery_btn"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_gallery" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ask_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/image_source_layout"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/please_login" />
+
+                    <Button
+                        android:id="@+id/sign_in_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sign_in_captured" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/my_docs_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/image_source_layout"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/my_docs"
+                    android:visibility="gone" />
+            </RelativeLayout>
+        </ScrollView>
     </RelativeLayout>
 
 

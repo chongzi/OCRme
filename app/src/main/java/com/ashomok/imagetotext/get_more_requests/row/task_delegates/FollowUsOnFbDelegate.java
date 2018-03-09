@@ -43,7 +43,7 @@ public class FollowUsOnFbDelegate extends UiManagingDelegate {
         saveData();
         runFollowUs();
 
-        onTaskDone(ocrRequestsCounter);
+        onTaskDone(ocrRequestsCounter, activity);
     }
 
     private void runFollowUs() {

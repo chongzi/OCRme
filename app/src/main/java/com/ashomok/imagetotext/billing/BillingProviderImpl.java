@@ -216,7 +216,7 @@ public class BillingProviderImpl implements BillingProvider {
                         String.valueOf(SCAN_IMAGE_REQUESTS_BATCH_SIZE));
                 showInfo(message);
             } else {
-                showError(R.string.unknown_error);
+                Log.d(TAG, "onConsumeFinished error code " + result);
             }
 
             if (callback != null) {

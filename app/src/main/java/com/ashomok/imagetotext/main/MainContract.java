@@ -38,5 +38,10 @@ public class MainContract {
 
         Optional<List<String>> getLanguageCodes();
 
+        boolean isRequestsAvailable();
+
+        int getRequestsCount();
+
+        void consumeRequest();
     }
 }
