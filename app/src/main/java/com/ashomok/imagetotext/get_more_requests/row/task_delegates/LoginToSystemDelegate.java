@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.ashomok.imagetotext.OcrRequestsCounter;
+import com.ashomok.imagetotext.Settings;
 import com.ashomok.imagetotext.firebaseUiAuth.BaseLoginActivity;
 import com.ashomok.imagetotext.get_more_requests.GetMoreRequestsActivity;
 import com.ashomok.imagetotext.get_more_requests.row.PromoRowData;
@@ -14,8 +16,6 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 
 import javax.inject.Inject;
-
-import static com.ashomok.imagetotext.billing.BillingProviderImpl.AVAILABLE_OCR_REQUESTS_COUNT_TAG;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 /**
@@ -25,15 +25,17 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 public class LoginToSystemDelegate extends UiManagingDelegate {
     public static final String TAG = DEV_TAG + LoginToSystemDelegate.class.getSimpleName();
     public static final String ID = "login_to_system";
-    private static final String LOGIN_TO_SYSTEM_DONE_TAG = "LOGIN_TO_SYSTEM_DONE";
+    private static final String LOGIN_TO_SYSTEM_DONE_TAG = "LOGIN_TO_SYSTEM_DONE0";
+    private final OcrRequestsCounter ocrRequestsCounter;
 
-    BaseLoginActivity activity;
-    SharedPreferences sharedPreferences;
+    private BaseLoginActivity activity;
+    private SharedPreferences sharedPreferences;
 
     @Inject
-    public LoginToSystemDelegate(GetMoreRequestsActivity activity,
+    public LoginToSystemDelegate(GetMoreRequestsActivity activity, OcrRequestsCounter ocrRequestsCounter,
                                  SharedPreferences sharedPreferences){
-        super(activity.getApplicationContext());
+        super(activity);
+        this.ocrRequestsCounter = ocrRequestsCounter;
         this.activity = activity;
         this.sharedPreferences = sharedPreferences;
     }
@@ -41,7 +43,6 @@ public class LoginToSystemDelegate extends UiManagingDelegate {
     @Override
     public void onBindViewHolder(PromoRowData data, RowViewHolder holder) {
         super.onBindViewHolder(data, holder);
-        //todo update view if not avalible
     }
 
     @Override
@@ -49,6 +50,8 @@ public class LoginToSystemDelegate extends UiManagingDelegate {
         Log.d(TAG, "onstartTask");
         saveData();
         activity.signIn();
+
+        onTaskDone(ocrRequestsCounter);
     }
 
     @Override

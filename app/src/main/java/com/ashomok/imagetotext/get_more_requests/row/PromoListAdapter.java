@@ -45,7 +45,6 @@ public class PromoListAdapter extends RecyclerView.Adapter<RowViewHolder> implem
         uiDelegatesFactory.onBindViewHolder(data, holder);
     }
 
-
     private PromoRowData getItem(int position) {
         return dataList.get(position);
     }

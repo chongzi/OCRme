@@ -209,4 +209,8 @@
     <string name="follow_us_on_fb">Follow us on Facebook</string>
     <string name="requests_cost">+%1$s</string>
     <string name="task_is_done">Task is done</string>
+    <string name="failed_to_load_video_ad">Failed to load video ad</string>
+    <string name="you_have_n_requests">You have %1$s requests</string>
+    <string name="or_you_can">Or you can</string>
+    <string name="buy_5_requests">Buy 5 requests</string>
 </resources>

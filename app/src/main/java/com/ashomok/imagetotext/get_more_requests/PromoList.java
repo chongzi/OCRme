@@ -5,7 +5,7 @@ import com.ashomok.imagetotext.get_more_requests.row.PromoRowData;
 import com.ashomok.imagetotext.get_more_requests.row.task_delegates.FollowUsOnFbDelegate;
 import com.ashomok.imagetotext.get_more_requests.row.task_delegates.LoginToSystemDelegate;
 import com.ashomok.imagetotext.get_more_requests.row.task_delegates.WatchVideoDelegate;
-import com.ashomok.imagetotext.get_more_requests.row.task_delegates.WriteFeedbackDelegate;
+import com.ashomok.imagetotext.get_more_requests.row.task_delegates.RateAppDelegate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ public class PromoList {
         result.add(new PromoRowData(
                 LoginToSystemDelegate.ID, R.drawable.ic_translate_black_24dp, R.string.login_to_system, 0, 5));
         result.add(new PromoRowData(
-                WriteFeedbackDelegate.ID, R.drawable.ic_translate_black_24dp, R.string.write_feedback, 0, 10));
+                RateAppDelegate.ID, R.drawable.ic_translate_black_24dp, R.string.write_feedback, 0, 10));
         result.add(new PromoRowData(
                 FollowUsOnFbDelegate.ID, R.drawable.ic_translate_black_24dp, R.string.follow_us_on_fb, 0, 5));
         return result;

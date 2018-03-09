@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.ashomok.imagetotext.OcrRequestsCounter;
 import com.ashomok.imagetotext.R;
 
 import dagger.Binds;
@@ -30,5 +31,8 @@ public abstract class ApplicationModule {
         return context.getSharedPreferences(
                 context.getString(R.string.preferences), Context.MODE_PRIVATE);
     }
+
+//    @Binds
+//    abstract OcrRequestsCounter provideOcrRequestsCounter(SharedPreferences sharedPreferences);
 }
 

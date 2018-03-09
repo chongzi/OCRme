@@ -1,5 +1,6 @@
 package com.ashomok.imagetotext.get_more_requests;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -7,12 +8,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 
+import com.ashomok.imagetotext.OcrRequestsCounter;
 import com.ashomok.imagetotext.R;
+import com.ashomok.imagetotext.Settings;
 import com.ashomok.imagetotext.billing.model.SkuRowData;
 import com.ashomok.imagetotext.firebaseUiAuth.BaseLoginActivity;
 import com.ashomok.imagetotext.get_more_requests.row.PromoListAdapter;
-import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
+import com.ashomok.imagetotext.utils.InfoSnackbarUtil;
 
 import javax.inject.Inject;
 
@@ -25,7 +29,7 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  */
 
 public class GetMoreRequestsActivity extends BaseLoginActivity
-        implements GetMoreRequestsContract.View{
+        implements GetMoreRequestsContract.View {
 
     private static final String TAG = DEV_TAG + GetMoreRequestsActivity.class.getSimpleName();
     @Inject
@@ -34,8 +38,13 @@ public class GetMoreRequestsActivity extends BaseLoginActivity
     @Inject
     PromoListAdapter promoListAdapter;
 
-    private View mRootView;
+    @Inject
+    SharedPreferences sharedPreferences;
 
+    @Inject
+    OcrRequestsCounter ocrRequestsCounter;
+
+    private View mRootView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,19 +56,30 @@ public class GetMoreRequestsActivity extends BaseLoginActivity
             mRootView = getWindow().getDecorView().findViewById(android.R.id.content);
         }
         initToolbar();
+        updateToolbarText();
         initPromoList();
-        initPaidOption();
         mPresenter.takeView(this);
     }
 
     @Override
-    public void updateUi(boolean isUserSignedIn) {
-        //todo refresh list
-        //todo
+    public void onResume() {
+        super.onResume();
+
+        promoListAdapter.notifyDataSetChanged();
+        updateToolbarText();
     }
 
-    private void initPaidOption() {
-        //todo
+    @Override
+    public void updateUi(boolean isUserSignedIn) {
+        //ignore
+    }
+
+    private void updateToolbarText() {
+        TextView youHaveRequestsTextView = findViewById(R.id.you_have_requests_text);
+        youHaveRequestsTextView.setText(
+                getString(R.string.you_have_n_requests,
+                        String.valueOf(ocrRequestsCounter.getAvailableOcrRequests())
+                ));
     }
 
     private void initPromoList() {
@@ -104,21 +124,24 @@ public class GetMoreRequestsActivity extends BaseLoginActivity
 
     @Override
     public void showError(int errorMessageRes) {
-
+        InfoSnackbarUtil.showError(errorMessageRes, mRootView);
     }
 
     @Override
     public void showInfo(int infoMessageRes) {
-
-    }
-
-    @Override
-    public void initBuyRequestsRow(SkuRowData item) {
-
+        InfoSnackbarUtil.showInfo(infoMessageRes, mRootView);
     }
 
     @Override
     public void showInfo(String message) {
+        InfoSnackbarUtil.showInfo(message, mRootView);
+    }
 
+    @Override
+    public void initBuyRequestsRow(SkuRowData item) {
+        View paidOptionLayout = findViewById(R.id.paid_option);
+        TextView price = findViewById(R.id.price);
+        price.setText(item.getPrice());
+        paidOptionLayout.setOnClickListener(view -> mPresenter.onBuyRequestsClicked(item));
     }
 }

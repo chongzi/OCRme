@@ -15,12 +15,6 @@
  */
 package com.ashomok.imagetotext.get_more_requests.row;
 
-import com.ashomok.imagetotext.get_more_requests.row.task_delegates.FollowUsOnFbDelegate;
-import com.ashomok.imagetotext.get_more_requests.row.task_delegates.LoginToSystemDelegate;
-import com.ashomok.imagetotext.get_more_requests.row.task_delegates.WatchVideoDelegate;
-import com.ashomok.imagetotext.get_more_requests.row.task_delegates.WriteFeedbackDelegate;
-
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -35,7 +29,7 @@ public class UiDelegatesFactory {
 
     public static final String TAG = DEV_TAG + UiDelegatesFactory.class.getSimpleName();
 
-    private final Map<String, UiManagingDelegate> uiDelegates;
+    public final Map<String, UiManagingDelegate> uiDelegates;
 
     @Inject
     public UiDelegatesFactory(Map<String, UiManagingDelegate> uiDelegates) {

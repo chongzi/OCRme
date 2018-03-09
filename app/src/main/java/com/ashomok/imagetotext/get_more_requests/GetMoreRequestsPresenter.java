@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.ashomok.imagetotext.billing.BillingProviderImpl.SCAN_IMAGE_REQUESTS_SKU_ID;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 /**
@@ -25,11 +26,15 @@ public class GetMoreRequestsPresenter implements GetMoreRequestsContract.Present
     @Nullable
     private GetMoreRequestsContract.View view;
 
-    @Inject
     BillingProviderImpl billingProvider;
 
-    @Inject
     Context context;
+
+    @Inject
+    GetMoreRequestsPresenter(BillingProviderImpl billingProvider,  Context context) {
+        this.billingProvider = billingProvider;
+        this.context = context;
+    }
 
     private BillingProviderCallback billingProviderCallback = new BillingProviderCallback() {
         @Override
@@ -56,33 +61,26 @@ public class GetMoreRequestsPresenter implements GetMoreRequestsContract.Present
         }
     };
 
-    @Inject
-    GetMoreRequestsPresenter() {}
-
     private void updatePaidOption(List<SkuRowData> skuRowDataListForInAppPurchases) {
-        //todo
-//        if (view != null) {
-//            if (skuRowDataListForSubscriptions.size() == 2) {
-//                for (SkuRowData item : skuRowDataListForSubscriptions) {
-//                    switch (item.getSku()) {
-//                        case PREMIUM_MONTHLY_SKU_ID:
-//                            view.initPremiumMonthRow(item);
-//                            break;
-//                        case PREMIUM_YEARLY_SKU_ID:
-//                            view.initPremiumYearRow(item);
-//                            break;
-//                        default:
-//                            break;
-//                    }
-//                }
-//            }
-//        }
+        if (view != null) {
+            if (skuRowDataListForInAppPurchases.size() == 1) {
+                for (SkuRowData item : skuRowDataListForInAppPurchases) {
+                    switch (item.getSku()) {
+                        case SCAN_IMAGE_REQUESTS_SKU_ID:
+                            view.initBuyRequestsRow(item);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
     }
 
-
     @Override
-    public void onBuyRequestsClicked(SkuRowData item) {
-//todo
+    public void onBuyRequestsClicked(SkuRowData data) {
+      billingProvider.getBillingManager().initiatePurchaseFlow(data.getSku(),
+                data.getSkuType());
     }
 
     @Override
@@ -105,7 +103,6 @@ public class GetMoreRequestsPresenter implements GetMoreRequestsContract.Present
         view = null;
         billingProvider.destroy();
     }
-
 
     private boolean isOnline() {
         return NetworkUtils.isOnline(context);

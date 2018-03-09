@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
+import com.ashomok.imagetotext.OcrRequestsCounter;
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.Settings;
 import com.ashomok.imagetotext.billing.BillingProviderCallback;
@@ -30,14 +31,26 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 public class MainPresenter implements MainContract.Presenter {
     public static final String TAG = DEV_TAG + MainPresenter.class.getSimpleName();
 
-    @Inject
     Context context;
 
-    @Inject
     SharedPreferences mSharedPreferences;
 
-    @Inject
     BillingProviderImpl billingProvider;
+
+    OcrRequestsCounter ocrRequestsCounter;
+
+    /**
+     * Dagger strictly enforces that arguments not marked with {@code @Nullable} are not injected
+     * with {@code @Nullable} values.
+     */
+    @Inject
+    MainPresenter(Context context, SharedPreferences mSharedPreferences,
+                  BillingProviderImpl billingProvider, OcrRequestsCounter ocrRequestsCounter) {
+        this.context = context;
+        this.mSharedPreferences = mSharedPreferences;
+        this.billingProvider = billingProvider;
+        this.ocrRequestsCounter = ocrRequestsCounter;
+    }
 
     @Nullable
     public MainContract.View view;
@@ -69,14 +82,6 @@ public class MainPresenter implements MainContract.Presenter {
         public void onSkuRowDataUpdated() { //nothing
         }
     };
-
-    /**
-     * Dagger strictly enforces that arguments not marked with {@code @Nullable} are not injected
-     * with {@code @Nullable} values.
-     */
-    @Inject
-    MainPresenter() {
-    }
 
     private void onPremiumStatusUpdated(boolean isPremium) {
         if (view != null) {
@@ -157,9 +162,7 @@ public class MainPresenter implements MainContract.Presenter {
         saveLanguages();
     }
 
-    private int getRequestsCount() {
-        return billingProvider.getAvailableOcrRequests();
-    }
+    private int getRequestsCount() {return ocrRequestsCounter.getAvailableOcrRequests();}
 
     private void updateLanguageTextView(Optional<List<String>> checkedLanguageCodes) {
         if (view != null) {
@@ -193,5 +196,4 @@ public class MainPresenter implements MainContract.Presenter {
 
         return languageString.toString();
     }
-
 }

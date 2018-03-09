@@ -14,9 +14,11 @@
 package com.ashomok.imagetotext.get_more_requests.row;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Toast;
 
+import com.ashomok.imagetotext.OcrRequestsCounter;
 import com.ashomok.imagetotext.R;
 
 /**
@@ -26,12 +28,15 @@ import com.ashomok.imagetotext.R;
 public abstract class UiManagingDelegate {
 
     private Context context;
+    private int requestsCost; //each promo gives some requests amount
 
     public UiManagingDelegate(Context context) {
         this.context = context;
     }
 
     public void onBindViewHolder(PromoRowData item, RowViewHolder holder) {
+        requestsCost = item.getRequestsCost();
+
         holder.icon.setImageDrawable(context.getResources().getDrawable(item.getDrawableIconId()));
         holder.title.setText(item.getTitleStringId());
         if (item.isSubtitleExists()) {
@@ -41,12 +46,20 @@ public abstract class UiManagingDelegate {
             holder.subtitle.setVisibility(View.GONE);
         }
 
-        holder.isDone.setVisibility(item.isDone ? View.VISIBLE : View.GONE);
         holder.requestsCost.setText(context.getString(
-                R.string.requests_cost, String.valueOf(item.getRequestsCost())));
+                R.string.requests_cost, String.valueOf(requestsCost)));
+
+
+        if (isTaskAvailable()) {
+            holder.isDone.setVisibility(View.GONE);
+        } else {
+            holder.isDone.setVisibility(View.VISIBLE);
+            holder.subtitle.setVisibility(View.GONE);
+            holder.title.setTextColor(ContextCompat.getColor(context, R.color.grey_500));
+            holder.requestsCost.setTextColor(ContextCompat.getColor(context, R.color.grey_500));
+        }
     }
 
-    //todo replase by sneakbar
     protected void showTaskIsDoneToast() {
         Toast.makeText(context,
                 R.string.task_is_done, Toast.LENGTH_SHORT).show();
@@ -67,6 +80,12 @@ public abstract class UiManagingDelegate {
         } else {
             showTaskIsDoneToast();
         }
+    }
+
+    public void onTaskDone(OcrRequestsCounter ocrRequestsCounter) {
+        int availableOcrRequests = ocrRequestsCounter.getAvailableOcrRequests();
+        availableOcrRequests += requestsCost;
+        ocrRequestsCounter.saveAvailableOcrRequests(availableOcrRequests);
     }
 
     protected abstract void startTask();

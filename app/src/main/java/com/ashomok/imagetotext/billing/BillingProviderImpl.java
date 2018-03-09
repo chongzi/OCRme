@@ -11,7 +11,9 @@ import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.SkuDetails;
 import com.annimon.stream.Stream;
+import com.ashomok.imagetotext.OcrRequestsCounter;
 import com.ashomok.imagetotext.R;
+import com.ashomok.imagetotext.Settings;
 import com.ashomok.imagetotext.billing.model.SkuRowData;
 
 import java.util.ArrayList;
@@ -27,7 +29,6 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 public class BillingProviderImpl implements BillingProvider {
 
-    public static final String AVAILABLE_OCR_REQUESTS_COUNT_TAG = "availableOcrRequestsCount";
     private BillingManager mBillingManager;
     private boolean mGoldMonthly;
     private boolean mGoldYearly;
@@ -45,10 +46,11 @@ public class BillingProviderImpl implements BillingProvider {
     @NonNull
     private Activity activity;
 
-    private int availableOcrRequests;
-
     @Inject
     SharedPreferences sharedPreferences;
+
+    @Inject
+    OcrRequestsCounter ocrRequestsCounter;
 
 
     @Inject
@@ -59,15 +61,9 @@ public class BillingProviderImpl implements BillingProvider {
     public void init() {
         // Create and initialize BillingManager which talks to BillingLibrary
         mBillingManager = new BillingManager(activity, new UpdateListener());
-        loadData();
     }
 
-    public void setCallback(@Nullable BillingProviderCallback callback) {
-        this.callback = callback;
-    }
-    public int getAvailableOcrRequests() {
-        return availableOcrRequests;
-    }
+    public void setCallback(@Nullable BillingProviderCallback callback) {this.callback = callback;}
 
     public List<SkuRowData> getSkuRowDataList() {
         return skuRowDataList;
@@ -137,23 +133,6 @@ public class BillingProviderImpl implements BillingProvider {
                 });
     }
 
-    public void useOcrRequest() {
-        availableOcrRequests--;
-        saveData();
-        Log.d(TAG, "ocr requests count: " + availableOcrRequests);
-    }
-
-    private void saveData() {
-        sharedPreferences.edit().putInt(AVAILABLE_OCR_REQUESTS_COUNT_TAG, availableOcrRequests)
-                .apply();
-    }
-
-    private void loadData() {
-        Log.d(TAG, "loadData()");
-       availableOcrRequests =
-               sharedPreferences.getInt(AVAILABLE_OCR_REQUESTS_COUNT_TAG, SCAN_IMAGE_REQUESTS_BATCH_SIZE);
-    }
-
     public void destroy() {
         if (mBillingManager != null) {
             mBillingManager.destroy();
@@ -200,11 +179,6 @@ public class BillingProviderImpl implements BillingProvider {
     }
 
     @Override
-    public boolean isOcrRequestsAvailable() {
-        return availableOcrRequests > 0;
-    }
-
-    @Override
     public boolean isPremiumYearlySubscribed() {
         return mGoldYearly;
     }
@@ -233,8 +207,10 @@ public class BillingProviderImpl implements BillingProvider {
                 // Successfully consumed, so we apply the effects of the item in our
                 // game world's logic, which in our case means filling the gas tank a bit
                 Log.d(TAG, "Consumption successful. Provisioning.");
+
+                int availableOcrRequests = ocrRequestsCounter.getAvailableOcrRequests();
                 availableOcrRequests += SCAN_IMAGE_REQUESTS_BATCH_SIZE;
-                saveData();
+                ocrRequestsCounter.saveAvailableOcrRequests(availableOcrRequests);
 
                 String message = activity.getString(R.string.you_get_ocr_requests,
                         String.valueOf(SCAN_IMAGE_REQUESTS_BATCH_SIZE));

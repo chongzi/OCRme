@@ -8,7 +8,6 @@ import android.support.annotation.StringRes;
  */
 public class PromoRowData {
     private String id;
-    boolean isDone;
     private int requestsCost; //each promo gives some requests amount
     @DrawableRes
     private int drawableIconId;
@@ -34,9 +33,6 @@ public class PromoRowData {
         return id;
     }
 
-    public boolean isDone() {
-        return isDone;
-    }
 
     public int getRequestsCost() {
         return requestsCost;
@@ -49,7 +45,6 @@ public class PromoRowData {
         this.titleStringId = titleStringId;
         this.id = id;
         this.requestsCost = requestsCost;
-        isDone = false;
         this.subtitleStringId = subtitleStringId;
     }
 

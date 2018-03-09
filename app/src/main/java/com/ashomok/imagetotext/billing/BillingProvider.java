@@ -27,7 +27,6 @@ import java.util.List;
 public interface BillingProvider {
     BillingManager getBillingManager();
     boolean isPremiumMonthlySubscribed();
-    boolean isOcrRequestsAvailable(); //user have at last 5 free requests per day
     boolean isPremiumYearlySubscribed();
 
     List<SkuRowData> getSkuRowDataListForSubscriptions();
