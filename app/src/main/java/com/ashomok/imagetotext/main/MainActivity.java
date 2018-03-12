@@ -22,12 +22,16 @@ import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ashomok.imagetotext.BuildConfig;
@@ -43,8 +47,14 @@ import com.ashomok.imagetotext.ocr.OcrActivity;
 import com.ashomok.imagetotext.update_to_premium.UpdateToPremiumActivity;
 import com.ashomok.imagetotext.utils.InfoSnackbarUtil;
 import com.ashomok.imagetotext.utils.NetworkUtils;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.facebook.ads.Ad;
+import com.facebook.ads.AdChoicesView;
+import com.facebook.ads.AdError;
+import com.facebook.ads.AdListener;
+import com.facebook.ads.AdSize;
+import com.facebook.ads.AdView;
+import com.facebook.ads.MediaView;
+import com.facebook.ads.NativeAd;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
@@ -57,14 +67,13 @@ import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 
-import static com.ashomok.imagetotext.Settings.isAdsActive;
 import static com.ashomok.imagetotext.language_choser.LanguageOcrActivity.CHECKED_LANGUAGE_CODES;
 import static com.ashomok.imagetotext.ocr.OcrActivity.RESULT_CANCELED_BY_USER;
 import static com.ashomok.imagetotext.utils.FileUtils.createFile;
-import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showWarning;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 //todo use butterknife
+//todo add add from facebook ad
 public class MainActivity extends BaseLoginActivity implements
         SignOutDialogFragment.OnSignedOutListener,
         View.OnClickListener,
@@ -89,6 +98,7 @@ public class MainActivity extends BaseLoginActivity implements
     private String mEmail = "No email";
     private String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
     private static final String imageFileNameFromCamera = "ocr.jpg";
+    private NativeAd nativeAd;
 
 
     private final BroadcastReceiver mConnectivityChangeReceiver = new BroadcastReceiver() {
@@ -122,6 +132,12 @@ public class MainActivity extends BaseLoginActivity implements
         mPresenter.takeView(this);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
 
     @Override
     public void onStart() {
@@ -174,7 +190,7 @@ public class MainActivity extends BaseLoginActivity implements
 
         //ocr canceled
         else if (requestCode == OCR_Activity_REQUEST_CODE && resultCode == RESULT_CANCELED_BY_USER) {
-            showWarning(R.string.canceled, mRootView);
+            showWarning(R.string.canceled);
         }
     }
 
@@ -268,23 +284,11 @@ public class MainActivity extends BaseLoginActivity implements
 
         RxView.clicks(photoBtn)
                 .compose(rxPermissions.ensureEach(permission))
-                .subscribe(permission -> {
-                    if (permission.granted) {
-                        if (mPresenter.isRequestsAvailable()) {
-                            startCamera();
-                            mPresenter.consumeRequest();
-                        } else {
-                            showRequestsCounterDialog(mPresenter.getRequestsCount());
-                        }
-                    } else if (permission.shouldShowRequestPermissionRationale) {
-                        showWarning(R.string.needs_to_save, mRootView);
-                    } else {
-                        showWarning(R.string.this_option_is_not_be_avalible, mRootView);
-                    }
-                }, throwable -> showError(throwable.getMessage()));
+                .subscribe(permission -> mPresenter.onPhotoBtnClicked(permission),
+                        throwable -> showError(throwable.getMessage()));
     }
 
-
+    @Override
     public void startGalleryChooser() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -306,7 +310,6 @@ public class MainActivity extends BaseLoginActivity implements
         });
     }
 
-
     private void setUpNavigationDrawer() {
         mDrawerLayout = findViewById(R.id.drawer_layout);
         // Set up the navigation drawer.
@@ -320,6 +323,10 @@ public class MainActivity extends BaseLoginActivity implements
             case android.R.id.home:
                 // Open the navigation drawer when the home icon is selected from the toolbar.
                 mDrawerLayout.openDrawer(GravityCompat.START);
+                return true;
+
+            case R.id.remove_ads:
+                startUpdateToPremiumActivity();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -393,7 +400,8 @@ public class MainActivity extends BaseLoginActivity implements
         }
     }
 
-    void startCamera() {
+    @Override
+    public void startCamera() {
         try {
             dispatchTakePictureIntent();
         } catch (Exception e) {
@@ -465,12 +473,7 @@ public class MainActivity extends BaseLoginActivity implements
         signedInNavHeader.setVisibility(isUserSignedIn ? View.VISIBLE : View.GONE);
 
         if (isUserSignedIn) {
-
-            //set "signed as" text
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            if (user != null) {
-                mEmail = user.getEmail();
-            }
+            mEmail = mPresenter.getUserEmail();
             TextView signedAsText = signedInNavHeader.findViewById(R.id.you_signed_as);
             signedAsText.setText(getString(R.string.you_signed_in_as, mEmail));
         }
@@ -515,12 +518,7 @@ public class MainActivity extends BaseLoginActivity implements
     }
 
     private void onGalleryChooserClicked() {
-        if (mPresenter.isRequestsAvailable()) {
-            startGalleryChooser();
-            mPresenter.consumeRequest();
-        } else {
-            showRequestsCounterDialog(mPresenter.getRequestsCount());
-        }
+        mPresenter.onGalleryChooserClicked();
     }
 
     private void onLanguageTextViewClicked() {
@@ -542,6 +540,11 @@ public class MainActivity extends BaseLoginActivity implements
     }
 
     @Override
+    public void showWarning(int message) {
+        InfoSnackbarUtil.showWarning(message, mRootView);
+    }
+
+    @Override
     public void showInfo(int infoMessageRes) {
         InfoSnackbarUtil.showInfo(infoMessageRes, mRootView);
     }
@@ -554,20 +557,6 @@ public class MainActivity extends BaseLoginActivity implements
     @Override
     public void updateLanguageString(String languageString) {
         languageTextView.setText(languageString);
-    }
-
-    //todo it touch premium only - delete code about ads
-    @Override
-    public void updateView(boolean isPremium) {
-        Log.d(TAG, "Update UI. Is premium " + isPremium);
-        Settings.isPremium = isPremium;
-        Settings.isAdsActive = !isPremium; //todo what if not premium but bought no ads
-
-        if (isAdsActive) {
-            showAds();
-        }
-
-        updateNavigationDrawerForPremium(isPremium);
     }
 
     @Override
@@ -586,15 +575,157 @@ public class MainActivity extends BaseLoginActivity implements
         textCounter.setText(String.valueOf(requestCount));
     }
 
-    private void showRequestsCounterDialog(int requestCount) {
+    @Override
+    public void showRequestsCounterDialog(int requestCount) {
         RequestsCounterDialogFragment requestsCounterDialogFragment =
                 RequestsCounterDialogFragment.newInstance(R.string.you_have_requests, requestCount);
 
         requestsCounterDialogFragment.show(getFragmentManager(), "dialog");
     }
 
+    //todo it touch premium only - delete code about ads
+    @Override
+    public void updateView(boolean isPremium) {
+        Log.d(TAG, "Update UI. Is premium " + isPremium);
+        Settings.isPremium = isPremium;
+        Settings.isAdsActive = !isPremium; //todo what if not premium but bought no ads
 
+        //todo edit for production
+//        if (isAdsActive) {
+//            showAds();
+//        }
+
+        showAds();
+
+        updateNavigationDrawerForPremium(isPremium);
+    }
+
+    //todo load ad faster
     private void showAds() {
-        //todo
+        showNativeAd();
+//        showMediumRectangleAdd();
+    }
+
+    private void showMediumRectangleAdd() {
+        // Instantiate an AdView view
+        AdView adView = new AdView(this, "172310460079691_172426850068052", AdSize.RECTANGLE_HEIGHT_250);
+
+        // Find the Ad Container
+        RelativeLayout adContainer = findViewById(R.id.ads_container);
+
+        // Add the ad view to your activity layout
+        adContainer.addView(adView);
+
+        // Request an ad
+        adView.loadAd();
+    }
+
+//    private void showNativeAd() {
+//        nativeAd = new NativeAd(this, "172310460079691_172310680079669"); //extract placemand id to field
+//        nativeAd.setAdListener(new AdListener() {
+//
+//            @Override
+//            public void onError(Ad ad, AdError error) {
+//                // Ad error callback
+//            }
+//
+//            @Override
+//            public void onAdLoaded(Ad ad) {
+//                NativeAdViewAttributes viewAttributes = new NativeAdViewAttributes()
+//                        .setBackgroundColor(Color.LTGRAY);
+//
+//                // Render the Native Ad Template
+//                View adView = NativeAdView.render(MainActivity.this, nativeAd,
+//                        NativeAdView.Type.HEIGHT_300, viewAttributes);
+//                RelativeLayout nativeAdContainer = (RelativeLayout) findViewById(R.id.ads_container);
+//                // Add the Native Ad View to your ad container
+//                nativeAdContainer.addView(adView);
+//            }
+//
+//            @Override
+//            public void onAdClicked(Ad ad) {
+//                // Ad clicked callback
+//            }
+//
+//            @Override
+//            public void onLoggingImpression(Ad ad) {
+//                // Ad impression logged callback
+//            }
+//        });
+//
+//        // Request an ad
+//        nativeAd.loadAd();
+//    }
+
+    //todo move to presenter?
+    private void showNativeAd() {
+        nativeAd = new NativeAd(this, "172310460079691_172310680079669"); //extract placemand id to field
+        nativeAd.setAdListener(new AdListener() {
+
+            @Override
+            public void onError(Ad ad, AdError error) {
+                // Ad error callback
+            }
+
+            @Override
+            public void onAdLoaded(Ad ad) {
+                if (nativeAd != null) {
+                    nativeAd.unregisterView();
+                }
+
+                // Add the Ad view into the ad container.
+                RelativeLayout nativeAdContainer = findViewById(R.id.ads_container);
+                LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
+                // Inflate the Ad view.  The layout referenced should be the one you created in the last step.
+                LinearLayout adView = (LinearLayout) inflater.inflate(R.layout.main_native_ad_layout, nativeAdContainer, false);
+                nativeAdContainer.addView(adView);
+
+                // Create native UI using the ad metadata.
+                ImageView nativeAdIcon = adView.findViewById(R.id.native_ad_icon);
+                TextView nativeAdTitle = adView.findViewById(R.id.native_ad_title);
+                MediaView nativeAdMedia = adView.findViewById(R.id.native_ad_media);
+                TextView nativeAdBody = adView.findViewById(R.id.native_ad_body);
+                Button nativeAdCallToAction = adView.findViewById(R.id.native_ad_call_to_action);
+
+                // Set the Text.
+                nativeAdTitle.setText(nativeAd.getAdTitle());
+                nativeAdBody.setText(nativeAd.getAdBody());
+                nativeAdCallToAction.setText(nativeAd.getAdCallToAction());
+
+                // Download and display the ad icon.
+                NativeAd.Image adIcon = nativeAd.getAdIcon();
+                NativeAd.downloadAndDisplayImage(adIcon, nativeAdIcon);
+
+                // Download and display the cover image.
+                nativeAdMedia.setNativeAd(nativeAd);
+
+                // Add the AdChoices icon
+                LinearLayout adChoicesContainer = findViewById(R.id.ad_choices_container);
+                AdChoicesView adChoicesView = new AdChoicesView(MainActivity.this, nativeAd, true);
+                adChoicesContainer.addView(adChoicesView);
+
+                // Register the Title and CTA button to listen for clicks.
+                List<View> clickableViews = new ArrayList<>();
+                clickableViews.add(nativeAdTitle);
+                clickableViews.add(nativeAdCallToAction);
+                clickableViews.add(nativeAdIcon);
+                clickableViews.add(nativeAdMedia);
+                nativeAd.registerViewForInteraction(nativeAdContainer, clickableViews);
+
+            }
+
+            @Override
+            public void onAdClicked(Ad ad) {
+                // Ad clicked callback
+            }
+
+            @Override
+            public void onLoggingImpression(Ad ad) {
+                // Ad impression logged callback
+            }
+        });
+
+        // Request an ad
+        nativeAd.loadAd();
     }
 }

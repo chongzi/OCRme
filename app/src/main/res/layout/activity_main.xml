@@ -19,6 +19,7 @@
             android:layout_height="wrap_content" />
 
         <ScrollView
+            android:id="@+id/scroll_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/toolbar">
@@ -130,8 +131,13 @@
                     android:visibility="gone" />
             </RelativeLayout>
         </ScrollView>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ads_container"
+            android:layout_alignParentBottom="true">
+        </RelativeLayout>
     </RelativeLayout>
-
 
     <!-- Navigation Drawer -->
     <android.support.design.widget.NavigationView

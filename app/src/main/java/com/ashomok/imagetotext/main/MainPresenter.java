@@ -16,6 +16,9 @@ import com.ashomok.imagetotext.billing.BillingProviderCallback;
 import com.ashomok.imagetotext.billing.BillingProviderImpl;
 import com.ashomok.imagetotext.utils.NetworkUtils;
 import com.ashomok.imagetotext.utils.SharedPreferencesUtil;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.tbruyelle.rxpermissions2.Permission;
 
 import java.util.List;
 import java.util.Map;
@@ -23,6 +26,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import static com.ashomok.imagetotext.Settings.isRequestCounterVisible;
+import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showWarning;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 /**
@@ -171,6 +175,46 @@ public class MainPresenter implements MainContract.Presenter {
     @Override
     public void consumeRequest() {
         ocrRequestsCounter.consumeRequest();
+    }
+
+    @Override
+    public void onPhotoBtnClicked(Permission permission) {
+        if (view != null) {
+            if (permission.granted) {
+                if (isRequestsAvailable()) {
+                    view.startCamera();
+                    consumeRequest();
+                } else {
+                    view.showRequestsCounterDialog(getRequestsCount());
+                }
+            } else if (permission.shouldShowRequestPermissionRationale) {
+                view.showWarning(R.string.needs_to_save);
+            } else {
+                view.showWarning(R.string.this_option_is_not_be_avalible);
+            }
+        }
+    }
+
+    @Override
+    public void onGalleryChooserClicked() {
+        if (view != null) {
+            if (isRequestsAvailable()) {
+                view.startGalleryChooser();
+                consumeRequest();
+            } else {
+                view.showRequestsCounterDialog(getRequestsCount());
+            }
+        }
+    }
+
+    @Override
+    public String getUserEmail() {
+        String mEmail = "";
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            mEmail = user.getEmail();
+        }
+        return mEmail;
     }
 
     private void updateLanguageTextView(Optional<List<String>> checkedLanguageCodes) {

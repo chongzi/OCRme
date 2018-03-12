@@ -10,6 +10,7 @@ import android.support.annotation.StringRes;
 import com.annimon.stream.Optional;
 import com.ashomok.imagetotext.di_dagger.BasePresenter;
 import com.ashomok.imagetotext.billing.BillingProviderCallback;
+import com.tbruyelle.rxpermissions2.Permission;
 
 import java.util.List;
 
@@ -21,6 +22,8 @@ public class MainContract {
 
         void showError(@StringRes int errorMessageRes);
 
+        void showWarning(@StringRes int message);
+
         void showInfo (@StringRes int infoMessageRes);
         void showInfo(String message);
 
@@ -31,6 +34,12 @@ public class MainContract {
         void updateRequestsCounter(boolean isVisible);
 
         void initRequestsCounter(int requestCount);
+
+        void startCamera();
+
+        void showRequestsCounterDialog(int requestsCount);
+
+        void startGalleryChooser();
     }
 
     interface Presenter extends BasePresenter<MainContract.View> {
@@ -43,5 +52,11 @@ public class MainContract {
         int getRequestsCount();
 
         void consumeRequest();
+
+        void onPhotoBtnClicked(Permission permission);
+
+        void onGalleryChooserClicked();
+
+        String getUserEmail();
     }
 }

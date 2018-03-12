@@ -10,14 +10,13 @@
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="170dp"
+        android:layout_gravity="center"
         android:layout_margin="@dimen/margin9"
         android:clickable="true"
         android:focusable="true"
         card_view:cardCornerRadius="5dp"
-        card_view:cardElevation="@dimen/margin10"
-        card_view:cardMaxElevation="@dimen/margin10"
-        android:layout_gravity="center"
-        >
+        card_view:cardElevation="5dp"
+        card_view:cardMaxElevation="5dp">
 
         <LinearLayout
             android:id="@+id/cardLayout"
@@ -29,9 +28,9 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_margin="@dimen/margin3"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <RelativeLayout
                     android:layout_width="0dp"
@@ -66,19 +65,18 @@
         </LinearLayout>
 
         <ImageView
+            android:id="@+id/hint"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/hint"
             android:src="@color/hint_foreground_material_light"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <CheckBox
             android:id="@+id/checkBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:theme="@style/checkBoxStyle"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
     </android.support.v7.widget.CardView>
 </LinearLayout>
