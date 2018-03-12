@@ -359,7 +359,6 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         myDocsView.setVisibility(isUserSignedIn ? View.VISIBLE : View.GONE);
 
         if (isUserSignedIn) {
-            //load docs
             mPresenter.initWithDocs();
         }
     }
@@ -396,6 +395,7 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
 
     @Override
     public void addNewLoadedDocs(List<OcrResult> newLoadedDocs) {
+        Log.d(TAG, "addNewLoadedDocs called with size = " + newLoadedDocs.size());
         int positionStart = dataList.size() - 1;
         dataList.addAll(newLoadedDocs);
         adapter.notifyItemRangeInserted(positionStart, newLoadedDocs.size());
@@ -421,6 +421,7 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
 
     @Override
     public void clearDocsList() {
+        Log.d(TAG, "clearDocsList called");
         int size = dataList.size();
         dataList.clear();
         adapter.notifyItemRangeRemoved(0, size);
