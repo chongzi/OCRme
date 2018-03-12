@@ -4,14 +4,11 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
-import android.text.Spanned;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -21,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
+import com.annimon.stream.Stream;
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.firebaseUiAuth.BaseLoginActivity;
 import com.ashomok.imagetotext.my_docs.get_my_docs_task.MyDocsHttpClient;
@@ -31,6 +29,10 @@ import com.ashomok.imagetotext.utils.AlertDialogHelper;
 import com.ashomok.imagetotext.utils.AutoFitGridLayoutManager;
 import com.ashomok.imagetotext.utils.EndlessRecyclerViewScrollListener;
 import com.ashomok.imagetotext.utils.InfoSnackbarUtil;
+import com.facebook.ads.Ad;
+import com.facebook.ads.AdError;
+import com.facebook.ads.AdListener;
+import com.facebook.ads.NativeAd;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +41,6 @@ import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 
-import static com.ashomok.imagetotext.Settings.appPackageName;
 import static com.ashomok.imagetotext.ocr_result.OcrResultActivity.EXTRA_OCR_RESPONSE;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
@@ -51,13 +52,15 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
     private static final int DELETE_TAG = 1;
     private static final String TAG = DEV_TAG + MyDocsActivity.class.getSimpleName();
 
-    private List<OcrResult> dataList;
+    private List<Object> dataList; //list of OcrResult and Ad objectsS
     private List<OcrResult> multiSelectDataList;
     private RecyclerViewAdapter adapter;
     private ActionMode mActionMode;
     boolean isMultiSelect = false;
     AlertDialogHelper alertDialogHelper;
     private ProgressBar progress;
+    private Ad ad;
+    private boolean adLoaded = false;
 
     @Inject
     MyDocsPresenter mPresenter;
@@ -122,11 +125,6 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         mPresenter.takeView(this);
     }
 
-    private void initSignInView() {
-        Button signInBtn = findViewById(R.id.sign_in_btn);
-        signInBtn.setOnClickListener(this);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -153,6 +151,11 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         super.onDestroy();
         mPresenter.dropView();  //prevent leaking activity in
         // case presenter is orchestrating a long running task
+    }
+
+    private void initSignInView() {
+        Button signInBtn = findViewById(R.id.sign_in_btn);
+        signInBtn.setOnClickListener(this);
     }
 
     private void onSelectMode() {
@@ -201,12 +204,14 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
                 false);
     }
 
-    public void multiSelect(int position) {
+    public void onMultiSelect(int position) {
         if (mActionMode != null) {
             if (multiSelectDataList.contains(dataList.get(position))) {
                 multiSelectDataList.remove(dataList.get(position));
             } else {
-                multiSelectDataList.add(dataList.get(position));
+                if (dataList.get(position) instanceof OcrResult) {
+                    multiSelectDataList.add((OcrResult) dataList.get(position));
+                }
             }
             mActionMode.setTitle(multiSelectDataList.size() + getString(R.string.selected));
 
@@ -218,87 +223,45 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         @Override
         public void onItemClick(int position) {
             if (isMultiSelect) {
-                multiSelect(position);
+                onMultiSelect(position);
             } else {
-                OcrResult doc = dataList.get(position);
-                startOcrResultActivity(new OcrResponse(doc, OcrResponse.Status.OK));
+                if (dataList.get(position) instanceof OcrResult) {
+                    OcrResult doc = (OcrResult) dataList.get(position);
+                    startOcrResultActivity(new OcrResponse(doc, OcrResponse.Status.OK));
+                }
             }
         }
 
         @Override
         public void onItemLongClick(int position) {
             onSelectMode();
-            multiSelect(position);
+            onMultiSelect(position);
         }
 
         @Override
         public void onItemDelete(int position) {
-            multiSelectDataList.add(dataList.get(position));
+            //todo
+            multiSelectDataList.add((OcrResult) dataList.get(position));
             mPresenter.deleteDocs(multiSelectDataList);
             multiSelectDataList.clear();
         }
 
         @Override
         public void onItemShareText(int position) {
-            OcrResult doc = dataList.get(position);
+            //todo
+            OcrResult doc = (OcrResult) dataList.get(position);
             String textResult = doc.getTextResult();
-            onShareTextClicked(textResult);
+            mPresenter.onShareTextClicked(textResult);
         }
 
         @Override
         public void onItemSharePdf(int position) {
-            OcrResult doc = dataList.get(position);
+            //todo
+            OcrResult doc = (OcrResult) dataList.get(position);
             String mDownloadURL = doc.getPdfResultMediaUrl();
-            onSharePdfClicked(mDownloadURL);
+            mPresenter.onSharePdfClicked(mDownloadURL);
         }
     };
-
-    @SuppressWarnings("deprecation")
-    private void onShareTextClicked(String textResult) {
-        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-        sharingIntent.setType("text/plain");
-
-        Resources res = getResources();
-        String linkToApp = "https://play.google.com/store/apps/details?id=" + appPackageName;
-        String sharedBody =
-                String.format(res.getString(R.string.share_text_message), textResult, linkToApp);
-
-        Spanned styledText;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            styledText = Html.fromHtml(sharedBody, Html.FROM_HTML_MODE_LEGACY);
-        } else {
-            styledText = Html.fromHtml(sharedBody);
-        }
-
-        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, res.getString(R.string.text_result));
-        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, styledText);
-        startActivity(Intent.createChooser(sharingIntent, res.getString(R.string.send_text_result_to)));
-    }
-
-    private void onSharePdfClicked(String mDownloadURL) {
-        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-        sharingIntent.setType("text/plain");
-
-        Resources res = getResources();
-        String linkToApp = "https://play.google.com/store/apps/details?id=" + appPackageName;
-        String sharedBody = String.format(
-                res.getString(R.string.share_pdf_message), mDownloadURL, linkToApp);
-
-        Spanned styledText;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            styledText = Html.fromHtml(sharedBody, Html.FROM_HTML_MODE_LEGACY);
-        } else {
-            styledText = Html.fromHtml(sharedBody);
-        }
-
-        sharingIntent.putExtra(
-                android.content.Intent.EXTRA_SUBJECT, res.getString(R.string.link_to_pdf));
-        sharingIntent.putExtra(
-                android.content.Intent.EXTRA_TEXT, styledText);
-        startActivity(
-                Intent.createChooser(sharingIntent, res.getString(R.string.send_pdf_to)));
-
-    }
 
     private void initRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
@@ -309,7 +272,7 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         dataList = new ArrayList<>();
         multiSelectDataList = new ArrayList<>();
 
-        adapter = new RecyclerViewAdapter(dataList, multiSelectDataList, callback);
+        adapter = new RecyclerViewAdapter(this, dataList, multiSelectDataList, callback);
         recyclerView.setAdapter(adapter);
         EndlessRecyclerViewScrollListener scrollListener =
                 new EndlessRecyclerViewScrollListener(layoutManager) {
@@ -322,6 +285,31 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
                 };
         // Adds the scroll listener to RecyclerView
         recyclerView.addOnScrollListener(scrollListener);
+
+        NativeAd nativeAd = new NativeAd(this, "172310460079691_172447986732605");
+        nativeAd.setAdListener(new AdListener() {
+            @Override
+            public void onError(Ad ad, AdError adError) {
+
+            }
+
+            @Override
+            public void onAdLoaded(Ad ad1) {
+                ad = ad1;
+            }
+
+            @Override
+            public void onAdClicked(Ad ad) {
+
+            }
+
+            @Override
+            public void onLoggingImpression(Ad ad) {
+
+            }
+        });
+
+        nativeAd.loadAd();
     }
 
     private void startOcrResultActivity(OcrResponse data) {
@@ -344,7 +332,10 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
 
     private void selectAll(ActionMode mode) {
         multiSelectDataList.clear();
-        multiSelectDataList.addAll(dataList);
+        multiSelectDataList.addAll(Stream.of(dataList)
+                .filter(l -> l instanceof OcrResult)
+                .map(l -> (OcrResult) l).toList());
+
         mode.setTitle(multiSelectDataList.size() + getString(R.string.selected));
 
         //update menu buttons
@@ -413,6 +404,18 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
             //show empty view
             View emptyView = findViewById(R.id.empty_result_layout);
             emptyView.setVisibility(View.VISIBLE);
+        }
+
+        onDocsLoaded();
+    }
+
+    private void onDocsLoaded() {
+        //load ad once
+        if (!adLoaded && dataList.size() > 0) {
+            int adPosition = dataList.size() / 2;
+            dataList.add(adPosition, ad);
+            adapter.notifyDataSetChanged();
+            adLoaded = true;
         }
     }
 

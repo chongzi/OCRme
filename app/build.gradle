@@ -119,6 +119,7 @@ dependencies {
 
     //ads
     compile 'com.google.android.gms:play-services-ads:11.0.4'
+    compile 'com.facebook.android:audience-network-sdk:4.+'
 }
 
 apply plugin: 'com.google.gms.google-services'

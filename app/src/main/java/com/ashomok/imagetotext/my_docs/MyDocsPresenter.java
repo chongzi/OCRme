@@ -5,8 +5,12 @@ package com.ashomok.imagetotext.my_docs;
  */
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 
 import com.annimon.stream.Collectors;
@@ -26,6 +30,7 @@ import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.ashomok.imagetotext.Settings.appPackageName;
 import static com.ashomok.imagetotext.utils.FirebaseUtils.getIdToken;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 import static dagger.internal.Preconditions.checkNotNull;
@@ -46,9 +51,7 @@ public class MyDocsPresenter implements MyDocsContract.Presenter {
     @Nullable
     private MyDocsContract.View view;
 
-    @Inject
-    Context context;
-
+    private Context context;
     private String idToken;
     private String startCursor;
 
@@ -58,7 +61,8 @@ public class MyDocsPresenter implements MyDocsContract.Presenter {
      * with {@code @Nullable} values.
      */
     @Inject
-    MyDocsPresenter(@NonNull MyDocsHttpClient httpClient) {
+    MyDocsPresenter(Context context, @NonNull MyDocsHttpClient httpClient) {
+        this.context = context;
         this.httpClient = checkNotNull(httpClient);
     }
 
@@ -166,6 +170,59 @@ public class MyDocsPresenter implements MyDocsContract.Presenter {
             } else {
                 view.showError(R.string.no_internet_connection);
             }
+        }
+    }
+
+    @Override
+    public void onShareTextClicked(String textResult) {
+        if (view != null) {
+            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+
+            Resources res = context.getResources();
+            String linkToApp = "https://play.google.com/store/apps/details?id=" + appPackageName;
+            String sharedBody =
+                    String.format(res.getString(R.string.share_text_message), textResult, linkToApp);
+
+            Spanned styledText;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                styledText = Html.fromHtml(sharedBody, Html.FROM_HTML_MODE_LEGACY);
+            } else {
+                styledText = Html.fromHtml(sharedBody);
+            }
+
+            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,
+                    res.getString(R.string.text_result));
+            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, styledText);
+            view.startActivity(Intent.createChooser(sharingIntent,
+                    res.getString(R.string.send_text_result_to)));
+        }
+    }
+
+    @Override
+    public void onSharePdfClicked(String mDownloadURL) {
+        if (view != null) {
+            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+
+            Resources res = context.getResources();
+            String linkToApp = "https://play.google.com/store/apps/details?id=" + appPackageName;
+            String sharedBody = String.format(
+                    res.getString(R.string.share_pdf_message), mDownloadURL, linkToApp);
+
+            Spanned styledText;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                styledText = Html.fromHtml(sharedBody, Html.FROM_HTML_MODE_LEGACY);
+            } else {
+                styledText = Html.fromHtml(sharedBody);
+            }
+
+            sharingIntent.putExtra(
+                    android.content.Intent.EXTRA_SUBJECT, res.getString(R.string.link_to_pdf));
+            sharingIntent.putExtra(
+                    android.content.Intent.EXTRA_TEXT, styledText);
+            view.startActivity(
+                    Intent.createChooser(sharingIntent, res.getString(R.string.send_pdf_to)));
         }
     }
 

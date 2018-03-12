@@ -4,6 +4,7 @@ package com.ashomok.imagetotext.my_docs;
  * Created by iuliia on 1/10/18.
  */
 
+import android.content.Intent;
 import android.support.annotation.StringRes;
 
 import com.ashomok.imagetotext.di_dagger.BasePresenter;
@@ -26,9 +27,15 @@ public interface MyDocsContract {
         void clearDocsList();
 
         void showProgress(final boolean show);
+
+        void startActivity(Intent intent);
     }
 
     interface Presenter extends BasePresenter<MyDocsContract.View> {
         void loadMoreDocs();
+
+        void onShareTextClicked(String textResult);
+
+        void onSharePdfClicked(String mDownloadURL);
     }
 }
