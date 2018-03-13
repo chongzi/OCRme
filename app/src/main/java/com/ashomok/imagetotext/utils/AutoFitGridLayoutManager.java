@@ -3,6 +3,9 @@ package com.ashomok.imagetotext.utils;
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+
+import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 /**
  * Created by iuliia on 12/28/17.
@@ -10,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 
 public class AutoFitGridLayoutManager extends GridLayoutManager {
 
+    private static final String TAG = DEV_TAG + AutoFitGridLayoutManager.class.getSimpleName();
     private int columnWidth;
     private boolean columnWidthChanged = true;
 
@@ -39,6 +43,10 @@ public class AutoFitGridLayoutManager extends GridLayoutManager {
             setSpanCount(spanCount);
             columnWidthChanged = false;
         }
-        super.onLayoutChildren(recycler, state);
+        try {
+            super.onLayoutChildren(recycler, state);
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
     }
 }

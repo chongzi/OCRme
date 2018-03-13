@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,9 +20,7 @@ import android.widget.TextView;
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.ocr.ocr_task.OcrResult;
 import com.bumptech.glide.Glide;
-import com.facebook.ads.Ad;
 import com.facebook.ads.AdChoicesView;
-import com.facebook.ads.MediaView;
 import com.facebook.ads.NativeAd;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.FirebaseStorage;
@@ -60,16 +59,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     // Create new views (invoked by the layout manager)
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.d(TAG, "onCreateViewHolder");
 
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         if (viewType == DOC) {
             View docItem = inflater.inflate(R.layout.my_doc_view, parent, false);
-            return new ViewHolder(docItem);
+            Log.d(TAG, "inflate my doc view");
+            return new DocViewHolder(docItem);
         } else if (viewType == NATIVE_AD) {
             View nativeAdItem = inflater.inflate(R.layout.mydocs_native_ad_layout, parent, false);
+            Log.d(TAG, "inflate native ad");
             return new NativeAdViewHolder(nativeAdItem);
         } else {
+            Log.e(TAG, "unknown view type");
             return null;
         }
     }
@@ -78,8 +81,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onBindViewHolder(RecyclerView.ViewHolder holder1, int position) {
         int itemType = getItemViewType(position);
         if (itemType == DOC) {
-            ViewHolder holder = (ViewHolder) holder1;
-            OcrResult item = (OcrResult) mDataList.get(position);;
+            DocViewHolder holder = (DocViewHolder) holder1;
+            OcrResult item = (OcrResult) mDataList.get(position);
 
             //check if select mode and update design
             if (multiSelectDataList.size() > 0) {
@@ -133,20 +136,23 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             NativeAd nativeAd = (NativeAd) mDataList.get(position);
 
             ImageView adImage = nativeAdViewHolder.adImage;
-            TextView tvAdTitle = nativeAdViewHolder.tvAdTitle;
+            TextView adTitle = nativeAdViewHolder.tvAdTitle;
             Button btnCTA = nativeAdViewHolder.btnCTA;
             LinearLayout adChoicesContainer = nativeAdViewHolder.adChoicesContainer;
 
-            tvAdTitle.setText(nativeAd.getAdTitle());
+            adTitle.setText(nativeAd.getAdTitle());
             NativeAd.downloadAndDisplayImage(nativeAd.getAdIcon(), adImage);
             btnCTA.setText(nativeAd.getAdCallToAction());
             AdChoicesView adChoicesView = new AdChoicesView(context, nativeAd, true);
-            adChoicesContainer.addView(adChoicesView);
+
+            if (adChoicesContainer.getChildCount() == 0) {
+                adChoicesContainer.addView(adChoicesView);
+            }
 
             List<View> clickableViews = new ArrayList<>();
             clickableViews.add(adImage);
             clickableViews.add(btnCTA);
-            //todo add more
+            clickableViews.add(adTitle);
 
             nativeAd.registerViewForInteraction(nativeAdViewHolder.container, clickableViews);
         }
@@ -154,13 +160,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemViewType(int position) {
+        Log.d(TAG, "on getItemViewType");
         Object item = mDataList.get(position);
         if (item instanceof OcrResult) {
+            Log.d(TAG, "return OcrResult");
             return DOC;
-        } else if (item instanceof Ad) {
+        } else if (item instanceof NativeAd) {
+            Log.d(TAG, "return NativeAd");
             return NATIVE_AD;
         } else {
+            Log.d(TAG, "return -1");
+            Log.d(TAG, " mDataList.size " + mDataList.size());
             return -1;
+
         }
     }
 
@@ -205,7 +217,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    static class DocViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
         ImageView sourceImage;
         TextView timeStamp;
@@ -213,7 +225,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         CheckBox checkbox;
         ImageView darkHint;
 
-        ViewHolder(View v) {
+        DocViewHolder(View v) {
             super(v);
             sourceImage = v.findViewById(R.id.sourceImage);
             timeStamp = v.findViewById(R.id.timeStamp);

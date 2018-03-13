@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -240,7 +241,6 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
 
         @Override
         public void onItemDelete(int position) {
-            //todo
             multiSelectDataList.add((OcrResult) dataList.get(position));
             mPresenter.deleteDocs(multiSelectDataList);
             multiSelectDataList.clear();
@@ -248,7 +248,6 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
 
         @Override
         public void onItemShareText(int position) {
-            //todo
             OcrResult doc = (OcrResult) dataList.get(position);
             String textResult = doc.getTextResult();
             mPresenter.onShareTextClicked(textResult);
@@ -256,7 +255,6 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
 
         @Override
         public void onItemSharePdf(int position) {
-            //todo
             OcrResult doc = (OcrResult) dataList.get(position);
             String mDownloadURL = doc.getPdfResultMediaUrl();
             mPresenter.onSharePdfClicked(mDownloadURL);
@@ -265,8 +263,9 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
 
     private void initRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        AutoFitGridLayoutManager layoutManager =
-                new AutoFitGridLayoutManager(this, 500);
+//        AutoFitGridLayoutManager layoutManager =
+//                new AutoFitGridLayoutManager(this, 500);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(layoutManager);
         dataList = new ArrayList<>();
@@ -290,7 +289,6 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         nativeAd.setAdListener(new AdListener() {
             @Override
             public void onError(Ad ad, AdError adError) {
-
             }
 
             @Override
@@ -406,10 +404,10 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
             emptyView.setVisibility(View.VISIBLE);
         }
 
-        onDocsLoaded();
+        loadAd();
     }
 
-    private void onDocsLoaded() {
+    private void loadAd() {
         //load ad once
         if (!adLoaded && dataList.size() > 0) {
             int adPosition = dataList.size() / 2;
@@ -424,6 +422,7 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         Log.d(TAG, "clearDocsList called");
         int size = dataList.size();
         dataList.clear();
+        adLoaded = false;
         adapter.notifyItemRangeRemoved(0, size);
     }
 
