@@ -99,6 +99,7 @@ public class MainActivity extends BaseLoginActivity implements
     private String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
     private static final String imageFileNameFromCamera = "ocr.jpg";
     private NativeAd nativeAd;
+    private static final String NATIVE_AD_PLACEMENT_ID = "172310460079691_172310680079669";
 
 
     private final BroadcastReceiver mConnectivityChangeReceiver = new BroadcastReceiver() {
@@ -657,9 +658,8 @@ public class MainActivity extends BaseLoginActivity implements
 //        nativeAd.loadAd();
 //    }
 
-    //todo move to presenter?
     private void showNativeAd() {
-        nativeAd = new NativeAd(this, "172310460079691_172310680079669"); //extract placemand id to field
+        nativeAd = new NativeAd(this, NATIVE_AD_PLACEMENT_ID);
         nativeAd.setAdListener(new AdListener() {
 
             @Override

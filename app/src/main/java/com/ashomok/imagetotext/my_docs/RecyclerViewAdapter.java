@@ -46,10 +46,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     public static final String TAG = DEV_TAG + RecyclerViewAdapter.class.getSimpleName();
 
-    public RecyclerViewAdapter(Context context,
-                               List<Object> mDataList,
-                               List<OcrResult> multiSelectDataList,
-                               MyDocsActivity.RecyclerViewCallback callback) {
+    RecyclerViewAdapter(Context context,
+                        List<Object> mDataList,
+                        List<OcrResult> multiSelectDataList,
+                        MyDocsActivity.RecyclerViewCallback callback) {
         this.context = context;
         this.mDataList = mDataList;
         this.multiSelectDataList = multiSelectDataList;
@@ -59,120 +59,115 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     // Create new views (invoked by the layout manager)
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.d(TAG, "onCreateViewHolder");
-
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         if (viewType == DOC) {
             View docItem = inflater.inflate(R.layout.my_doc_view, parent, false);
-            Log.d(TAG, "inflate my doc view");
             return new DocViewHolder(docItem);
         } else if (viewType == NATIVE_AD) {
             View nativeAdItem = inflater.inflate(R.layout.mydocs_native_ad_layout, parent, false);
-            Log.d(TAG, "inflate native ad");
             return new NativeAdViewHolder(nativeAdItem);
         } else {
-            Log.e(TAG, "unknown view type");
             return null;
         }
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder1, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         int itemType = getItemViewType(position);
         if (itemType == DOC) {
-            DocViewHolder holder = (DocViewHolder) holder1;
-            OcrResult item = (OcrResult) mDataList.get(position);
-
-            //check if select mode and update design
-            if (multiSelectDataList.size() > 0) {
-                //select mode
-
-                holder.checkbox.setVisibility(View.VISIBLE);
-                holder.darkHint.setVisibility(View.VISIBLE);
-                if (multiSelectDataList.contains(item)) {
-                    //current card selected - check checkbox
-                    holder.checkbox.setChecked(true);
-                } else {
-                    holder.checkbox.setChecked(false);
-                }
-            } else {
-                //not select mode
-                holder.checkbox.setVisibility(View.GONE);
-                holder.darkHint.setVisibility(View.GONE);
-            }
-
-            //timestamp
-            holder.timeStamp.setText(item.getTimeStamp());
-
-            //source image
-            try {
-                // Create a reference to a file from a Google Cloud Storage URI
-                StorageReference gsReference =
-                        FirebaseStorage.getInstance().getReferenceFromUrl(item.getSourceImageUrl());
-                // Load the image using Glide
-                Glide.with(holder.cardView.getContext())
-                        .using(new FirebaseImageLoader())
-                        .load(gsReference)
-                        .crossFade()
-                        .centerCrop()
-                        .into(holder.sourceImage);
-            } catch (Exception e) {
-                //ignore
-                e.printStackTrace();
-            }
-
-            //card menu
-            holder.menuBtn.setOnClickListener(view -> showPopupMenu(holder.menuBtn, position));
-
-            //cardview init click callback
-            holder.cardView.setOnClickListener(view -> callback.onItemClick(position));
-            holder.cardView.setOnLongClickListener(view -> {
-                callback.onItemLongClick(position);
-                return true;
-            });
+            bindViewHolder((DocViewHolder) holder, position);
         } else if (itemType == NATIVE_AD) {
-            NativeAdViewHolder nativeAdViewHolder = (NativeAdViewHolder) holder1;
-            NativeAd nativeAd = (NativeAd) mDataList.get(position);
-
-            ImageView adImage = nativeAdViewHolder.adImage;
-            TextView adTitle = nativeAdViewHolder.tvAdTitle;
-            Button btnCTA = nativeAdViewHolder.btnCTA;
-            LinearLayout adChoicesContainer = nativeAdViewHolder.adChoicesContainer;
-
-            adTitle.setText(nativeAd.getAdTitle());
-            NativeAd.downloadAndDisplayImage(nativeAd.getAdIcon(), adImage);
-            btnCTA.setText(nativeAd.getAdCallToAction());
-            AdChoicesView adChoicesView = new AdChoicesView(context, nativeAd, true);
-
-            if (adChoicesContainer.getChildCount() == 0) {
-                adChoicesContainer.addView(adChoicesView);
-            }
-
-            List<View> clickableViews = new ArrayList<>();
-            clickableViews.add(adImage);
-            clickableViews.add(btnCTA);
-            clickableViews.add(adTitle);
-
-            nativeAd.registerViewForInteraction(nativeAdViewHolder.container, clickableViews);
+            bindViewHolder((NativeAdViewHolder) holder, position);
         }
+    }
+
+    private void bindViewHolder(NativeAdViewHolder holder, int position) {
+        NativeAd nativeAd = (NativeAd) mDataList.get(position);
+
+        ImageView adImage = holder.adImage;
+        TextView adTitle = holder.tvAdTitle;
+        Button btnCTA = holder.btnCTA;
+        LinearLayout adChoicesContainer = holder.adChoicesContainer;
+
+        adTitle.setText(nativeAd.getAdTitle());
+        NativeAd.downloadAndDisplayImage(nativeAd.getAdIcon(), adImage);
+        btnCTA.setText(nativeAd.getAdCallToAction());
+        AdChoicesView adChoicesView = new AdChoicesView(context, nativeAd, true);
+
+        if (adChoicesContainer.getChildCount() == 0) {
+            adChoicesContainer.addView(adChoicesView);
+        }
+
+        List<View> clickableViews = new ArrayList<>();
+        clickableViews.add(adImage);
+        clickableViews.add(btnCTA);
+        clickableViews.add(adTitle);
+
+        nativeAd.registerViewForInteraction(holder.container, clickableViews);
+    }
+
+    private void bindViewHolder(DocViewHolder holder, int position) {
+        OcrResult item = (OcrResult) mDataList.get(position);
+
+        //check if select mode and update design
+        if (multiSelectDataList.size() > 0) {
+            //select mode
+
+            holder.checkbox.setVisibility(View.VISIBLE);
+            holder.darkHint.setVisibility(View.VISIBLE);
+            if (multiSelectDataList.contains(item)) {
+                //current card selected - check checkbox
+                holder.checkbox.setChecked(true);
+            } else {
+                holder.checkbox.setChecked(false);
+            }
+        } else {
+            //not select mode
+            holder.checkbox.setVisibility(View.GONE);
+            holder.darkHint.setVisibility(View.GONE);
+        }
+
+        //timestamp
+        holder.timeStamp.setText(item.getTimeStamp());
+
+        //source image
+        try {
+            // Create a reference to a file from a Google Cloud Storage URI
+            StorageReference gsReference =
+                    FirebaseStorage.getInstance().getReferenceFromUrl(item.getSourceImageUrl());
+            // Load the image using Glide
+            Glide.with(holder.cardView.getContext())
+                    .using(new FirebaseImageLoader())
+                    .load(gsReference)
+                    .crossFade()
+                    .centerCrop()
+                    .into(holder.sourceImage);
+        } catch (Exception e) {
+            //ignore
+            e.printStackTrace();
+        }
+
+        //card menu
+        holder.menuBtn.setOnClickListener(view -> showPopupMenu(holder.menuBtn, position));
+
+        //cardview init click callback
+        holder.cardView.setOnClickListener(view -> callback.onItemClick(position));
+        holder.cardView.setOnLongClickListener(view -> {
+            callback.onItemLongClick(position);
+            return true;
+        });
     }
 
     @Override
     public int getItemViewType(int position) {
-        Log.d(TAG, "on getItemViewType");
         Object item = mDataList.get(position);
         if (item instanceof OcrResult) {
-            Log.d(TAG, "return OcrResult");
             return DOC;
         } else if (item instanceof NativeAd) {
-            Log.d(TAG, "return NativeAd");
             return NATIVE_AD;
         } else {
-            Log.d(TAG, "return -1");
-            Log.d(TAG, " mDataList.size " + mDataList.size());
             return -1;
-
         }
     }
 
@@ -195,8 +190,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private class DocMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
         private int position;
 
-        public DocMenuItemClickListener(int positon) {
-            this.position = positon;
+        DocMenuItemClickListener(int position) {
+            this.position = position;
         }
 
         @Override

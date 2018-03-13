@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -37,6 +36,7 @@ import com.facebook.ads.NativeAd;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -60,8 +60,7 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
     boolean isMultiSelect = false;
     AlertDialogHelper alertDialogHelper;
     private ProgressBar progress;
-    private Ad ad;
-    private boolean adLoaded = false;
+    private static final String NATIVE_AD_PLACEMENT_ID = "172310460079691_172447986732605";
 
     @Inject
     MyDocsPresenter mPresenter;
@@ -263,9 +262,8 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
 
     private void initRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
-//        AutoFitGridLayoutManager layoutManager =
-//                new AutoFitGridLayoutManager(this, 500);
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        AutoFitGridLayoutManager layoutManager =
+                new AutoFitGridLayoutManager(this, 500);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(layoutManager);
         dataList = new ArrayList<>();
@@ -284,30 +282,6 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
                 };
         // Adds the scroll listener to RecyclerView
         recyclerView.addOnScrollListener(scrollListener);
-
-        NativeAd nativeAd = new NativeAd(this, "172310460079691_172447986732605");
-        nativeAd.setAdListener(new AdListener() {
-            @Override
-            public void onError(Ad ad, AdError adError) {
-            }
-
-            @Override
-            public void onAdLoaded(Ad ad1) {
-                ad = ad1;
-            }
-
-            @Override
-            public void onAdClicked(Ad ad) {
-
-            }
-
-            @Override
-            public void onLoggingImpression(Ad ad) {
-
-            }
-        });
-
-        nativeAd.loadAd();
     }
 
     private void startOcrResultActivity(OcrResponse data) {
@@ -393,6 +367,7 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
 
     @Override
     public void addNewLoadedDocs(List<OcrResult> newLoadedDocs) {
+
         Log.d(TAG, "addNewLoadedDocs called with size = " + newLoadedDocs.size());
         int positionStart = dataList.size() - 1;
         dataList.addAll(newLoadedDocs);
@@ -408,13 +383,35 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
     }
 
     private void loadAd() {
-        //load ad once
-        if (!adLoaded && dataList.size() > 0) {
-            int adPosition = dataList.size() / 2;
-            dataList.add(adPosition, ad);
-            adapter.notifyDataSetChanged();
-            adLoaded = true;
-        }
+        Log.d(TAG, "onLoadAd");
+        NativeAd nativeAd = new NativeAd(this, NATIVE_AD_PLACEMENT_ID);
+        nativeAd.setAdListener(new AdListener() {
+            @Override
+            public void onError(Ad ad, AdError adError) {
+            }
+
+            @Override
+            public void onAdLoaded(Ad ad) {
+                if (dataList.size() > 3) { //show ads only if data list is big enough (>3)
+
+                    int randomNum = new Random().nextInt(dataList.size());
+                    dataList.add(randomNum, ad);
+                    adapter.notifyItemInserted(randomNum);
+                }
+            }
+
+            @Override
+            public void onAdClicked(Ad ad) {
+
+            }
+
+            @Override
+            public void onLoggingImpression(Ad ad) {
+
+            }
+        });
+
+        nativeAd.loadAd();
     }
 
     @Override
@@ -422,7 +419,6 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         Log.d(TAG, "clearDocsList called");
         int size = dataList.size();
         dataList.clear();
-        adLoaded = false;
         adapter.notifyItemRangeRemoved(0, size);
     }
 
