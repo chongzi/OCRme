@@ -9,6 +9,9 @@
         <item>-</item>
     </string-array>
     <string name="app_name" translatable="false">&appname;</string>
+    <string name="author" translatable="false">by &author;</string>
+    <string name="my_email" translatable="false">ashomokdev@gmail.com</string>
+    <string name="version">version</string>
     <string name="exit_dialog_title">Do you want to exit?</string>
     <string name="alert_dialog_exit">Exit</string>
     <string name="cancel">Cancel</string>
@@ -215,4 +218,9 @@
     <string name="buy_5_requests">Buy 5 requests</string>
     <string name="share_text">Share text</string>
     <string name="share_pdf">Share PDF</string>
+    <string name="are_you_developer">Are you a Developer?</string>
+    <string name="are_you_developer_full">Are you a Developer, Designer, Marketing specialist or Translator? Join our team of enthusiasts. Let\'s contribute together. Contact me:</string>
+    <string name="this_is_free_version">This is a free version with ads</string>
+    <string name="buy_paid">Buy ads-free version.</string>
+    <string name="ads_free_explanation">Hate ads? We too. \nIf you like this app, please support a developer.</string>
 </resources>

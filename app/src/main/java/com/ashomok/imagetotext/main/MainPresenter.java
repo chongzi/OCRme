@@ -25,8 +25,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import static com.ashomok.imagetotext.Settings.isRequestCounterVisible;
-import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showWarning;
+import static com.ashomok.imagetotext.Settings.isPremium;
+import static com.ashomok.imagetotext.Settings.isTestMode;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 /**
@@ -36,13 +36,13 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 public class MainPresenter implements MainContract.Presenter {
     public static final String TAG = DEV_TAG + MainPresenter.class.getSimpleName();
 
-    Context context;
+    private Context context;
 
-    SharedPreferences mSharedPreferences;
+    private SharedPreferences mSharedPreferences;
 
-    BillingProviderImpl billingProvider;
+    private BillingProviderImpl billingProvider;
 
-    OcrRequestsCounter ocrRequestsCounter;
+    private OcrRequestsCounter ocrRequestsCounter;
 
     /**
      * Dagger strictly enforces that arguments not marked with {@code @Nullable} are not injected
@@ -91,7 +91,7 @@ public class MainPresenter implements MainContract.Presenter {
     private void onPremiumStatusUpdated(boolean isPremium) {
         if (view != null) {
             view.updateView(isPremium);
-            if (isRequestCounterVisible) {
+            if (isTestMode) {
                 view.updateRequestsCounter(true);
             } else {
                 view.updateRequestsCounter(!isPremium);
@@ -174,7 +174,9 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void consumeRequest() {
-        ocrRequestsCounter.consumeRequest();
+        if (!isPremium) {
+            ocrRequestsCounter.consumeRequest();
+        }
     }
 
     @Override
@@ -252,9 +254,6 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public boolean isRequestsAvailable() {
-        boolean isPremium = Settings.isPremium;
-        Log.d(TAG, "isPremium = " + String.valueOf(isPremium));
-
-        return isPremium || getRequestsCount() > 0;
+        return Settings.isPremium || getRequestsCount() > 0;
     }
 }

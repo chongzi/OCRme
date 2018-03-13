@@ -38,6 +38,7 @@ import com.ashomok.imagetotext.BuildConfig;
 import com.ashomok.imagetotext.ExitDialogFragment;
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.Settings;
+import com.ashomok.imagetotext.about.AboutActivity;
 import com.ashomok.imagetotext.crop_image.CropImageActivity;
 import com.ashomok.imagetotext.firebaseUiAuth.BaseLoginActivity;
 import com.ashomok.imagetotext.firebaseUiAuth.SignOutDialogFragment;
@@ -73,7 +74,6 @@ import static com.ashomok.imagetotext.utils.FileUtils.createFile;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 //todo use butterknife
-//todo add add from facebook ad
 public class MainActivity extends BaseLoginActivity implements
         SignOutDialogFragment.OnSignedOutListener,
         View.OnClickListener,
@@ -341,7 +341,7 @@ public class MainActivity extends BaseLoginActivity implements
                             startMyDocsActivity();
                             break;
                         case R.id.about:
-                            // TODO:
+                            startAboutActivity();
                             break;
                         case R.id.update_to_premium:
                             startUpdateToPremiumActivity();
@@ -362,6 +362,11 @@ public class MainActivity extends BaseLoginActivity implements
         LinearLayout loginHeader =
                 navigationView.getHeaderView(0).findViewById(R.id.propose_sign_in_layout);
         loginHeader.setOnClickListener(this);
+    }
+
+    private void startAboutActivity() {
+        Intent intent = new Intent(this, AboutActivity.class);
+        startActivity(intent);
     }
 
     private void startUpdateToPremiumActivity() {
@@ -568,9 +573,8 @@ public class MainActivity extends BaseLoginActivity implements
     @Override
     public void initRequestsCounter(int requestCount) {
         requestCounterLayout = findViewById(R.id.requests_counter_layout);
-        requestCounterLayout.setOnClickListener(view -> {
-            showRequestsCounterDialog(requestCount);
-        });
+        requestCounterLayout.setOnClickListener(
+                view -> showRequestsCounterDialog(mPresenter.getRequestsCount()));
 
         TextView textCounter = findViewById(R.id.requests_counter_text);
         textCounter.setText(String.valueOf(requestCount));
@@ -584,79 +588,22 @@ public class MainActivity extends BaseLoginActivity implements
         requestsCounterDialogFragment.show(getFragmentManager(), "dialog");
     }
 
-    //todo it touch premium only - delete code about ads
     @Override
     public void updateView(boolean isPremium) {
         Log.d(TAG, "Update UI. Is premium " + isPremium);
-        Settings.isPremium = isPremium;
-        Settings.isAdsActive = !isPremium; //todo what if not premium but bought no ads
-
-        //todo edit for production
-//        if (isAdsActive) {
-//            showAds();
-//        }
-
-        showAds();
-
         updateNavigationDrawerForPremium(isPremium);
+
+        Settings.isPremium = isPremium;
+        Settings.isAdsActive = !isPremium;
+
+        if (Settings.isAdsActive || Settings.isTestMode) {
+            showAds();
+        }
     }
 
-    //todo load ad faster
     private void showAds() {
         showNativeAd();
-//        showMediumRectangleAdd();
     }
-
-    private void showMediumRectangleAdd() {
-        // Instantiate an AdView view
-        AdView adView = new AdView(this, "172310460079691_172426850068052", AdSize.RECTANGLE_HEIGHT_250);
-
-        // Find the Ad Container
-        RelativeLayout adContainer = findViewById(R.id.ads_container);
-
-        // Add the ad view to your activity layout
-        adContainer.addView(adView);
-
-        // Request an ad
-        adView.loadAd();
-    }
-
-//    private void showNativeAd() {
-//        nativeAd = new NativeAd(this, "172310460079691_172310680079669"); //extract placemand id to field
-//        nativeAd.setAdListener(new AdListener() {
-//
-//            @Override
-//            public void onError(Ad ad, AdError error) {
-//                // Ad error callback
-//            }
-//
-//            @Override
-//            public void onAdLoaded(Ad ad) {
-//                NativeAdViewAttributes viewAttributes = new NativeAdViewAttributes()
-//                        .setBackgroundColor(Color.LTGRAY);
-//
-//                // Render the Native Ad Template
-//                View adView = NativeAdView.render(MainActivity.this, nativeAd,
-//                        NativeAdView.Type.HEIGHT_300, viewAttributes);
-//                RelativeLayout nativeAdContainer = (RelativeLayout) findViewById(R.id.ads_container);
-//                // Add the Native Ad View to your ad container
-//                nativeAdContainer.addView(adView);
-//            }
-//
-//            @Override
-//            public void onAdClicked(Ad ad) {
-//                // Ad clicked callback
-//            }
-//
-//            @Override
-//            public void onLoggingImpression(Ad ad) {
-//                // Ad impression logged callback
-//            }
-//        });
-//
-//        // Request an ad
-//        nativeAd.loadAd();
-//    }
 
     private void showNativeAd() {
         nativeAd = new NativeAd(this, NATIVE_AD_PLACEMENT_ID);
