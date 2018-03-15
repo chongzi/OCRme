@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    buildToolsVersion '26.0.3'
     defaultConfig {
         applicationId "com.ashomok.imagetotext"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 5
+        versionCode 6
         versionName "1.0"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -101,7 +101,8 @@ dependencies {
     compile 'com.trello.rxlifecycle2:rxlifecycle:2.2.0'
     compile 'com.trello.rxlifecycle2:rxlifecycle-android:2.2.0'
     compile 'com.trello.rxlifecycle2:rxlifecycle-components:2.1.0'
-    compile 'com.jakewharton.rxbinding2:rxbinding:2.0.0' //rxviews https://code.tutsplus.com/tutorials/rxjava-for-android-apps-introducing-rxbinding-and-rxlifecycle--cms-28565
+    compile 'com.jakewharton.rxbinding2:rxbinding:2.0.0'
+    //rxviews https://code.tutsplus.com/tutorials/rxjava-for-android-apps-introducing-rxbinding-and-rxlifecycle--cms-28565
     compile 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.4@aar'
 
     //for using java 8 features like streams
@@ -119,7 +120,21 @@ dependencies {
 
     //ads
     compile 'com.google.android.gms:play-services-ads:11.0.4'
-    compile 'com.facebook.android:audience-network-sdk:4.+'
+    compile 'com.facebook.android:audience-network-sdk:4.25.0'
+
+//    //firebase
+//    // FirebaseUI for Firebase Auth
+//    implementation 'com.firebaseui:firebase-ui-auth:3.2.2'
+//    //Facebook login support is required
+//    compile 'com.facebook.android:facebook-android-sdk:4.28.0'
+//    // FirebaseUI for Cloud Storage
+//    implementation ('com.firebaseui:firebase-ui-storage:3.2.2') {
+//        // Necessary to avoid version conflicts
+//        exclude group: 'com.github.bumptech.glide', module: 'glide'
+//    }
+//    compile 'com.google.firebase:firebase-storage:11.8.0'
+//    implementation 'com.facebook.android:facebook-login:4.28.0'
+//    compile 'com.github.bumptech.glide:glide:3.7.0' //need to use older version because of error https://github.com/bumptech/glide/issues/2103
 }
 
 apply plugin: 'com.google.gms.google-services'
