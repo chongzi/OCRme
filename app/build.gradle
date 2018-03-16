@@ -7,7 +7,7 @@ android {
         applicationId "com.ashomok.imagetotext"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 6
+        versionCode 8
         versionName "1.0"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -112,7 +112,7 @@ dependencies {
     // FirebaseUI Auth
     compile'com.firebaseui:firebase-ui-auth:2.3.0'
     //Facebook login support is required
-    compile'com.facebook.android:facebook-android-sdk:4.28.0'
+    compile'com.facebook.android:facebook-android-sdk:4.25.0'
     compile 'com.firebaseui:firebase-ui-storage:0.6.0'
     compile 'com.google.firebase:firebase-storage:11.0.4'
 
@@ -120,7 +120,7 @@ dependencies {
 
     //ads
     compile 'com.google.android.gms:play-services-ads:11.0.4'
-    compile 'com.facebook.android:audience-network-sdk:4.25.0'
+    compile 'com.facebook.android:audience-network-sdk:4.28.0' //facebook native ads
 
 //    //firebase
 //    // FirebaseUI for Firebase Auth

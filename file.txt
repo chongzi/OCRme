@@ -225,22 +225,21 @@ compile - Compile dependencies for 'main' sources (deprecated: use 'implementati
 |    |    \--- com.android.support.constraint:constraint-layout-solver:1.1.0-beta1
 |    +--- com.google.firebase:firebase-auth:11.0.4
 |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4
-|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0
-|    |    |    |    +--- com.android.support:support-v4:25.2.0 -> 26.1.0 (*)
-|    |    |    |    \--- com.google.android.gms:play-services-basement-license:11.8.0
+|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4
+|    |    |    |    \--- com.android.support:support-v4:25.2.0 -> 26.1.0 (*)
 |    |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4
-|    |    |         \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
-|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |         \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4
-|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    +--- com.google.android.gms:play-services-auth:11.0.4
 |    |    +--- com.google.android.gms:play-services-auth-base:[11.0.4] -> 11.0.4
 |    |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
-|    |    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
-|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    \--- com.android.support:cardview-v7:26.0.1 -> 26.1.0 (*)
 +--- com.facebook.android:facebook-android-sdk:4.28.0
@@ -276,44 +275,45 @@ compile - Compile dependencies for 'main' sources (deprecated: use 'implementati
 |    +--- com.github.bumptech.glide:glide:3.7.0
 |    \--- com.google.firebase:firebase-storage:9.6.0 -> 11.0.4
 |         +--- com.google.firebase:firebase-storage-common:[11.0.4] -> 11.0.4
-|         |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
-|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 +--- com.google.firebase:firebase-storage:11.0.4 (*)
 +--- com.android.support:multidex:1.0.3
-+--- com.google.android.gms:play-services-ads:11.0.4 -> 11.8.0
-|    +--- com.google.android.gms:play-services-ads-lite:11.8.0
-|    |    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    |    \--- com.google.android.gms:play-services-ads-lite-license:11.8.0
-|    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    +--- com.google.android.gms:play-services-gass:11.8.0
-|    |    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    |    \--- com.google.android.gms:play-services-gass-license:11.8.0
-|    \--- com.google.android.gms:play-services-ads-license:11.8.0
-+--- com.facebook.android:audience-network-sdk:4.28.0
++--- com.google.android.gms:play-services-ads:11.0.4
+|    +--- com.google.android.gms:play-services-ads-lite:[11.0.4] -> 11.0.4
+|    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-clearcut:[11.0.4] -> 11.0.4
+|    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-gass:[11.0.4] -> 11.0.4
+|    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    \--- com.google.android.gms:play-services-safetynet:[11.0.4] -> 11.0.4
+|         +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|         \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
++--- com.facebook.android:audience-network-sdk:4.25.0
 |    +--- com.android.support:appcompat-v7:25.3.1 -> 26.1.0 (*)
 |    +--- com.android.support:recyclerview-v7:25.3.1 -> 26.1.0 (*)
 |    +--- com.android.support:support-annotations:25.3.1 -> 26.1.0
 |    +--- com.android.support:support-v4:25.3.1 -> 26.1.0 (*)
-|    +--- com.google.android.gms:play-services-ads:10.0.1 -> 11.8.0 (*)
-|    +--- com.google.android.exoplayer:exoplayer-core:r2.4.2
-|    |    \--- com.android.support:support-annotations:25.3.1 -> 26.1.0
-|    \--- com.google.android.exoplayer:exoplayer-dash:r2.4.2
-|         +--- com.google.android.exoplayer:exoplayer-core:r2.4.2 (*)
-|         +--- com.android.support:support-annotations:25.3.1 -> 26.1.0
-|         \--- com.android.support:support-core-utils:25.3.1 -> 26.1.0 (*)
-+--- com.google.android.gms:play-services-ads:11.8.0 (*)
+|    +--- com.google.android.exoplayer:exoplayer:r2.0.3
+|    |    \--- com.android.support:support-annotations:24.2.0 -> 26.1.0
+|    \--- com.google.android.gms:play-services-ads:10.0.1 -> 11.0.4 (*)
 \--- com.google.firebase:firebase-core:11.0.4
      \--- com.google.firebase:firebase-analytics:[11.0.4] -> 11.0.4
           +--- com.google.firebase:firebase-analytics-impl:[11.0.4] -> 11.0.4
-          |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+          |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
           |    +--- com.google.firebase:firebase-iid:[11.0.4] -> 11.0.4
-          |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+          |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
           |    |    \--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
           |    +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
           |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
-          +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+          +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
           \--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 
 compileOnly - Compile only dependencies for 'main' sources. (n)
@@ -484,22 +484,21 @@ debugAndroidTestCompileClasspath - Resolved configuration for compilation for va
 |    |    \--- com.android.support.constraint:constraint-layout-solver:1.1.0-beta1
 |    +--- com.google.firebase:firebase-auth:11.0.4
 |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4
-|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0
-|    |    |    |    +--- com.android.support:support-v4:25.2.0 -> 26.1.0 (*)
-|    |    |    |    \--- com.google.android.gms:play-services-basement-license:11.8.0
+|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4
+|    |    |    |    \--- com.android.support:support-v4:25.2.0 -> 26.1.0 (*)
 |    |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4
-|    |    |         \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
-|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |         \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4
-|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    +--- com.google.android.gms:play-services-auth:11.0.4
 |    |    +--- com.google.android.gms:play-services-auth-base:[11.0.4] -> 11.0.4
 |    |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
-|    |    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
-|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    \--- com.android.support:cardview-v7:26.0.1 -> 26.1.0 (*)
 +--- com.facebook.android:facebook-android-sdk:4.28.0
@@ -535,44 +534,45 @@ debugAndroidTestCompileClasspath - Resolved configuration for compilation for va
 |    +--- com.github.bumptech.glide:glide:3.7.0
 |    \--- com.google.firebase:firebase-storage:9.6.0 -> 11.0.4
 |         +--- com.google.firebase:firebase-storage-common:[11.0.4] -> 11.0.4
-|         |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
-|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 +--- com.google.firebase:firebase-storage:11.0.4 (*)
 +--- com.android.support:multidex:1.0.3
-+--- com.google.android.gms:play-services-ads:11.0.4 -> 11.8.0
-|    +--- com.google.android.gms:play-services-ads-lite:11.8.0
-|    |    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    |    \--- com.google.android.gms:play-services-ads-lite-license:11.8.0
-|    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    +--- com.google.android.gms:play-services-gass:11.8.0
-|    |    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    |    \--- com.google.android.gms:play-services-gass-license:11.8.0
-|    \--- com.google.android.gms:play-services-ads-license:11.8.0
-+--- com.facebook.android:audience-network-sdk:4.28.0
++--- com.google.android.gms:play-services-ads:11.0.4
+|    +--- com.google.android.gms:play-services-ads-lite:[11.0.4] -> 11.0.4
+|    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-clearcut:[11.0.4] -> 11.0.4
+|    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-gass:[11.0.4] -> 11.0.4
+|    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    \--- com.google.android.gms:play-services-safetynet:[11.0.4] -> 11.0.4
+|         +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|         \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
++--- com.facebook.android:audience-network-sdk:4.25.0
 |    +--- com.android.support:appcompat-v7:25.3.1 -> 26.1.0 (*)
 |    +--- com.android.support:recyclerview-v7:25.3.1 -> 26.1.0 (*)
 |    +--- com.android.support:support-annotations:25.3.1 -> 26.1.0
 |    +--- com.android.support:support-v4:25.3.1 -> 26.1.0 (*)
-|    +--- com.google.android.gms:play-services-ads:10.0.1 -> 11.8.0 (*)
-|    +--- com.google.android.exoplayer:exoplayer-core:r2.4.2
-|    |    \--- com.android.support:support-annotations:25.3.1 -> 26.1.0
-|    \--- com.google.android.exoplayer:exoplayer-dash:r2.4.2
-|         +--- com.google.android.exoplayer:exoplayer-core:r2.4.2 (*)
-|         +--- com.android.support:support-annotations:25.3.1 -> 26.1.0
-|         \--- com.android.support:support-core-utils:25.3.1 -> 26.1.0 (*)
-+--- com.google.android.gms:play-services-ads:11.8.0 (*)
+|    +--- com.google.android.exoplayer:exoplayer:r2.0.3
+|    |    \--- com.android.support:support-annotations:24.2.0 -> 26.1.0
+|    \--- com.google.android.gms:play-services-ads:10.0.1 -> 11.0.4 (*)
 +--- com.google.firebase:firebase-core:11.0.4
 |    \--- com.google.firebase:firebase-analytics:[11.0.4] -> 11.0.4
 |         +--- com.google.firebase:firebase-analytics-impl:[11.0.4] -> 11.0.4
-|         |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         |    +--- com.google.firebase:firebase-iid:[11.0.4] -> 11.0.4
-|         |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         |    |    \--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         |    +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
-|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         \--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 \--- com.android.support:multidex-instrumentation:1.0.2
      \--- com.android.support:multidex:1.0.2 -> 1.0.3
@@ -724,22 +724,21 @@ debugAndroidTestRuntimeClasspath - Resolved configuration for runtime for varian
 |    |    \--- com.android.support.constraint:constraint-layout-solver:1.1.0-beta1
 |    +--- com.google.firebase:firebase-auth:11.0.4
 |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4
-|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0
-|    |    |    |    +--- com.android.support:support-v4:25.2.0 -> 26.1.0 (*)
-|    |    |    |    \--- com.google.android.gms:play-services-basement-license:11.8.0
+|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4
+|    |    |    |    \--- com.android.support:support-v4:25.2.0 -> 26.1.0 (*)
 |    |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4
-|    |    |         \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
-|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |         \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4
-|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    +--- com.google.android.gms:play-services-auth:11.0.4
 |    |    +--- com.google.android.gms:play-services-auth-base:[11.0.4] -> 11.0.4
 |    |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
-|    |    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
-|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    \--- com.android.support:cardview-v7:26.0.1 -> 26.1.0 (*)
 +--- com.facebook.android:facebook-android-sdk:4.28.0
@@ -775,44 +774,45 @@ debugAndroidTestRuntimeClasspath - Resolved configuration for runtime for varian
 |    +--- com.github.bumptech.glide:glide:3.7.0
 |    \--- com.google.firebase:firebase-storage:9.6.0 -> 11.0.4
 |         +--- com.google.firebase:firebase-storage-common:[11.0.4] -> 11.0.4
-|         |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
-|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 +--- com.google.firebase:firebase-storage:11.0.4 (*)
 +--- com.android.support:multidex:1.0.3
-+--- com.google.android.gms:play-services-ads:11.0.4 -> 11.8.0
-|    +--- com.google.android.gms:play-services-ads-lite:11.8.0
-|    |    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    |    \--- com.google.android.gms:play-services-ads-lite-license:11.8.0
-|    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    +--- com.google.android.gms:play-services-gass:11.8.0
-|    |    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    |    \--- com.google.android.gms:play-services-gass-license:11.8.0
-|    \--- com.google.android.gms:play-services-ads-license:11.8.0
-+--- com.facebook.android:audience-network-sdk:4.28.0
++--- com.google.android.gms:play-services-ads:11.0.4
+|    +--- com.google.android.gms:play-services-ads-lite:[11.0.4] -> 11.0.4
+|    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-clearcut:[11.0.4] -> 11.0.4
+|    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-gass:[11.0.4] -> 11.0.4
+|    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    \--- com.google.android.gms:play-services-safetynet:[11.0.4] -> 11.0.4
+|         +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|         \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
++--- com.facebook.android:audience-network-sdk:4.25.0
 |    +--- com.android.support:appcompat-v7:25.3.1 -> 26.1.0 (*)
 |    +--- com.android.support:recyclerview-v7:25.3.1 -> 26.1.0 (*)
 |    +--- com.android.support:support-annotations:25.3.1 -> 26.1.0
 |    +--- com.android.support:support-v4:25.3.1 -> 26.1.0 (*)
-|    +--- com.google.android.gms:play-services-ads:10.0.1 -> 11.8.0 (*)
-|    +--- com.google.android.exoplayer:exoplayer-core:r2.4.2
-|    |    \--- com.android.support:support-annotations:25.3.1 -> 26.1.0
-|    \--- com.google.android.exoplayer:exoplayer-dash:r2.4.2
-|         +--- com.google.android.exoplayer:exoplayer-core:r2.4.2 (*)
-|         +--- com.android.support:support-annotations:25.3.1 -> 26.1.0
-|         \--- com.android.support:support-core-utils:25.3.1 -> 26.1.0 (*)
-+--- com.google.android.gms:play-services-ads:11.8.0 (*)
+|    +--- com.google.android.exoplayer:exoplayer:r2.0.3
+|    |    \--- com.android.support:support-annotations:24.2.0 -> 26.1.0
+|    \--- com.google.android.gms:play-services-ads:10.0.1 -> 11.0.4 (*)
 +--- com.google.firebase:firebase-core:11.0.4
 |    \--- com.google.firebase:firebase-analytics:[11.0.4] -> 11.0.4
 |         +--- com.google.firebase:firebase-analytics-impl:[11.0.4] -> 11.0.4
-|         |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         |    +--- com.google.firebase:firebase-iid:[11.0.4] -> 11.0.4
-|         |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         |    |    \--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         |    +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
-|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         \--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 \--- com.android.support:multidex-instrumentation:1.0.2
      \--- com.android.support:multidex:1.0.2 -> 1.0.3
@@ -983,22 +983,21 @@ debugCompileClasspath - Resolved configuration for compilation for variant: debu
 |    |    \--- com.android.support.constraint:constraint-layout-solver:1.1.0-beta1
 |    +--- com.google.firebase:firebase-auth:11.0.4
 |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4
-|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0
-|    |    |    |    +--- com.android.support:support-v4:25.2.0 -> 26.1.0 (*)
-|    |    |    |    \--- com.google.android.gms:play-services-basement-license:11.8.0
+|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4
+|    |    |    |    \--- com.android.support:support-v4:25.2.0 -> 26.1.0 (*)
 |    |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4
-|    |    |         \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
-|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |         \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4
-|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    +--- com.google.android.gms:play-services-auth:11.0.4
 |    |    +--- com.google.android.gms:play-services-auth-base:[11.0.4] -> 11.0.4
 |    |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
-|    |    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
-|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    \--- com.android.support:cardview-v7:26.0.1 -> 26.1.0 (*)
 +--- com.facebook.android:facebook-android-sdk:4.28.0
@@ -1034,44 +1033,45 @@ debugCompileClasspath - Resolved configuration for compilation for variant: debu
 |    +--- com.github.bumptech.glide:glide:3.7.0
 |    \--- com.google.firebase:firebase-storage:9.6.0 -> 11.0.4
 |         +--- com.google.firebase:firebase-storage-common:[11.0.4] -> 11.0.4
-|         |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
-|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 +--- com.google.firebase:firebase-storage:11.0.4 (*)
 +--- com.android.support:multidex:1.0.3
-+--- com.google.android.gms:play-services-ads:11.0.4 -> 11.8.0
-|    +--- com.google.android.gms:play-services-ads-lite:11.8.0
-|    |    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    |    \--- com.google.android.gms:play-services-ads-lite-license:11.8.0
-|    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    +--- com.google.android.gms:play-services-gass:11.8.0
-|    |    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    |    \--- com.google.android.gms:play-services-gass-license:11.8.0
-|    \--- com.google.android.gms:play-services-ads-license:11.8.0
-+--- com.facebook.android:audience-network-sdk:4.28.0
++--- com.google.android.gms:play-services-ads:11.0.4
+|    +--- com.google.android.gms:play-services-ads-lite:[11.0.4] -> 11.0.4
+|    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-clearcut:[11.0.4] -> 11.0.4
+|    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-gass:[11.0.4] -> 11.0.4
+|    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    \--- com.google.android.gms:play-services-safetynet:[11.0.4] -> 11.0.4
+|         +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|         \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
++--- com.facebook.android:audience-network-sdk:4.25.0
 |    +--- com.android.support:appcompat-v7:25.3.1 -> 26.1.0 (*)
 |    +--- com.android.support:recyclerview-v7:25.3.1 -> 26.1.0 (*)
 |    +--- com.android.support:support-annotations:25.3.1 -> 26.1.0
 |    +--- com.android.support:support-v4:25.3.1 -> 26.1.0 (*)
-|    +--- com.google.android.gms:play-services-ads:10.0.1 -> 11.8.0 (*)
-|    +--- com.google.android.exoplayer:exoplayer-core:r2.4.2
-|    |    \--- com.android.support:support-annotations:25.3.1 -> 26.1.0
-|    \--- com.google.android.exoplayer:exoplayer-dash:r2.4.2
-|         +--- com.google.android.exoplayer:exoplayer-core:r2.4.2 (*)
-|         +--- com.android.support:support-annotations:25.3.1 -> 26.1.0
-|         \--- com.android.support:support-core-utils:25.3.1 -> 26.1.0 (*)
-+--- com.google.android.gms:play-services-ads:11.8.0 (*)
+|    +--- com.google.android.exoplayer:exoplayer:r2.0.3
+|    |    \--- com.android.support:support-annotations:24.2.0 -> 26.1.0
+|    \--- com.google.android.gms:play-services-ads:10.0.1 -> 11.0.4 (*)
 +--- com.google.firebase:firebase-core:11.0.4
 |    \--- com.google.firebase:firebase-analytics:[11.0.4] -> 11.0.4
 |         +--- com.google.firebase:firebase-analytics-impl:[11.0.4] -> 11.0.4
-|         |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         |    +--- com.google.firebase:firebase-iid:[11.0.4] -> 11.0.4
-|         |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         |    |    \--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         |    +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
-|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         \--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 \--- com.android.support:multidex:1.0.2 -> 1.0.3
 
@@ -1208,22 +1208,21 @@ debugRuntimeClasspath - Resolved configuration for runtime for variant: debug
 |    |    \--- com.android.support.constraint:constraint-layout-solver:1.1.0-beta1
 |    +--- com.google.firebase:firebase-auth:11.0.4
 |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4
-|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0
-|    |    |    |    +--- com.android.support:support-v4:25.2.0 -> 26.1.0 (*)
-|    |    |    |    \--- com.google.android.gms:play-services-basement-license:11.8.0
+|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4
+|    |    |    |    \--- com.android.support:support-v4:25.2.0 -> 26.1.0 (*)
 |    |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4
-|    |    |         \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
-|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |         \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4
-|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    +--- com.google.android.gms:play-services-auth:11.0.4
 |    |    +--- com.google.android.gms:play-services-auth-base:[11.0.4] -> 11.0.4
 |    |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
-|    |    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
-|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    \--- com.android.support:cardview-v7:26.0.1 -> 26.1.0 (*)
 +--- com.facebook.android:facebook-android-sdk:4.28.0
@@ -1259,44 +1258,45 @@ debugRuntimeClasspath - Resolved configuration for runtime for variant: debug
 |    +--- com.github.bumptech.glide:glide:3.7.0
 |    \--- com.google.firebase:firebase-storage:9.6.0 -> 11.0.4
 |         +--- com.google.firebase:firebase-storage-common:[11.0.4] -> 11.0.4
-|         |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
-|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 +--- com.google.firebase:firebase-storage:11.0.4 (*)
 +--- com.android.support:multidex:1.0.3
-+--- com.google.android.gms:play-services-ads:11.0.4 -> 11.8.0
-|    +--- com.google.android.gms:play-services-ads-lite:11.8.0
-|    |    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    |    \--- com.google.android.gms:play-services-ads-lite-license:11.8.0
-|    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    +--- com.google.android.gms:play-services-gass:11.8.0
-|    |    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    |    \--- com.google.android.gms:play-services-gass-license:11.8.0
-|    \--- com.google.android.gms:play-services-ads-license:11.8.0
-+--- com.facebook.android:audience-network-sdk:4.28.0
++--- com.google.android.gms:play-services-ads:11.0.4
+|    +--- com.google.android.gms:play-services-ads-lite:[11.0.4] -> 11.0.4
+|    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-clearcut:[11.0.4] -> 11.0.4
+|    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-gass:[11.0.4] -> 11.0.4
+|    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    \--- com.google.android.gms:play-services-safetynet:[11.0.4] -> 11.0.4
+|         +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|         \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
++--- com.facebook.android:audience-network-sdk:4.25.0
 |    +--- com.android.support:appcompat-v7:25.3.1 -> 26.1.0 (*)
 |    +--- com.android.support:recyclerview-v7:25.3.1 -> 26.1.0 (*)
 |    +--- com.android.support:support-annotations:25.3.1 -> 26.1.0
 |    +--- com.android.support:support-v4:25.3.1 -> 26.1.0 (*)
-|    +--- com.google.android.gms:play-services-ads:10.0.1 -> 11.8.0 (*)
-|    +--- com.google.android.exoplayer:exoplayer-core:r2.4.2
-|    |    \--- com.android.support:support-annotations:25.3.1 -> 26.1.0
-|    \--- com.google.android.exoplayer:exoplayer-dash:r2.4.2
-|         +--- com.google.android.exoplayer:exoplayer-core:r2.4.2 (*)
-|         +--- com.android.support:support-annotations:25.3.1 -> 26.1.0
-|         \--- com.android.support:support-core-utils:25.3.1 -> 26.1.0 (*)
-+--- com.google.android.gms:play-services-ads:11.8.0 (*)
+|    +--- com.google.android.exoplayer:exoplayer:r2.0.3
+|    |    \--- com.android.support:support-annotations:24.2.0 -> 26.1.0
+|    \--- com.google.android.gms:play-services-ads:10.0.1 -> 11.0.4 (*)
 +--- com.google.firebase:firebase-core:11.0.4
 |    \--- com.google.firebase:firebase-analytics:[11.0.4] -> 11.0.4
 |         +--- com.google.firebase:firebase-analytics-impl:[11.0.4] -> 11.0.4
-|         |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         |    +--- com.google.firebase:firebase-iid:[11.0.4] -> 11.0.4
-|         |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         |    |    \--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         |    +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
-|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         \--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 \--- com.android.support:multidex:1.0.2 -> 1.0.3
 
@@ -1429,22 +1429,21 @@ debugUnitTestCompileClasspath - Resolved configuration for compilation for varia
 |    |    \--- com.android.support.constraint:constraint-layout-solver:1.1.0-beta1
 |    +--- com.google.firebase:firebase-auth:11.0.4
 |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4
-|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0
-|    |    |    |    +--- com.android.support:support-v4:25.2.0 -> 26.1.0 (*)
-|    |    |    |    \--- com.google.android.gms:play-services-basement-license:11.8.0
+|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4
+|    |    |    |    \--- com.android.support:support-v4:25.2.0 -> 26.1.0 (*)
 |    |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4
-|    |    |         \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
-|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |         \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4
-|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    +--- com.google.android.gms:play-services-auth:11.0.4
 |    |    +--- com.google.android.gms:play-services-auth-base:[11.0.4] -> 11.0.4
 |    |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
-|    |    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
-|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    \--- com.android.support:cardview-v7:26.0.1 -> 26.1.0 (*)
 +--- com.facebook.android:facebook-android-sdk:4.28.0
@@ -1480,44 +1479,45 @@ debugUnitTestCompileClasspath - Resolved configuration for compilation for varia
 |    +--- com.github.bumptech.glide:glide:3.7.0
 |    \--- com.google.firebase:firebase-storage:9.6.0 -> 11.0.4
 |         +--- com.google.firebase:firebase-storage-common:[11.0.4] -> 11.0.4
-|         |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
-|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 +--- com.google.firebase:firebase-storage:11.0.4 (*)
 +--- com.android.support:multidex:1.0.3
-+--- com.google.android.gms:play-services-ads:11.0.4 -> 11.8.0
-|    +--- com.google.android.gms:play-services-ads-lite:11.8.0
-|    |    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    |    \--- com.google.android.gms:play-services-ads-lite-license:11.8.0
-|    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    +--- com.google.android.gms:play-services-gass:11.8.0
-|    |    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    |    \--- com.google.android.gms:play-services-gass-license:11.8.0
-|    \--- com.google.android.gms:play-services-ads-license:11.8.0
-+--- com.facebook.android:audience-network-sdk:4.28.0
++--- com.google.android.gms:play-services-ads:11.0.4
+|    +--- com.google.android.gms:play-services-ads-lite:[11.0.4] -> 11.0.4
+|    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-clearcut:[11.0.4] -> 11.0.4
+|    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-gass:[11.0.4] -> 11.0.4
+|    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    \--- com.google.android.gms:play-services-safetynet:[11.0.4] -> 11.0.4
+|         +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|         \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
++--- com.facebook.android:audience-network-sdk:4.25.0
 |    +--- com.android.support:appcompat-v7:25.3.1 -> 26.1.0 (*)
 |    +--- com.android.support:recyclerview-v7:25.3.1 -> 26.1.0 (*)
 |    +--- com.android.support:support-annotations:25.3.1 -> 26.1.0
 |    +--- com.android.support:support-v4:25.3.1 -> 26.1.0 (*)
-|    +--- com.google.android.gms:play-services-ads:10.0.1 -> 11.8.0 (*)
-|    +--- com.google.android.exoplayer:exoplayer-core:r2.4.2
-|    |    \--- com.android.support:support-annotations:25.3.1 -> 26.1.0
-|    \--- com.google.android.exoplayer:exoplayer-dash:r2.4.2
-|         +--- com.google.android.exoplayer:exoplayer-core:r2.4.2 (*)
-|         +--- com.android.support:support-annotations:25.3.1 -> 26.1.0
-|         \--- com.android.support:support-core-utils:25.3.1 -> 26.1.0 (*)
-+--- com.google.android.gms:play-services-ads:11.8.0 (*)
+|    +--- com.google.android.exoplayer:exoplayer:r2.0.3
+|    |    \--- com.android.support:support-annotations:24.2.0 -> 26.1.0
+|    \--- com.google.android.gms:play-services-ads:10.0.1 -> 11.0.4 (*)
 +--- com.google.firebase:firebase-core:11.0.4
 |    \--- com.google.firebase:firebase-analytics:[11.0.4] -> 11.0.4
 |         +--- com.google.firebase:firebase-analytics-impl:[11.0.4] -> 11.0.4
-|         |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         |    +--- com.google.firebase:firebase-iid:[11.0.4] -> 11.0.4
-|         |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         |    |    \--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         |    +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
-|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         \--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 +--- junit:junit:4.12
 |    \--- org.hamcrest:hamcrest-core:1.3
@@ -1646,22 +1646,21 @@ debugUnitTestRuntimeClasspath - Resolved configuration for runtime for variant: 
 |    |    \--- com.android.support.constraint:constraint-layout-solver:1.1.0-beta1
 |    +--- com.google.firebase:firebase-auth:11.0.4
 |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4
-|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0
-|    |    |    |    +--- com.android.support:support-v4:25.2.0 -> 26.1.0 (*)
-|    |    |    |    \--- com.google.android.gms:play-services-basement-license:11.8.0
+|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4
+|    |    |    |    \--- com.android.support:support-v4:25.2.0 -> 26.1.0 (*)
 |    |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4
-|    |    |         \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
-|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |         \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4
-|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    +--- com.google.android.gms:play-services-auth:11.0.4
 |    |    +--- com.google.android.gms:play-services-auth-base:[11.0.4] -> 11.0.4
 |    |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
-|    |    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
-|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    \--- com.android.support:cardview-v7:26.0.1 -> 26.1.0 (*)
 +--- com.facebook.android:facebook-android-sdk:4.28.0
@@ -1697,44 +1696,45 @@ debugUnitTestRuntimeClasspath - Resolved configuration for runtime for variant: 
 |    +--- com.github.bumptech.glide:glide:3.7.0
 |    \--- com.google.firebase:firebase-storage:9.6.0 -> 11.0.4
 |         +--- com.google.firebase:firebase-storage-common:[11.0.4] -> 11.0.4
-|         |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
-|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 +--- com.google.firebase:firebase-storage:11.0.4 (*)
 +--- com.android.support:multidex:1.0.3
-+--- com.google.android.gms:play-services-ads:11.0.4 -> 11.8.0
-|    +--- com.google.android.gms:play-services-ads-lite:11.8.0
-|    |    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    |    \--- com.google.android.gms:play-services-ads-lite-license:11.8.0
-|    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    +--- com.google.android.gms:play-services-gass:11.8.0
-|    |    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    |    \--- com.google.android.gms:play-services-gass-license:11.8.0
-|    \--- com.google.android.gms:play-services-ads-license:11.8.0
-+--- com.facebook.android:audience-network-sdk:4.28.0
++--- com.google.android.gms:play-services-ads:11.0.4
+|    +--- com.google.android.gms:play-services-ads-lite:[11.0.4] -> 11.0.4
+|    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-clearcut:[11.0.4] -> 11.0.4
+|    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-gass:[11.0.4] -> 11.0.4
+|    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    \--- com.google.android.gms:play-services-safetynet:[11.0.4] -> 11.0.4
+|         +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|         \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
++--- com.facebook.android:audience-network-sdk:4.25.0
 |    +--- com.android.support:appcompat-v7:25.3.1 -> 26.1.0 (*)
 |    +--- com.android.support:recyclerview-v7:25.3.1 -> 26.1.0 (*)
 |    +--- com.android.support:support-annotations:25.3.1 -> 26.1.0
 |    +--- com.android.support:support-v4:25.3.1 -> 26.1.0 (*)
-|    +--- com.google.android.gms:play-services-ads:10.0.1 -> 11.8.0 (*)
-|    +--- com.google.android.exoplayer:exoplayer-core:r2.4.2
-|    |    \--- com.android.support:support-annotations:25.3.1 -> 26.1.0
-|    \--- com.google.android.exoplayer:exoplayer-dash:r2.4.2
-|         +--- com.google.android.exoplayer:exoplayer-core:r2.4.2 (*)
-|         +--- com.android.support:support-annotations:25.3.1 -> 26.1.0
-|         \--- com.android.support:support-core-utils:25.3.1 -> 26.1.0 (*)
-+--- com.google.android.gms:play-services-ads:11.8.0 (*)
+|    +--- com.google.android.exoplayer:exoplayer:r2.0.3
+|    |    \--- com.android.support:support-annotations:24.2.0 -> 26.1.0
+|    \--- com.google.android.gms:play-services-ads:10.0.1 -> 11.0.4 (*)
 +--- com.google.firebase:firebase-core:11.0.4
 |    \--- com.google.firebase:firebase-analytics:[11.0.4] -> 11.0.4
 |         +--- com.google.firebase:firebase-analytics-impl:[11.0.4] -> 11.0.4
-|         |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         |    +--- com.google.firebase:firebase-iid:[11.0.4] -> 11.0.4
-|         |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         |    |    \--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         |    +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
-|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         \--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 +--- junit:junit:4.12
 |    \--- org.hamcrest:hamcrest-core:1.3
@@ -1927,22 +1927,21 @@ releaseCompileClasspath - Resolved configuration for compilation for variant: re
 |    |    \--- com.android.support.constraint:constraint-layout-solver:1.1.0-beta1
 |    +--- com.google.firebase:firebase-auth:11.0.4
 |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4
-|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0
-|    |    |    |    +--- com.android.support:support-v4:25.2.0 -> 26.1.0 (*)
-|    |    |    |    \--- com.google.android.gms:play-services-basement-license:11.8.0
+|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4
+|    |    |    |    \--- com.android.support:support-v4:25.2.0 -> 26.1.0 (*)
 |    |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4
-|    |    |         \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
-|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |         \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4
-|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    +--- com.google.android.gms:play-services-auth:11.0.4
 |    |    +--- com.google.android.gms:play-services-auth-base:[11.0.4] -> 11.0.4
 |    |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
-|    |    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
-|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    \--- com.android.support:cardview-v7:26.0.1 -> 26.1.0 (*)
 +--- com.facebook.android:facebook-android-sdk:4.28.0
@@ -1978,44 +1977,45 @@ releaseCompileClasspath - Resolved configuration for compilation for variant: re
 |    +--- com.github.bumptech.glide:glide:3.7.0
 |    \--- com.google.firebase:firebase-storage:9.6.0 -> 11.0.4
 |         +--- com.google.firebase:firebase-storage-common:[11.0.4] -> 11.0.4
-|         |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
-|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 +--- com.google.firebase:firebase-storage:11.0.4 (*)
 +--- com.android.support:multidex:1.0.3
-+--- com.google.android.gms:play-services-ads:11.0.4 -> 11.8.0
-|    +--- com.google.android.gms:play-services-ads-lite:11.8.0
-|    |    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    |    \--- com.google.android.gms:play-services-ads-lite-license:11.8.0
-|    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    +--- com.google.android.gms:play-services-gass:11.8.0
-|    |    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    |    \--- com.google.android.gms:play-services-gass-license:11.8.0
-|    \--- com.google.android.gms:play-services-ads-license:11.8.0
-+--- com.facebook.android:audience-network-sdk:4.28.0
++--- com.google.android.gms:play-services-ads:11.0.4
+|    +--- com.google.android.gms:play-services-ads-lite:[11.0.4] -> 11.0.4
+|    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-clearcut:[11.0.4] -> 11.0.4
+|    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-gass:[11.0.4] -> 11.0.4
+|    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    \--- com.google.android.gms:play-services-safetynet:[11.0.4] -> 11.0.4
+|         +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|         \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
++--- com.facebook.android:audience-network-sdk:4.25.0
 |    +--- com.android.support:appcompat-v7:25.3.1 -> 26.1.0 (*)
 |    +--- com.android.support:recyclerview-v7:25.3.1 -> 26.1.0 (*)
 |    +--- com.android.support:support-annotations:25.3.1 -> 26.1.0
 |    +--- com.android.support:support-v4:25.3.1 -> 26.1.0 (*)
-|    +--- com.google.android.gms:play-services-ads:10.0.1 -> 11.8.0 (*)
-|    +--- com.google.android.exoplayer:exoplayer-core:r2.4.2
-|    |    \--- com.android.support:support-annotations:25.3.1 -> 26.1.0
-|    \--- com.google.android.exoplayer:exoplayer-dash:r2.4.2
-|         +--- com.google.android.exoplayer:exoplayer-core:r2.4.2 (*)
-|         +--- com.android.support:support-annotations:25.3.1 -> 26.1.0
-|         \--- com.android.support:support-core-utils:25.3.1 -> 26.1.0 (*)
-+--- com.google.android.gms:play-services-ads:11.8.0 (*)
+|    +--- com.google.android.exoplayer:exoplayer:r2.0.3
+|    |    \--- com.android.support:support-annotations:24.2.0 -> 26.1.0
+|    \--- com.google.android.gms:play-services-ads:10.0.1 -> 11.0.4 (*)
 +--- com.google.firebase:firebase-core:11.0.4
 |    \--- com.google.firebase:firebase-analytics:[11.0.4] -> 11.0.4
 |         +--- com.google.firebase:firebase-analytics-impl:[11.0.4] -> 11.0.4
-|         |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         |    +--- com.google.firebase:firebase-iid:[11.0.4] -> 11.0.4
-|         |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         |    |    \--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         |    +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
-|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         \--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 \--- com.android.support:multidex:1.0.2 -> 1.0.3
 
@@ -2151,22 +2151,21 @@ releaseRuntimeClasspath - Resolved configuration for runtime for variant: releas
 |    |    \--- com.android.support.constraint:constraint-layout-solver:1.1.0-beta1
 |    +--- com.google.firebase:firebase-auth:11.0.4
 |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4
-|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0
-|    |    |    |    +--- com.android.support:support-v4:25.2.0 -> 26.1.0 (*)
-|    |    |    |    \--- com.google.android.gms:play-services-basement-license:11.8.0
+|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4
+|    |    |    |    \--- com.android.support:support-v4:25.2.0 -> 26.1.0 (*)
 |    |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4
-|    |    |         \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
-|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |         \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4
-|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    +--- com.google.android.gms:play-services-auth:11.0.4
 |    |    +--- com.google.android.gms:play-services-auth-base:[11.0.4] -> 11.0.4
 |    |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
-|    |    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
-|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    \--- com.android.support:cardview-v7:26.0.1 -> 26.1.0 (*)
 +--- com.facebook.android:facebook-android-sdk:4.28.0
@@ -2202,44 +2201,45 @@ releaseRuntimeClasspath - Resolved configuration for runtime for variant: releas
 |    +--- com.github.bumptech.glide:glide:3.7.0
 |    \--- com.google.firebase:firebase-storage:9.6.0 -> 11.0.4
 |         +--- com.google.firebase:firebase-storage-common:[11.0.4] -> 11.0.4
-|         |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
-|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 +--- com.google.firebase:firebase-storage:11.0.4 (*)
 +--- com.android.support:multidex:1.0.3
-+--- com.google.android.gms:play-services-ads:11.0.4 -> 11.8.0
-|    +--- com.google.android.gms:play-services-ads-lite:11.8.0
-|    |    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    |    \--- com.google.android.gms:play-services-ads-lite-license:11.8.0
-|    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    +--- com.google.android.gms:play-services-gass:11.8.0
-|    |    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    |    \--- com.google.android.gms:play-services-gass-license:11.8.0
-|    \--- com.google.android.gms:play-services-ads-license:11.8.0
-+--- com.facebook.android:audience-network-sdk:4.28.0
++--- com.google.android.gms:play-services-ads:11.0.4
+|    +--- com.google.android.gms:play-services-ads-lite:[11.0.4] -> 11.0.4
+|    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-clearcut:[11.0.4] -> 11.0.4
+|    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-gass:[11.0.4] -> 11.0.4
+|    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    \--- com.google.android.gms:play-services-safetynet:[11.0.4] -> 11.0.4
+|         +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|         \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
++--- com.facebook.android:audience-network-sdk:4.25.0
 |    +--- com.android.support:appcompat-v7:25.3.1 -> 26.1.0 (*)
 |    +--- com.android.support:recyclerview-v7:25.3.1 -> 26.1.0 (*)
 |    +--- com.android.support:support-annotations:25.3.1 -> 26.1.0
 |    +--- com.android.support:support-v4:25.3.1 -> 26.1.0 (*)
-|    +--- com.google.android.gms:play-services-ads:10.0.1 -> 11.8.0 (*)
-|    +--- com.google.android.exoplayer:exoplayer-core:r2.4.2
-|    |    \--- com.android.support:support-annotations:25.3.1 -> 26.1.0
-|    \--- com.google.android.exoplayer:exoplayer-dash:r2.4.2
-|         +--- com.google.android.exoplayer:exoplayer-core:r2.4.2 (*)
-|         +--- com.android.support:support-annotations:25.3.1 -> 26.1.0
-|         \--- com.android.support:support-core-utils:25.3.1 -> 26.1.0 (*)
-+--- com.google.android.gms:play-services-ads:11.8.0 (*)
+|    +--- com.google.android.exoplayer:exoplayer:r2.0.3
+|    |    \--- com.android.support:support-annotations:24.2.0 -> 26.1.0
+|    \--- com.google.android.gms:play-services-ads:10.0.1 -> 11.0.4 (*)
 +--- com.google.firebase:firebase-core:11.0.4
 |    \--- com.google.firebase:firebase-analytics:[11.0.4] -> 11.0.4
 |         +--- com.google.firebase:firebase-analytics-impl:[11.0.4] -> 11.0.4
-|         |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         |    +--- com.google.firebase:firebase-iid:[11.0.4] -> 11.0.4
-|         |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         |    |    \--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         |    +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
-|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         \--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 \--- com.android.support:multidex:1.0.2 -> 1.0.3
 
@@ -2372,22 +2372,21 @@ releaseUnitTestCompileClasspath - Resolved configuration for compilation for var
 |    |    \--- com.android.support.constraint:constraint-layout-solver:1.1.0-beta1
 |    +--- com.google.firebase:firebase-auth:11.0.4
 |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4
-|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0
-|    |    |    |    +--- com.android.support:support-v4:25.2.0 -> 26.1.0 (*)
-|    |    |    |    \--- com.google.android.gms:play-services-basement-license:11.8.0
+|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4
+|    |    |    |    \--- com.android.support:support-v4:25.2.0 -> 26.1.0 (*)
 |    |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4
-|    |    |         \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
-|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |         \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4
-|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    +--- com.google.android.gms:play-services-auth:11.0.4
 |    |    +--- com.google.android.gms:play-services-auth-base:[11.0.4] -> 11.0.4
 |    |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
-|    |    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
-|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    \--- com.android.support:cardview-v7:26.0.1 -> 26.1.0 (*)
 +--- com.facebook.android:facebook-android-sdk:4.28.0
@@ -2423,44 +2422,45 @@ releaseUnitTestCompileClasspath - Resolved configuration for compilation for var
 |    +--- com.github.bumptech.glide:glide:3.7.0
 |    \--- com.google.firebase:firebase-storage:9.6.0 -> 11.0.4
 |         +--- com.google.firebase:firebase-storage-common:[11.0.4] -> 11.0.4
-|         |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
-|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 +--- com.google.firebase:firebase-storage:11.0.4 (*)
 +--- com.android.support:multidex:1.0.3
-+--- com.google.android.gms:play-services-ads:11.0.4 -> 11.8.0
-|    +--- com.google.android.gms:play-services-ads-lite:11.8.0
-|    |    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    |    \--- com.google.android.gms:play-services-ads-lite-license:11.8.0
-|    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    +--- com.google.android.gms:play-services-gass:11.8.0
-|    |    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    |    \--- com.google.android.gms:play-services-gass-license:11.8.0
-|    \--- com.google.android.gms:play-services-ads-license:11.8.0
-+--- com.facebook.android:audience-network-sdk:4.28.0
++--- com.google.android.gms:play-services-ads:11.0.4
+|    +--- com.google.android.gms:play-services-ads-lite:[11.0.4] -> 11.0.4
+|    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-clearcut:[11.0.4] -> 11.0.4
+|    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-gass:[11.0.4] -> 11.0.4
+|    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    \--- com.google.android.gms:play-services-safetynet:[11.0.4] -> 11.0.4
+|         +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|         \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
++--- com.facebook.android:audience-network-sdk:4.25.0
 |    +--- com.android.support:appcompat-v7:25.3.1 -> 26.1.0 (*)
 |    +--- com.android.support:recyclerview-v7:25.3.1 -> 26.1.0 (*)
 |    +--- com.android.support:support-annotations:25.3.1 -> 26.1.0
 |    +--- com.android.support:support-v4:25.3.1 -> 26.1.0 (*)
-|    +--- com.google.android.gms:play-services-ads:10.0.1 -> 11.8.0 (*)
-|    +--- com.google.android.exoplayer:exoplayer-core:r2.4.2
-|    |    \--- com.android.support:support-annotations:25.3.1 -> 26.1.0
-|    \--- com.google.android.exoplayer:exoplayer-dash:r2.4.2
-|         +--- com.google.android.exoplayer:exoplayer-core:r2.4.2 (*)
-|         +--- com.android.support:support-annotations:25.3.1 -> 26.1.0
-|         \--- com.android.support:support-core-utils:25.3.1 -> 26.1.0 (*)
-+--- com.google.android.gms:play-services-ads:11.8.0 (*)
+|    +--- com.google.android.exoplayer:exoplayer:r2.0.3
+|    |    \--- com.android.support:support-annotations:24.2.0 -> 26.1.0
+|    \--- com.google.android.gms:play-services-ads:10.0.1 -> 11.0.4 (*)
 +--- com.google.firebase:firebase-core:11.0.4
 |    \--- com.google.firebase:firebase-analytics:[11.0.4] -> 11.0.4
 |         +--- com.google.firebase:firebase-analytics-impl:[11.0.4] -> 11.0.4
-|         |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         |    +--- com.google.firebase:firebase-iid:[11.0.4] -> 11.0.4
-|         |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         |    |    \--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         |    +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
-|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         \--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 +--- junit:junit:4.12
 |    \--- org.hamcrest:hamcrest-core:1.3
@@ -2589,22 +2589,21 @@ releaseUnitTestRuntimeClasspath - Resolved configuration for runtime for variant
 |    |    \--- com.android.support.constraint:constraint-layout-solver:1.1.0-beta1
 |    +--- com.google.firebase:firebase-auth:11.0.4
 |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4
-|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0
-|    |    |    |    +--- com.android.support:support-v4:25.2.0 -> 26.1.0 (*)
-|    |    |    |    \--- com.google.android.gms:play-services-basement-license:11.8.0
+|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4
+|    |    |    |    \--- com.android.support:support-v4:25.2.0 -> 26.1.0 (*)
 |    |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4
-|    |    |         \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
-|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |         \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4
-|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    +--- com.google.android.gms:play-services-auth:11.0.4
 |    |    +--- com.google.android.gms:play-services-auth-base:[11.0.4] -> 11.0.4
 |    |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
-|    |    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
-|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 |    \--- com.android.support:cardview-v7:26.0.1 -> 26.1.0 (*)
 +--- com.facebook.android:facebook-android-sdk:4.28.0
@@ -2640,44 +2639,45 @@ releaseUnitTestRuntimeClasspath - Resolved configuration for runtime for variant
 |    +--- com.github.bumptech.glide:glide:3.7.0
 |    \--- com.google.firebase:firebase-storage:9.6.0 -> 11.0.4
 |         +--- com.google.firebase:firebase-storage-common:[11.0.4] -> 11.0.4
-|         |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
-|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
 +--- com.google.firebase:firebase-storage:11.0.4 (*)
 +--- com.android.support:multidex:1.0.3
-+--- com.google.android.gms:play-services-ads:11.0.4 -> 11.8.0
-|    +--- com.google.android.gms:play-services-ads-lite:11.8.0
-|    |    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    |    \--- com.google.android.gms:play-services-ads-lite-license:11.8.0
-|    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    +--- com.google.android.gms:play-services-gass:11.8.0
-|    |    +--- com.google.android.gms:play-services-basement:11.8.0 (*)
-|    |    \--- com.google.android.gms:play-services-gass-license:11.8.0
-|    \--- com.google.android.gms:play-services-ads-license:11.8.0
-+--- com.facebook.android:audience-network-sdk:4.28.0
++--- com.google.android.gms:play-services-ads:11.0.4
+|    +--- com.google.android.gms:play-services-ads-lite:[11.0.4] -> 11.0.4
+|    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-clearcut:[11.0.4] -> 11.0.4
+|    |    +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    +--- com.google.android.gms:play-services-gass:[11.0.4] -> 11.0.4
+|    |    \--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|    \--- com.google.android.gms:play-services-safetynet:[11.0.4] -> 11.0.4
+|         +--- com.google.android.gms:play-services-base:[11.0.4] -> 11.0.4 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
+|         \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
++--- com.facebook.android:audience-network-sdk:4.25.0
 |    +--- com.android.support:appcompat-v7:25.3.1 -> 26.1.0 (*)
 |    +--- com.android.support:recyclerview-v7:25.3.1 -> 26.1.0 (*)
 |    +--- com.android.support:support-annotations:25.3.1 -> 26.1.0
 |    +--- com.android.support:support-v4:25.3.1 -> 26.1.0 (*)
-|    +--- com.google.android.gms:play-services-ads:10.0.1 -> 11.8.0 (*)
-|    +--- com.google.android.exoplayer:exoplayer-core:r2.4.2
-|    |    \--- com.android.support:support-annotations:25.3.1 -> 26.1.0
-|    \--- com.google.android.exoplayer:exoplayer-dash:r2.4.2
-|         +--- com.google.android.exoplayer:exoplayer-core:r2.4.2 (*)
-|         +--- com.android.support:support-annotations:25.3.1 -> 26.1.0
-|         \--- com.android.support:support-core-utils:25.3.1 -> 26.1.0 (*)
-+--- com.google.android.gms:play-services-ads:11.8.0 (*)
+|    +--- com.google.android.exoplayer:exoplayer:r2.0.3
+|    |    \--- com.android.support:support-annotations:24.2.0 -> 26.1.0
+|    \--- com.google.android.gms:play-services-ads:10.0.1 -> 11.0.4 (*)
 +--- com.google.firebase:firebase-core:11.0.4
 |    \--- com.google.firebase:firebase-analytics:[11.0.4] -> 11.0.4
 |         +--- com.google.firebase:firebase-analytics-impl:[11.0.4] -> 11.0.4
-|         |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         |    +--- com.google.firebase:firebase-iid:[11.0.4] -> 11.0.4
-|         |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         |    |    +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         |    |    \--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         |    +--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 |         |    \--- com.google.android.gms:play-services-tasks:[11.0.4] -> 11.0.4 (*)
-|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.8.0 (*)
+|         +--- com.google.android.gms:play-services-basement:[11.0.4] -> 11.0.4 (*)
 |         \--- com.google.firebase:firebase-common:[11.0.4] -> 11.0.4 (*)
 +--- junit:junit:4.12
 |    \--- org.hamcrest:hamcrest-core:1.3

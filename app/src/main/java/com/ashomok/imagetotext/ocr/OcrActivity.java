@@ -174,6 +174,12 @@ public class OcrActivity extends RxAppCompatActivity {
         return Completable.create(emitter -> {
             ImageView imageView = findViewById(R.id.image);
 
+            //todo update to new version
+            // https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md
+          //  https://github.com/firebase/FirebaseUI-Android
+            //https://github.com/firebase/FirebaseUI-Android/issues/971
+          // https://github.com/firebase/FirebaseUI-Android/pull/802
+
             if (isUploaded()) {
                 //init image for uploaded source - url
                 FirebaseStorage storage = FirebaseStorage.getInstance();
