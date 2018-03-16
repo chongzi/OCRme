@@ -50,12 +50,13 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  * Created by Iuliia on 13.12.2015.
  */
 
+//todo refactoring needed - uri and url - two ways to process task - make 2 processor classes
 public class OcrActivity extends RxAppCompatActivity {
     public static final int RESULT_CANCELED_BY_USER = 123;
     @Nullable
-    private Uri imageUri; //image stored on device - will be uploaded
+    private Uri imageUri; //image stored on device - will be uploaded example content://com.ashomok.imagetotext.provider/my_images/DCIM/Camera/cropped.jpg
     @Nullable
-    private String imageUrl; //Url of image, stored in firebase storage
+    private String imageUrl; //Url of image, stored in firebase storage example gs://imagetotext-149919.appspot.com/ocr_request_images/aeffe41d-7acc-44a3-883b-677bbab02a12cropped.jpg
     private StorageReference mImageRef;
     private ArrayList<String> sourceLanguageCodes;
     public static final String EXTRA_LANGUAGES = "com.ashomokdev.imagetotext.ocr.LANGUAGES";
@@ -181,9 +182,11 @@ public class OcrActivity extends RxAppCompatActivity {
           // https://github.com/firebase/FirebaseUI-Android/pull/802
 
             if (isUploaded()) {
+                //called only from TextFragment when Language Changed and ocr re-run.
                 //init image for uploaded source - url
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference gsReference = storage.getReferenceFromUrl(imageUrl);
+                Log.d(TAG, "image Url = " + imageUrl);
                 Glide.with(this)
                         .using(new FirebaseImageLoader())
                         .load(gsReference)
@@ -205,6 +208,7 @@ public class OcrActivity extends RxAppCompatActivity {
                         .fitCenter()
                         .into(imageView);
             } else {
+                Log.d(TAG, "image Uri = " + imageUri);
                 //init image from device
                 Glide.with(this)
                         .load(imageUri)
