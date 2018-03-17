@@ -112,6 +112,7 @@ dependencies {
     //for using java 8 features like streams
     compile 'com.annimon:stream:1.1.8'
 
+
     //firebase
     // FirebaseUI Auth
     compile ('com.firebaseui:firebase-ui-auth:3.2.2') {
@@ -124,32 +125,16 @@ dependencies {
     }
     compile 'com.firebaseui:firebase-ui-storage:3.2.2'
     compile 'com.google.firebase:firebase-storage:11.8.0'
+    implementation 'com.github.bumptech.glide:glide:4.6.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
+
 
     compile 'com.android.support:multidex:1.0.3'
+
 
     //ads
     compile 'com.google.android.gms:play-services-ads:11.8.0'
     compile 'com.facebook.android:audience-network-sdk:4.28.0' //facebook native ads
-
-
-
-
-
-
-
-//    //firebase
-//    // FirebaseUI for Firebase Auth
-//    implementation 'com.firebaseui:firebase-ui-auth:3.2.2'
-//    //Facebook login support is required
-//    compile 'com.facebook.android:facebook-android-sdk:4.28.0'
-//    // FirebaseUI for Cloud Storage
-//    implementation ('com.firebaseui:firebase-ui-storage:3.2.2') {
-//        // Necessary to avoid version conflicts
-//        exclude group: 'com.github.bumptech.glide', module: 'glide'
-//    }
-//    compile 'com.google.firebase:firebase-storage:11.8.0'
-//    implementation 'com.facebook.android:facebook-login:4.28.0'
-//    compile 'com.github.bumptech.glide:glide:3.7.0' //need to use older version because of error https://github.com/bumptech/glide/issues/2103
 }
 
 apply plugin: 'com.google.gms.google-services'

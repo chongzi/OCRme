@@ -1,6 +1,7 @@
 package com.ashomok.imagetotext.ocr;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,13 +19,12 @@ import com.ashomok.imagetotext.Settings;
 import com.ashomok.imagetotext.ocr.ocr_task.OcrHttpClient;
 import com.ashomok.imagetotext.ocr.ocr_task.OcrResponse;
 import com.ashomok.imagetotext.ocr_result.OcrResultActivity;
+import com.ashomok.imagetotext.utils.GlideApp;
 import com.ashomok.imagetotext.utils.NetworkUtils;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.signature.StringSignature;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
@@ -32,6 +32,7 @@ import com.google.firebase.storage.StorageReference;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -49,7 +50,7 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 /**
  * Created by Iuliia on 13.12.2015.
  */
-
+//todo mvp with dagger needs
 //todo refactoring needed - uri and url - two ways to process task - make 2 processor classes
 public class OcrActivity extends RxAppCompatActivity {
     public static final int RESULT_CANCELED_BY_USER = 123;
@@ -81,6 +82,27 @@ public class OcrActivity extends RxAppCompatActivity {
         callOcr(httpClient);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Runnable deleteFile = () -> {
+            try {
+                File file = new File(imageUri.getPath());
+                file.delete();
+                if (file.exists()) {
+                    file.getCanonicalFile().delete();
+                    if (file.exists()) {
+                        getApplicationContext().deleteFile(file.getName());
+                    }
+                }
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage());
+            }
+        };
+
+        deleteFile.run();
+    }
+
     public void callOcr(OcrHttpClient httpClient) {
         if (isOnline()) {
 
@@ -97,6 +119,7 @@ public class OcrActivity extends RxAppCompatActivity {
                     .compose(bindToLifecycle())
                     .flatMap(pair ->
                             httpClient.ocr(
+                                    //todo delete cropped file after ocr call
                                     pair.second,
                                     Optional.ofNullable(sourceLanguageCodes),
                                     pair.first)
@@ -175,63 +198,50 @@ public class OcrActivity extends RxAppCompatActivity {
         return Completable.create(emitter -> {
             ImageView imageView = findViewById(R.id.image);
 
-            //todo update to new version
-            // https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md
-          //  https://github.com/firebase/FirebaseUI-Android
-            //https://github.com/firebase/FirebaseUI-Android/issues/971
-          // https://github.com/firebase/FirebaseUI-Android/pull/802
-
             if (isUploaded()) {
                 //called only from TextFragment when Language Changed and ocr re-run.
                 //init image for uploaded source - url
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference gsReference = storage.getReferenceFromUrl(imageUrl);
                 Log.d(TAG, "image Url = " + imageUrl);
-                Glide.with(this)
-                        .using(new FirebaseImageLoader())
+
+                GlideApp.with(this)
                         .load(gsReference)
                         .error(R.drawable.ic_broken_image)
-                        .listener(new RequestListener<StorageReference, GlideDrawable>() {
+                        .listener(new RequestListener<Drawable>() {
                             @Override
-                            public boolean onException(Exception e, StorageReference model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                                 emitter.onError(e);
                                 return false;
                             }
 
                             @Override
-                            public boolean onResourceReady(GlideDrawable resource, StorageReference model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                                 emitter.onComplete();
                                 return false;
                             }
                         })
-                        .crossFade()
                         .fitCenter()
                         .into(imageView);
             } else {
-                Log.d(TAG, "image Uri = " + imageUri);
                 //init image from device
-                Glide.with(this)
+                Log.d(TAG, "image Uri = " + imageUri);
+                GlideApp.with(this)
                         .load(imageUri)
                         .error(R.drawable.ic_broken_image)
-                        .signature(new StringSignature(String.valueOf(System.currentTimeMillis()))) //needs because image url not changed. It returns the same image all the time if remove this line. It is because default build-in cashe mechanism.
-                        .listener(new RequestListener<Uri, GlideDrawable>() {
+                        .listener(new RequestListener<Drawable>() {
                             @Override
-                            public boolean onException(
-                                    Exception e, Uri model, Target<GlideDrawable> target,
-                                    boolean isFirstResource) {
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                                 emitter.onError(e);
                                 return false;
                             }
 
                             @Override
-                            public boolean onResourceReady(
-                                    GlideDrawable resource, Uri model, Target<GlideDrawable> target,
-                                    boolean isFromMemoryCache, boolean isFirstResource) {
+                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                                 emitter.onComplete();
                                 return false;
                             }
                         })
-                        .crossFade()
                         .fitCenter()
                         .into(imageView);
             }

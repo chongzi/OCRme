@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.ocr.ocr_task.OcrResult;
+import com.ashomok.imagetotext.utils.GlideApp;
 import com.bumptech.glide.Glide;
 import com.facebook.ads.AdChoicesView;
 import com.facebook.ads.NativeAd;
@@ -137,10 +138,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             StorageReference gsReference =
                     FirebaseStorage.getInstance().getReferenceFromUrl(item.getSourceImageUrl());
             // Load the image using Glide
-            Glide.with(holder.cardView.getContext())
-                    .using(new FirebaseImageLoader())
+            GlideApp.with(holder.cardView.getContext())
                     .load(gsReference)
-                    .crossFade()
                     .centerCrop()
                     .into(holder.sourceImage);
         } catch (Exception e) {

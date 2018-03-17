@@ -24,6 +24,7 @@ import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.language_choser.LanguageOcrActivity;
 import com.ashomok.imagetotext.ocr.OcrActivity;
 import com.ashomok.imagetotext.ocr_result.translate.TranslateActivity;
+import com.ashomok.imagetotext.utils.GlideApp;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.FirebaseStorage;
@@ -127,12 +128,10 @@ public class TextFragment extends Fragment implements View.OnClickListener {
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference gsReference = storage.getReferenceFromUrl(imageUrl);
-        Glide.with(this.getActivity())
-                .using(new FirebaseImageLoader())
+        GlideApp.with(this.getActivity())
                 .load(gsReference)
                 .error(R.drawable.ic_broken_image)
                 .fitCenter()
-                .crossFade()
                 .into(mImageView);
 
         //scroll to centre

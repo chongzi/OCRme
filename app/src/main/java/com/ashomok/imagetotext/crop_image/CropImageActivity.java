@@ -19,6 +19,7 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import static com.ashomok.imagetotext.ocr.OcrActivity.EXTRA_LANGUAGES;
 import static com.ashomok.imagetotext.utils.FileUtils.createFileForUri;
@@ -40,7 +41,8 @@ public class CropImageActivity extends AppCompatActivity
     private ArrayList<String> sourceLanguageCodes;
     private FloatingActionButton cropBtn;
     private String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-    private static final String cropped_filename = "cropped.jpg";
+    private String cropped_filename;
+    private final static String cropped_file_extension = ".jpg";
     private View mRootView;
 
     @Override
@@ -67,6 +69,8 @@ public class CropImageActivity extends AppCompatActivity
                 .subscribe(permission -> {
                     if (permission.granted) {
                         try {
+                            //todo delete cropped file when processed
+                            cropped_filename = UUID.randomUUID().toString() + cropped_file_extension;
                             mCropImageView.saveCroppedImageAsync(
                                     createFileForUri(cropped_filename, this));
                         } catch (Exception e) {
