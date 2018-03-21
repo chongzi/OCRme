@@ -38,7 +38,6 @@ import com.ashomok.imagetotext.BuildConfig;
 import com.ashomok.imagetotext.ExitDialogFragment;
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.Settings;
-import com.ashomok.imagetotext.about.AboutActivity;
 import com.ashomok.imagetotext.crop_image.CropImageActivity;
 import com.ashomok.imagetotext.firebaseUiAuth.BaseLoginActivity;
 import com.ashomok.imagetotext.firebaseUiAuth.SignOutDialogFragment;
@@ -341,7 +340,7 @@ public class MainActivity extends BaseLoginActivity implements
                             startMyDocsActivity();
                             break;
                         case R.id.about:
-                            startAboutActivity();
+                            // TODO:
                             break;
                         case R.id.update_to_premium:
                             startUpdateToPremiumActivity();
@@ -362,11 +361,6 @@ public class MainActivity extends BaseLoginActivity implements
         LinearLayout loginHeader =
                 navigationView.getHeaderView(0).findViewById(R.id.propose_sign_in_layout);
         loginHeader.setOnClickListener(this);
-    }
-
-    private void startAboutActivity() {
-        Intent intent = new Intent(this, AboutActivity.class);
-        startActivity(intent);
     }
 
     private void startUpdateToPremiumActivity() {
