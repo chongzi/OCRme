@@ -63,7 +63,7 @@ public class OcrHttpClient {
             OcrRequestBean ocrRequest = new OcrRequestBean();
             ocrRequest.setGcsImageUri(gcsImageUri);
             languages.ifPresent(l -> ocrRequest.setLanguages(l.toArray(new String[l.size()])));
-            idToken.ifPresent(t -> ocrRequest.setIdTokenString(t));
+            idToken.ifPresent(ocrRequest::setIdTokenString);
             return ocrAPI.ocr(ocrRequest);
         } else {
             return Single.error(new Exception("Wrong path or file not exists."));

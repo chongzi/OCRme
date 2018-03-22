@@ -7,7 +7,7 @@ android {
         applicationId "com.ashomok.imagetotext"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 8
+        versionCode 10
         versionName "1.0"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

@@ -14,8 +14,6 @@ import android.support.v4.content.FileProvider;
 import android.util.Log;
 
 import com.ashomok.imagetotext.BuildConfig;
-import com.ashomok.imagetotext.R;
-import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -24,7 +22,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
-import static com.ashomok.imagetotext.utils.InfoSnackbarUtil.showWarning;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 /**
@@ -294,5 +291,16 @@ public class FileUtils {
         inChannel.transferTo(0, inChannel.size(), outChannel);
         inStream.close();
         outStream.close();
+    }
+
+    public static void deleteFile(Uri uri) {
+        File fdelete = new File(uri.getPath());
+        if (fdelete.exists()) {
+            if (fdelete.delete()) {
+                Log.d(TAG, "file Deleted :" + uri.getPath());
+            } else {
+                Log.d(TAG, "file not Deleted :" + uri.getPath());
+            }
+        }
     }
 }

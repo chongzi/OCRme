@@ -15,10 +15,10 @@ import android.widget.ImageView;
 
 import com.annimon.stream.Optional;
 import com.ashomok.imagetotext.R;
-import com.ashomok.imagetotext.Settings;
 import com.ashomok.imagetotext.ocr.ocr_task.OcrHttpClient;
 import com.ashomok.imagetotext.ocr.ocr_task.OcrResponse;
 import com.ashomok.imagetotext.ocr_result.OcrResultActivity;
+import com.ashomok.imagetotext.utils.FileUtils;
 import com.ashomok.imagetotext.utils.GlideApp;
 import com.ashomok.imagetotext.utils.NetworkUtils;
 import com.bumptech.glide.load.DataSource;
@@ -76,7 +76,7 @@ public class OcrActivity extends RxAppCompatActivity {
         sourceLanguageCodes = getIntent().getStringArrayListExtra(EXTRA_LANGUAGES);
 
         initCancelBtn();
-        initImage().subscribe(() -> initAnimatedScanBand(Settings.isTestMode));
+        initImage().subscribe(() -> initAnimatedScanBand());
 
         OcrHttpClient httpClient = OcrHttpClient.getInstance();
         callOcr(httpClient);
@@ -119,7 +119,6 @@ public class OcrActivity extends RxAppCompatActivity {
                     .compose(bindToLifecycle())
                     .flatMap(pair ->
                             httpClient.ocr(
-                                    //todo delete cropped file after ocr call
                                     pair.second,
                                     Optional.ofNullable(sourceLanguageCodes),
                                     pair.first)
@@ -165,10 +164,7 @@ public class OcrActivity extends RxAppCompatActivity {
         startActivity(intent);
     }
 
-    public void initAnimatedScanBand(boolean isTestMode) {
-        if (isTestMode) {
-            return;
-        }
+    public void initAnimatedScanBand() {
         ImageView scan_band = findViewById(R.id.scan_band);
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -198,7 +194,7 @@ public class OcrActivity extends RxAppCompatActivity {
         return Completable.create(emitter -> {
             ImageView imageView = findViewById(R.id.image);
 
-            if (isUploaded()) {
+            if (imageUrl != null) { //uploaded
                 //called only from TextFragment when Language Changed and ocr re-run.
                 //init image for uploaded source - url
                 FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -252,7 +248,7 @@ public class OcrActivity extends RxAppCompatActivity {
      * async upload photo to firebase storage if not yet uploaded
      */
     public Single<String> uploadPhoto() {
-        if (isUploaded()) {
+        if (imageUrl != null) {
             return Single.just(imageUrl);
         } else {
             return Single.create(emitter -> {
@@ -274,18 +270,9 @@ public class OcrActivity extends RxAppCompatActivity {
                             Log.e(TAG, "uploadPhoto:onError", e);
                             emitter.onError(e);
                         });
-            });
-        }
-    }
 
-    private boolean isUploaded() {
-        if (imageUri != null && imageUrl == null) {
-            return false;
-        } else if (imageUri == null && imageUrl != null) {
-            return true;
-        } else {
-            Log.e(TAG, "ERROR. Can not check image status.");
-            return false;
+                FileUtils.deleteFile(imageUri);
+            });
         }
     }
 
