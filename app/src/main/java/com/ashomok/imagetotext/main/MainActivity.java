@@ -22,22 +22,21 @@ import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ashomok.imagetotext.BuildConfig;
 import com.ashomok.imagetotext.ExitDialogFragment;
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.Settings;
+import com.ashomok.imagetotext.about.AboutActivity;
+import com.ashomok.imagetotext.ad.AdMobContainerImpl;
 import com.ashomok.imagetotext.crop_image.CropImageActivity;
 import com.ashomok.imagetotext.firebaseUiAuth.BaseLoginActivity;
 import com.ashomok.imagetotext.firebaseUiAuth.SignOutDialogFragment;
@@ -47,14 +46,6 @@ import com.ashomok.imagetotext.ocr.OcrActivity;
 import com.ashomok.imagetotext.update_to_premium.UpdateToPremiumActivity;
 import com.ashomok.imagetotext.utils.InfoSnackbarUtil;
 import com.ashomok.imagetotext.utils.NetworkUtils;
-import com.facebook.ads.Ad;
-import com.facebook.ads.AdChoicesView;
-import com.facebook.ads.AdError;
-import com.facebook.ads.AdListener;
-import com.facebook.ads.AdSize;
-import com.facebook.ads.AdView;
-import com.facebook.ads.MediaView;
-import com.facebook.ads.NativeAd;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
@@ -83,6 +74,9 @@ public class MainActivity extends BaseLoginActivity implements
     @Inject
     MainPresenter mPresenter;
 
+    @Inject
+    AdMobContainerImpl adMobContainer;
+
     private static final int LANGUAGE_ACTIVITY_REQUEST_CODE = 1;
     private static final int CaptureImage_REQUEST_CODE = 2;
     private static final int OCR_Activity_REQUEST_CODE = 3;
@@ -97,8 +91,6 @@ public class MainActivity extends BaseLoginActivity implements
     private String mEmail = "No email";
     private String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
     private static final String imageFileNameFromCamera = "ocr.jpg";
-    private NativeAd nativeAd;
-    private static final String NATIVE_AD_PLACEMENT_ID = "172310460079691_172310680079669";
 
 
     private final BroadcastReceiver mConnectivityChangeReceiver = new BroadcastReceiver() {
@@ -340,7 +332,7 @@ public class MainActivity extends BaseLoginActivity implements
                             startMyDocsActivity();
                             break;
                         case R.id.about:
-                            // TODO:
+                            startAboutActivity();
                             break;
                         case R.id.update_to_premium:
                             startUpdateToPremiumActivity();
@@ -361,6 +353,11 @@ public class MainActivity extends BaseLoginActivity implements
         LinearLayout loginHeader =
                 navigationView.getHeaderView(0).findViewById(R.id.propose_sign_in_layout);
         loginHeader.setOnClickListener(this);
+    }
+
+    private void startAboutActivity() {
+        Intent intent = new Intent(this, AboutActivity.class);
+        startActivity(intent);
     }
 
     private void startUpdateToPremiumActivity() {
@@ -596,77 +593,10 @@ public class MainActivity extends BaseLoginActivity implements
     }
 
     private void showAds() {
-        showNativeAd();
+        showBannerAd();
     }
 
-    private void showNativeAd() {
-        nativeAd = new NativeAd(this, NATIVE_AD_PLACEMENT_ID);
-        nativeAd.setAdListener(new AdListener() {
-
-            @Override
-            public void onError(Ad ad, AdError error) {
-                // Ad error callback
-            }
-
-            @Override
-            public void onAdLoaded(Ad ad) {
-                if (nativeAd != null) {
-                    nativeAd.unregisterView();
-                }
-
-                // Add the Ad view into the ad container.
-                RelativeLayout nativeAdContainer = findViewById(R.id.ads_container);
-                LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
-                // Inflate the Ad view.  The layout referenced should be the one you created in the last step.
-                LinearLayout adView = (LinearLayout) inflater.inflate(R.layout.main_native_ad_layout, nativeAdContainer, false);
-                nativeAdContainer.addView(adView);
-
-                // Create native UI using the ad metadata.
-                ImageView nativeAdIcon = adView.findViewById(R.id.native_ad_icon);
-                TextView nativeAdTitle = adView.findViewById(R.id.native_ad_title);
-                MediaView nativeAdMedia = adView.findViewById(R.id.native_ad_media);
-                TextView nativeAdBody = adView.findViewById(R.id.native_ad_body);
-                Button nativeAdCallToAction = adView.findViewById(R.id.native_ad_call_to_action);
-
-                // Set the Text.
-                nativeAdTitle.setText(nativeAd.getAdTitle());
-                nativeAdBody.setText(nativeAd.getAdBody());
-                nativeAdCallToAction.setText(nativeAd.getAdCallToAction());
-
-                // Download and display the ad icon.
-                NativeAd.Image adIcon = nativeAd.getAdIcon();
-                NativeAd.downloadAndDisplayImage(adIcon, nativeAdIcon);
-
-                // Download and display the cover image.
-                nativeAdMedia.setNativeAd(nativeAd);
-
-                // Add the AdChoices icon
-                LinearLayout adChoicesContainer = findViewById(R.id.ad_choices_container);
-                AdChoicesView adChoicesView = new AdChoicesView(MainActivity.this, nativeAd, true);
-                adChoicesContainer.addView(adChoicesView);
-
-                // Register the Title and CTA button to listen for clicks.
-                List<View> clickableViews = new ArrayList<>();
-                clickableViews.add(nativeAdTitle);
-                clickableViews.add(nativeAdCallToAction);
-                clickableViews.add(nativeAdIcon);
-                clickableViews.add(nativeAdMedia);
-                nativeAd.registerViewForInteraction(nativeAdContainer, clickableViews);
-
-            }
-
-            @Override
-            public void onAdClicked(Ad ad) {
-                // Ad clicked callback
-            }
-
-            @Override
-            public void onLoggingImpression(Ad ad) {
-                // Ad impression logged callback
-            }
-        });
-
-        // Request an ad
-        nativeAd.loadAd();
+    private void showBannerAd() {
+        adMobContainer.initBottomBannerAd(findViewById(R.id.ads_container));
     }
 }

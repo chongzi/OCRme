@@ -1,10 +1,10 @@
 package com.ashomok.imagetotext.my_docs;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,10 +20,6 @@ import android.widget.TextView;
 import com.ashomok.imagetotext.R;
 import com.ashomok.imagetotext.ocr.ocr_task.OcrResult;
 import com.ashomok.imagetotext.utils.GlideApp;
-import com.bumptech.glide.Glide;
-import com.facebook.ads.AdChoicesView;
-import com.facebook.ads.NativeAd;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -36,80 +32,36 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
  * Created by iuliia on 12/26/17.
  */
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.DocViewHolder> {
 
     private final MyDocsActivity.RecyclerViewCallback callback;
-    private final Context context;
-    private List<Object> mDataList;
+    private List<OcrResult> mDataList;
     private List<OcrResult> multiSelectDataList;
-    private static final int DOC = 0;
-    private static final int NATIVE_AD = 1;
 
     public static final String TAG = DEV_TAG + RecyclerViewAdapter.class.getSimpleName();
 
-    RecyclerViewAdapter(Context context,
-                        List<Object> mDataList,
+    RecyclerViewAdapter(List<OcrResult> mDataList,
                         List<OcrResult> multiSelectDataList,
                         MyDocsActivity.RecyclerViewCallback callback) {
-        this.context = context;
         this.mDataList = mDataList;
         this.multiSelectDataList = multiSelectDataList;
         this.callback = callback;
     }
 
     // Create new views (invoked by the layout manager)
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public DocViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        if (viewType == DOC) {
-            View docItem = inflater.inflate(R.layout.my_doc_view, parent, false);
-            return new DocViewHolder(docItem);
-        } else if (viewType == NATIVE_AD) {
-            View nativeAdItem = inflater.inflate(R.layout.mydocs_native_ad_layout, parent, false);
-            return new NativeAdViewHolder(nativeAdItem);
-        } else {
-            return null;
-        }
+
+        View docItem = inflater.inflate(R.layout.my_doc_view, parent, false);
+        return new DocViewHolder(docItem);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        int itemType = getItemViewType(position);
-        if (itemType == DOC) {
-            bindViewHolder((DocViewHolder) holder, position);
-        } else if (itemType == NATIVE_AD) {
-            bindViewHolder((NativeAdViewHolder) holder, position);
-        }
-    }
-
-    private void bindViewHolder(NativeAdViewHolder holder, int position) {
-        NativeAd nativeAd = (NativeAd) mDataList.get(position);
-
-        ImageView adImage = holder.adImage;
-        TextView adTitle = holder.tvAdTitle;
-        Button btnCTA = holder.btnCTA;
-        LinearLayout adChoicesContainer = holder.adChoicesContainer;
-
-        adTitle.setText(nativeAd.getAdTitle());
-        NativeAd.downloadAndDisplayImage(nativeAd.getAdIcon(), adImage);
-        btnCTA.setText(nativeAd.getAdCallToAction());
-        AdChoicesView adChoicesView = new AdChoicesView(context, nativeAd, true);
-
-        if (adChoicesContainer.getChildCount() == 0) {
-            adChoicesContainer.addView(adChoicesView);
-        }
-
-        List<View> clickableViews = new ArrayList<>();
-        clickableViews.add(adImage);
-        clickableViews.add(btnCTA);
-        clickableViews.add(adTitle);
-
-        nativeAd.registerViewForInteraction(holder.container, clickableViews);
-    }
-
-    private void bindViewHolder(DocViewHolder holder, int position) {
-        OcrResult item = (OcrResult) mDataList.get(position);
+    public void onBindViewHolder(@NonNull DocViewHolder holder, int position) {
+        OcrResult item = mDataList.get(position);
 
         //check if select mode and update design
         if (multiSelectDataList.size() > 0) {
@@ -156,18 +108,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             callback.onItemLongClick(position);
             return true;
         });
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        Object item = mDataList.get(position);
-        if (item instanceof OcrResult) {
-            return DOC;
-        } else if (item instanceof NativeAd) {
-            return NATIVE_AD;
-        } else {
-            return -1;
-        }
     }
 
     private void showPopupMenu(View view, int position) {
@@ -227,23 +167,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             menuBtn = v.findViewById(R.id.card_menu_btn);
             checkbox = v.findViewById(R.id.checkBox);
             darkHint = v.findViewById(R.id.hint);
-        }
-    }
-
-    private static class NativeAdViewHolder extends RecyclerView.ViewHolder {
-        ImageView adImage;
-        TextView tvAdTitle;
-        Button btnCTA;
-        View container;
-        LinearLayout adChoicesContainer;
-
-        NativeAdViewHolder(View itemView) {
-            super(itemView);
-            this.container = itemView;
-            adImage = itemView.findViewById(R.id.native_ad_icon);
-            tvAdTitle = itemView.findViewById(R.id.native_ad_title);
-            btnCTA = itemView.findViewById(R.id.native_ad_call_to_action);
-            adChoicesContainer = itemView.findViewById(R.id.ad_choices_container);
         }
     }
 }

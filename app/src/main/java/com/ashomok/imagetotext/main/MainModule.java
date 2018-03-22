@@ -5,7 +5,10 @@ package com.ashomok.imagetotext.main;
  */
 
 import android.app.Activity;
+import android.support.annotation.StringRes;
 
+import com.ashomok.imagetotext.R;
+import com.ashomok.imagetotext.Settings;
 import com.ashomok.imagetotext.di_dagger.ActivityScoped;
 import com.ashomok.imagetotext.my_docs.MyDocsPresenter;
 
@@ -29,4 +32,14 @@ public abstract class MainModule {
         return activity;
     }
 
+    @Provides
+    @ActivityScoped
+    static @StringRes
+    int provideAdBannerId() {
+        if (Settings.isTestMode) {
+            return R.string.test_banner;
+        } else {
+            return R.string.main_activity_banner;
+        }
+    }
 }

@@ -18,8 +18,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
-import com.annimon.stream.Stream;
 import com.ashomok.imagetotext.R;
+import com.ashomok.imagetotext.ad.AdMobContainerImpl;
 import com.ashomok.imagetotext.firebaseUiAuth.BaseLoginActivity;
 import com.ashomok.imagetotext.my_docs.get_my_docs_task.MyDocsHttpClient;
 import com.ashomok.imagetotext.ocr.ocr_task.OcrResponse;
@@ -29,14 +29,9 @@ import com.ashomok.imagetotext.utils.AlertDialogHelper;
 import com.ashomok.imagetotext.utils.AutoFitGridLayoutManager;
 import com.ashomok.imagetotext.utils.EndlessRecyclerViewScrollListener;
 import com.ashomok.imagetotext.utils.InfoSnackbarUtil;
-import com.facebook.ads.Ad;
-import com.facebook.ads.AdError;
-import com.facebook.ads.AdListener;
-import com.facebook.ads.NativeAd;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -48,19 +43,23 @@ import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 /**
  * Created by iuliia on 8/18/17.
  */
+
+//todo don't reload list when onback clicked
 public class MyDocsActivity extends BaseLoginActivity implements View.OnClickListener, MyDocsContract.View {
 
     private static final int DELETE_TAG = 1;
     private static final String TAG = DEV_TAG + MyDocsActivity.class.getSimpleName();
 
-    private List<Object> dataList; //list of OcrResult and Ad objectsS
+    private List<OcrResult> dataList;
     private List<OcrResult> multiSelectDataList;
     private RecyclerViewAdapter adapter;
     private ActionMode mActionMode;
     boolean isMultiSelect = false;
     AlertDialogHelper alertDialogHelper;
     private ProgressBar progress;
-    private static final String NATIVE_AD_PLACEMENT_ID = "172310460079691_172447986732605";
+
+    @Inject
+    AdMobContainerImpl adMobContainer;
 
     @Inject
     MyDocsPresenter mPresenter;
@@ -209,9 +208,7 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
             if (multiSelectDataList.contains(dataList.get(position))) {
                 multiSelectDataList.remove(dataList.get(position));
             } else {
-                if (dataList.get(position) instanceof OcrResult) {
-                    multiSelectDataList.add((OcrResult) dataList.get(position));
-                }
+                multiSelectDataList.add(dataList.get(position));
             }
             mActionMode.setTitle(multiSelectDataList.size() + getString(R.string.selected));
 
@@ -225,10 +222,8 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
             if (isMultiSelect) {
                 onMultiSelect(position);
             } else {
-                if (dataList.get(position) instanceof OcrResult) {
-                    OcrResult doc = (OcrResult) dataList.get(position);
-                    startOcrResultActivity(new OcrResponse(doc, OcrResponse.Status.OK));
-                }
+                OcrResult doc = dataList.get(position);
+                startOcrResultActivity(new OcrResponse(doc, OcrResponse.Status.OK));
             }
         }
 
@@ -240,21 +235,21 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
 
         @Override
         public void onItemDelete(int position) {
-            multiSelectDataList.add((OcrResult) dataList.get(position));
+            multiSelectDataList.add(dataList.get(position));
             mPresenter.deleteDocs(multiSelectDataList);
             multiSelectDataList.clear();
         }
 
         @Override
         public void onItemShareText(int position) {
-            OcrResult doc = (OcrResult) dataList.get(position);
+            OcrResult doc = dataList.get(position);
             String textResult = doc.getTextResult();
             mPresenter.onShareTextClicked(textResult);
         }
 
         @Override
         public void onItemSharePdf(int position) {
-            OcrResult doc = (OcrResult) dataList.get(position);
+            OcrResult doc = dataList.get(position);
             String mDownloadURL = doc.getPdfResultMediaUrl();
             mPresenter.onSharePdfClicked(mDownloadURL);
         }
@@ -269,7 +264,7 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         dataList = new ArrayList<>();
         multiSelectDataList = new ArrayList<>();
 
-        adapter = new RecyclerViewAdapter(this, dataList, multiSelectDataList, callback);
+        adapter = new RecyclerViewAdapter(dataList, multiSelectDataList, callback);
         recyclerView.setAdapter(adapter);
         EndlessRecyclerViewScrollListener scrollListener =
                 new EndlessRecyclerViewScrollListener(layoutManager) {
@@ -304,9 +299,7 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
 
     private void selectAll(ActionMode mode) {
         multiSelectDataList.clear();
-        multiSelectDataList.addAll(Stream.of(dataList)
-                .filter(l -> l instanceof OcrResult)
-                .map(l -> (OcrResult) l).toList());
+        multiSelectDataList.addAll(dataList);
 
         mode.setTitle(multiSelectDataList.size() + getString(R.string.selected));
 
@@ -379,39 +372,7 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
             emptyView.setVisibility(View.VISIBLE);
         }
 
-        loadAd();
-    }
-
-    private void loadAd() {
-        Log.d(TAG, "onLoadAd");
-        NativeAd nativeAd = new NativeAd(this, NATIVE_AD_PLACEMENT_ID);
-        nativeAd.setAdListener(new AdListener() {
-            @Override
-            public void onError(Ad ad, AdError adError) {
-            }
-
-            @Override
-            public void onAdLoaded(Ad ad) {
-                if (dataList.size() > 3) { //show ads only if data list is big enough (>3)
-
-                    int randomNum = new Random().nextInt(dataList.size());
-                    dataList.add(randomNum, ad);
-                    adapter.notifyItemInserted(randomNum);
-                }
-            }
-
-            @Override
-            public void onAdClicked(Ad ad) {
-
-            }
-
-            @Override
-            public void onLoggingImpression(Ad ad) {
-
-            }
-        });
-
-        nativeAd.loadAd();
+        mPresenter.showAdsIfNeeded();
     }
 
     @Override
@@ -447,6 +408,11 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
             // and hide the relevant UI components.
             progress.setVisibility(show ? View.VISIBLE : View.GONE);
         }
+    }
+
+    @Override
+    public void showAds() {
+        adMobContainer.initBottomBannerAd(findViewById(R.id.ads_container));
     }
 
     interface RecyclerViewCallback {

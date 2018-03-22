@@ -16,6 +16,7 @@ import android.util.Log;
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.ashomok.imagetotext.R;
+import com.ashomok.imagetotext.Settings;
 import com.ashomok.imagetotext.my_docs.get_my_docs_task.MyDocsHttpClient;
 import com.ashomok.imagetotext.my_docs.get_my_docs_task.MyDocsResponse;
 import com.ashomok.imagetotext.ocr.ocr_task.OcrResult;
@@ -53,7 +54,6 @@ public class MyDocsPresenter implements MyDocsContract.Presenter {
     private Context context;
     private String idToken;
     private String startCursor;
-
 
     /**
      * Dagger strictly enforces that arguments not marked with {@code @Nullable} are not injected
@@ -145,7 +145,7 @@ public class MyDocsPresenter implements MyDocsContract.Presenter {
         }
     }
 
-    private boolean loadingCompleted() {
+    private boolean isLoadingCompleted() {
         return startCursor == null;
     }
 
@@ -169,7 +169,7 @@ public class MyDocsPresenter implements MyDocsContract.Presenter {
         Log.d(TAG, "loadMoreDocs called");
         if (view != null) {
             if (isOnline()) {
-                if (!loadingCompleted()) {
+                if (!isLoadingCompleted()) {
                     MyDocsHttpClient httpClient = MyDocsHttpClient.getInstance();
                     callApiForDocs(httpClient, idToken, startCursor, false);
                 }
@@ -229,6 +229,15 @@ public class MyDocsPresenter implements MyDocsContract.Presenter {
                     android.content.Intent.EXTRA_TEXT, styledText);
             view.startActivity(
                     Intent.createChooser(sharingIntent, res.getString(R.string.send_pdf_to)));
+        }
+    }
+
+    @Override
+    public void showAdsIfNeeded() {
+        if (Settings.isAdsActive || Settings.isTestMode) {
+            if (view != null) {
+                view.showAds();
+            }
         }
     }
 

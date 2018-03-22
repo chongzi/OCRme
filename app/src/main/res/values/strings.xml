@@ -1,8 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE resources [
-    <!ENTITY appname "OCRme">
-    <!ENTITY author "AshomokDev">
-    ]>
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE resources [<!ENTITY appname "OCRme"><!ENTITY author "AshomokDev">]>
 
 <resources>
     <string-array name="default_value">
@@ -53,15 +49,15 @@
     <string name="max_checked_allowed">Max %1$s languages allowed</string>
     <string name="text_not_found">Text not found.</string>
     <string name="select_photo">Select a photo</string>
-     <string name="file_not_found">File not found.</string>
+    <string name="file_not_found">File not found.</string>
     <string name="sign_in_captured">SIGN IN</string>
     <string name="logout">Logout</string>
     <string name="facebook_application_id" translatable="false">1921494888130800</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb1921494888130800</string>
     <string name="loading">Loading…</string>
-    <string translatable="false" name="preference_file_key">preference_file_key</string>
-    <string translatable="false" name="last_login_mode">last_login_mode</string>
-    <string translatable="false" name="user_email">user_email</string>
+    <string name="preference_file_key" translatable="false">preference_file_key</string>
+    <string name="last_login_mode" translatable="false">last_login_mode</string>
+    <string name="user_email" translatable="false">user_email</string>
     <string name="register">Register</string>
     <string name="alert_dialog_logout">Logout</string>
     <string name="ask_sign_out">You are signed in as %1$s. Sign out?</string>
@@ -90,9 +86,6 @@
     <string name="error_while_translating">Error while translating.</string>
     <string name="network_error">Network error. Check internet connection.</string>
     <string name="language_not_supported">Language not supported</string>
-
-    <!-- strings for Auth UI demo activities -->
-    <eat-comment />
     <string name="launch_title">FirebaseUI Auth Demo</string>
     <string name="sign_in">Sign in</string>
     <string name="green_theme">Green Theme</string>
@@ -223,4 +216,9 @@
     <string name="this_is_free_version">This is a free version with ads</string>
     <string name="buy_paid">Buy ads-free version.</string>
     <string name="ads_free_explanation">Hate ads? We too. \nIf you like this app, please support a developer.</string>
+    <string name="main_activity_banner" translatable="false">ca-app-pub-5221781428763224/8655115109</string>
+    <string name="my_docs_banner" translatable="false">ca-app-pub-5221781428763224/8655115109</string>
+    <string name="test_banner" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="app_id" translatable="false">ca-app-pub-5221781428763224~3047729508</string>
+    <string name="rewarded_video_ad_unit_id" translatable="false">ca-app-pub-5221781428763224/9069787345</string>
 </resources>

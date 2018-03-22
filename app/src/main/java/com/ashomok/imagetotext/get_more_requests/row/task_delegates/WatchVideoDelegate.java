@@ -16,8 +16,6 @@ import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 
 import javax.inject.Inject;
 
-import static com.ashomok.imagetotext.Settings.appId;
-import static com.ashomok.imagetotext.Settings.rewardedVideoAdAppId;
 import static com.ashomok.imagetotext.utils.LogUtil.DEV_TAG;
 
 /**
@@ -39,6 +37,7 @@ public class WatchVideoDelegate extends UiManagingDelegate implements RewardedVi
         this.activity = activity;
         this.ocrRequestsCounter = ocrRequestsCounter;
         Log.d(TAG, "in constructor");
+        String appId = activity.getResources().getString(R.string.app_id);
         MobileAds.initialize(activity, appId);
 
         mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(activity);
@@ -48,6 +47,8 @@ public class WatchVideoDelegate extends UiManagingDelegate implements RewardedVi
 
     private void loadRewardedVideoAd() {
         if (!mRewardedVideoAd.isLoaded()) {
+            String rewardedVideoAdAppId =
+                    activity.getResources().getString(R.string.rewarded_video_ad_unit_id);
             mRewardedVideoAd.loadAd(rewardedVideoAdAppId, new AdRequest.Builder().build());
         }
     }
