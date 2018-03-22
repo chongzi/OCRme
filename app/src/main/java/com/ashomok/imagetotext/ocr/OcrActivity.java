@@ -270,8 +270,6 @@ public class OcrActivity extends RxAppCompatActivity {
                             Log.e(TAG, "uploadPhoto:onError", e);
                             emitter.onError(e);
                         });
-
-                FileUtils.deleteFile(imageUri);
             });
         }
     }
