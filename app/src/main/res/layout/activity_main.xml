@@ -91,14 +91,14 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:src="@drawable/ic_camera" />
+                        android:src="@drawable/camera" />
 
                     <ImageButton
                         android:id="@+id/gallery_btn"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:src="@drawable/ic_gallery" />
+                        android:src="@drawable/gallery" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -128,6 +128,9 @@
                     android:layout_below="@+id/image_source_layout"
                     android:layout_centerHorizontal="true"
                     android:text="@string/my_docs"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:background="#EF992A"
                     android:visibility="gone" />
             </RelativeLayout>
         </ScrollView>
