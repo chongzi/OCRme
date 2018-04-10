@@ -192,7 +192,9 @@
     <string name="you_are_premium">You are premium!</string>
     <string name="you_get_ocr_requests">You get %1$s requests more.</string>
     <string name="get_more_for_free">Get more for free</string>
+    <string name="get_more_for_free_new">Get more for&#10; free</string>
     <string name="check_premium_price">Check premium price</string>
+    <string name="check_premium_price_new">Check premium&#10; price</string>
     <string name="you_have_requests">You have %1$s Image Scan Requests. You can get more FREE or check premium account price.</string>
     <string name="you_have_no_docs">You have no docs yet</string>
     <string name="signed_in">Signed in</string>

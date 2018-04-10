@@ -34,14 +34,24 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/get_more_for_free" />
+                android:layout_marginRight="3dp"
+                android:layout_marginEnd="3dp"
+                android:text="@string/get_more_for_free_new"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"
+                android:background="@color/colorPrimary_new"/>
 
             <Button
                 android:id="@+id/check_premium_btn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/check_premium_price" />
+                android:layout_marginLeft="3dp"
+                android:layout_marginStart="3dp"
+                android:text="@string/check_premium_price_new"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"
+                android:background="@color/orange_new"/>
 
         </LinearLayout>
     </RelativeLayout>

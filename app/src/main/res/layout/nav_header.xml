@@ -49,7 +49,7 @@
             android:id="@+id/premium_btn"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@drawable/premium"
+            android:src="@drawable/ocr_me"
             android:scaleType="centerInside"
             android:layout_gravity="end|top"
             android:clickable="true"
