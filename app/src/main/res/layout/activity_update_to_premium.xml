@@ -117,6 +117,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:background="@color/colorPrimary_new"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -134,20 +135,21 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/one_month"
+                            android:textColor="@android:color/white"
                             android:textSize="@dimen/base_text_size" />
 
                         <TextView
                             android:id="@+id/one_month_price"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/green_a700"
+                            android:textColor="@color/orange_new"
                             android:textSize="@dimen/xl_text_size" />
 
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_chevron_right_black_24dp"
-                            android:tint="@color/grey_500" />
+                            android:tint="@color/orange_new" />
 
                     </LinearLayout>
 
@@ -176,6 +178,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/one_year"
+                                android:textColor="@android:color/white"
                                 android:textSize="@dimen/base_text_size" />
 
                             <TextView
@@ -183,6 +186,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/price_per_month"
+                                android:textColor="@android:color/white"
                                 android:textSize="14sp" />
                         </LinearLayout>
 
@@ -190,14 +194,14 @@
                             android:id="@+id/one_year_price"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/green_a700"
+                            android:textColor="@color/orange_new"
                             android:textSize="@dimen/xl_text_size" />
 
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_chevron_right_black_24dp"
-                            android:tint="@color/grey_500" />
+                            android:tint="@color/orange_new" />
 
                     </LinearLayout>
                 </LinearLayout>
