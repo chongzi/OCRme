@@ -104,34 +104,40 @@
 
                     <LinearLayout
                         android:id="@+id/ask_login"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/image_source_layout"
-                        android:gravity="center"
+                        android:layout_marginStart="@dimen/activity_horizontal_margin"
+                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
                         android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/please_login" />
 
                         <Button
                             android:id="@+id/sign_in_btn"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="left"
                             android:text="@string/sign_in_captured"
                             android:textSize="16sp"
+                            android:layout_marginBottom="@dimen/activity_vertical_margin"
+                            android:layout_marginTop="@dimen/activity_vertical_margin"
                             android:textColor="@android:color/white"
                             android:background="@color/orange_new" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/activity_vertical_margin"
+                            android:text="@string/please_login" />
+
                     </LinearLayout>
 
                     <Button
                         android:id="@+id/my_docs_btn"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
                         android:layout_marginStart="@dimen/activity_horizontal_margin"
                         android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:text="@string/my_docs"
                         android:textSize="16sp"
                         android:textColor="@android:color/white"
