@@ -493,4 +493,6 @@
     <color name="list_divider">#fff</color>
     <color name="counter_text_bg">#626262</color>
     <color name="counter_text_color">#c5c4c4</color>
+    <color name="app_primary_new">#87B888</color>
+    <color name="languages_titles_color">#445E91</color>
 </resources>
