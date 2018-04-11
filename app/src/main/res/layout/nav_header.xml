@@ -45,27 +45,45 @@
         android:padding="16dp"
         android:visibility="gone">
 
-        <ImageView
-            android:id="@+id/premium_btn"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
-            android:src="@drawable/ocr_me"
-            android:scaleType="centerInside"
-            android:layout_gravity="top"
-            android:clickable="true"
-            android:focusable="true"
-            android:layout_marginBottom="80dp"
-            android:layout_marginStart="50dp"
-            android:layout_marginLeft="50dp"
-            android:visibility="visible"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/you_signed_as"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:text="@string/you_signed_in_as"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            <ImageView
+                android:id="@+id/premium_btn"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginBottom="20dp"
+                android:src="@drawable/ocr_me"
+                android:scaleType="centerInside"
+                android:clickable="true"
+                android:focusable="true"
+                android:visibility="visible"/>
+
+            <ImageView
+                android:id="@+id/premium_image"
+                android:layout_toRightOf="@+id/premium_btn"
+                android:layout_marginLeft="40dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/premium_badge"
+                android:scaleType="centerInside"
+                android:visibility="visible"/>
+
+
+            <TextView
+                android:id="@+id/you_signed_as"
+                android:layout_below="@+id/premium_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:text="@string/you_signed_in_as"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+        </RelativeLayout>
+
+
     </FrameLayout>
 </FrameLayout>
 
