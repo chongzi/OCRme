@@ -48,7 +48,7 @@
                 android:clickable="false"
                 android:padding="@dimen/my_base_margin"
                 android:src="@drawable/ic_forward_black_24dp"
-                android:tint="@color/grey_800" />
+                android:tint="@color/colorPrimary_new" />
 
             <Spinner
                 android:id="@+id/spinner_target_languages"
@@ -95,7 +95,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             card_view:cardCornerRadius="4dp"
-            app:cardBackgroundColor="@color/blue_200"
+            app:cardBackgroundColor="@color/colorPrimary_new"
             android:layout_marginLeft="@dimen/my_base_margin"
             android:layout_marginRight="@dimen/my_base_margin"
             android:layout_marginBottom="@dimen/my_base_margin"
