@@ -9,17 +9,14 @@
         <item
             android:id="@+id/my_docs"
             android:icon="@drawable/my_docs_icon"
-            app:itemIconTint="@color/deep_blue"
             android:title="@string/my_docs" />
         <item
             android:id="@+id/about"
             android:icon="@drawable/about_icon"
-            app:itemIconTint="@color/deep_blue"
             android:title="@string/about" />
         <item
             android:id="@+id/update_to_premium"
             android:icon="@drawable/my_premium_icon"
-            app:itemIconTint="@color/orange"
             android:title="@string/update_to_premium" />
     </group>
     <group
@@ -28,7 +25,6 @@
         <item
             android:id="@+id/logout"
             android:icon="@drawable/log_out"
-            app:itemIconTint="@color/deep_blue"
             android:title="@string/logout" />
     </group>
 </menu>

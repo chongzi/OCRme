@@ -6,7 +6,7 @@
     android:layout_height="fill_parent"
     xmlns:spl="http://schemas.android.com/apk/res-auto"
     spl:orientation="vertical"
-    spl:splitterBackground="@color/orange"
+    spl:splitterBackground="@color/colorAccent"
     spl:splitterPosition="33%"
     spl:splitterSize="12dp"
     android:id="@+id/split_pane_layout">

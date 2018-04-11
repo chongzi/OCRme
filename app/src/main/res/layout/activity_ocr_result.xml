@@ -26,8 +26,8 @@
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/deep_blue"
-            app:tabIndicatorColor="@color/orange"
+            android:background="@color/colorPrimary"
+            app:tabIndicatorColor="@color/colorAccent"
             android:minHeight="?attr/actionBarSize"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:tabMaxWidth="0dp" />
