@@ -58,14 +58,13 @@
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:layout_margin="@dimen/my_base_margin"
-                    android:src="@drawable/auto_detection_icon_new"
-                    android:tint="#87B888" />
+                    android:src="@drawable/auto_detection_icon_new"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/auto_detection"
-                    android:textColor="@color/app_primary_new"
+                    android:textColor="@color/green_600"
                     android:textStyle="bold"
                     android:textSize="@dimen/my_default_font_size" />
             </LinearLayout>
@@ -90,7 +89,7 @@
                     android:layout_marginStart="@dimen/my_l_margin"
                     android:layout_marginTop="@dimen/my_base_margin"
                     android:text="@string/recently_chosen_languages"
-                    android:textColor="@color/languages_titles_color"
+                    android:textColor="@color/colorPrimaryDark"
                     android:textStyle="bold"
                     android:textSize="@dimen/my_default_font_size" />
 
@@ -123,7 +122,7 @@
                     android:layout_marginStart="@dimen/my_l_margin"
                     android:layout_marginTop="@dimen/my_base_margin"
                     android:text="@string/all_languages"
-                    android:textColor="@color/languages_titles_color"
+                    android:textColor="@color/colorPrimaryDark"
                     android:textStyle="bold"
                     android:textSize="@dimen/my_default_font_size" />
 
