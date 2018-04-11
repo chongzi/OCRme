@@ -50,7 +50,7 @@
     <string name="text_not_found">Text not found.</string>
     <string name="select_photo">Select a photo</string>
     <string name="file_not_found">File not found.</string>
-    <string name="sign_in_captured">SIGN IN</string>
+    <string name="sign_in_captured">Sign in</string>
     <string name="logout">Logout</string>
     <string name="facebook_application_id" translatable="false">1921494888130800</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb1921494888130800</string>

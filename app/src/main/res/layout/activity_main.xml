@@ -125,7 +125,7 @@
                         android:text="@string/sign_in_captured"
                         android:textSize="16sp"
                         android:textColor="@android:color/white"
-                        android:background="@color/orange_new" />
+                        android:background="@color/orange" />
                 </LinearLayout>
 
                 <Button
@@ -137,7 +137,7 @@
                     android:text="@string/my_docs"
                     android:textSize="16sp"
                     android:textColor="@android:color/white"
-                    android:background="@color/orange_new"
+                    android:background="@color/orange"
                     android:visibility="gone" />
             </RelativeLayout>
         </ScrollView>

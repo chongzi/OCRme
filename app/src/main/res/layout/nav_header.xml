@@ -11,18 +11,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark"
-        android:background="?attr/colorButtonNormal"
+        android:background="@color/deep_blue"
         android:id="@+id/propose_sign_in_layout"
         android:padding="19dp"
         android:clickable="true"
         android:orientation="horizontal"
-        android:gravity="center">
+        android:gravity="start">
 
         <ImageView
             android:id="@+id/ic_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_login_white_24dp"
+            android:src="@drawable/sign_in"
            />
         <TextView
             android:id="@+id/sign_in"

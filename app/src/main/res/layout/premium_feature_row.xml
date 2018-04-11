@@ -10,7 +10,7 @@
         android:id="@+id/icon"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
-        android:tint="@color/colorPrimary_new"
+        android:tint="@color/deep_blue"
         android:layout_weight="0"
         android:paddingStart="@dimen/my_base_margin"
         android:paddingLeft="@dimen/my_base_margin" />

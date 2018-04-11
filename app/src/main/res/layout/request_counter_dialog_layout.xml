@@ -39,7 +39,7 @@
                 android:text="@string/get_more_for_free_new"
                 android:textSize="16sp"
                 android:textColor="@android:color/white"
-                android:background="@color/colorPrimary_new"/>
+                android:background="@color/deep_blue"/>
 
             <Button
                 android:id="@+id/check_premium_btn"
@@ -51,7 +51,7 @@
                 android:text="@string/check_premium_price_new"
                 android:textSize="16sp"
                 android:textColor="@android:color/white"
-                android:background="@color/orange_new"/>
+                android:background="@color/orange"/>
 
         </LinearLayout>
     </RelativeLayout>

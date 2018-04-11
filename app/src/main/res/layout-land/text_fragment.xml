@@ -6,7 +6,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     spl:orientation="horizontal"
-    spl:splitterBackground="@color/colorAccent"
+    spl:splitterBackground="@color/orange"
     spl:splitterPosition="33%"
     spl:splitterSize="16dip"
     android:id="@+id/split_pane_layout">
