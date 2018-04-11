@@ -29,6 +29,7 @@
         android:layout_gravity="end"
         android:layout_margin="@dimen/activity_horizontal_margin"
         android:background="@color/colorAccent"
+        android:textColor="@android:color/white"
         android:text="@string/cancel" />
 
 </RelativeLayout>
