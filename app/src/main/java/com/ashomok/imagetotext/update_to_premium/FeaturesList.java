@@ -21,12 +21,12 @@ public class FeaturesList {
 
     public static List<FeatureModel> getList() {
         List<FeatureModel> result = new ArrayList<>();
-        result.add(new FeatureModel(R.drawable.ic_translate_black_24dp, R.string.no_ads));
-        result.add(new FeatureModel(R.drawable.ic_translate_black_24dp, R.string.unlimited_ocr_requests));
-        result.add(new FeatureModel(R.drawable.ic_translate_black_24dp, R.string.unlimited_translate_requests));
-        result.add(new FeatureModel(R.drawable.ic_translate_black_24dp, R.string.languages_supported_for_ocr));
-        result.add(new FeatureModel(R.drawable.ic_translate_black_24dp, R.string.languages_supported_for_translate));
-        result.add(new FeatureModel(R.drawable.ic_translate_black_24dp, R.string.highprecision_recognition_system));
+        result.add(new FeatureModel(R.drawable.no_ads, R.string.no_ads));
+        result.add(new FeatureModel(R.drawable.unlimited_recognition_requests, R.string.unlimited_ocr_requests));
+        result.add(new FeatureModel(R.drawable.unlimited_translate_requests, R.string.unlimited_translate_requests));
+        result.add(new FeatureModel(R.drawable.recognition_languages, R.string.languages_supported_for_ocr));
+        result.add(new FeatureModel(R.drawable.translation_languages, R.string.languages_supported_for_translate));
+        result.add(new FeatureModel(R.drawable.high_precision, R.string.highprecision_recognition_system));
         return result;
     }
 

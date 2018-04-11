@@ -306,6 +306,7 @@ public class MainActivity extends BaseLoginActivity implements
         mDrawerLayout = findViewById(R.id.drawer_layout);
         // Set up the navigation drawer.
         navigationView = findViewById(R.id.nav_view);
+        navigationView.setItemIconTintList(null);
         setupDrawerContent(navigationView);
     }
 

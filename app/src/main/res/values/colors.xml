@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#3F51B5</color>
+    <color name="orange_new">#EF992A</color>
+    <color name="colorPrimary_new">#005FC5</color>
     <color name="colorPrimaryLight">#55A8EE</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="app_primary">#008080</color>
@@ -491,6 +493,4 @@
     <color name="list_divider">#fff</color>
     <color name="counter_text_bg">#626262</color>
     <color name="counter_text_color">#c5c4c4</color>
-    <color name="orange_new">#EF992A</color>
-    <color name="colorPrimary_new">#005FC5</color>
 </resources>
