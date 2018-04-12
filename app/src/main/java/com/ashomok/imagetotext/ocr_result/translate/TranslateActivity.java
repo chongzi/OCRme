@@ -8,6 +8,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -117,6 +118,7 @@ public class TranslateActivity extends RxAppCompatActivity implements View.OnCli
         sourceLanguagesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
                 if (languages != null && ++check1[0] > 1) {
                     sourceLanguageCode = languages.get(position).getCode();
                     callTranslate(sourceText, sourceLanguageCode, targetLanguageCode);
