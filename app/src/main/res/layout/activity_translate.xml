@@ -39,21 +39,14 @@
                 android:id="@+id/spinner_source_languages"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimaryDark"
                 android:entries="@array/default_value" />
-
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:clickable="false"
-                android:padding="@dimen/my_base_margin"
-                android:src="@drawable/ic_forward_black_24dp"
-                android:tint="@color/colorPrimary" />
 
             <Spinner
                 android:id="@+id/spinner_target_languages"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimaryDark"
                 android:entries="@array/default_value" />
         </LinearLayout>
 
