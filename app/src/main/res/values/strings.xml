@@ -212,7 +212,8 @@
     <string name="share_text">Share text</string>
     <string name="share_pdf">Share PDF</string>
     <string name="are_you_developer">Are you a Developer?</string>
-    <string name="are_you_developer_full">Are you a Developer, Designer, Marketing specialist or Translator? Join our team of enthusiasts. Let\'s contribute together. Contact me:</string>
+    <string name="are_you_developer_full">Are you a Developer, Designer, Marketing specialist or Translator? Join our team of enthusiasts. Let\'s contribute together.</string>
+    <string name="contact_me">Contact me:</string>
     <string name="this_is_free_version">This is a free version with ads</string>
     <string name="buy_paid">Buy ads-free version.</string>
     <string name="ads_free_explanation">Hate ads? We too. \nIf you like this app, please support a developer.</string>
