@@ -67,7 +67,7 @@
                 android:layout_marginLeft="40dp"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@drawable/premium_badge"
+                android:src="@drawable/premium"
                 android:scaleType="centerInside"
                 android:visibility="visible"/>
 
