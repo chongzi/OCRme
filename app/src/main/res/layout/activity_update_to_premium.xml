@@ -25,6 +25,7 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <LinearLayout
+                android:id="@+id/propose_premium_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/colorPrimaryLight"
@@ -76,6 +77,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/premium_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="gone"
@@ -94,8 +96,7 @@
                     android:padding="18dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/premium"
-                    app:layout_collapseMode="parallax"
-                    android:visibility="gone"/>
+                    app:layout_collapseMode="parallax" />
 
                 <TextView
                     android:id="@+id/backdrop_text_you_are_premium"
@@ -106,8 +107,7 @@
                     android:text="@string/you_are_premium"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="@android:color/white"
-                    android:visibility="gone"/>
+                    android:textColor="@android:color/white" />
 
             </LinearLayout>
 

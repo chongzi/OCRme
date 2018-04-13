@@ -40,7 +40,6 @@
 
     <style name="checkBoxStyle" parent="AppTheme">
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorControlNormal">@color/colorAccent</item>
     </style>
 
     <style name="Widget.CardContent" parent="android:Widget">

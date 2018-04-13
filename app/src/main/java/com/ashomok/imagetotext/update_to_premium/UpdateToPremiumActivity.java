@@ -79,8 +79,8 @@ public class UpdateToPremiumActivity extends RxAppCompatActivity
 
     @Override
     public void updateView(boolean isPremium) {
-        View truePremium = findViewById(R.id.backdrop_text_you_are_premium);
-        View falsePremium = findViewById(R.id.backdrop_text_update_to_premium_propose);
+        View truePremium = findViewById(R.id.premium_layout);
+        View falsePremium = findViewById(R.id.propose_premium_layout);
 
         truePremium.setVisibility(isPremium ? View.VISIBLE : View.GONE);
         //truePremium.setVisibility(View.VISIBLE);
