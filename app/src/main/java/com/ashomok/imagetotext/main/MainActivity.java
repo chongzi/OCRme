@@ -483,10 +483,12 @@ public class MainActivity extends BaseLoginActivity implements
             View signedInNavHeader =
                     navigationView.getHeaderView(0).findViewById(R.id.signed_in_layout);
             View premiumBtn = signedInNavHeader.findViewById(R.id.premium_btn);
-            View premiumImage = signedInNavHeader.findViewById(R.id.premium_image);
             premiumBtn.setVisibility(View.VISIBLE);
-            premiumImage.setVisibility(View.VISIBLE);
             premiumBtn.setOnClickListener(view -> startUpdateToPremiumActivity());
+
+            /*View premiumBtn = signedInNavHeader.findViewById(R.id.premium_btn);
+            premiumBtn.setVisibility(View.VISIBLE);
+            */
 
             //in menu
             Menu navigationMenu = navigationView.getMenu();

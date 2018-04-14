@@ -65,8 +65,8 @@ public class AboutActivity extends AppCompatActivity {
             mTextView_version.setText(version);
 
             if (!Settings.isPremium) {
-                View freeVersionLayout = findViewById(R.id.free_version_explanation_layout);
-                freeVersionLayout.setVisibility(View.VISIBLE);
+                View freeVersionCard = findViewById(R.id.free_version_explanation_card);
+                freeVersionCard.setVisibility(View.VISIBLE);
                 //please buy ads-free version
                 TextView mTextView_buy_paid = findViewById(R.id.buy_paid);
                 mTextView_buy_paid.setText(
