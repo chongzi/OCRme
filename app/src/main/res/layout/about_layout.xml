@@ -99,7 +99,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin3"
-                card_view:cardCornerRadius="@dimen/cardview_default_radius">
+                card_view:cardCornerRadius="@dimen/cardview_default_radius"
+                android:visibility="gone">
 
                 <LinearLayout
                     android:id="@+id/free_version_explanation_layout"
