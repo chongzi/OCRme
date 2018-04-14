@@ -59,7 +59,7 @@
                 android:scaleType="centerInside"
                 android:clickable="true"
                 android:focusable="true"
-                android:visibility="visible"/>
+                android:visibility="gone"/>
 
             <ImageView
                 android:id="@+id/premium_image"
@@ -69,7 +69,7 @@
                 android:layout_height="50dp"
                 android:src="@drawable/premium"
                 android:scaleType="centerInside"
-                android:visibility="visible"/>
+                android:visibility="gone"/>
 
 
             <TextView
