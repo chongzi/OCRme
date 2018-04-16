@@ -86,7 +86,7 @@
                 android:weightSum="2">
 
                 <ImageView
-                    android:id="@+id/premium_btn"
+                    android:id="@+id/premium_image"
                     android:layout_width="0dp"
                     android:layout_height="150dp"
                     android:layout_gravity="center_vertical"
