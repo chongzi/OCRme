@@ -3,10 +3,7 @@
     <color name="colorPrimary">#005FC5</color>
     <color name="colorPrimaryLight">#55A8EE</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="app_primary">#008080</color>
-    <color name="app_primary_dark">#45645C</color>
     <color name="colorAccent">#EF992A</color>
-    <color name="light_blue">#5C6BC0</color>
     <color name="white">#ffffff</color>
     <color name="error_message_background">#ffff1600</color>
 
@@ -24,10 +21,6 @@
     <item name="top_main_menu" type="color">#45645C</item>
     <item name="top_main_menu30" type="color">#640d4d0e</item>
     <item name="btn_background" type="color">#ff424242</item>
-
-    <color name="top_item">#a6c</color>
-    <color name="sticky_item">#45645C</color>
-    <color name="sticky_item_text">#fff</color>
 
     <integer-array name="androidcolors">
         <item>@color/blue</item>

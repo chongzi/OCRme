@@ -103,19 +103,16 @@ public abstract class BaseLoginActivity extends RxAppCompatActivity {
         }
     }
 
-    //// TODO: 10/11/17 return MY theme
     @MainThread
     @StyleRes
     private int getSelectedTheme() {
-        return AuthUI.getDefaultTheme();
-//            return R.style.PurpleTheme; //custom
+            return R.style.AppLoginTheme;
     }
 
-    //// TODO: 9/24/17 return MY logo, should be 144x144 dp
     @MainThread
     @DrawableRes
     private int getLogo() {
-        return R.drawable.com_facebook_button_login_logo;
+        return R.drawable.app_logo;
     }
 
     @MainThread

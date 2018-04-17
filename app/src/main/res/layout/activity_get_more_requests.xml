@@ -146,7 +146,7 @@
                         android:id="@+id/price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/green_a700"
+                        android:textColor="@color/green_600"
                         android:textSize="@dimen/xl_text_size" />
 
                     <ImageView

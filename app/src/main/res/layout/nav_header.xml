@@ -4,85 +4,74 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="bottom"
-    android:orientation="vertical"
-     >
+    android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/propose_sign_in_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark"
         android:background="@color/colorPrimary"
-        android:id="@+id/propose_sign_in_layout"
-        android:padding="19dp"
         android:clickable="true"
+        android:focusable="true"
+        android:gravity="start"
         android:orientation="horizontal"
-        android:gravity="start">
+        android:padding="19dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
         <ImageView
             android:id="@+id/ic_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/sign_in"
-           />
+            android:src="@drawable/sign_in" />
+
         <TextView
             android:id="@+id/sign_in"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/sign_in_captured"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
-            />
+            android:text="@string/sign_in_captured"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
     </LinearLayout>
 
-
-    <FrameLayout
+    <RelativeLayout
+        android:id="@+id/signed_in_layout"
         android:layout_width="match_parent"
         android:layout_height="192dp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark"
-        android:background="?attr/colorAccent"
-        android:id="@+id/signed_in_layout"
+        android:background="@color/colorPrimary"
         android:padding="16dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
         android:visibility="gone">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/app_logo"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/app_logo" />
 
-            <ImageView
-                android:id="@+id/app_logo"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginLeft="50dp"
-                android:layout_marginBottom="20dp"
-                android:src="@drawable/ocr_me"
-                android:scaleType="centerInside"/>
+        <ImageView
+            android:id="@+id/premium_btn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="40dp"
+            android:layout_toRightOf="@+id/app_logo"
+            android:clickable="true"
+            android:focusable="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/premium"
+            android:visibility="gone" />
 
-            <ImageView
-                android:id="@+id/premium_btn"
-                android:layout_toRightOf="@+id/app_logo"
-                android:layout_marginLeft="40dp"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/premium"
-                android:scaleType="centerInside"
-                android:clickable="true"
-                android:focusable="true"
-                android:visibility="gone"/>
-
-
-            <TextView
-                android:id="@+id/you_signed_as"
-                android:layout_below="@+id/app_logo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:text="@string/you_signed_in_as"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-
-        </RelativeLayout>
-
-
-    </FrameLayout>
+        <TextView
+            android:id="@+id/you_signed_as"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/app_logo"
+            android:layout_gravity="bottom"
+            android:text="@string/you_signed_in_as"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+    </RelativeLayout>
 </FrameLayout>
 
