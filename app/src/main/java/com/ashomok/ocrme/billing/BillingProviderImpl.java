@@ -34,7 +34,7 @@ public class BillingProviderImpl implements BillingProvider {
     private boolean mGoldYearly;
     public static final String PREMIUM_MONTHLY_SKU_ID = "one_month_subscription";
     public static final String PREMIUM_YEARLY_SKU_ID = "one_year_subscription";
-    public static final String SCAN_IMAGE_REQUESTS_SKU_ID = "5_scan_image_requests";
+    public static final String SCAN_IMAGE_REQUESTS_SKU_ID = "scan_image_requests_batch";
     private static final int SCAN_IMAGE_REQUESTS_BATCH_SIZE = 5;
     public static final String TAG = DEV_TAG + BillingProviderImpl.class.getSimpleName();
 
