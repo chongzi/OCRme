@@ -221,5 +221,7 @@
     <string name="my_docs_banner" translatable="false">ca-app-pub-5221781428763224/8655115109</string>
     <string name="test_banner" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
     <string name="app_id" translatable="false">ca-app-pub-5221781428763224~3047729508</string>
+    <string name="days_free">7 days FREE!</string>
+
     <string name="rewarded_video_ad_unit_id" translatable="false">ca-app-pub-5221781428763224/9069787345</string>
 </resources>

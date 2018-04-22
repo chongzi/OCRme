@@ -39,6 +39,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.ashomok.ocrme.Settings.BASE_64_ENCODED_PUBLIC_KEY;
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
 /**
@@ -69,20 +70,7 @@ public class BillingManager implements PurchasesUpdatedListener {
 
     private int mBillingClientResponseCode = BILLING_MANAGER_NOT_INITIALIZED;
 
-    /* BASE_64_ENCODED_PUBLIC_KEY should be YOUR APPLICATION'S PUBLIC KEY
-     * (that you got from the Google Play developer console). This is not your
-     * developer public key, it's the *app-specific* public key.
-     *
-     * Instead of just storing the entire literal string here embedded in the
-     * program,  construct the key at runtime from pieces or
-     * use bit manipulation (for example, XOR with some other string) to hide
-     * the actual key.  The key itself is not secret information, but we don't
-     * want to make it easy for an attacker to replace the public key with one
-     * of their own and then fake messages from the server.
-     */
-    private static final String BASE_64_ENCODED_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhKPzVfVg1PCsoQSsmDVAf9h8Do6sLCge3vyMuc3H3yGeVPy6nvDQqyRiRfW9nFZ/Swe7dZszjEo05OU9ZsH1yRcV2qTBosy+hgVUUJidgm1tXKI6r7ZQATWKo1qBVraZ/txavWbk+/SXFJDER5MgV3/VY5VK3vyMyxG1mBHi1C3LviUzuX74sCETgNClEY2spHUg2SM57zn8k5IDDRQewJYqNoYuOmslShaAao2EBp4HhmdbT/6FKYRJMZAzo9IjSSYwNlGZ0u5OgL81yjG78a+Ix2Ir0Qs/xaEh9PjFpvsE16b6mrXXRthXa4KOL1mAlQKQlCAIIFJUO85Lp5cA8QIDAQAB";
-
-    /**
+/**
      * Listener to the updates that happen when purchases list was updated or consumption of the
      * item was finished
      */

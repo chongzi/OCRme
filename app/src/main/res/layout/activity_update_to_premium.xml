@@ -44,8 +44,8 @@
                     android:padding="28dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/premium_account"
-                    app:layout_collapseMode="parallax"
-                    android:visibility="visible"/>
+                    android:visibility="visible"
+                    app:layout_collapseMode="parallax" />
 
                 <LinearLayout
                     android:id="@+id/backdrop_text_update_to_premium_propose"
@@ -62,15 +62,25 @@
                         android:text="@string/premium_account"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        android:visibility="visible"/>
+                        android:visibility="visible" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
                         android:text="@string/update_to_premium_account"
-                        android:textSize="15sp"
-                        android:visibility="visible"/>
+                        android:textSize="13sp"
+                        android:visibility="visible" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:text="@string/days_free"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:visibility="visible" />
 
                 </LinearLayout>
 
@@ -80,9 +90,9 @@
                 android:id="@+id/premium_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone"
                 android:background="@color/colorPrimary"
                 android:orientation="horizontal"
+                android:visibility="gone"
                 android:weightSum="2">
 
                 <ImageView
@@ -105,9 +115,9 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:text="@string/you_are_premium"
+                    android:textColor="@android:color/white"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/white" />
+                    android:textStyle="bold" />
 
             </LinearLayout>
 

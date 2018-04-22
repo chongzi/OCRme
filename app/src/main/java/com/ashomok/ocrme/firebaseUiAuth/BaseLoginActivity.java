@@ -51,7 +51,7 @@ public abstract class BaseLoginActivity extends RxAppCompatActivity {
     public void onStart() {
         super.onStart();
         FirebaseAuth auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() != null) {
+        if (auth.getCurrentUser() != null && auth.getCurrentUser().getEmail() != null) {
             onSignedIn();
         }
     }
@@ -90,14 +90,11 @@ public abstract class BaseLoginActivity extends RxAppCompatActivity {
             if (response == null) {
                 // User pressed back button
                 showError(R.string.sign_in_cancelled, mRootView);
-            }
-            else if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
+            } else if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
                 showError(R.string.no_internet_connection, mRootView);
-            }
-            else if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
+            } else if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
                 showError(R.string.unknown_error, mRootView);
-            }
-            else {
+            } else {
                 showError(R.string.unknown_sign_in_response, mRootView);
             }
         }
@@ -106,7 +103,7 @@ public abstract class BaseLoginActivity extends RxAppCompatActivity {
     @MainThread
     @StyleRes
     private int getSelectedTheme() {
-            return R.style.AppLoginTheme;
+        return R.style.AppLoginTheme;
     }
 
     @MainThread
