@@ -128,6 +128,8 @@ public class MainActivity extends BaseLoginActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
+        menu.findItem(R.id.remove_ads).setVisible(Settings.isAdsActive);
+
         return true;
     }
 
@@ -486,10 +488,6 @@ public class MainActivity extends BaseLoginActivity implements
             premiumBtn.setVisibility(View.VISIBLE);
             premiumBtn.setOnClickListener(view -> startUpdateToPremiumActivity());
 
-            /*View premiumBtn = signedInNavHeader.findViewById(R.id.premium_btn);
-            premiumBtn.setVisibility(View.VISIBLE);
-            */
-
             //in menu
             Menu navigationMenu = navigationView.getMenu();
             navigationMenu.findItem(R.id.update_to_premium).setTitle(R.string.my_premium);
@@ -594,7 +592,12 @@ public class MainActivity extends BaseLoginActivity implements
 
         if (Settings.isAdsActive || Settings.isTestMode) {
             showAds();
+            updateRemoveAdMenuItem();
         }
+    }
+
+    private void updateRemoveAdMenuItem() {
+        invalidateOptionsMenu();
     }
 
     private void showAds() {

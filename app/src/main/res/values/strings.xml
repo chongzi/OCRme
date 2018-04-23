@@ -50,7 +50,6 @@
     <string name="text_not_found">Text not found.</string>
     <string name="select_photo">Select a photo</string>
     <string name="file_not_found">File not found.</string>
-    <string name="sign_in_captured">Sign in</string>
     <string name="logout">Logout</string>
     <string name="facebook_application_id" translatable="false">1921494888130800</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb1921494888130800</string>
@@ -218,10 +217,9 @@
     <string name="buy_paid">Buy ads-free version.</string>
     <string name="ads_free_explanation">Hate ads? We too. \nIf you like this app, please support a developer.</string>
     <string name="main_activity_banner" translatable="false">ca-app-pub-5221781428763224/8655115109</string>
-    <string name="my_docs_banner" translatable="false">ca-app-pub-5221781428763224/8655115109</string>
+    <string name="my_docs_banner" translatable="false">ca-app-pub-5221781428763224/7354954802</string>
     <string name="test_banner" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
     <string name="app_id" translatable="false">ca-app-pub-5221781428763224~3047729508</string>
     <string name="days_free">7 days FREE!</string>
-
     <string name="rewarded_video_ad_unit_id" translatable="false">ca-app-pub-5221781428763224/9069787345</string>
 </resources>

@@ -41,7 +41,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:clickable="false"
-                        android:text="@string/language" />
+                        android:text="@string/language"
+                        android:textSize="16sp"/>
 
                     <TextView
                         android:id="@+id/language"
@@ -50,7 +51,9 @@
                         android:layout_marginLeft="3dp"
                         android:layout_marginStart="3dp"
                         android:layout_weight="1"
-                        android:text="@string/auto" />
+                        android:text="@string/auto"
+                        android:textSize="16sp"
+                        android:textColor="@color/colorAccent" />
 
                     <RelativeLayout
                         android:id="@+id/requests_counter_layout"
@@ -122,7 +125,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/activity_vertical_margin"
-                        android:text="@string/sign_in_captured"
+                        android:text="@string/sign_in"
                         android:textSize="16sp"
                         android:textColor="@android:color/white"
                         android:background="@color/colorAccent" />
