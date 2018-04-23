@@ -39,10 +39,8 @@
                     android:layout_margin="@dimen/my_base_margin"
                     android:layout_weight="1"
                     android:fitsSystemWindows="true"
-                    android:maxHeight="300dp"
-                    android:maxWidth="300dp"
-                    android:padding="28dp"
-                    android:scaleType="centerCrop"
+                    android:padding="18dp"
+                    android:scaleType="centerInside"
                     android:src="@drawable/premium_account"
                     android:visibility="visible"
                     app:layout_collapseMode="parallax" />
@@ -52,6 +50,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:layout_marginEnd="@dimen/my_base_margin"
+                    android:layout_marginRight="@dimen/my_base_margin"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -77,13 +77,10 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
                         android:text="@string/days_free"
-                        android:textColor="@color/colorAccent"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:visibility="visible" />
-
                 </LinearLayout>
-
             </LinearLayout>
 
             <LinearLayout
@@ -98,13 +95,13 @@
                 <ImageView
                     android:id="@+id/premium_image"
                     android:layout_width="0dp"
-                    android:layout_height="150dp"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/my_base_margin"
+                    android:layout_margin="@dimen/my_base_margin"
                     android:layout_weight="1"
                     android:fitsSystemWindows="true"
                     android:padding="18dp"
-                    android:scaleType="centerCrop"
+                    android:scaleType="centerInside"
                     android:src="@drawable/premium"
                     app:layout_collapseMode="parallax" />
 
