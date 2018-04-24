@@ -64,6 +64,7 @@ public class MainPresenter implements MainContract.Presenter {
     private BillingProviderCallback billingProviderCallback = new BillingProviderCallback() {
         @Override
         public void onPurchasesUpdated() {
+            Log.d(TAG, "onPurchasesUpdated()");
             boolean isPremium = billingProvider.isPremiumMonthlySubscribed()
                     || billingProvider.isPremiumYearlySubscribed();
             onPremiumStatusUpdated(isPremium);
@@ -91,6 +92,9 @@ public class MainPresenter implements MainContract.Presenter {
     private void onPremiumStatusUpdated(boolean isPremium) {
         if (view != null) {
             view.updateView(isPremium);
+
+
+            //todo move to updateView
             if (isTestMode) {
                 view.updateRequestsCounter(true);
             } else {
@@ -105,15 +109,28 @@ public class MainPresenter implements MainContract.Presenter {
         init();
     }
 
-    private void init() {
-        billingProvider.setCallback(billingProviderCallback);
-        billingProvider.init();
+    @Override
+    public void showAdsIfNeeded() {
+        if (Settings.isAdsActive || Settings.isTestMode) {
+            if (view != null) {
+                view.showAds();
+            }
+        }
+    }
 
+    private void init() {
         if (view != null) {
+            view.updateView(false);
+            billingProvider.setCallback(billingProviderCallback);
+            billingProvider.init();
+
+
             checkConnection();
             languageCodes = obtainSavedLanguagesCodes();
             updateLanguageTextView(languageCodes);
             initRequestCounter();
+
+            showAdsIfNeeded();
         }
     }
 

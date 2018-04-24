@@ -40,10 +40,14 @@ public class MainContract {
         void showRequestsCounterDialog(int requestsCount);
 
         void startGalleryChooser();
+
+        void showAds();
     }
 
     interface Presenter extends BasePresenter<MainContract.View> {
         void onCheckedLanguageCodesObtained(@Nullable List<String> checkedLanguageCodes);
+
+        void showAdsIfNeeded();
 
         Optional<List<String>> getLanguageCodes();
 

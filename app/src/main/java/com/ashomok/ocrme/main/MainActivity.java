@@ -590,18 +590,16 @@ public class MainActivity extends BaseLoginActivity implements
         Settings.isPremium = isPremium;
         Settings.isAdsActive = !isPremium;
 
-        if (Settings.isAdsActive || Settings.isTestMode) {
-            showAds();
-            updateRemoveAdMenuItem();
-        }
+        updateRemoveAdMenuItem();
+    }
+
+    @Override
+    public void showAds() {
+        showBannerAd();
     }
 
     private void updateRemoveAdMenuItem() {
         invalidateOptionsMenu();
-    }
-
-    private void showAds() {
-        showBannerAd();
     }
 
     private void showBannerAd() {
