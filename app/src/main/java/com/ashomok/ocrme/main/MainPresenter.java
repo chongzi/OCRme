@@ -94,6 +94,7 @@ public class MainPresenter implements MainContract.Presenter {
             view.updateView(isPremium);
 
 
+
             //todo move to updateView
             if (isTestMode) {
                 view.updateRequestsCounter(true);
@@ -120,7 +121,6 @@ public class MainPresenter implements MainContract.Presenter {
 
     private void init() {
         if (view != null) {
-            view.updateView(false);
             billingProvider.setCallback(billingProviderCallback);
             billingProvider.init();
 
@@ -129,8 +129,6 @@ public class MainPresenter implements MainContract.Presenter {
             languageCodes = obtainSavedLanguagesCodes();
             updateLanguageTextView(languageCodes);
             initRequestCounter();
-
-            showAdsIfNeeded();
         }
     }
 
