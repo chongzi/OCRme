@@ -8,7 +8,6 @@ import android.support.annotation.StringRes;
 
 import com.ashomok.ocrme.R;
 import com.ashomok.ocrme.Settings;
-import com.ashomok.ocrme.di_dagger.ActivityScoped;
 import com.ashomok.ocrme.my_docs.get_my_docs_task.MyDocsHttpClient;
 
 import dagger.Binds;
@@ -21,7 +20,7 @@ import dagger.Provides;
  */
 @Module
 public abstract class MyDocsModule {
-    @ActivityScoped
+
     @Binds
     abstract MyDocsContract.Presenter myDocsPresenter(MyDocsPresenter presenter);
 
@@ -31,7 +30,6 @@ public abstract class MyDocsModule {
     }
 
     @Provides
-    @ActivityScoped
     static @StringRes
     int provideAdBannerId() {
         if (Settings.isTestMode) {

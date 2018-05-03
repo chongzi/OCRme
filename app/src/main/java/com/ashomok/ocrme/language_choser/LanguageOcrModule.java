@@ -7,7 +7,6 @@ package com.ashomok.ocrme.language_choser;
 import android.content.Context;
 
 import com.ashomok.ocrme.Settings;
-import com.ashomok.ocrme.di_dagger.ActivityScoped;
 import com.ashomok.ocrme.language_choser.di.AllLanguageCodes;
 import com.ashomok.ocrme.language_choser.di.RecentlyChosenLanguageCodes;
 
@@ -32,7 +31,6 @@ public abstract class LanguageOcrModule {
     // the Activity. Each UI object gets the dependency it needs and nothing else.
 
     @Provides
-    @ActivityScoped
     static LanguagesListAdapter.ResponsableList<String> provideCheckedLanguageCodes(
             LanguageOcrActivity activity) {
         return activity.getCheckedLanguageCodes();
@@ -40,19 +38,16 @@ public abstract class LanguageOcrModule {
 
     @Provides
     @RecentlyChosenLanguageCodes
-    @ActivityScoped
     static List<String> provideRecentlyChosenLanguageCodes(LanguageOcrActivity activity) {
         return activity.getRecentlyChosenLanguageCodes();
     }
 
     @Provides
     @AllLanguageCodes
-    @ActivityScoped
     static List<String> provideAllLanguageCodes(Context context) {
         return new ArrayList<>(Settings.getOcrLanguageSupportList(context).keySet());
     }
 
-    @ActivityScoped
     @Binds
     abstract LanguageOcrContract.Presenter languageOcrPresenter(LanguageOcrPresenter presenter);
 }

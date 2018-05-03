@@ -9,7 +9,6 @@ import android.support.annotation.StringRes;
 
 import com.ashomok.ocrme.R;
 import com.ashomok.ocrme.Settings;
-import com.ashomok.ocrme.di_dagger.ActivityScoped;
 import com.ashomok.ocrme.my_docs.MyDocsPresenter;
 
 import dagger.Binds;
@@ -22,18 +21,15 @@ import dagger.Provides;
  */
 @Module
 public abstract class MainModule {
-    @ActivityScoped
     @Binds
     abstract MainContract.Presenter mainPresenter(MainPresenter presenter);
 
     @Provides
-    @ActivityScoped
     static Activity provideActivity(MainActivity activity) {
         return activity;
     }
 
     @Provides
-    @ActivityScoped
     static @StringRes
     int provideAdBannerId() {
         if (Settings.isTestMode) {

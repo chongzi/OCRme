@@ -7,9 +7,6 @@ package com.ashomok.ocrme.update_to_premium;
 import android.app.Activity;
 import android.content.Context;
 
-import com.ashomok.ocrme.di_dagger.ActivityScoped;
-import com.ashomok.ocrme.main.MainActivity;
-
 import java.util.List;
 
 import dagger.Binds;
@@ -22,7 +19,6 @@ import dagger.Provides;
  */
 @Module
 public abstract class UpdateToPremiumModule {
-    @ActivityScoped
     @Binds
     abstract UpdateToPremiumContract.Presenter updateToPremiumPresenter(
             UpdateToPremiumPresenter presenter);
@@ -40,7 +36,6 @@ public abstract class UpdateToPremiumModule {
     }
 
     @Provides
-    @ActivityScoped
     static Activity provideActivity(UpdateToPremiumActivity activity) {
         return activity;
     }

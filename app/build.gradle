@@ -7,7 +7,7 @@ android {
         applicationId "com.ashomok.ocrme"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 16
+        versionCode 18
         versionName "1.0"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -128,9 +128,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.6.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
 
-
     compile 'com.android.support:multidex:1.0.3'
-
 
     //ads
     compile 'com.google.android.gms:play-services-ads:11.8.0'

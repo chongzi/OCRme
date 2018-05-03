@@ -6,7 +6,6 @@ package com.ashomok.ocrme.get_more_requests;
 
 import android.app.Activity;
 
-import com.ashomok.ocrme.di_dagger.ActivityScoped;
 import com.ashomok.ocrme.get_more_requests.row.PromoRowData;
 import com.ashomok.ocrme.get_more_requests.row.UiManagingDelegate;
 import com.ashomok.ocrme.get_more_requests.row.task_delegates.FollowUsOnFbDelegate;
@@ -29,11 +28,9 @@ import dagger.Provides;
  */
 @Module
 public abstract class GetMoreRequestsModule {
-    @ActivityScoped
     @Binds
     abstract GetMoreRequestsContract.Presenter getMoreRequestsPresenter(
             GetMoreRequestsPresenter presenter);
-
 
     @Provides
     static List<PromoRowData> providePromoList(){
@@ -41,13 +38,11 @@ public abstract class GetMoreRequestsModule {
     }
 
     @Provides
-    @ActivityScoped
     static Activity provideActivity(GetMoreRequestsActivity activity) {
         return activity;
     }
 
     @Provides
-    @ActivityScoped
     static Map<String, UiManagingDelegate> provideUiDelegates(
             LoginToSystemDelegate loginToSystemDelegate,
             WatchVideoDelegate watchVideoDelegate,

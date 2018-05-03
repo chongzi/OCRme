@@ -23,23 +23,23 @@ import dagger.android.ContributesAndroidInjector;
  */
 @Module
 public abstract class ActivityBindingModule {
-    @ActivityScoped
+
     @ContributesAndroidInjector(modules = MainModule.class)
     abstract MainActivity mainActivity();
 
-    @ActivityScoped
+
     @ContributesAndroidInjector(modules = LanguageOcrModule.class)
     abstract LanguageOcrActivity languageOcrActivity();
 
-    @ActivityScoped
+
     @ContributesAndroidInjector(modules = MyDocsModule.class)
     abstract MyDocsActivity myDocsActivity();
 
-    @ActivityScoped
+
     @ContributesAndroidInjector(modules = UpdateToPremiumModule.class)
     abstract UpdateToPremiumActivity updateToPremiumActivity();
 
-    @ActivityScoped
+
     @ContributesAndroidInjector(modules = GetMoreRequestsModule.class)
     abstract GetMoreRequestsActivity getMoreRequestsActivity();
 }
