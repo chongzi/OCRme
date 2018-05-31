@@ -21,6 +21,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        buildTypes.each {
+            it.buildConfigField 'String', 'FIREBASE_FOLDER_URL', FIREBASE_FOLDER_URL
+            it.buildConfigField 'String', 'BASE_64_ENCODED_PUBLIC_KEY', BASE_64_ENCODED_PUBLIC_KEY
+        }
     }
 
     packagingOptions {

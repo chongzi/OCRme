@@ -36,7 +36,6 @@ public class WatchVideoDelegate extends UiManagingDelegate implements RewardedVi
         super(activity);
         this.activity = activity;
         this.ocrRequestsCounter = ocrRequestsCounter;
-        Log.d(TAG, "in constructor");
         String appId = activity.getResources().getString(R.string.app_id);
         MobileAds.initialize(activity, appId);
 

@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.annimon.stream.Optional;
+import com.ashomok.ocrme.BuildConfig;
 import com.ashomok.ocrme.R;
 import com.ashomok.ocrme.ocr.ocr_task.OcrHttpClient;
 import com.ashomok.ocrme.ocr.ocr_task.OcrResponse;
@@ -41,7 +42,7 @@ import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.ashomok.ocrme.Settings.firebaseFolderURL;
+//import static com.ashomok.ocrme.Settings.firebaseFolderURL;
 import static com.ashomok.ocrme.ocr_result.OcrResultActivity.EXTRA_ERROR_MESSAGE;
 import static com.ashomok.ocrme.ocr_result.OcrResultActivity.EXTRA_OCR_RESPONSE;
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
@@ -263,7 +264,7 @@ public class OcrActivity extends RxAppCompatActivity {
                         .addOnSuccessListener(taskSnapshot -> {
                             String path = taskSnapshot.getMetadata().getReference().getPath();
                             Log.d(TAG, "uploadPhoto:onSuccess:" + path);
-                            String gcsImageUri = firebaseFolderURL + path;
+                            String gcsImageUri = BuildConfig.FIREBASE_FOLDER_URL + path;
                             emitter.onSuccess(gcsImageUri);
                         })
                         .addOnFailureListener(e -> {
