@@ -12,5 +12,6 @@ gradlew.bat
 settings.gradle
 .idea/misc.xml
 /gradle.properties
+app/google-services.json
 
 
