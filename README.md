@@ -26,7 +26,7 @@ Material design.
 ## Reusage:
 Add **gradle.properties** to the root of project. Edit it's content using your data. See example - **gradle.properties.example** file. 
 
-## Developer by:
+## Developed by:
 
 Yuliia Ashomok ashomokdev@gmail.com
 
