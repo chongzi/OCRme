@@ -3,8 +3,7 @@
 
 OCR & Translate Android app - [link to Google Play Market](https://play.google.com/store/apps/details?id=com.ashomok.ocrme)
 
-
-
+![Alt Text](https://s15.postimg.cc/9ix37bhvv/ezgif.com-video-to-gif.gif)
 ![Screenshots1](https://s15.postimg.cc/pbsuw9ngb/Screenshot_from_2018-06-01_11-52-58.png)
 ![Screenshots2](https://s15.postimg.cc/xu2b0nrez/Screenshot_from_2018-06-01_11-53-18.png)
 
