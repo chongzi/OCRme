@@ -1,7 +1,5 @@
 # OCR me Photo Scanner Image Translator Recognition
-![Icon](https://s15.postimg.cc/xssd7fcsb/96x96.png)
-
-OCR & Translate Android app - [link to Google Play Market](https://play.google.com/store/apps/details?id=com.ashomok.ocrme)
+![Icon](https://s15.postimg.cc/amh7izcq3/48x48.png) OCR & Translate Android app - [link to Google Play Market](https://play.google.com/store/apps/details?id=com.ashomok.ocrme)
 
 ![Alt Text](https://s15.postimg.cc/9ix37bhvv/ezgif.com-video-to-gif.gif)
 ![Screenshots1](https://s15.postimg.cc/pbsuw9ngb/Screenshot_from_2018-06-01_11-52-58.png)
