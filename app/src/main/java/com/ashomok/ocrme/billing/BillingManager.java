@@ -32,6 +32,7 @@ import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
 import com.android.billingclient.api.SkuDetailsResponseListener;
+import com.ashomok.ocrme.BuildConfig;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,7 +40,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.ashomok.ocrme.Settings.BASE_64_ENCODED_PUBLIC_KEY;
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
 /**
@@ -367,13 +367,13 @@ public class BillingManager implements PurchasesUpdatedListener {
     private boolean verifyValidSignature(String signedData, String signature) {
         // Some sanity checks to see if the developer (that's you!) really followed the
         // instructions to run this sample (don't put these checks on your app!)
-        if (BASE_64_ENCODED_PUBLIC_KEY.contains("CONSTRUCT_YOUR")) {
+        if (BuildConfig.BASE_64_ENCODED_PUBLIC_KEY.contains("CONSTRUCT_YOUR")) {
             throw new RuntimeException("Please update your app's public key at: "
                     + "BASE_64_ENCODED_PUBLIC_KEY");
         }
 
         try {
-            return Security.verifyPurchase(BASE_64_ENCODED_PUBLIC_KEY, signedData, signature);
+            return Security.verifyPurchase(BuildConfig.BASE_64_ENCODED_PUBLIC_KEY, signedData, signature);
         } catch (IOException e) {
             Log.e(TAG, "Got an exception trying to validate a purchase: " + e);
             return false;
