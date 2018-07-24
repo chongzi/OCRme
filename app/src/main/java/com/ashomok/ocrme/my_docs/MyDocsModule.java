@@ -6,6 +6,7 @@ package com.ashomok.ocrme.my_docs;
 
 import android.support.annotation.StringRes;
 
+import com.ashomok.ocrme.BuildConfig;
 import com.ashomok.ocrme.R;
 import com.ashomok.ocrme.Settings;
 import com.ashomok.ocrme.my_docs.get_my_docs_task.MyDocsHttpClient;
@@ -32,7 +33,7 @@ public abstract class MyDocsModule {
     @Provides
     static @StringRes
     int provideAdBannerId() {
-        if (Settings.isTestMode) {
+        if (BuildConfig.DEBUG) {
             return R.string.test_banner;
         }
         else {

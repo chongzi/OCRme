@@ -234,7 +234,7 @@ public class MyDocsPresenter implements MyDocsContract.Presenter {
 
     @Override
     public void showAdsIfNeeded() {
-        if (Settings.isAdsActive || Settings.isTestMode) {
+        if (Settings.isAdsActive) {
             if (view != null) {
                 view.showAds();
             }

@@ -31,8 +31,6 @@ public class MainContract {
 
         void updateView(boolean isPremium);
 
-        void updateRequestsCounter(boolean isVisible);
-
         void initRequestsCounter(int requestCount);
 
         void startCamera();

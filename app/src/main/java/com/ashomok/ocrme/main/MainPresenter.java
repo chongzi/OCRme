@@ -26,7 +26,6 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import static com.ashomok.ocrme.Settings.isPremium;
-import static com.ashomok.ocrme.Settings.isTestMode;
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
 /**
@@ -92,17 +91,9 @@ public class MainPresenter implements MainContract.Presenter {
     private void onPremiumStatusUpdated(boolean isPremium) {
         if (view != null) {
             view.updateView(isPremium);
-
-
-
-            //todo move to updateView
-            if (isTestMode) {
-                view.updateRequestsCounter(true);
-            } else {
-                view.updateRequestsCounter(!isPremium);
-            }
         }
     }
+
 
     @Override
     public void takeView(MainContract.View mainActivity) {
@@ -112,7 +103,7 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void showAdsIfNeeded() {
-        if (Settings.isAdsActive || Settings.isTestMode) {
+        if (Settings.isAdsActive) {
             if (view != null) {
                 view.showAds();
             }

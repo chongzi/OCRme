@@ -560,11 +560,6 @@ public class MainActivity extends BaseLoginActivity implements
     }
 
     @Override
-    public void updateRequestsCounter(boolean isVisible) {
-        requestCounterLayout.setVisibility(isVisible ? View.VISIBLE : View.INVISIBLE);
-    }
-
-    @Override
     public void initRequestsCounter(int requestCount) {
         requestCounterLayout = findViewById(R.id.requests_counter_layout);
         requestCounterLayout.setOnClickListener(
@@ -585,6 +580,8 @@ public class MainActivity extends BaseLoginActivity implements
     @Override
     public void updateView(boolean isPremium) {
         Log.d(TAG, "Update UI. Is premium " + isPremium);
+
+        requestCounterLayout.setVisibility(isPremium ? View.INVISIBLE : View.VISIBLE);
         updateNavigationDrawerForPremium(isPremium);
 
         Settings.isPremium = isPremium;

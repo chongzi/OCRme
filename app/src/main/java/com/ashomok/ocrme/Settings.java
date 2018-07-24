@@ -14,14 +14,14 @@ public class Settings {
     public static String appPackageName = "com.ashomok.ocrme";
 
     //todo write tests for this
-    public static boolean isTestMode = false; //todo undo in prod
+    //BuildConfig.DEBUG use instead
+//    public static boolean isTestMode = true; //todo undo in prod
 
     public static boolean isAdsActive = true; //will be set in MainActivity
     public static boolean isPremium = false;//will be set in MainActivity
 
     public static final String facebookPageUrl = "https://www.facebook.com/OCRmePhotoScaner"; //for follow us on fb button
 
-    //todo add all to string
     public static LinkedHashMap<String, String> getOcrLanguageSupportList(final Context context) {
         return new LinkedHashMap<String, String>() {{
             put("af", context.getString(R.string.afrikaans));
@@ -39,47 +39,47 @@ public class Settings {
             put("nl", context.getString(R.string.dutch));
             put("et", context.getString(R.string.estonian));
             put("en", context.getString(R.string.english));
-            put("fi", "Finnish");
-            put("fr", "French");
-            put("de", "German");
-            put("el", "Greek");
-            put("he", "Hebrew");
-            put("hi", "Hindi");
-            put("hu", "Hungarian");
-            put("is", "Icelandic");
-            put("id", "Indonesian");
-            put("it", "Italian");
-            put("ja", "Japanese");
-            put("kk", "Kazakh");
-            put("ko", "Korean");
-            put("ky", "Kyrgyz");
-            put("lv", "Latvian");
-            put("lt", "Lithuanian");
-            put("mk", "Macedonian");
-            put("mr", "Marathi");
-            put("mn", "Mongolian");
-            put("ne", "Nepali");
-            put("no", "Norwegian");
-            put("ps", "Pashtu");
-            put("fa", "Persian");
-            put("pl", "Polish");
-            put("pt", "Portuguese");
-            put("ro", "Romanian");
-            put("ru", "Russian");
-            put("sa", "Sanskrit");
-            put("sr", "Serbian");
-            put("sk", "Slovak");
-            put("sl", "Slovenian");
-            put("es", "Spanish");
-            put("sv", "Swedish");
-            put("tl", "Tagalog");
-            put("ta", "Tamil");
-            put("th", "Thai");
-            put("tr", "Turkish");
-            put("uk", "Ukrainian");
-            put("ur", "Urdu");
-            put("uz", "Uzbek");
-            put("vi", "Vietnamese");
+            put("fi", context.getString(R.string.finnish));
+            put("fr", context.getString(R.string.french));
+            put("de", context.getString(R.string.german));
+            put("el", context.getString(R.string.greek));
+            put("he", context.getString(R.string.hebrew));
+            put("hi", context.getString(R.string.hindi));
+            put("hu", context.getString(R.string.hungarian));
+            put("is", context.getString(R.string.icelandic));
+            put("id", context.getString(R.string.indonesian));
+            put("it", context.getString(R.string.italian));
+            put("ja", context.getString(R.string.japanese));
+            put("kk", context.getString(R.string.kazakh));
+            put("ko", context.getString(R.string.korean));
+            put("ky", context.getString(R.string.kyrgyz));
+            put("lv", context.getString(R.string.latvian));
+            put("lt", context.getString(R.string.lithuanian));
+            put("mk", context.getString(R.string.macedonian));
+            put("mr", context.getString(R.string.marathi));
+            put("mn", context.getString(R.string.mongolian));
+            put("ne", context.getString(R.string.nepali));
+            put("no", context.getString(R.string.norwegian));
+            put("ps", context.getString(R.string.pashtu));
+            put("fa", context.getString(R.string.persian));
+            put("pl", context.getString(R.string.polish));
+            put("pt", context.getString(R.string.portuguese));
+            put("ro", context.getString(R.string.romanian));
+            put("ru", context.getString(R.string.russian));
+            put("sa", context.getString(R.string.sanskrit));
+            put("sr", context.getString(R.string.serbian));
+            put("sk", context.getString(R.string.slovak));
+            put("sl", context.getString(R.string.slovenian));
+            put("es", context.getString(R.string.spanish));
+            put("sv", context.getString(R.string.swedish));
+            put("tl", context.getString(R.string.tagalog));
+            put("ta", context.getString(R.string.tamil));
+            put("th", context.getString(R.string.thai));
+            put("tr", context.getString(R.string.turkish));
+            put("uk", context.getString(R.string.ukrainian));
+            put("ur", context.getString(R.string.urdu));
+            put("uz", context.getString(R.string.uzbek));
+            put("vi", context.getString(R.string.vietnamese));
         }};
     }
 }

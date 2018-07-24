@@ -7,6 +7,7 @@ package com.ashomok.ocrme.main;
 import android.app.Activity;
 import android.support.annotation.StringRes;
 
+import com.ashomok.ocrme.BuildConfig;
 import com.ashomok.ocrme.R;
 import com.ashomok.ocrme.Settings;
 import com.ashomok.ocrme.my_docs.MyDocsPresenter;
@@ -32,7 +33,7 @@ public abstract class MainModule {
     @Provides
     static @StringRes
     int provideAdBannerId() {
-        if (Settings.isTestMode) {
+        if (BuildConfig.DEBUG) {
             return R.string.test_banner;
         } else {
             return R.string.main_activity_banner;
