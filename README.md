@@ -17,7 +17,7 @@ Material design.
 *	Dagger 2.0, RX Java, MVP
 *	Google App Engine
 *	Google Cloud Storage, Google Cloud Database
-*	Google Vision API, Google Translate API
+*	Google Vision API, Microsoft Bing Translation API
 *	Google Auth, Firebase, AdMob
 
 ## Reusage:
