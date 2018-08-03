@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ashomok.ocrme.get_more_requests.row;
+package com.ashomok.ocrme.get_more_requests.row.free_options.option_delegates;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -25,21 +25,21 @@ import com.ashomok.ocrme.R;
 /**
  * ViewHolder for quick access to row's views
  */
-public final class RowViewHolder extends RecyclerView.ViewHolder {
+public final class FreeOptionRowViewHolder extends RecyclerView.ViewHolder {
 
-    ImageView icon;
-    TextView title;
-    TextView subtitle;
-    TextView requestsCost;
-    ImageView isDone;
-    View layout;
+    public ImageView icon;
+    public TextView title;
+    public TextView subtitle;
+    public TextView requestsCost;
+    public ImageView isDone;
+    public View layout;
 
     /**
      * Handler for a button click on particular row
      */
     public interface OnButtonClickListener {void onButtonClicked(int position);}
 
-    public RowViewHolder(final View v, final OnButtonClickListener clickListener) {
+    public FreeOptionRowViewHolder(final View v, final OnButtonClickListener clickListener) {
         super(v);
         icon = v.findViewById(R.id.icon);
         title = v.findViewById(R.id.title);

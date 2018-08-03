@@ -15,6 +15,7 @@ import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.ashomok.ocrme.utils.FilesProvider.getGcsImageUri;
 import static com.ashomok.ocrme.utils.FirebaseAuthUtil.getIdToken;
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
@@ -25,25 +26,25 @@ public class OcrHttpClientTest {
 
     private OcrHttpClient client;
     private static final String TAG = DEV_TAG + OcrHttpClientTest.class.getSimpleName();
-    private static final String gcsImageUri =
-            "gs://bucket-for-requests-test/2017-07-26-12-37-36-806-2017-07-26-12-37-36-806-ru.jpg";
+    private String gcsImageUri;
 
     @Before
     public void init() {
         client = OcrHttpClient.getInstance();
+        gcsImageUri = getGcsImageUri();
     }
 
     @Test
     public void ocrWithToken() {
         List<String> languages = new ArrayList<>();
-        languages.add("en");
+        languages.add("ru");
 
         String token = getIdToken().blockingGet().get();
         Single<OcrResponse> response = client.ocr(gcsImageUri, Optional.of(languages), Optional.of(token));
 
         OcrResponse ocrResponse = response.blockingGet();
 
-        Assert.assertEquals(ocrResponse.getStatus(), OcrResponse.Status.OK);
+        Assert.assertEquals( OcrResponse.Status.OK, ocrResponse.getStatus());
         Assert.assertTrue(ocrResponse.getOcrResult().getTextResult().length() > 5);
         Assert.assertTrue(ocrResponse.getOcrResult().getPdfResultGsUrl().length() > 5);
     }
@@ -51,13 +52,13 @@ public class OcrHttpClientTest {
     @Test
     public void ocr() {
         List<String> languages = new ArrayList<>();
-        languages.add("en");
+        languages.add("ru");
 
         Single<OcrResponse> response = client.ocr(gcsImageUri, Optional.of(languages), Optional.empty());
 
         OcrResponse ocrResponse = response.blockingGet();
 
-        Assert.assertEquals(ocrResponse.getStatus(), OcrResponse.Status.OK);
+        Assert.assertEquals(OcrResponse.Status.OK, ocrResponse.getStatus());
         Assert.assertTrue(ocrResponse.getOcrResult().getTextResult().length() > 5);
         Assert.assertTrue(ocrResponse.getOcrResult().getPdfResultGsUrl().length() > 5);
     }

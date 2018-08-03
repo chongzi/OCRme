@@ -87,8 +87,9 @@ public class LanguagesListAdapter extends RecyclerView.Adapter<LanguagesListAdap
         return allLanguageCodes.get(i);
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // create a new view
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.ocr_language_row, parent, false);
@@ -97,7 +98,7 @@ public class LanguagesListAdapter extends RecyclerView.Adapter<LanguagesListAdap
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String item = getItem(position);
         View parent = holder.languageLayout.getRootView();
 

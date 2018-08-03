@@ -120,7 +120,7 @@ public class UpdateToPremiumActivity extends RxAppCompatActivity
                     collapsingToolbar.setTitle(getResources().getString(R.string.update_to_premium));
                     isShow = true;
                 } else if (isShow) {
-                    collapsingToolbar.setTitle(" ");//carefull there should a space between double quote otherwise it wont work
+                    collapsingToolbar.setTitle(" ");//careful there should a space between double quote otherwise it wont work
                     isShow = false;
                 }
             }

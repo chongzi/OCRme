@@ -1,4 +1,4 @@
-package com.ashomok.ocrme.get_more_requests.row;
+package com.ashomok.ocrme.get_more_requests.row.free_options;
 
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
@@ -6,7 +6,7 @@ import android.support.annotation.StringRes;
 /**
  * Created by iuliia on 3/4/18.
  */
-public class PromoRowData {
+public class PromoRowFreeOptionData {
     private String id;
     private int requestsCost; //each promo gives some requests amount
     @DrawableRes
@@ -38,9 +38,9 @@ public class PromoRowData {
         return requestsCost;
     }
 
-
-    //todo use builder pattern
-    public PromoRowData(String id, @DrawableRes int drawableIconId, @StringRes int titleStringId, @StringRes int subtitleStringId, int requestsCost) {
+    public PromoRowFreeOptionData(String id, @DrawableRes int drawableIconId,
+                                  @StringRes int titleStringId,
+                                  @StringRes int subtitleStringId, int requestsCost) {
         this.drawableIconId = drawableIconId;
         this.titleStringId = titleStringId;
         this.id = id;

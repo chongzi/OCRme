@@ -6,12 +6,20 @@ package com.ashomok.ocrme.get_more_requests;
 
 import android.app.Activity;
 
-import com.ashomok.ocrme.get_more_requests.row.PromoRowData;
-import com.ashomok.ocrme.get_more_requests.row.UiManagingDelegate;
-import com.ashomok.ocrme.get_more_requests.row.task_delegates.FollowUsOnFbDelegate;
-import com.ashomok.ocrme.get_more_requests.row.task_delegates.LoginToSystemDelegate;
-import com.ashomok.ocrme.get_more_requests.row.task_delegates.RateAppDelegate;
-import com.ashomok.ocrme.get_more_requests.row.task_delegates.WatchVideoDelegate;
+import com.ashomok.ocrme.billing.BillingProvider;
+import com.ashomok.ocrme.billing.BillingProviderImpl;
+import com.ashomok.ocrme.billing.model.SkuRowData;
+import com.ashomok.ocrme.get_more_requests.row.free_options.PromoListFreeOptions;
+import com.ashomok.ocrme.get_more_requests.row.free_options.PromoRowFreeOptionData;
+import com.ashomok.ocrme.get_more_requests.row.free_options.UiManagingDelegate;
+import com.ashomok.ocrme.get_more_requests.row.free_options.option_delegates.FollowUsOnFbDelegate;
+import com.ashomok.ocrme.get_more_requests.row.free_options.option_delegates.LoginToSystemDelegate;
+import com.ashomok.ocrme.get_more_requests.row.free_options.option_delegates.RateAppDelegate;
+import com.ashomok.ocrme.get_more_requests.row.free_options.option_delegates.WatchVideoDelegate;
+import com.ashomok.ocrme.get_more_requests.row.paid_options.option_delegates.Batch100Delegate;
+import com.ashomok.ocrme.get_more_requests.row.paid_options.option_delegates.Batch5Delegate;
+import com.ashomok.ocrme.get_more_requests.row.paid_options.option_delegates.SubscriptionMonthlyDelegate;
+import com.ashomok.ocrme.get_more_requests.row.paid_options.option_delegates.SubscriptionYearlyDelegate;
 import com.ashomok.ocrme.update_to_premium.UpdateToPremiumPresenter;
 
 import java.util.HashMap;
@@ -33,8 +41,13 @@ public abstract class GetMoreRequestsModule {
             GetMoreRequestsPresenter presenter);
 
     @Provides
-    static List<PromoRowData> providePromoList(){
-        return PromoList.getList();
+    static List<PromoRowFreeOptionData> providePromoList(){
+        return PromoListFreeOptions.getList();
+    }
+
+    @Provides
+    static BillingProvider provideBillingProvider(BillingProviderImpl billingProvider){
+        return billingProvider;
     }
 
     @Provides
@@ -43,7 +56,7 @@ public abstract class GetMoreRequestsModule {
     }
 
     @Provides
-    static Map<String, UiManagingDelegate> provideUiDelegates(
+    static Map<String, UiManagingDelegate> provideUiDelegatesForFree(
             LoginToSystemDelegate loginToSystemDelegate,
             WatchVideoDelegate watchVideoDelegate,
             RateAppDelegate rateAppDelegate,
@@ -54,6 +67,22 @@ public abstract class GetMoreRequestsModule {
         uiDelegates.put(RateAppDelegate.ID, rateAppDelegate);
         uiDelegates.put(FollowUsOnFbDelegate.ID, followUsOnFbDelegate);
         return uiDelegates;
+    }
+
+    @Provides
+    static Map<String, com.ashomok.ocrme.get_more_requests.row.paid_options.UiManagingDelegate>
+    provideUiDelegatesForPaid(Batch5Delegate batch5Delegate,
+                              Batch100Delegate batch100Delegate,
+                              SubscriptionMonthlyDelegate subscriptionMonthlyDelegate,
+                              SubscriptionYearlyDelegate subscriptionYearlyDelegate){
+
+        Map<String, com.ashomok.ocrme.get_more_requests.row.paid_options.UiManagingDelegate> uiDelegates = new HashMap<>();
+        uiDelegates.put(BillingProviderImpl.SCAN_IMAGE_REQUESTS_5_SKU_ID, batch5Delegate);
+        uiDelegates.put(BillingProviderImpl.SCAN_IMAGE_REQUESTS_100_SKU_ID, batch100Delegate);
+        uiDelegates.put(BillingProviderImpl.PREMIUM_MONTHLY_SKU_ID, subscriptionMonthlyDelegate);
+        uiDelegates.put(BillingProviderImpl.PREMIUM_YEARLY_SKU_ID, subscriptionYearlyDelegate);
+        return uiDelegates;
+
     }
 
 }

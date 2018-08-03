@@ -1,13 +1,9 @@
-package com.ashomok.ocrme.get_more_requests.row.task_delegates;
-
-import android.util.Log;
+package com.ashomok.ocrme.get_more_requests.row.free_options.option_delegates;
 
 import com.ashomok.ocrme.OcrRequestsCounter;
 import com.ashomok.ocrme.R;
 import com.ashomok.ocrme.get_more_requests.GetMoreRequestsActivity;
-import com.ashomok.ocrme.get_more_requests.row.PromoRowData;
-import com.ashomok.ocrme.get_more_requests.row.RowViewHolder;
-import com.ashomok.ocrme.get_more_requests.row.UiManagingDelegate;
+import com.ashomok.ocrme.get_more_requests.row.free_options.UiManagingDelegate;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
@@ -50,11 +46,6 @@ public class WatchVideoDelegate extends UiManagingDelegate implements RewardedVi
                     activity.getResources().getString(R.string.rewarded_video_ad_unit_id);
             mRewardedVideoAd.loadAd(rewardedVideoAdAppId, new AdRequest.Builder().build());
         }
-    }
-
-    @Override
-    public void onBindViewHolder(PromoRowData data, RowViewHolder holder) {
-        super.onBindViewHolder(data, holder);
     }
 
     @Override

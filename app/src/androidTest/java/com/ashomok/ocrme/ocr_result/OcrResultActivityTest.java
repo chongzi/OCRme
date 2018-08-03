@@ -21,6 +21,8 @@ import static android.support.test.espresso.action.ViewActions.swipeLeft;
 import static android.support.test.espresso.action.ViewActions.swipeRight;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static com.ashomok.ocrme.ocr_result.OcrResultActivity.EXTRA_OCR_RESPONSE;
+import static com.ashomok.ocrme.utils.FilesProvider.getGcsImageUri;
+import static com.ashomok.ocrme.utils.FilesProvider.getGcsPdfUri;
 
 /**
  * Created by iuliia on 5/31/17.
@@ -68,9 +70,8 @@ public class OcrResultActivityTest {
             "ng long long long longlong long long long longlong long long long longlong long long l" +
             "ong longlong long long long longlong long long long longlong long long long long";
     private String shortText ="short text";
-    private String pdfResultGsUrl = "gs://imagetotext-149919.appspot.com/ru.pdf";
-    private String imageUrl =
-            "gs://imagetotext-149919.appspot.com/ocr_request_images/659d2a80-f1fa-4b93-80fb-a83c534fc289cropped.jpg";
+    private String pdfResultGsUrl = getGcsPdfUri();
+    private String imageUrl = getGcsImageUri();
     private OcrResponse.Status status = OcrResponse.Status.OK;
 
     @Rule
@@ -114,6 +115,7 @@ public class OcrResultActivityTest {
         onView(withId(R.id.pager)).perform(swipeLeft());
         Thread.sleep(4000);
         onView(withId(R.id.pager)).perform(swipeRight());
+
     }
 
     @Test

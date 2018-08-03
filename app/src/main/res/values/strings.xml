@@ -178,6 +178,8 @@
     <string name="one_month">One month</string>
     <string name="one_year">One year</string>
     <string name="price_per_month">%1$s %2$s/month</string>
+    <string name="price_per_1_in_100">%1$s %2$s/request</string>
+    <string name="price_per_1_in_5">%1$s %2$s/request</string>
     <string name="no_ads">No ads</string>
     <string name="unlimited_ocr_requests">Unlimited Image recognition requests</string>
     <string name="unlimited_translate_requests">Unlimited Translate requests</string>
@@ -263,4 +265,8 @@
     <string name="urdu">Urdu</string>
     <string name="uzbek">Uzbek</string>
     <string name="vietnamese">Vietnamese</string>
+    <string name="buy_100_requests">Buy 100 requests</string>
+    <string name="one_month_premium">One Month Premium</string>
+    <string name="unlimited_requests">Unlimited requests</string>
+    <string name="one_year_premium">One Year Premium</string>
 </resources>

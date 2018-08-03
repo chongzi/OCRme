@@ -1,14 +1,11 @@
-package com.ashomok.ocrme.get_more_requests.row.task_delegates;
+package com.ashomok.ocrme.get_more_requests.row.free_options.option_delegates;
 
 import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.ashomok.ocrme.OcrRequestsCounter;
-import com.ashomok.ocrme.firebaseUiAuth.BaseLoginActivity;
 import com.ashomok.ocrme.get_more_requests.GetMoreRequestsActivity;
-import com.ashomok.ocrme.get_more_requests.row.PromoRowData;
-import com.ashomok.ocrme.get_more_requests.row.RowViewHolder;
-import com.ashomok.ocrme.get_more_requests.row.UiManagingDelegate;
+import com.ashomok.ocrme.get_more_requests.row.free_options.UiManagingDelegate;
 import com.google.firebase.auth.FirebaseAuth;
 
 import javax.inject.Inject;
@@ -34,11 +31,6 @@ public class LoginToSystemDelegate extends UiManagingDelegate {
         this.ocrRequestsCounter = ocrRequestsCounter;
         this.activity = activity;
         this.sharedPreferences = sharedPreferences;
-    }
-
-    @Override
-    public void onBindViewHolder(PromoRowData data, RowViewHolder holder) {
-        super.onBindViewHolder(data, holder);
     }
 
     @Override

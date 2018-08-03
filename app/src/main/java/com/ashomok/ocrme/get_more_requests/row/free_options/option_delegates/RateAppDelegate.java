@@ -1,4 +1,4 @@
-package com.ashomok.ocrme.get_more_requests.row.task_delegates;
+package com.ashomok.ocrme.get_more_requests.row.free_options.option_delegates;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -10,7 +10,7 @@ import android.widget.Toast;
 import com.ashomok.ocrme.OcrRequestsCounter;
 import com.ashomok.ocrme.R;
 import com.ashomok.ocrme.get_more_requests.GetMoreRequestsActivity;
-import com.ashomok.ocrme.get_more_requests.row.UiManagingDelegate;
+import com.ashomok.ocrme.get_more_requests.row.free_options.UiManagingDelegate;
 
 import javax.inject.Inject;
 

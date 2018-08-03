@@ -10,6 +10,8 @@ import com.ashomok.ocrme.billing.model.SkuRowData;
 import com.ashomok.ocrme.di_dagger.BasePresenter;
 import com.ashomok.ocrme.update_to_premium.UpdateToPremiumContract;
 
+import java.util.List;
+
 /**
  * This specifies the contract between the view and the presenter.
  */
@@ -20,14 +22,13 @@ public class GetMoreRequestsContract {
 
         void showInfo (@StringRes int infoMessageRes);
 
-        void initBuyRequestsRow(SkuRowData item);
-
         void showInfo(String message);
 
         void updateToolbarText();
+
+        void updatePaidOption(List<SkuRowData> dataList);
     }
 
     interface Presenter extends BasePresenter<GetMoreRequestsContract.View> {
-        void onBuyRequestsClicked(SkuRowData item);
     }
 }

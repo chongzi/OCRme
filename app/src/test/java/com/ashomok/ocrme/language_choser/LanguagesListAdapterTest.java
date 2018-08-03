@@ -23,7 +23,7 @@ public class LanguagesListAdapterTest {
     private LanguagesListAdapter languagesListAdapter;
 
     @Before
-    public void before() throws Exception {
+    public void before() {
         List<String> allLanguages = new ArrayList<>();
         allLanguages.add("1 language");
         allLanguages.add("2 language");
@@ -41,17 +41,17 @@ public class LanguagesListAdapterTest {
     }
 
     @Test
-    public void getCheckedLanguages() throws Exception {
+    public void getCheckedLanguages() {
         assertTrue(languagesListAdapter.getCheckedLanguageCodes().size() > 0);
     }
 
     @Test
-    public void getItem() throws Exception {
+    public void getItem() {
         assertEquals(languagesListAdapter.getItem(0), "1 language");
     }
 
     @Test
-    public void getCheckedLanguageCodes() throws Exception {
+    public void getCheckedLanguageCodes() {
         LanguagesListAdapter.ResponsableList<String> checked =
                 new LanguagesListAdapter.ResponsableList<>(new ArrayList<>());
         checked.add("1 language");
@@ -59,7 +59,7 @@ public class LanguagesListAdapterTest {
     }
 
     @Test
-    public void getItemCount() throws Exception {
+    public void getItemCount() {
         assertTrue(languagesListAdapter.getItemCount() > 0);
     }
 }

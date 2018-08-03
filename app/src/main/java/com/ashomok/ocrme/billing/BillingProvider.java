@@ -29,6 +29,7 @@ public interface BillingProvider {
     boolean isPremiumMonthlySubscribed();
     boolean isPremiumYearlySubscribed();
 
+    List<SkuRowData> getSkuRowDataList();
     List<SkuRowData> getSkuRowDataListForSubscriptions();
     List<SkuRowData> getSkuRowDataListForInAppPurchases();
 }

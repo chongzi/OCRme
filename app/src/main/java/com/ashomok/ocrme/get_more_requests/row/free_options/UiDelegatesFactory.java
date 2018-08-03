@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ashomok.ocrme.get_more_requests.row;
+package com.ashomok.ocrme.get_more_requests.row.free_options;
+
+import com.ashomok.ocrme.get_more_requests.row.free_options.option_delegates.FreeOptionRowViewHolder;
 
 import java.util.Map;
 
@@ -29,18 +31,18 @@ public class UiDelegatesFactory {
 
     public static final String TAG = DEV_TAG + UiDelegatesFactory.class.getSimpleName();
 
-    public final Map<String, UiManagingDelegate> uiDelegates;
+    private final Map<String, UiManagingDelegate> uiDelegates;
 
     @Inject
     public UiDelegatesFactory(Map<String, UiManagingDelegate> uiDelegates) {
         this.uiDelegates = uiDelegates;
     }
 
-    public void onBindViewHolder(PromoRowData data, RowViewHolder holder) {
+    public void onBindViewHolder(PromoRowFreeOptionData data, FreeOptionRowViewHolder holder) {
         uiDelegates.get(data.getId()).onBindViewHolder(data, holder);
     }
 
-    public void onButtonClicked(PromoRowData data) {
+    public void onButtonClicked(PromoRowFreeOptionData data) {
         uiDelegates.get(data.getId()).onRowClicked();
     }
 }

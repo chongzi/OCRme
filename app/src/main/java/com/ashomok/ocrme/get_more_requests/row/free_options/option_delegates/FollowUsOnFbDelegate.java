@@ -1,4 +1,4 @@
-package com.ashomok.ocrme.get_more_requests.row.task_delegates;
+package com.ashomok.ocrme.get_more_requests.row.free_options.option_delegates;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +10,7 @@ import android.util.Log;
 
 import com.ashomok.ocrme.OcrRequestsCounter;
 import com.ashomok.ocrme.get_more_requests.GetMoreRequestsActivity;
-import com.ashomok.ocrme.get_more_requests.row.UiManagingDelegate;
+import com.ashomok.ocrme.get_more_requests.row.free_options.UiManagingDelegate;
 
 import javax.inject.Inject;
 

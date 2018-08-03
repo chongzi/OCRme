@@ -2,6 +2,7 @@ package com.ashomok.ocrme.get_more_requests;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.ashomok.ocrme.R;
 import com.ashomok.ocrme.billing.BillingProviderCallback;
@@ -13,7 +14,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.ashomok.ocrme.billing.BillingProviderImpl.SCAN_IMAGE_REQUESTS_SKU_ID;
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
 /**
@@ -26,12 +26,11 @@ public class GetMoreRequestsPresenter implements GetMoreRequestsContract.Present
     @Nullable
     private GetMoreRequestsContract.View view;
 
-    BillingProviderImpl billingProvider;
-
-    Context context;
+    private BillingProviderImpl billingProvider;
+    private Context context;
 
     @Inject
-    GetMoreRequestsPresenter(BillingProviderImpl billingProvider,  Context context) {
+    GetMoreRequestsPresenter(BillingProviderImpl billingProvider, Context context) {
         this.billingProvider = billingProvider;
         this.context = context;
     }
@@ -60,31 +59,11 @@ public class GetMoreRequestsPresenter implements GetMoreRequestsContract.Present
 
         @Override
         public void onSkuRowDataUpdated() {
-            updatePaidOption(billingProvider.getSkuRowDataListForInAppPurchases());
+            Log.d(TAG, "onSkuRowDataUpdated called");
+            view.updatePaidOption(billingProvider.getSkuRowDataList());
         }
     };
 
-    private void updatePaidOption(List<SkuRowData> skuRowDataListForInAppPurchases) {
-        if (view != null) {
-            if (skuRowDataListForInAppPurchases.size() == 1) {
-                for (SkuRowData item : skuRowDataListForInAppPurchases) {
-                    switch (item.getSku()) {
-                        case SCAN_IMAGE_REQUESTS_SKU_ID:
-                            view.initBuyRequestsRow(item);
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onBuyRequestsClicked(SkuRowData data) {
-      billingProvider.getBillingManager().initiatePurchaseFlow(data.getSku(),
-                data.getSkuType());
-    }
 
     @Override
     public void takeView(GetMoreRequestsContract.View getMoreRequestsActivity) {
@@ -94,7 +73,7 @@ public class GetMoreRequestsPresenter implements GetMoreRequestsContract.Present
 
     private void init() {
         billingProvider.setCallback(billingProviderCallback);
-        billingProvider.init();
+        Log.d(TAG, "billing privider's init called");
 
         if (view != null) {
             checkConnection();

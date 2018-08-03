@@ -76,7 +76,7 @@ public class BillingManager implements PurchasesUpdatedListener {
      */
     public interface BillingUpdatesListener {
         void onBillingClientSetupFinished();
-        void onConsumeFinished(String token, @BillingResponse int result);
+        void onConsumeFinished(Purchase purchase, @BillingResponse int result);
         void onPurchasesUpdated(List<Purchase> purchases);
     }
 
@@ -98,15 +98,12 @@ public class BillingManager implements PurchasesUpdatedListener {
         // Start setup. This is asynchronous and the specified listener will be called
         // once setup completes.
         // It also starts to report all the new purchases through onPurchasesUpdated() callback.
-        startServiceConnection(new Runnable() {
-            @Override
-            public void run() {
-                // Notifying the listener that billing client is ready
-                mBillingUpdatesListener.onBillingClientSetupFinished();
-                // IAB is fully set up. Now, let's get an inventory of stuff we own.
-                Log.d(TAG, "Setup successful. Querying inventory.");
-                queryPurchases();
-            }
+        startServiceConnection(() -> {
+            // Notifying the listener that billing client is ready
+            mBillingUpdatesListener.onBillingClientSetupFinished();
+            // IAB is fully set up. Now, let's get an inventory of stuff we own.
+            Log.d(TAG, "Setup successful. Querying inventory.");
+            queryPurchases();
         });
     }
 
@@ -178,23 +175,18 @@ public class BillingManager implements PurchasesUpdatedListener {
                 SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
                 params.setSkusList(skuList).setType(itemType);
                 mBillingClient.querySkuDetailsAsync(params.build(),
-                        new SkuDetailsResponseListener() {
-                            @Override
-                            public void onSkuDetailsResponse(int responseCode,
-                                                             List<SkuDetails> skuDetailsList) {
-                                listener.onSkuDetailsResponse(responseCode, skuDetailsList);
-                            }
-                        });
+                        listener::onSkuDetailsResponse);
             }
         };
 
         executeServiceRequest(queryRequest);
     }
 
-    public void consumeAsync(final String purchaseToken) {
+    public void consumeAsync(final Purchase purchase) {
         // If we've already scheduled to consume this token - no action is needed (this could happen
         // if you received the token when querying purchases inside onReceive() and later from
         // onActivityResult()
+        String purchaseToken = purchase.getPurchaseToken();
         if (mTokensToBeConsumed == null) {
             mTokensToBeConsumed = new HashSet<>();
         } else if (mTokensToBeConsumed.contains(purchaseToken)) {
@@ -209,7 +201,7 @@ public class BillingManager implements PurchasesUpdatedListener {
             public void onConsumeResponse(@BillingResponse int responseCode, String purchaseToken) {
                 // If billing service was disconnected, we try to reconnect 1 time
                 // (feel free to introduce your retry policy here).
-                mBillingUpdatesListener.onConsumeFinished(purchaseToken, responseCode);
+                mBillingUpdatesListener.onConsumeFinished(purchase, responseCode);
             }
         };
 
@@ -334,6 +326,7 @@ public class BillingManager implements PurchasesUpdatedListener {
 
                 if (billingResponseCode == BillingResponse.OK) {
                     mIsServiceConnected = true;
+
                     if (executeOnSuccess != null) {
                         executeOnSuccess.run();
                     }

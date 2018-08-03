@@ -1,22 +1,24 @@
 package com.ashomok.ocrme.get_more_requests;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.ashomok.ocrme.OcrRequestsCounter;
 import com.ashomok.ocrme.R;
-import com.ashomok.ocrme.Settings;
 import com.ashomok.ocrme.billing.model.SkuRowData;
 import com.ashomok.ocrme.firebaseUiAuth.BaseLoginActivity;
-import com.ashomok.ocrme.get_more_requests.row.PromoListAdapter;
+import com.ashomok.ocrme.get_more_requests.row.free_options.PromoListFreeOptionsAdapter;
+import com.ashomok.ocrme.get_more_requests.row.paid_options.PromoListPaidOptionsAdapter;
 import com.ashomok.ocrme.utils.InfoSnackbarUtil;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -36,10 +38,10 @@ public class GetMoreRequestsActivity extends BaseLoginActivity
     GetMoreRequestsPresenter mPresenter;
 
     @Inject
-    PromoListAdapter promoListAdapter;
+    PromoListFreeOptionsAdapter promoListFreeOptionsAdapter;
 
     @Inject
-    SharedPreferences sharedPreferences;
+    PromoListPaidOptionsAdapter promoListPaidOptionsAdapter;
 
     @Inject
     OcrRequestsCounter ocrRequestsCounter;
@@ -49,7 +51,7 @@ public class GetMoreRequestsActivity extends BaseLoginActivity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AndroidInjection.inject(this); //todo or extends daggerappcompat activity instaead
+        AndroidInjection.inject(this); //or extends daggerappcompat activity instead
         setContentView(R.layout.activity_get_more_requests);
         mRootView = findViewById(android.R.id.content);
         if (mRootView == null) {
@@ -57,7 +59,8 @@ public class GetMoreRequestsActivity extends BaseLoginActivity
         }
         initToolbar();
         updateToolbarText();
-        initPromoList();
+        initPromoListFreeOptions();
+        initPromoListPaidOptions();
         mPresenter.takeView(this);
     }
 
@@ -65,7 +68,7 @@ public class GetMoreRequestsActivity extends BaseLoginActivity
     public void onResume() {
         super.onResume();
 
-        promoListAdapter.notifyDataSetChanged();
+        promoListFreeOptionsAdapter.notifyDataSetChanged(); //todo reduntant?
         updateToolbarText();
     }
 
@@ -83,13 +86,30 @@ public class GetMoreRequestsActivity extends BaseLoginActivity
                 ));
     }
 
-    private void initPromoList() {
-        RecyclerView recyclerView = findViewById(R.id.promo_list);
+    @Override
+    public void updatePaidOption(List<SkuRowData> dataList) {
+        Log.d(TAG, "updatePaidOption called");
+
+        promoListPaidOptionsAdapter.setDataList(dataList);
+        promoListPaidOptionsAdapter.notifyDataSetChanged();
+    }
+
+    private void initPromoListFreeOptions() {
+        RecyclerView recyclerView = findViewById(R.id.promo_list_free_options);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        recyclerView.setAdapter(promoListAdapter);
+        recyclerView.setAdapter(promoListFreeOptionsAdapter);
+    }
+
+    private void initPromoListPaidOptions() {
+        RecyclerView recyclerView = findViewById(R.id.promo_list_paid_options);
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
+        recyclerView.setAdapter(promoListPaidOptionsAdapter);
     }
 
     private void initToolbar() {
@@ -138,11 +158,4 @@ public class GetMoreRequestsActivity extends BaseLoginActivity
         InfoSnackbarUtil.showInfo(message, mRootView);
     }
 
-    @Override
-    public void initBuyRequestsRow(SkuRowData item) {
-        View paidOptionLayout = findViewById(R.id.paid_option);
-        TextView price = findViewById(R.id.price);
-        price.setText(item.getPrice());
-        paidOptionLayout.setOnClickListener(view -> mPresenter.onBuyRequestsClicked(item));
-    }
 }

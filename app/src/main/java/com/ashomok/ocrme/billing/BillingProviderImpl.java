@@ -26,7 +26,6 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 /**
  * Created by iuliia on 2/14/18.
  */
-
 public class BillingProviderImpl implements BillingProvider {
 
     private BillingManager mBillingManager;
@@ -34,8 +33,10 @@ public class BillingProviderImpl implements BillingProvider {
     private boolean mGoldYearly;
     public static final String PREMIUM_MONTHLY_SKU_ID = "one_month_subscription";
     public static final String PREMIUM_YEARLY_SKU_ID = "one_year_subscription";
-    public static final String SCAN_IMAGE_REQUESTS_SKU_ID = "scan_image_requests_batch";
-    private static final int SCAN_IMAGE_REQUESTS_BATCH_SIZE = 5;
+    public static final String SCAN_IMAGE_REQUESTS_5_SKU_ID = "scan_image_requests_batch_5";
+    public static final String SCAN_IMAGE_REQUESTS_100_SKU_ID = "scan_image_requests_batch_100";
+    private static final int SCAN_IMAGE_REQUESTS_5_BATCH_SIZE = 5;
+    private static final int SCAN_IMAGE_REQUESTS_100_BATCH_SIZE = 100;
     public static final String TAG = DEV_TAG + BillingProviderImpl.class.getSimpleName();
 
     private List<SkuRowData> skuRowDataList = new ArrayList<>();
@@ -47,24 +48,25 @@ public class BillingProviderImpl implements BillingProvider {
     private Activity activity;
 
     @Inject
-    SharedPreferences sharedPreferences;
-
-    @Inject
     OcrRequestsCounter ocrRequestsCounter;
-
 
     @Inject
     public BillingProviderImpl(@NonNull Activity activity) {
         this.activity = activity;
+
+        init();
     }
 
-    public void init() {
+    private void init() {
         // Create and initialize BillingManager which talks to BillingLibrary
         mBillingManager = new BillingManager(activity, new UpdateListener());
     }
 
-    public void setCallback(@Nullable BillingProviderCallback callback) {this.callback = callback;}
+    public void setCallback(@Nullable BillingProviderCallback callback) {
+        this.callback = callback;
+    }
 
+    @Override
     public List<SkuRowData> getSkuRowDataList() {
         return skuRowDataList;
     }
@@ -90,13 +92,11 @@ public class BillingProviderImpl implements BillingProvider {
 
         processSkuRows(
                 skuRowDataList, subscriptionsSkus, BillingClient.SkuType.SUBS,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        List<String> inAppSkus = new ArrayList<>();
-                        inAppSkus.add(SCAN_IMAGE_REQUESTS_SKU_ID);
-                        processSkuRows(skuRowDataList, inAppSkus, BillingClient.SkuType.INAPP, null);
-                    }
+                () -> {
+                    List<String> inAppSkus = new ArrayList<>();
+                    inAppSkus.add(SCAN_IMAGE_REQUESTS_5_SKU_ID);
+                    inAppSkus.add(SCAN_IMAGE_REQUESTS_100_SKU_ID);
+                    processSkuRows(skuRowDataList, inAppSkus, BillingClient.SkuType.INAPP, null);
                 });
     }
 
@@ -140,6 +140,7 @@ public class BillingProviderImpl implements BillingProvider {
     }
 
     private void onBillingError() {
+        Log.d(TAG, "onBillingError");
         int billingResponseCode = getBillingManager()
                 .getBillingClientResponseCode();
 
@@ -193,36 +194,73 @@ public class BillingProviderImpl implements BillingProvider {
         }
 
         @Override
-        public void onConsumeFinished(String token, @BillingClient.BillingResponse int result) {
-            Log.d(TAG, "Consumption finished. Purchase token: " + token + ", result: " + result);
-            // Note: We know this is the SCAN_IMAGE_REQUESTS_SKU_ID, because it's the only one we
-            // consume, so we don't
-            // check if token corresponding to the expected sku was consumed.
-            // If you have more than one sku, you probably need to validate that the token matches
-            // the SKU you expect.
-            // It could be done by maintaining a map (updating it every time you call consumeAsync)
-            // of all tokens into SKUs which were scheduled to be consumed and then looking through
-            // it here to check which SKU corresponds to a consumed token.
-            if (result == BillingClient.BillingResponse.OK) {
-                // Successfully consumed, so we apply the effects of the item in our
-                // game world's logic, which in our case means filling the gas tank a bit
-                Log.d(TAG, "Consumption successful. Provisioning.");
+        public void onConsumeFinished(Purchase purchase, @BillingClient.BillingResponse int result) {
+            String sku = purchase.getSku();
+            if (sku.equals(SCAN_IMAGE_REQUESTS_5_SKU_ID) || sku.equals(SCAN_IMAGE_REQUESTS_100_SKU_ID)) {
 
-                int availableOcrRequests = ocrRequestsCounter.getAvailableOcrRequests();
-                availableOcrRequests += SCAN_IMAGE_REQUESTS_BATCH_SIZE;
-                ocrRequestsCounter.saveAvailableOcrRequests(availableOcrRequests);
+                String token = purchase.getPurchaseToken();
+                Log.d(TAG, "Consumption started. Sku: " + sku + "Purchase token: "
+                        + token + ", result: " + result);
 
-                String message = activity.getString(R.string.you_get_ocr_requests,
-                        String.valueOf(SCAN_IMAGE_REQUESTS_BATCH_SIZE));
-                showInfo(message);
-            } else {
-                Log.d(TAG, "onConsumeFinished error code " + result);
-            }
+                if (result == BillingClient.BillingResponse.OK) {
 
-            if (callback != null) {
-                callback.onPurchasesUpdated();
+                    Log.d(TAG, "Consumption successful. Provisioning.");
+
+                    int purchaseBatchSize = 0;
+                    if (sku.equals(SCAN_IMAGE_REQUESTS_5_SKU_ID)) {
+                        purchaseBatchSize = SCAN_IMAGE_REQUESTS_5_BATCH_SIZE;
+                    } else if (sku.equals((SCAN_IMAGE_REQUESTS_100_SKU_ID))) {
+                        purchaseBatchSize = SCAN_IMAGE_REQUESTS_100_BATCH_SIZE;
+                    }
+                    int availableOcrRequests = ocrRequestsCounter.getAvailableOcrRequests();
+                    availableOcrRequests += purchaseBatchSize;
+                    ocrRequestsCounter.saveAvailableOcrRequests(availableOcrRequests);
+
+                    String message = activity.getString(R.string.you_get_ocr_requests,
+                            String.valueOf(purchaseBatchSize));
+                    showInfo(message);
+                } else {
+                    Log.d(TAG, "onConsumeFinished error code " + result);
+                }
+
+                if (callback != null) {
+                    callback.onPurchasesUpdated();
+                }
             }
         }
+
+//        @Override
+//        public void onConsumeFinished(String token, @BillingClient.BillingResponse int result) {
+//            Log.d(TAG, "Consumption finished. Purchase token: " + token + ", result: " + result);
+//            // Note: We know this is the SCAN_IMAGE_REQUESTS_SKU_ID, because it's the only one we
+//            // consume, so we don't
+//            // check if token corresponding to the expected sku was consumed.
+//            // If you have more than one sku, you probably need to validate that the token matches
+//            // the SKU you expect.
+//            // It could be done by maintaining a map (updating it every time you call consumeAsync)
+//            // of all tokens into SKUs which were scheduled to be consumed and then looking through
+//            // it here to check which SKU corresponds to a consumed token.
+//            if (result == BillingClient.BillingResponse.OK) {
+//                // Successfully consumed, so we apply the effects of the item in our
+//                // game world's logic, which in our case means filling the gas tank a bit
+//                Log.d(TAG, "Consumption successful. Provisioning.");
+//
+//                int availableOcrRequests = ocrRequestsCounter.getAvailableOcrRequests();
+//                availableOcrRequests += SCAN_IMAGE_REQUESTS_BATCH_SIZE;
+//                ocrRequestsCounter.saveAvailableOcrRequests(availableOcrRequests);
+//
+//                String message = activity.getString(R.string.you_get_ocr_requests,
+//                        String.valueOf(SCAN_IMAGE_REQUESTS_BATCH_SIZE));
+//                showInfo(message);
+//            } else {
+//                Log.d(TAG, "onConsumeFinished error code " + result);
+//            }
+//
+//            if (callback != null) {
+//                callback.onPurchasesUpdated();
+//            }
+//        }
+
 
         @Override
         public void onPurchasesUpdated(List<Purchase> purchaseList) {
@@ -237,9 +275,13 @@ public class BillingProviderImpl implements BillingProvider {
                     case PREMIUM_YEARLY_SKU_ID:
                         mGoldYearly = true;
                         break;
-                    case SCAN_IMAGE_REQUESTS_SKU_ID:
+                    case SCAN_IMAGE_REQUESTS_5_SKU_ID:
                         // We should consume the purchase and fill up the requests once it was consumed
-                        getBillingManager().consumeAsync(purchase.getPurchaseToken());
+                        getBillingManager().consumeAsync(purchase);
+                        break;
+                    case SCAN_IMAGE_REQUESTS_100_SKU_ID:
+                        // We should consume the purchase and fill up the requests once it was consumed
+                        getBillingManager().consumeAsync(purchase);
                         break;
                 }
             }

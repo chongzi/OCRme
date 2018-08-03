@@ -60,6 +60,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
                         android:text="@string/premium_account"
+                        android:textColor="@android:color/white"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:visibility="visible" />
@@ -69,6 +70,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
                         android:text="@string/update_to_premium_account"
+                        android:textColor="@android:color/white"
                         android:textSize="13sp"
                         android:visibility="visible" />
 
@@ -77,6 +79,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
                         android:text="@string/days_free"
+                        android:textColor="@android:color/white"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:visibility="visible" />
@@ -182,7 +185,6 @@
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_chevron_right_black_24dp"
                             android:tint="@color/colorAccent" />
-
                     </LinearLayout>
 
                     <View

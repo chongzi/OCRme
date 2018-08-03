@@ -30,6 +30,12 @@ public class FilesProvider {
     private static final String TEST_IMGS = "test_imgs";
     private static final String TAG = DEV_TAG + FilesProvider.class.getSimpleName();
 
+    private static final String gcsImageUri =
+            "gs://ocrme-77a2b.appspot.com/test/ru.jpg";
+
+    private static final String gcsPdfUri =
+            "gs://ocrme-77a2b.appspot.com/test/ru.pdf";
+
     public static ArrayList<String> getTestImages() {
         //create folders for tessdata files
         prepareDirectories(
@@ -102,5 +108,13 @@ public class FilesProvider {
             }
         }
 
+    }
+
+    public static String getGcsImageUri() {
+        return gcsImageUri;
+    }
+
+    public static String getGcsPdfUri() {
+        return gcsPdfUri;
     }
 }

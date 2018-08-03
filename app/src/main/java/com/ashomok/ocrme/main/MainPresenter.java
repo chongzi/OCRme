@@ -113,8 +113,6 @@ public class MainPresenter implements MainContract.Presenter {
     private void init() {
         if (view != null) {
             billingProvider.setCallback(billingProviderCallback);
-            billingProvider.init();
-
 
             checkConnection();
             languageCodes = obtainSavedLanguagesCodes();

@@ -28,11 +28,9 @@ public class UpdateToPremiumPresenter implements UpdateToPremiumContract.Present
     @Nullable
     private UpdateToPremiumContract.View view;
 
-    @Inject
-    BillingProviderImpl billingProvider;
+    private BillingProviderImpl billingProvider;
 
-    @Inject
-    Context context;
+    private Context context;
 
     private BillingProviderCallback billingProviderCallback = new BillingProviderCallback() {
         @Override
@@ -67,7 +65,10 @@ public class UpdateToPremiumPresenter implements UpdateToPremiumContract.Present
 
 
     @Inject
-    UpdateToPremiumPresenter() {}
+    UpdateToPremiumPresenter(BillingProviderImpl billingProvider, Context context) {
+        this.billingProvider = billingProvider;
+        this.context = context;
+    }
 
     /**
      * update sku rows for subscriptions
@@ -102,7 +103,6 @@ public class UpdateToPremiumPresenter implements UpdateToPremiumContract.Present
 
     private void init() {
         billingProvider.setCallback(billingProviderCallback);
-        billingProvider.init();
 
         if (view != null) {
             checkConnection();

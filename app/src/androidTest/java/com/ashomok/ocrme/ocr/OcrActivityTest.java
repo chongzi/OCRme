@@ -48,29 +48,11 @@ public class OcrActivityTest {
     public ActivityTestRule<OcrActivity> mActivityRule = new ActivityTestRule<>(
             OcrActivity.class, true, false);
 
-    @Before
-    public void setTestMode() {
-        Settings.isTestMode = true;
-    }
-
     @Test
     public void testOcr() throws InterruptedException {
         String path = getTestImages().get(0);
         launchActivityWithPath(Uri.fromFile(new File(path)));
         Thread.sleep(10000);//waiting for ocr finished
-    }
-
-    @Test
-    public void backgroundSettedProperly() throws InterruptedException {
-        String path = getTestImages().get(0);
-        launchActivityWithPath(Uri.fromFile(new File(path)));
-
-        onView(withId(R.id.image)).check(matches(isDisplayed()));
-        Thread.sleep(3000); //waiting for image setted
-        onView(withId(R.id.image)).check(matches(hasDrawable()));
-        Thread.sleep(10000); //waiting for ocr finished
-        onView(withId(R.id.source_image)).check(matches(hasDrawable()));
-        onView(withId(R.id.source_image)).check(matches(isDisplayed()));
     }
 
     private void launchActivityWithPath(Uri uri) {
