@@ -3,7 +3,7 @@ package com.ashomok.ocrme.get_more_requests.row.free_options.option_delegates;
 import com.ashomok.ocrme.OcrRequestsCounter;
 import com.ashomok.ocrme.R;
 import com.ashomok.ocrme.get_more_requests.GetMoreRequestsActivity;
-import com.ashomok.ocrme.get_more_requests.row.free_options.UiManagingDelegate;
+import com.ashomok.ocrme.get_more_requests.row.free_options.UiFreeOptionManagingDelegate;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
@@ -20,7 +20,7 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
 //todo Forward lifecycle events https://developers.google.com/admob/android/rewarded-video -
 // impossible now due to no delegate from activity - minor bug
-public class WatchVideoDelegate extends UiManagingDelegate implements RewardedVideoAdListener {
+public class WatchVideoDelegate extends UiFreeOptionManagingDelegate implements RewardedVideoAdListener {
     public static final String TAG = DEV_TAG + WatchVideoDelegate.class.getSimpleName();
     public static final String ID = "watch_video";
     private final GetMoreRequestsActivity activity;

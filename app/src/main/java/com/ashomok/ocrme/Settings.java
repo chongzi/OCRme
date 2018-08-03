@@ -13,10 +13,6 @@ public class Settings {
 
     public static String appPackageName = "com.ashomok.ocrme";
 
-    //todo write tests for this
-    //BuildConfig.DEBUG use instead
-//    public static boolean isTestMode = true; //todo undo in prod
-
     public static boolean isAdsActive = true; //will be set in MainActivity
     public static boolean isPremium = false;//will be set in MainActivity
 

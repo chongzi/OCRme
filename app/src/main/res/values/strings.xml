@@ -184,7 +184,7 @@
     <string name="unlimited_ocr_requests">Unlimited Image recognition requests</string>
     <string name="unlimited_translate_requests">Unlimited Translate requests</string>
     <string name="languages_supported_for_ocr">100+ languages supported for Image recognition</string>
-    <string name="languages_supported_for_translate">100+ languages supported for Translation</string>
+    <string name="languages_supported_for_translate">60+ languages supported for Translation</string>
     <string name="highprecision_recognition_system">High-precision recognition system</string>
     <string name="error_no_skus">We didn\\\'t find any SKUs to display</string>
     <string name="error_billing_unavailable">Billing unavailable</string>
@@ -192,7 +192,7 @@
     <string name="my_premium">My premium</string>
     <string name="you_are_premium">You are premium!</string>
     <string name="you_get_ocr_requests">You get %1$s requests more.</string>
-    <string name="get_more_for_free">Get more for free</string>
+    <string name="get_more_for_free">Get more for FREE!</string>
     <string name="check_premium_price">Check premium price</string>
     <string name="you_have_requests">You have %1$s Image Scan Requests. You can get more FREE or check premium account price.</string>
     <string name="you_have_no_docs">You have no docs yet</string>

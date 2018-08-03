@@ -6,13 +6,13 @@ import com.ashomok.ocrme.R;
 import com.ashomok.ocrme.billing.BillingProviderImpl;
 import com.ashomok.ocrme.billing.model.SkuRowData;
 import com.ashomok.ocrme.get_more_requests.row.paid_options.PaidOptionRowViewHolder;
-import com.ashomok.ocrme.get_more_requests.row.paid_options.UiManagingDelegate;
+import com.ashomok.ocrme.get_more_requests.row.paid_options.UiPaidOptionManagingDelegate;
 
 import javax.inject.Inject;
 
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
-public class Batch5Delegate extends UiManagingDelegate {
+public class Batch5Delegate extends UiPaidOptionManagingDelegate {
     public static final String TAG = DEV_TAG + Batch5Delegate.class.getSimpleName();
 
     @Inject

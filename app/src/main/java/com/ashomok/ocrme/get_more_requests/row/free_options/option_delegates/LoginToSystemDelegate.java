@@ -5,17 +5,18 @@ import android.util.Log;
 
 import com.ashomok.ocrme.OcrRequestsCounter;
 import com.ashomok.ocrme.get_more_requests.GetMoreRequestsActivity;
-import com.ashomok.ocrme.get_more_requests.row.free_options.UiManagingDelegate;
+import com.ashomok.ocrme.get_more_requests.row.free_options.UiFreeOptionManagingDelegate;
 import com.google.firebase.auth.FirebaseAuth;
 
 import javax.inject.Inject;
+
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
 /**
  * Created by iuliia on 3/6/18.
  */
 
-public class LoginToSystemDelegate extends UiManagingDelegate {
+public class LoginToSystemDelegate extends UiFreeOptionManagingDelegate {
     public static final String TAG = DEV_TAG + LoginToSystemDelegate.class.getSimpleName();
     public static final String ID = "login_to_system";
     private static final String LOGIN_TO_SYSTEM_DONE_TAG = "LOGIN_TO_SYSTEM_DONE";

@@ -27,12 +27,12 @@ import com.ashomok.ocrme.get_more_requests.row.free_options.option_delegates.Fre
  * Implementations of this abstract class are responsible to render UI and handle user actions for
  * promo rows to render RecyclerView
  */
-public abstract class UiManagingDelegate {
+public abstract class UiFreeOptionManagingDelegate {
 
     private Context context;
     private int requestsCost; //each promo gives some requests amount
 
-    public UiManagingDelegate(Context context) {
+    public UiFreeOptionManagingDelegate(Context context) {
         this.context = context;
     }
 

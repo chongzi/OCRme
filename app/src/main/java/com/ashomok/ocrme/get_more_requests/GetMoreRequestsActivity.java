@@ -68,7 +68,9 @@ public class GetMoreRequestsActivity extends BaseLoginActivity
     public void onResume() {
         super.onResume();
 
-        promoListFreeOptionsAdapter.notifyDataSetChanged(); //todo reduntant?
+        //if we come back from getting free request window (example Share in FB) -
+        // update view with new data
+        promoListFreeOptionsAdapter.notifyDataSetChanged();
         updateToolbarText();
     }
 

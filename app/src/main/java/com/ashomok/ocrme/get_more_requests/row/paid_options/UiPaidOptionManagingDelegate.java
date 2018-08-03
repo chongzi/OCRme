@@ -35,13 +35,13 @@ import java.util.List;
  * promo rows to render RecyclerView
  */
 
-public abstract class UiManagingDelegate {
+public abstract class UiPaidOptionManagingDelegate {
 
     private BillingProviderImpl billingProvider;
 
     private Context context;
 
-    public UiManagingDelegate(BillingProviderImpl billingProvider,
+    public UiPaidOptionManagingDelegate(BillingProviderImpl billingProvider,
                               Context context) {
         this.billingProvider = billingProvider;
         this.context = context;

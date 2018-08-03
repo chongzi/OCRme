@@ -31,10 +31,10 @@ public class UiDelegatesFactory {
 
     public static final String TAG = DEV_TAG + UiDelegatesFactory.class.getSimpleName();
 
-    private final Map<String, UiManagingDelegate> uiDelegates;
+    private final Map<String, UiFreeOptionManagingDelegate> uiDelegates;
 
     @Inject
-    public UiDelegatesFactory(Map<String, UiManagingDelegate> uiDelegates) {
+    public UiDelegatesFactory(Map<String, UiFreeOptionManagingDelegate> uiDelegates) {
         this.uiDelegates = uiDelegates;
     }
 

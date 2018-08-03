@@ -6,7 +6,7 @@ import com.ashomok.ocrme.R;
 import com.ashomok.ocrme.billing.BillingProviderImpl;
 import com.ashomok.ocrme.billing.model.SkuRowData;
 import com.ashomok.ocrme.get_more_requests.row.paid_options.PaidOptionRowViewHolder;
-import com.ashomok.ocrme.get_more_requests.row.paid_options.UiManagingDelegate;
+import com.ashomok.ocrme.get_more_requests.row.paid_options.UiPaidOptionManagingDelegate;
 
 import java.util.ArrayList;
 
@@ -15,7 +15,7 @@ import javax.inject.Inject;
 import static com.ashomok.ocrme.billing.BillingProviderImpl.PREMIUM_MONTHLY_SKU_ID;
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
-public class SubscriptionYearlyDelegate extends UiManagingDelegate {
+public class SubscriptionYearlyDelegate extends UiPaidOptionManagingDelegate {
     public static final String TAG = DEV_TAG + SubscriptionYearlyDelegate.class.getSimpleName();
 
     @Inject
@@ -44,5 +44,12 @@ public class SubscriptionYearlyDelegate extends UiManagingDelegate {
 
         holder.getTitle().setText(getContext().getResources().getString(R.string.one_year_premium));
         holder.getSubtitleTop().setText(getContext().getResources().getString(R.string.unlimited_requests));
+
+        String subTitle = getContext().getResources().getString(R.string.price_per_month,
+                data.getPriceCurrencyCode(),
+                String.format("%.2f", (double) data.getPriceAmountMicros() / 12000000));
+
+        holder.getSubtitleBottom().setText(subTitle);
+
     }
 }

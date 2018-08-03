@@ -10,7 +10,7 @@ import android.widget.Toast;
 import com.ashomok.ocrme.OcrRequestsCounter;
 import com.ashomok.ocrme.R;
 import com.ashomok.ocrme.get_more_requests.GetMoreRequestsActivity;
-import com.ashomok.ocrme.get_more_requests.row.free_options.UiManagingDelegate;
+import com.ashomok.ocrme.get_more_requests.row.free_options.UiFreeOptionManagingDelegate;
 
 import javax.inject.Inject;
 
@@ -20,7 +20,7 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
  * Created by iuliia on 3/6/18.
  */
 
-public class RateAppDelegate extends UiManagingDelegate {
+public class RateAppDelegate extends UiFreeOptionManagingDelegate {
     public static final String TAG = DEV_TAG + RateAppDelegate.class.getSimpleName();
     public static final String ID = "rate_app";
     private static final String RATE_APP_DONE_TAG = "RATE_APP_DONE";
