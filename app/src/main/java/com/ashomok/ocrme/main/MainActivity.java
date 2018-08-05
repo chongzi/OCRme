@@ -50,7 +50,6 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,6 +87,7 @@ public class MainActivity extends BaseLoginActivity implements
     private TextView languageTextView;
     private Button myDocsBtn;
     private View requestCounterLayout;
+    private View languageLayout;
     private String mEmail = "No email";
     private String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
     private static final String imageFileNameFromCamera = "ocr.jpg";
@@ -105,6 +105,7 @@ public class MainActivity extends BaseLoginActivity implements
             }
         }
     };
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -213,7 +214,10 @@ public class MainActivity extends BaseLoginActivity implements
     private void initLanguageViews() {
         languageTextView = findViewById(R.id.language);
         languageTextView.setPaintFlags(languageTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        languageTextView.setOnClickListener(this);
+
+        languageLayout = findViewById(R.id.language_layout);
+        languageLayout.setOnClickListener(this);
+//        languageTextView.setOnClickListener(this);
     }
 
 
@@ -409,7 +413,7 @@ public class MainActivity extends BaseLoginActivity implements
         }
     }
 
-    private void dispatchTakePictureIntent() throws IOException {
+    private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -503,8 +507,8 @@ public class MainActivity extends BaseLoginActivity implements
             case R.id.propose_sign_in_layout:
                 signIn();
                 break;
-            case R.id.language:
-                onLanguageTextViewClicked();
+            case R.id.language_layout:
+                onLanguageClicked();
                 break;
             case R.id.gallery_btn:
                 onGalleryChooserClicked();
@@ -521,7 +525,7 @@ public class MainActivity extends BaseLoginActivity implements
         mPresenter.onGalleryChooserClicked();
     }
 
-    private void onLanguageTextViewClicked() {
+    private void onLanguageClicked() {
         Intent intent = new Intent(this, LanguageOcrActivity.class);
         if (mPresenter.getLanguageCodes().isPresent()) {
             ArrayList<String> extra = new ArrayList<>(mPresenter.getLanguageCodes().get());

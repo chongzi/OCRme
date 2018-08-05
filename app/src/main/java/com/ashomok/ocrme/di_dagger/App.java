@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 
+import com.ashomok.ocrme.R;
+
 import dagger.android.AndroidInjector;
 import dagger.android.DaggerApplication;
 
@@ -17,6 +19,12 @@ import dagger.android.DaggerApplication;
  * We never have to call `component.inject(this)` as {@link DaggerApplication} will do that for us.
  */
 public class App extends DaggerApplication {
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        setTheme(R.style.AppTheme);
+    }
 
     @Override
     protected void attachBaseContext(Context base) {

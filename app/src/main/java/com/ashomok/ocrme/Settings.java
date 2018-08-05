@@ -11,7 +11,7 @@ import java.util.LinkedHashMap;
 
 public class Settings {
 
-    public static String appPackageName = "com.ashomok.ocrme";
+    public static String appPackageName = BuildConfig.APPLICATION_ID;
 
     public static boolean isAdsActive = true; //will be set in MainActivity
     public static boolean isPremium = false;//will be set in MainActivity

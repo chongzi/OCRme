@@ -12,6 +12,7 @@ import com.ashomok.ocrme.R;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
@@ -50,12 +51,14 @@ public abstract class BaseLoginActivity extends RxAppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
+        FirebaseApp.initializeApp(this);
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null && auth.getCurrentUser().getEmail() != null) {
             onSignedIn();
         }
     }
 
+    //todo update deprecated
     public void signIn() {
         startActivityForResult(
                 AuthUI.getInstance().createSignInIntentBuilder()

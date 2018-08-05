@@ -192,7 +192,8 @@
     <string name="my_premium">My premium</string>
     <string name="you_are_premium">You are premium!</string>
     <string name="you_get_ocr_requests">You get %1$s requests more.</string>
-    <string name="get_more_for_free">Get more for FREE!</string>
+    <string name="get_more_for_free">Get more for free</string>
+    <string name="get_more_for_free_toolbar">We use the best algorithms and we pay for it. \nGet more for FREE thanks to a little support.</string>
     <string name="check_premium_price">Check premium price</string>
     <string name="you_have_requests">You have %1$s Image Scan Requests. You can get more FREE or check premium account price.</string>
     <string name="you_have_no_docs">You have no docs yet</string>
@@ -202,7 +203,7 @@
     <string name="watch_video_ads">Watch one video ad</string>
     <string name="best_choise">Best choice</string>
     <string name="login_to_system">Login to system</string>
-    <string name="write_feedback">Write feedback</string>
+    <string name="rate_app">Rate app ★★★★★</string>
     <string name="follow_us_on_fb">Follow us on Facebook</string>
     <string name="requests_cost">+%1$s</string>
     <string name="task_is_done">Task is done</string>
@@ -267,6 +268,6 @@
     <string name="vietnamese">Vietnamese</string>
     <string name="buy_100_requests">Buy 100 requests</string>
     <string name="one_month_premium">One Month Premium</string>
-    <string name="unlimited_requests">Unlimited requests</string>
+    <string name="unlimited_requests">Unlimited requests + No ads</string>
     <string name="one_year_premium">One Year Premium</string>
 </resources>

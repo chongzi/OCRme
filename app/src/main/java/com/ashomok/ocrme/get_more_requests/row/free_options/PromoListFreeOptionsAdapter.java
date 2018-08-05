@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ashomok.ocrme.R;
-import com.ashomok.ocrme.get_more_requests.row.free_options.option_delegates.FreeOptionRowViewHolder;
 
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class PromoListFreeOptionsAdapter extends RecyclerView.Adapter<FreeOption
     @NonNull
     @Override
     public FreeOptionRowViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // create a new view
+
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.promo_list_free_option_row, parent, false);
 

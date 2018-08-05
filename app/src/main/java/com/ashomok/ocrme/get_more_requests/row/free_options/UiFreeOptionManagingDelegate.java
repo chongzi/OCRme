@@ -21,7 +21,6 @@ import android.widget.Toast;
 import com.ashomok.ocrme.OcrRequestsCounter;
 import com.ashomok.ocrme.R;
 import com.ashomok.ocrme.get_more_requests.GetMoreRequestsActivity;
-import com.ashomok.ocrme.get_more_requests.row.free_options.option_delegates.FreeOptionRowViewHolder;
 
 /**
  * Implementations of this abstract class are responsible to render UI and handle user actions for

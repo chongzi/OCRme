@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ashomok.ocrme.get_more_requests.row.free_options.option_delegates;
+package com.ashomok.ocrme.get_more_requests.row.free_options;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

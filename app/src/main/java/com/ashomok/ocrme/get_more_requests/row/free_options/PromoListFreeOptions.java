@@ -22,11 +22,11 @@ public class PromoListFreeOptions {
     public static List<PromoRowFreeOptionData> getList() {
         List<PromoRowFreeOptionData> result = new ArrayList<>();
         result.add(new PromoRowFreeOptionData(
-                WatchVideoDelegate.ID, R.drawable.video_black_24dp, R.string.watch_video_ads, R.string.best_choise, 5));
+                RateAppDelegate.ID, R.drawable.ic_star_black_24dp, R.string.rate_app, R.string.best_choise, 10));
+        result.add(new PromoRowFreeOptionData(
+                WatchVideoDelegate.ID, R.drawable.video_black_24dp, R.string.watch_video_ads, 0, 5));
         result.add(new PromoRowFreeOptionData(
                 LoginToSystemDelegate.ID, R.drawable.ic_arrow_forward_black_24dp, R.string.login_to_system, 0, 5));
-        result.add(new PromoRowFreeOptionData(
-                RateAppDelegate.ID, R.drawable.ic_star_black_24dp, R.string.write_feedback, 0, 10));
         result.add(new PromoRowFreeOptionData(
                 FollowUsOnFbDelegate.ID, R.drawable.ic_facebook, R.string.follow_us_on_fb, 0, 5));
         return result;

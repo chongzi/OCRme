@@ -69,7 +69,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
                         android:textColor="@android:color/white"
-                        android:text="@string/get_more_for_free"
+                        android:text="@string/get_more_for_free_toolbar"
                         android:textSize="15sp" />
 
                 </LinearLayout>
