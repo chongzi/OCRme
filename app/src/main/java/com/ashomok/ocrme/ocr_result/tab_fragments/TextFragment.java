@@ -6,8 +6,10 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.LayoutInflater;
@@ -25,8 +27,10 @@ import com.ashomok.ocrme.language_choser.LanguageOcrActivity;
 import com.ashomok.ocrme.ocr.OcrActivity;
 import com.ashomok.ocrme.ocr_result.translate.TranslateActivity;
 import com.ashomok.ocrme.utils.GlideApp;
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -49,10 +53,10 @@ public class TextFragment extends Fragment implements View.OnClickListener {
     public static final String EXTRA_IMAGE_URL = "com.ashomokdev.imagetotext.IMAGE";
     public static final String EXTRA_LANGUAGES = "com.ashomokdev.imagetotext.LANGUAGES";
     private static final int LANGUAGE_ACTIVITY_REQUEST_CODE = 1;
+    private static final String TAG = DEV_TAG + TextFragment.class.getSimpleName();
     private String textResult;
     private String imageUrl;
     private String[] languages;
-    private static final String TAG = DEV_TAG + TextFragment.class.getSimpleName();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -128,8 +132,21 @@ public class TextFragment extends Fragment implements View.OnClickListener {
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference gsReference = storage.getReferenceFromUrl(imageUrl);
+
         GlideApp.with(this.getActivity())
                 .load(gsReference)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        getActivity().findViewById(R.id.progress).setVisibility(View.INVISIBLE);
+                        return false;
+                    }
+                })
                 .error(R.drawable.ic_broken_image)
                 .fitCenter()
                 .into(mImageView);

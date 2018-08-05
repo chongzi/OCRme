@@ -29,7 +29,7 @@ public class RateAppDelegate extends UiFreeOptionManagingDelegate {
     private final OcrRequestsCounter ocrRequestsCounter;
 
     @Inject
-    public RateAppDelegate(GetMoreRequestsActivity activity, OcrRequestsCounter ocrRequestsCounter, SharedPreferences sharedPreferences){
+    public RateAppDelegate(GetMoreRequestsActivity activity, OcrRequestsCounter ocrRequestsCounter, SharedPreferences sharedPreferences) {
         super(activity);
         this.activity = activity;
         this.sharedPreferences = sharedPreferences;

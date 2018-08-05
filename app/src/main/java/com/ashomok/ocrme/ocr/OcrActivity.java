@@ -19,7 +19,6 @@ import com.ashomok.ocrme.R;
 import com.ashomok.ocrme.ocr.ocr_task.OcrHttpClient;
 import com.ashomok.ocrme.ocr.ocr_task.OcrResponse;
 import com.ashomok.ocrme.ocr_result.OcrResultActivity;
-import com.ashomok.ocrme.utils.FileUtils;
 import com.ashomok.ocrme.utils.GlideApp;
 import com.ashomok.ocrme.utils.NetworkUtils;
 import com.bumptech.glide.load.DataSource;
@@ -42,10 +41,11 @@ import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-//import static com.ashomok.ocrme.Settings.firebaseFolderURL;
 import static com.ashomok.ocrme.ocr_result.OcrResultActivity.EXTRA_ERROR_MESSAGE;
 import static com.ashomok.ocrme.ocr_result.OcrResultActivity.EXTRA_OCR_RESPONSE;
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
+
+//import static com.ashomok.ocrme.Settings.firebaseFolderURL;
 
 
 /**
@@ -55,16 +55,16 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 //todo refactoring needed - uri and url - two ways to process task - make 2 processor classes
 public class OcrActivity extends RxAppCompatActivity {
     public static final int RESULT_CANCELED_BY_USER = 123;
+    public static final String EXTRA_LANGUAGES = "com.ashomokdev.imagetotext.ocr.LANGUAGES";
+    public static final String EXTRA_IMAGE_URI = "com.ashomokdev.imagetotext.ocr.IMAGE_URI"; //image stored on device
+    public static final String EXTRA_IMAGE_URL = "com.ashomokdev.imagetotext.ocr.IMAGE_URL"; //image stored on Firebase storage
+    public static final String TAG = DEV_TAG + OcrActivity.class.getSimpleName();
     @Nullable
     private Uri imageUri; //image stored on device - will be uploaded example content://com.ashomok.imagetotext.provider/my_images/DCIM/Camera/cropped.jpg
     @Nullable
     private String imageUrl; //Url of image, stored in firebase storage example gs://imagetotext-149919.appspot.com/ocr_request_images/aeffe41d-7acc-44a3-883b-677bbab02a12cropped.jpg
     private StorageReference mImageRef;
     private ArrayList<String> sourceLanguageCodes;
-    public static final String EXTRA_LANGUAGES = "com.ashomokdev.imagetotext.ocr.LANGUAGES";
-    public static final String EXTRA_IMAGE_URI = "com.ashomokdev.imagetotext.ocr.IMAGE_URI"; //image stored on device
-    public static final String EXTRA_IMAGE_URL = "com.ashomokdev.imagetotext.ocr.IMAGE_URL"; //image stored on Firebase storage
-    public static final String TAG = DEV_TAG + OcrActivity.class.getSimpleName();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

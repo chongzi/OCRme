@@ -11,21 +11,24 @@ public class TranslateResponse {
     private Status status;
     private String textResult;
 
-    public enum Status {
-        OK,
-        UNKNOWN_ERROR
-    }
-
     public String getSourceLanguageCode() {
         return sourceLanguageCode;
     }
+
     public String getTargetLanguageCode() {
         return targetLanguageCode;
     }
+
     public Status getStatus() {
         return status;
     }
+
     public String getTextResult() {
         return textResult;
+    }
+
+    public enum Status {
+        OK,
+        UNKNOWN_ERROR
     }
 }

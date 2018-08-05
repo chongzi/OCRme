@@ -1,4 +1,5 @@
 package com.ashomok.ocrme.my_docs.get_my_docs_task;
+
 import com.ashomok.ocrme.ocr.ocr_task.OcrResult;
 
 import java.util.List;
@@ -13,12 +14,6 @@ public class MyDocsResponse {
     private List<OcrResult> requestList;
     private Status status;
 
-    public enum Status {
-        OK,
-        USER_NOT_FOUND,
-        UNKNOWN_ERROR
-    }
-
     public String getEndCursor() {
         return endCursor;
     }
@@ -29,6 +24,12 @@ public class MyDocsResponse {
 
     public Status getStatus() {
         return status;
+    }
+
+    public enum Status {
+        OK,
+        USER_NOT_FOUND,
+        UNKNOWN_ERROR
     }
 
 }

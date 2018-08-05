@@ -12,19 +12,20 @@ public class SupportedLanguagesResponse implements Serializable {
     private List<Language> supportedLanguages;
     private Status status;
 
+    public List<Language> getSupportedLanguages() {
+        return supportedLanguages;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
     public enum Status {
         OK,
         UNKNOWN_ERROR
     }
 
-    public List<Language> getSupportedLanguages() {
-        return supportedLanguages;
-    }
-    public Status getStatus() {
-        return status;
-    }
-
-    public class Language implements Serializable{
+    public class Language implements Serializable {
         private final String code;
         private final String name;
 

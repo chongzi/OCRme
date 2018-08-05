@@ -69,30 +69,11 @@ public class MainActivity extends BaseLoginActivity implements
         MainContract.View {
 
     private static final String TAG = DEV_TAG + MainActivity.class.getSimpleName();
-
-    @Inject
-    MainPresenter mPresenter;
-
-    @Inject
-    AdMobContainerImpl adMobContainer;
-
     private static final int LANGUAGE_ACTIVITY_REQUEST_CODE = 1;
     private static final int CaptureImage_REQUEST_CODE = 2;
     private static final int OCR_Activity_REQUEST_CODE = 3;
     private static final int GALLERY_IMAGE_REQUEST = 4;
-    private DrawerLayout mDrawerLayout;
-    private NavigationView navigationView;
-
-    private Uri imageUri;
-    private TextView languageTextView;
-    private Button myDocsBtn;
-    private View requestCounterLayout;
-    private View languageLayout;
-    private String mEmail = "No email";
-    private String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
     private static final String imageFileNameFromCamera = "ocr.jpg";
-
-
     private final BroadcastReceiver mConnectivityChangeReceiver = new BroadcastReceiver() {
         private boolean oldOnline = false;
 
@@ -105,7 +86,19 @@ public class MainActivity extends BaseLoginActivity implements
             }
         }
     };
-
+    @Inject
+    MainPresenter mPresenter;
+    @Inject
+    AdMobContainerImpl adMobContainer;
+    private DrawerLayout mDrawerLayout;
+    private NavigationView navigationView;
+    private Uri imageUri;
+    private TextView languageTextView;
+    private Button myDocsBtn;
+    private View requestCounterLayout;
+    private View languageLayout;
+    private String mEmail = "No email";
+    private String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

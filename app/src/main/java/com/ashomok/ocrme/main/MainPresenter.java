@@ -34,32 +34,13 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
 public class MainPresenter implements MainContract.Presenter {
     public static final String TAG = DEV_TAG + MainPresenter.class.getSimpleName();
-
-    private Context context;
-
-    private SharedPreferences mSharedPreferences;
-
-    private BillingProviderImpl billingProvider;
-
-    private OcrRequestsCounter ocrRequestsCounter;
-
-    /**
-     * Dagger strictly enforces that arguments not marked with {@code @Nullable} are not injected
-     * with {@code @Nullable} values.
-     */
-    @Inject
-    MainPresenter(Context context, SharedPreferences mSharedPreferences,
-                  BillingProviderImpl billingProvider, OcrRequestsCounter ocrRequestsCounter) {
-        this.context = context;
-        this.mSharedPreferences = mSharedPreferences;
-        this.billingProvider = billingProvider;
-        this.ocrRequestsCounter = ocrRequestsCounter;
-    }
-
     @Nullable
     public MainContract.View view;
+    private Context context;
+    private SharedPreferences mSharedPreferences;
+    private BillingProviderImpl billingProvider;
+    private OcrRequestsCounter ocrRequestsCounter;
     private Optional<List<String>> languageCodes;
-
     private BillingProviderCallback billingProviderCallback = new BillingProviderCallback() {
         @Override
         public void onPurchasesUpdated() {
@@ -87,6 +68,19 @@ public class MainPresenter implements MainContract.Presenter {
         public void onSkuRowDataUpdated() { //nothing
         }
     };
+
+    /**
+     * Dagger strictly enforces that arguments not marked with {@code @Nullable} are not injected
+     * with {@code @Nullable} values.
+     */
+    @Inject
+    MainPresenter(Context context, SharedPreferences mSharedPreferences,
+                  BillingProviderImpl billingProvider, OcrRequestsCounter ocrRequestsCounter) {
+        this.context = context;
+        this.mSharedPreferences = mSharedPreferences;
+        this.billingProvider = billingProvider;
+        this.ocrRequestsCounter = ocrRequestsCounter;
+    }
 
     private void onPremiumStatusUpdated(boolean isPremium) {
         if (view != null) {

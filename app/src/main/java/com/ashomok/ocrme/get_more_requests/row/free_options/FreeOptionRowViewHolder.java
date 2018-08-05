@@ -34,11 +34,6 @@ public final class FreeOptionRowViewHolder extends RecyclerView.ViewHolder {
     public ImageView isDone;
     public View layout;
 
-    /**
-     * Handler for a button click on particular row
-     */
-    public interface OnButtonClickListener {void onButtonClicked(int position);}
-
     public FreeOptionRowViewHolder(final View v, final OnButtonClickListener clickListener) {
         super(v);
         icon = v.findViewById(R.id.icon);
@@ -51,5 +46,12 @@ public final class FreeOptionRowViewHolder extends RecyclerView.ViewHolder {
         if (layout != null) {
             layout.setOnClickListener(view -> clickListener.onButtonClicked(getAdapterPosition()));
         }
+    }
+
+    /**
+     * Handler for a button click on particular row
+     */
+    public interface OnButtonClickListener {
+        void onButtonClicked(int position);
     }
 }

@@ -1,7 +1,6 @@
 package com.ashomok.ocrme;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import java.util.LinkedHashMap;
 
@@ -11,12 +10,10 @@ import java.util.LinkedHashMap;
 
 public class Settings {
 
+    public static final String facebookPageUrl = "https://www.facebook.com/OCRmePhotoScaner"; //for follow us on fb button
     public static String appPackageName = BuildConfig.APPLICATION_ID;
-
     public static boolean isAdsActive = true; //will be set in MainActivity
     public static boolean isPremium = false;//will be set in MainActivity
-
-    public static final String facebookPageUrl = "https://www.facebook.com/OCRmePhotoScaner"; //for follow us on fb button
 
     public static LinkedHashMap<String, String> getOcrLanguageSupportList(final Context context) {
         return new LinkedHashMap<String, String>() {{

@@ -9,7 +9,6 @@ import android.support.annotation.StringRes;
 
 import com.annimon.stream.Optional;
 import com.ashomok.ocrme.di_dagger.BasePresenter;
-import com.ashomok.ocrme.billing.BillingProviderCallback;
 import com.tbruyelle.rxpermissions2.Permission;
 
 import java.util.List;
@@ -24,7 +23,8 @@ public class MainContract {
 
         void showWarning(@StringRes int message);
 
-        void showInfo (@StringRes int infoMessageRes);
+        void showInfo(@StringRes int infoMessageRes);
+
         void showInfo(String message);
 
         void updateLanguageString(String languageString);

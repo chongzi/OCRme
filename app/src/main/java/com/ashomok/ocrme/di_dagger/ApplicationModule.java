@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.ashomok.ocrme.OcrRequestsCounter;
 import com.ashomok.ocrme.R;
 
 import dagger.Binds;
@@ -22,15 +21,15 @@ import dagger.Provides;
  */
 @Module
 public abstract class ApplicationModule {
-    //expose Application as an injectable context
-    @Binds
-    abstract Context bindContext(Application application);
-
     @Provides
     static SharedPreferences provideSharedPrefs(Context context) {
         return context.getSharedPreferences(
                 context.getString(R.string.preferences), Context.MODE_PRIVATE);
     }
+
+    //expose Application as an injectable context
+    @Binds
+    abstract Context bindContext(Application application);
 
 //    @Binds
 //    abstract OcrRequestsCounter provideOcrRequestsCounter(SharedPreferences sharedPreferences);

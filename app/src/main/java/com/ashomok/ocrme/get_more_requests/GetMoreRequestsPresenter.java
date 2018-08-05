@@ -7,10 +7,7 @@ import android.util.Log;
 import com.ashomok.ocrme.R;
 import com.ashomok.ocrme.billing.BillingProviderCallback;
 import com.ashomok.ocrme.billing.BillingProviderImpl;
-import com.ashomok.ocrme.billing.model.SkuRowData;
 import com.ashomok.ocrme.utils.NetworkUtils;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -28,13 +25,6 @@ public class GetMoreRequestsPresenter implements GetMoreRequestsContract.Present
 
     private BillingProviderImpl billingProvider;
     private Context context;
-
-    @Inject
-    GetMoreRequestsPresenter(BillingProviderImpl billingProvider, Context context) {
-        this.billingProvider = billingProvider;
-        this.context = context;
-    }
-
     private BillingProviderCallback billingProviderCallback = new BillingProviderCallback() {
         @Override
         public void onPurchasesUpdated() {
@@ -64,6 +54,11 @@ public class GetMoreRequestsPresenter implements GetMoreRequestsContract.Present
         }
     };
 
+    @Inject
+    GetMoreRequestsPresenter(BillingProviderImpl billingProvider, Context context) {
+        this.billingProvider = billingProvider;
+        this.context = context;
+    }
 
     @Override
     public void takeView(GetMoreRequestsContract.View getMoreRequestsActivity) {

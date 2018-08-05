@@ -6,7 +6,6 @@ import com.ashomok.ocrme.get_more_requests.row.free_options.option_delegates.Log
 import com.ashomok.ocrme.get_more_requests.row.free_options.option_delegates.RateAppDelegate;
 import com.ashomok.ocrme.get_more_requests.row.free_options.option_delegates.WatchVideoDelegate;
 
-
 import java.util.ArrayList;
 import java.util.List;
 

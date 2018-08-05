@@ -1,8 +1,6 @@
 package com.ashomok.ocrme.ad;
 
-import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.util.Log;
 import android.view.ViewGroup;

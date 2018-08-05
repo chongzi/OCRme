@@ -7,6 +7,10 @@ import android.support.annotation.Nullable;
  */
 
 class OCRResult {
+    private @Nullable
+    String error;
+    private String text;
+
     @Nullable
     public String getError() {
         return error;
@@ -23,9 +27,6 @@ class OCRResult {
     public void setText(String text) {
         this.text = text;
     }
-
-    private @Nullable String error;
-    private String text;
 
 
 }

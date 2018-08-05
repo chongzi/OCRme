@@ -5,8 +5,6 @@ import android.support.annotation.StringRes;
 import com.ashomok.ocrme.billing.model.SkuRowData;
 import com.ashomok.ocrme.di_dagger.BasePresenter;
 
-import java.util.List;
-
 /**
  * Created by iuliia on 1/29/18.
  */
@@ -19,7 +17,7 @@ public interface UpdateToPremiumContract {
 
         void showError(@StringRes int errorMessageRes);
 
-        void showInfo (@StringRes int infoMessageRes);
+        void showInfo(@StringRes int infoMessageRes);
 
         void updateView(boolean isPremium);
 

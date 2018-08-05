@@ -16,7 +16,6 @@
 package com.ashomok.ocrme.billing;
 
 
-import com.ashomok.ocrme.billing.BillingManager;
 import com.ashomok.ocrme.billing.model.SkuRowData;
 
 import java.util.List;
@@ -26,11 +25,15 @@ import java.util.List;
  */
 public interface BillingProvider {
     BillingManager getBillingManager();
+
     boolean isPremiumMonthlySubscribed();
+
     boolean isPremiumYearlySubscribed();
 
     List<SkuRowData> getSkuRowDataList();
+
     List<SkuRowData> getSkuRowDataListForSubscriptions();
+
     List<SkuRowData> getSkuRowDataListForInAppPurchases();
 }
 

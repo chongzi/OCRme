@@ -28,10 +28,9 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
  */
 public class AboutActivity extends AppCompatActivity {
 
+    private static final String TAG = DEV_TAG + AboutActivity.class.getSimpleName();
     private TextView mTextView_email1;
     private TextView mTextView_email2;
-    private static final String TAG = DEV_TAG + AboutActivity.class.getSimpleName();
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

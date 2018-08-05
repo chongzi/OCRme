@@ -24,19 +24,19 @@ public class OcrResponse implements Serializable {
                 '}';
     }
 
-    public enum Status implements Serializable {
-        OK,
-        PDF_CAN_NOT_BE_CREATED_LANGUAGE_NOT_SUPPORTED,
-        TEXT_NOT_FOUND,
-        INVALID_LANGUAGE_HINTS,
-        UNKNOWN_ERROR
-    }
-
     public Status getStatus() {
         return status;
     }
 
     public OcrResult getOcrResult() {
         return ocrResult;
+    }
+
+    public enum Status implements Serializable {
+        OK,
+        PDF_CAN_NOT_BE_CREATED_LANGUAGE_NOT_SUPPORTED,
+        TEXT_NOT_FOUND,
+        INVALID_LANGUAGE_HINTS,
+        UNKNOWN_ERROR
     }
 }

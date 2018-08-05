@@ -15,6 +15,16 @@ public class OcrResult implements Serializable {
     private Long id;
     private String timeStamp;
 
+    private OcrResult(Builder builder) {
+        this.sourceImageUrl = builder.sourceImageUrl;
+        this.languages = builder.languages;
+        this.textResult = builder.textResult;
+        this.pdfResultGsUrl = builder.pdfResultGsUrl;
+        this.pdfResultMediaUrl = builder.pdfResultMediaUrl;
+        this.id = builder.id;
+        this.timeStamp = builder.timeStamp;
+    }
+
     public String getSourceImageUrl() {
         return sourceImageUrl;
     }
@@ -41,16 +51,6 @@ public class OcrResult implements Serializable {
 
     public String getTimeStamp() {
         return timeStamp;
-    }
-
-    private OcrResult(Builder builder) {
-        this.sourceImageUrl = builder.sourceImageUrl;
-        this.languages = builder.languages;
-        this.textResult = builder.textResult;
-        this.pdfResultGsUrl = builder.pdfResultGsUrl;
-        this.pdfResultMediaUrl = builder.pdfResultMediaUrl;
-        this.id = builder.id;
-        this.timeStamp = builder.timeStamp;
     }
 
     public static class Builder {

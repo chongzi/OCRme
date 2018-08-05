@@ -20,7 +20,7 @@ public interface MyDocsContract {
 
         void showError(@StringRes int errorMessageRes);
 
-        void showInfo (@StringRes int infoMessageRes);
+        void showInfo(@StringRes int infoMessageRes);
 
         void addNewLoadedDocs(List<OcrResult> newLoadedDocs);
 

@@ -24,7 +24,6 @@ import javax.inject.Inject;
 
 import dagger.android.support.DaggerAppCompatActivity;
 
-import static com.ashomok.ocrme.utils.InfoSnackbarUtil.showError;
 import static com.ashomok.ocrme.utils.InfoSnackbarUtil.showInfo;
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
@@ -36,20 +35,17 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 //MINOR todo add search view https://developer.android.com/training/search/search.html (add add async loader firstly because of technical reasons)
 //MINOR todo add async loader for fill recyclerviews LoaderManager.LoaderCallbacks<List<String>>
 public class LanguageOcrActivity extends DaggerAppCompatActivity implements LanguageOcrContract.View {
-    private static final String TAG = DEV_TAG + LanguageOcrActivity.class.getSimpleName();
     public static final String CHECKED_LANGUAGE_CODES = "checked_languages_set";
-
+    private static final String TAG = DEV_TAG + LanguageOcrActivity.class.getSimpleName();
+    @Inject
+    LanguageOcrPresenter mPresenter;
+    @Inject
+    SharedPreferences mSharedPreferences;
     private List<String> recentlyChosenLanguageCodes;
     private boolean isAuto;
     private LanguagesListAdapter.ResponsableList<String> checkedLanguageCodes;
     private LanguagesListAdapter allLangAdapter;
     private LanguagesListAdapter recentlyChosenLangAdapter;
-
-    @Inject
-    LanguageOcrPresenter mPresenter;
-    @Inject
-    SharedPreferences mSharedPreferences;
-
     private StateChangedNotifier notifier = isAutoChecked -> {
         if (!isAutoChecked) {
             isAuto = false;

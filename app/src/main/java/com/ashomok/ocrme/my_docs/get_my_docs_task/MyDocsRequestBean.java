@@ -8,7 +8,8 @@ import android.support.annotation.Nullable;
 
 public class MyDocsRequestBean {
     private String userToken;
-    private @Nullable String startCursor;
+    private @Nullable
+    String startCursor;
 
     private MyDocsRequestBean(Builder builder) {
         this.startCursor = builder.startCursor;

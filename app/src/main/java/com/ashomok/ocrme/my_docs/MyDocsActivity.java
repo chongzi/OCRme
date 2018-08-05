@@ -49,24 +49,19 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
 
     private static final int DELETE_TAG = 1;
     private static final String TAG = DEV_TAG + MyDocsActivity.class.getSimpleName();
-
+    boolean isMultiSelect = false;
+    AlertDialogHelper alertDialogHelper;
+    @Inject
+    AdMobContainerImpl adMobContainer;
+    @Inject
+    MyDocsPresenter mPresenter;
+    @Inject
+    MyDocsHttpClient httpClient;
     private List<OcrResult> dataList;
     private List<OcrResult> multiSelectDataList;
     private RecyclerViewAdapter adapter;
     private ActionMode mActionMode;
-    boolean isMultiSelect = false;
-    AlertDialogHelper alertDialogHelper;
     private ProgressBar progress;
-
-    @Inject
-    AdMobContainerImpl adMobContainer;
-
-    @Inject
-    MyDocsPresenter mPresenter;
-
-    @Inject
-    MyDocsHttpClient httpClient;
-
     //"Select" docs action mode
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
 
@@ -106,6 +101,44 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
             isMultiSelect = false;
             multiSelectDataList.clear();
             adapter.notifyDataSetChanged();
+        }
+    };
+    private RecyclerViewCallback callback = new RecyclerViewCallback() {
+        @Override
+        public void onItemClick(int position) {
+            if (isMultiSelect) {
+                onMultiSelect(position);
+            } else {
+                OcrResult doc = dataList.get(position);
+                startOcrResultActivity(new OcrResponse(doc, OcrResponse.Status.OK));
+            }
+        }
+
+        @Override
+        public void onItemLongClick(int position) {
+            onSelectMode();
+            onMultiSelect(position);
+        }
+
+        @Override
+        public void onItemDelete(int position) {
+            multiSelectDataList.add(dataList.get(position));
+            mPresenter.deleteDocs(multiSelectDataList);
+            multiSelectDataList.clear();
+        }
+
+        @Override
+        public void onItemShareText(int position) {
+            OcrResult doc = dataList.get(position);
+            String textResult = doc.getTextResult();
+            mPresenter.onShareTextClicked(textResult);
+        }
+
+        @Override
+        public void onItemSharePdf(int position) {
+            OcrResult doc = dataList.get(position);
+            String mDownloadURL = doc.getPdfResultMediaUrl();
+            mPresenter.onSharePdfClicked(mDownloadURL);
         }
     };
 
@@ -215,45 +248,6 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
             adapter.notifyDataSetChanged();
         }
     }
-
-    private RecyclerViewCallback callback = new RecyclerViewCallback() {
-        @Override
-        public void onItemClick(int position) {
-            if (isMultiSelect) {
-                onMultiSelect(position);
-            } else {
-                OcrResult doc = dataList.get(position);
-                startOcrResultActivity(new OcrResponse(doc, OcrResponse.Status.OK));
-            }
-        }
-
-        @Override
-        public void onItemLongClick(int position) {
-            onSelectMode();
-            onMultiSelect(position);
-        }
-
-        @Override
-        public void onItemDelete(int position) {
-            multiSelectDataList.add(dataList.get(position));
-            mPresenter.deleteDocs(multiSelectDataList);
-            multiSelectDataList.clear();
-        }
-
-        @Override
-        public void onItemShareText(int position) {
-            OcrResult doc = dataList.get(position);
-            String textResult = doc.getTextResult();
-            mPresenter.onShareTextClicked(textResult);
-        }
-
-        @Override
-        public void onItemSharePdf(int position) {
-            OcrResult doc = dataList.get(position);
-            String mDownloadURL = doc.getPdfResultMediaUrl();
-            mPresenter.onSharePdfClicked(mDownloadURL);
-        }
-    };
 
     private void initRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.recycler_view);

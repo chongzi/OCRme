@@ -29,7 +29,6 @@ import com.android.billingclient.api.ConsumeResponseListener;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.Purchase.PurchasesResult;
 import com.android.billingclient.api.PurchasesUpdatedListener;
-import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
 import com.android.billingclient.api.SkuDetailsResponseListener;
 import com.ashomok.ocrme.BuildConfig;
@@ -48,44 +47,23 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
  */
 public class BillingManager implements PurchasesUpdatedListener {
     // Default value of mBillingClientResponseCode until BillingManager was not yeat initialized
-    public static final int BILLING_MANAGER_NOT_INITIALIZED  = -1;
+    public static final int BILLING_MANAGER_NOT_INITIALIZED = -1;
 
     private static final String TAG = DEV_TAG + BillingManager.class.getSimpleName();
-
-    /** A reference to BillingClient **/
+    private final BillingUpdatesListener mBillingUpdatesListener;
+    private final Activity mActivity;
+    private final List<Purchase> mPurchases = new ArrayList<>();
+    /**
+     * A reference to BillingClient
+     **/
     private BillingClient mBillingClient;
-
     /**
      * True if billing service is connected now.
      */
     private boolean mIsServiceConnected;
-
-    private final BillingUpdatesListener mBillingUpdatesListener;
-
-    private final Activity mActivity;
-
-    private final List<Purchase> mPurchases = new ArrayList<>();
-
     private Set<String> mTokensToBeConsumed;
 
     private int mBillingClientResponseCode = BILLING_MANAGER_NOT_INITIALIZED;
-
-/**
-     * Listener to the updates that happen when purchases list was updated or consumption of the
-     * item was finished
-     */
-    public interface BillingUpdatesListener {
-        void onBillingClientSetupFinished();
-        void onConsumeFinished(Purchase purchase, @BillingResponse int result);
-        void onPurchasesUpdated(List<Purchase> purchases);
-    }
-
-    /**
-     * Listener for the Billing client state to become connected
-     */
-    public interface ServiceConnectedListener {
-        void onServiceConnected(@BillingResponse int resultCode);
-    }
 
     public BillingManager(Activity activity, final BillingUpdatesListener updatesListener) {
         Log.d(TAG, "Creating Billing client.");
@@ -135,7 +113,7 @@ public class BillingManager implements PurchasesUpdatedListener {
      * Start a purchase or subscription replace flow
      */
     public void initiatePurchaseFlow(final String skuId, final ArrayList<String> oldSkus,
-            final @SkuType String billingType) {
+                                     final @SkuType String billingType) {
         Runnable purchaseFlowRequest = new Runnable() {
             @Override
             public void run() {
@@ -231,6 +209,7 @@ public class BillingManager implements PurchasesUpdatedListener {
      * It's recommended to move this check into your backend.
      * See {@link Security#verifyPurchase(String, String, String)}
      * </p>
+     *
      * @param purchase Purchase to be handled
      */
     private void handlePurchase(Purchase purchase) {
@@ -371,6 +350,25 @@ public class BillingManager implements PurchasesUpdatedListener {
             Log.e(TAG, "Got an exception trying to validate a purchase: " + e);
             return false;
         }
+    }
+
+    /**
+     * Listener to the updates that happen when purchases list was updated or consumption of the
+     * item was finished
+     */
+    public interface BillingUpdatesListener {
+        void onBillingClientSetupFinished();
+
+        void onConsumeFinished(Purchase purchase, @BillingResponse int result);
+
+        void onPurchasesUpdated(List<Purchase> purchases);
+    }
+
+    /**
+     * Listener for the Billing client state to become connected
+     */
+    public interface ServiceConnectedListener {
+        void onServiceConnected(@BillingResponse int resultCode);
     }
 }
 

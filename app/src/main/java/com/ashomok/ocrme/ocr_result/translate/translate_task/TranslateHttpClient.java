@@ -18,16 +18,9 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 //singleton
 public class TranslateHttpClient {
     private static final String TAG = DEV_TAG + TranslateHttpClient.class.getSimpleName();
+    private static final int CONNECTION_TIMEOUT_SEC = 90;
     private static TranslateHttpClient instance;
     private TranslateAPI translateAPI;
-    private static final int CONNECTION_TIMEOUT_SEC = 90;
-
-    public static TranslateHttpClient getInstance() {
-        if (instance == null) {
-            instance = new TranslateHttpClient();
-        }
-        return instance;
-    }
 
     private TranslateHttpClient() {
         OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
@@ -46,13 +39,20 @@ public class TranslateHttpClient {
         translateAPI = retrofit.create(TranslateAPI.class);
     }
 
+    public static TranslateHttpClient getInstance() {
+        if (instance == null) {
+            instance = new TranslateHttpClient();
+        }
+        return instance;
+    }
+
     public Single<SupportedLanguagesResponse> getSupportedLanguages(@NonNull String deviceLanguageCode) {
         return translateAPI.getSupportedLanguages(deviceLanguageCode);
     }
 
     /**
      * @param deviceLanguageCode device Language Code
-     * @param sourceText input text
+     * @param sourceText         input text
      * @return
      */
     public Single<TranslateResponse> translate(String deviceLanguageCode, String sourceText) {
@@ -68,7 +68,7 @@ public class TranslateHttpClient {
     /**
      * @param sourceLanguageCode source language code
      * @param targetLanguageCode target language code
-     * @param sourceText source text
+     * @param sourceText         source text
      * @return
      */
     public Single<TranslateResponse> translate(String sourceLanguageCode, String targetLanguageCode, String sourceText) {

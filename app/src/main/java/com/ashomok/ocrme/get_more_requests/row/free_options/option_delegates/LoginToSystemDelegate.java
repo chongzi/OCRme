@@ -27,7 +27,7 @@ public class LoginToSystemDelegate extends UiFreeOptionManagingDelegate {
 
     @Inject
     public LoginToSystemDelegate(GetMoreRequestsActivity activity, OcrRequestsCounter ocrRequestsCounter,
-                                 SharedPreferences sharedPreferences){
+                                 SharedPreferences sharedPreferences) {
         super(activity);
         this.ocrRequestsCounter = ocrRequestsCounter;
         this.activity = activity;

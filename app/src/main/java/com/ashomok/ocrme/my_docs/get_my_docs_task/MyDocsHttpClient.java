@@ -22,16 +22,9 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 //singleton
 public class MyDocsHttpClient {
     private static final String TAG = DEV_TAG + MyDocsHttpClient.class.getSimpleName();
+    private static final int CONNECTION_TIMEOUT_SEC = 90;
     private static MyDocsHttpClient instance;
     private MyDocsAPI myDocsAPI;
-    private static final int CONNECTION_TIMEOUT_SEC = 90;
-
-    public static MyDocsHttpClient getInstance() {
-        if (instance == null) {
-            instance = new MyDocsHttpClient();
-        }
-        return instance;
-    }
 
     private MyDocsHttpClient() {
         OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
@@ -49,6 +42,13 @@ public class MyDocsHttpClient {
 
         myDocsAPI = retrofit.create(MyDocsAPI.class);
 
+    }
+
+    public static MyDocsHttpClient getInstance() {
+        if (instance == null) {
+            instance = new MyDocsHttpClient();
+        }
+        return instance;
     }
 
     public Single<MyDocsResponse> getMyDocs(String userToken, @Nullable String startCursor) {

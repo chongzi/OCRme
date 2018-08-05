@@ -33,30 +33,30 @@ public class RateAppDialogFragment extends DialogFragment {
 
         return new AlertDialog.Builder(getActivity())
                 .setTitle(title)
-        .setMessage(R.string.share_opinion)
-        .setPositiveButton(R.string.ok,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        rate();
-                        onStopAskListener.onStopAsk();
-                        dialog.cancel();
+                .setMessage(R.string.share_opinion)
+                .setPositiveButton(R.string.ok,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                rate();
+                                onStopAskListener.onStopAsk();
+                                dialog.cancel();
 
-                    }
-                })
+                            }
+                        })
 
-        .setNeutralButton(R.string.later,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                })
-        .setNegativeButton(R.string.never,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        onStopAskListener.onStopAsk();
-                        dialog.cancel();
-                    }
-                })
+                .setNeutralButton(R.string.later,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        })
+                .setNegativeButton(R.string.never,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                onStopAskListener.onStopAsk();
+                                dialog.cancel();
+                            }
+                        })
                 .create();
     }
 

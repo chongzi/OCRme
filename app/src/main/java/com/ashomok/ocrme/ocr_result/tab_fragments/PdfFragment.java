@@ -13,10 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.StringRes;
-import android.support.design.widget.Snackbar;
 import android.support.v13.app.FragmentCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.text.Html;
 import android.text.Spanned;
@@ -47,8 +44,8 @@ import io.reactivex.schedulers.Schedulers;
 import static com.ashomok.ocrme.Settings.appPackageName;
 import static com.ashomok.ocrme.utils.FileUtils.copy;
 import static com.ashomok.ocrme.utils.FileUtils.prepareDirectory;
-import static com.ashomok.ocrme.utils.InfoSnackbarUtil.showWarning;
 import static com.ashomok.ocrme.utils.InfoSnackbarUtil.showError;
+import static com.ashomok.ocrme.utils.InfoSnackbarUtil.showWarning;
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
 /**

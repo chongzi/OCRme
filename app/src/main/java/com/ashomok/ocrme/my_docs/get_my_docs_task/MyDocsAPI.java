@@ -1,14 +1,9 @@
 package com.ashomok.ocrme.my_docs.get_my_docs_task;
 
-import com.ashomok.ocrme.ocr_result.translate.translate_task.SupportedLanguagesResponse;
-
 import io.reactivex.Completable;
-import io.reactivex.Observable;
 import io.reactivex.Single;
-import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
-import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 

@@ -1,7 +1,6 @@
 package com.ashomok.ocrme.ocr_result;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
@@ -15,16 +14,15 @@ import android.widget.TextView;
 import com.ashomok.ocrme.R;
 import com.ashomok.ocrme.ocr.ocr_task.OcrResponse;
 
-import static com.ashomok.ocrme.ocr_result.tab_fragments.TextFragment.EXTRA_IMAGE_URL;
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
 /**
  * Created by iuliia on 5/30/17.
  */
 public class OcrResultActivity extends AppCompatActivity {
-    private static final String TAG = DEV_TAG + OcrResultActivity.class.getSimpleName();
     public static final String EXTRA_OCR_RESPONSE = "com.ashomokdev.imagetotext.OCR_RESPONCE";
     public static final String EXTRA_ERROR_MESSAGE = "com.ashomokdev.imagetotext.ERROR_MESSAGE";
+    private static final String TAG = DEV_TAG + OcrResultActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +51,10 @@ public class OcrResultActivity extends AppCompatActivity {
         }
     }
 
-        /**
-         * fix of issue - Android - footer scrolls off screen when used in CoordinatorLayout
-         * https://stackoverflow.com/questions/30777698/android-footer-scrolls-off-screen-when-used-in-coordinatorlayout
-         */
+    /**
+     * fix of issue - Android - footer scrolls off screen when used in CoordinatorLayout
+     * https://stackoverflow.com/questions/30777698/android-footer-scrolls-off-screen-when-used-in-coordinatorlayout
+     */
 
     private void fixCoordinatorLayout() {
         AppBarLayout appBarLayout = findViewById(R.id.appbar);

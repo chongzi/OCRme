@@ -8,7 +8,6 @@ import android.support.annotation.StringRes;
 
 import com.ashomok.ocrme.billing.model.SkuRowData;
 import com.ashomok.ocrme.di_dagger.BasePresenter;
-import com.ashomok.ocrme.update_to_premium.UpdateToPremiumContract;
 
 import java.util.List;
 
@@ -20,7 +19,7 @@ public class GetMoreRequestsContract {
 
         void showError(@StringRes int errorMessageRes);
 
-        void showInfo (@StringRes int infoMessageRes);
+        void showInfo(@StringRes int infoMessageRes);
 
         void showInfo(String message);
 

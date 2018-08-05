@@ -12,10 +12,6 @@ import com.ashomok.ocrme.R;
  */
 public class SignOutDialogFragment extends DialogFragment {
 
-    public interface OnSignedOutListener {
-        void onSignedOutCalled();
-    }
-
     private OnSignedOutListener mListener;
 
     public static SignOutDialogFragment newInstance(String title) {
@@ -49,5 +45,9 @@ public class SignOutDialogFragment extends DialogFragment {
     public void onDetach() {
         mListener = null;
         super.onDetach();
+    }
+
+    public interface OnSignedOutListener {
+        void onSignedOutCalled();
     }
 }

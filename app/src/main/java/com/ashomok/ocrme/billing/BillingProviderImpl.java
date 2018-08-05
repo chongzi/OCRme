@@ -1,7 +1,6 @@
 package com.ashomok.ocrme.billing;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -13,7 +12,6 @@ import com.android.billingclient.api.SkuDetails;
 import com.annimon.stream.Stream;
 import com.ashomok.ocrme.OcrRequestsCounter;
 import com.ashomok.ocrme.R;
-import com.ashomok.ocrme.Settings;
 import com.ashomok.ocrme.billing.model.SkuRowData;
 
 import java.util.ArrayList;
@@ -28,27 +26,23 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
  */
 public class BillingProviderImpl implements BillingProvider {
 
-    private BillingManager mBillingManager;
-    private boolean mGoldMonthly;
-    private boolean mGoldYearly;
     public static final String PREMIUM_MONTHLY_SKU_ID = "one_month_subscription";
     public static final String PREMIUM_YEARLY_SKU_ID = "one_year_subscription";
     public static final String SCAN_IMAGE_REQUESTS_5_SKU_ID = "scan_image_requests_batch_5";
     public static final String SCAN_IMAGE_REQUESTS_100_SKU_ID = "scan_image_requests_batch_100";
+    public static final String TAG = DEV_TAG + BillingProviderImpl.class.getSimpleName();
     private static final int SCAN_IMAGE_REQUESTS_5_BATCH_SIZE = 5;
     private static final int SCAN_IMAGE_REQUESTS_100_BATCH_SIZE = 100;
-    public static final String TAG = DEV_TAG + BillingProviderImpl.class.getSimpleName();
-
-    private List<SkuRowData> skuRowDataList = new ArrayList<>();
-
     @Nullable
     BillingProviderCallback callback;
-
-    @NonNull
-    private Activity activity;
-
     @Inject
     OcrRequestsCounter ocrRequestsCounter;
+    private BillingManager mBillingManager;
+    private boolean mGoldMonthly;
+    private boolean mGoldYearly;
+    private List<SkuRowData> skuRowDataList = new ArrayList<>();
+    @NonNull
+    private Activity activity;
 
     @Inject
     public BillingProviderImpl(@NonNull Activity activity) {

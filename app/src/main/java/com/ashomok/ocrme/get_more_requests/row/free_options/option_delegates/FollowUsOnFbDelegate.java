@@ -37,25 +37,6 @@ public class FollowUsOnFbDelegate extends UiFreeOptionManagingDelegate {
         this.sharedPreferences = sharedPreferences;
     }
 
-    @Override
-    protected void startTask() {
-        Log.d(TAG, "onstartTask");
-        saveData();
-        runFollowUs();
-
-        onTaskDone(ocrRequestsCounter, activity);
-    }
-
-    private void runFollowUs() {
-        activity.startActivity(newFacebookIntent(activity.getPackageManager(), facebookPageUrl));
-    }
-
-    @Override
-    public boolean isTaskAvailable() {
-        boolean isAlreadyDone = sharedPreferences.getBoolean(FOLLOW_US_ON_FB_DONE_TAG, false);
-        return !isAlreadyDone;
-    }
-
     /**
      * <p>Intent to open the official Facebook app. If the Facebook app is not installed then the
      * default web browser will be used.</p>
@@ -80,6 +61,25 @@ public class FollowUsOnFbDelegate extends UiFreeOptionManagingDelegate {
         } catch (PackageManager.NameNotFoundException ignored) {
         }
         return new Intent(Intent.ACTION_VIEW, uri);
+    }
+
+    @Override
+    protected void startTask() {
+        Log.d(TAG, "onstartTask");
+        saveData();
+        runFollowUs();
+
+        onTaskDone(ocrRequestsCounter, activity);
+    }
+
+    private void runFollowUs() {
+        activity.startActivity(newFacebookIntent(activity.getPackageManager(), facebookPageUrl));
+    }
+
+    @Override
+    public boolean isTaskAvailable() {
+        boolean isAlreadyDone = sharedPreferences.getBoolean(FOLLOW_US_ON_FB_DONE_TAG, false);
+        return !isAlreadyDone;
     }
 
     private void saveData() {

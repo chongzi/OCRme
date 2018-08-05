@@ -25,7 +25,8 @@ public class SharedPreferencesUtil {
         editor.apply();
     }
 
-    public static @Nullable List<String> pullStringList(SharedPreferences sharedPref,
+    public static @Nullable
+    List<String> pullStringList(SharedPreferences sharedPref,
                                 String uniqueListName) {
         int size = sharedPref.getInt(uniqueListName + "_size", 0);
         if (size > 0) {
@@ -34,8 +35,7 @@ public class SharedPreferencesUtil {
                 result.add(sharedPref.getString(uniqueListName + i, null));
             }
             return result;
-        }
-        else {
+        } else {
             return null;
         }
     }

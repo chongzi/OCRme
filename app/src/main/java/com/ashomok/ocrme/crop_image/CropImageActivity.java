@@ -34,15 +34,15 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 public class CropImageActivity extends AppCompatActivity
         implements CropImageView.OnCropImageCompleteListener {
 
-    private static final String TAG = DEV_TAG + CropImageActivity.class.getSimpleName();
     public static final String EXTRA_IMAGE_URI = "com.ashomokdev.imagetotext.crop_image.IMAGE_URI";
+    private static final String TAG = DEV_TAG + CropImageActivity.class.getSimpleName();
+    private final static String cropped_file_extension = ".jpg";
     private CropImageView mCropImageView;
     private Uri imageUri;
     private ArrayList<String> sourceLanguageCodes;
     private FloatingActionButton cropBtn;
     private String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
     private String cropped_filename;
-    private final static String cropped_file_extension = ".jpg";
     private View mRootView;
 
     @Override

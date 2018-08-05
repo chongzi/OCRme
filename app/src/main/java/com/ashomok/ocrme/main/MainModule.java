@@ -9,7 +9,6 @@ import android.support.annotation.StringRes;
 
 import com.ashomok.ocrme.BuildConfig;
 import com.ashomok.ocrme.R;
-import com.ashomok.ocrme.Settings;
 import com.ashomok.ocrme.my_docs.MyDocsPresenter;
 
 import dagger.Binds;
@@ -22,9 +21,6 @@ import dagger.Provides;
  */
 @Module
 public abstract class MainModule {
-    @Binds
-    abstract MainContract.Presenter mainPresenter(MainPresenter presenter);
-
     @Provides
     static Activity provideActivity(MainActivity activity) {
         return activity;
@@ -39,4 +35,7 @@ public abstract class MainModule {
             return R.string.main_activity_banner;
         }
     }
+
+    @Binds
+    abstract MainContract.Presenter mainPresenter(MainPresenter presenter);
 }

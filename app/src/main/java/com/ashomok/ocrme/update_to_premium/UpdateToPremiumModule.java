@@ -19,19 +19,14 @@ import dagger.Provides;
  */
 @Module
 public abstract class UpdateToPremiumModule {
-    @Binds
-    abstract UpdateToPremiumContract.Presenter updateToPremiumPresenter(
-            UpdateToPremiumPresenter presenter);
-
-
     @Provides
-    static List<FeaturesList.FeatureModel> provideFeaturesList(){
+    static List<FeaturesList.FeatureModel> provideFeaturesList() {
         return FeaturesList.getList();
     }
 
     @Provides
     static FeaturesListAdapter provideFeaturesListAdapter(
-            List<FeaturesList.FeatureModel> featuresList, Context context){
+            List<FeaturesList.FeatureModel> featuresList, Context context) {
         return new FeaturesListAdapter(featuresList, context);
     }
 
@@ -39,4 +34,8 @@ public abstract class UpdateToPremiumModule {
     static Activity provideActivity(UpdateToPremiumActivity activity) {
         return activity;
     }
+
+    @Binds
+    abstract UpdateToPremiumContract.Presenter updateToPremiumPresenter(
+            UpdateToPremiumPresenter presenter);
 }

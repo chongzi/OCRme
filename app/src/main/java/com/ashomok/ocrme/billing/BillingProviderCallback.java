@@ -6,7 +6,10 @@ package com.ashomok.ocrme.billing;
 
 public interface BillingProviderCallback {
     void onPurchasesUpdated();
+
     void showError(int stringResId);
+
     void showInfo(String message);
+
     void onSkuRowDataUpdated(); //call when sku row data obtained //todo may call twice - check itS
 }

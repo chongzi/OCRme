@@ -83,11 +83,12 @@ public class WatchVideoDelegate extends UiFreeOptionManagingDelegate implements 
     }
 
     private void addRequests(int amount) {
-       onTaskDone(ocrRequestsCounter, activity);
+        onTaskDone(ocrRequestsCounter, activity);
     }
 
     @Override
-    public void onRewardedVideoAdLeftApplication() {}
+    public void onRewardedVideoAdLeftApplication() {
+    }
 
     @Override
     public void onRewardedVideoAdFailedToLoad(int i) {

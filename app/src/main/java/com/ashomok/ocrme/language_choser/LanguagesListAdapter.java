@@ -130,6 +130,10 @@ public class LanguagesListAdapter extends RecyclerView.Adapter<LanguagesListAdap
         return allLanguageCodes.size();
     }
 
+    public interface OnListChangedListener {
+        void onListChangedFor(Object o);
+    }
+
     // Provide a reference to the views for each data item
     static class ViewHolder extends RecyclerView.ViewHolder {
         LinearLayout languageLayout;
@@ -189,9 +193,5 @@ public class LanguagesListAdapter extends RecyclerView.Adapter<LanguagesListAdap
             }
             return res;
         }
-    }
-
-    public interface OnListChangedListener {
-        void onListChangedFor(Object o);
     }
 }

@@ -17,7 +17,8 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 public class FeaturesList {
     public static final String TAG = DEV_TAG + FeaturesList.class.getSimpleName();
 
-    public FeaturesList() {}
+    public FeaturesList() {
+    }
 
     public static List<FeatureModel> getList() {
         List<FeatureModel> result = new ArrayList<>();
@@ -36,17 +37,17 @@ public class FeaturesList {
         @StringRes
         private int stringId;
 
+        public FeatureModel(@DrawableRes int drawableId, @StringRes int stringId) {
+            this.drawableId = drawableId;
+            this.stringId = stringId;
+        }
+
         public int getDrawableId() {
             return drawableId;
         }
 
         public int getStringId() {
             return stringId;
-        }
-
-        public FeatureModel(@DrawableRes int drawableId, @StringRes int stringId) {
-            this.drawableId = drawableId;
-            this.stringId = stringId;
         }
     }
 }

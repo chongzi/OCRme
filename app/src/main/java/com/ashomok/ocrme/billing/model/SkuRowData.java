@@ -17,6 +17,7 @@ package com.ashomok.ocrme.billing.model;
 
 import com.android.billingclient.api.BillingClient.SkuType;
 import com.android.billingclient.api.SkuDetails;
+
 /**
  * A model for Sku row
  */

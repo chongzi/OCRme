@@ -1,7 +1,7 @@
 /*
  *  Android Split Pane Layout.
  *  https://github.com/MobiDevelop/android-split-pane-layout
- *  
+ *
  *  Copyright (C) 2012 Justin Shapcott
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");

@@ -17,6 +17,16 @@ public class PromoRowFreeOptionData {
     @StringRes
     private int subtitleStringId;
 
+    public PromoRowFreeOptionData(String id, @DrawableRes int drawableIconId,
+                                  @StringRes int titleStringId,
+                                  @StringRes int subtitleStringId, int requestsCost) {
+        this.drawableIconId = drawableIconId;
+        this.titleStringId = titleStringId;
+        this.id = id;
+        this.requestsCost = requestsCost;
+        this.subtitleStringId = subtitleStringId;
+    }
+
     public int getDrawableIconId() {
         return drawableIconId;
     }
@@ -33,19 +43,8 @@ public class PromoRowFreeOptionData {
         return id;
     }
 
-
     public int getRequestsCost() {
         return requestsCost;
-    }
-
-    public PromoRowFreeOptionData(String id, @DrawableRes int drawableIconId,
-                                  @StringRes int titleStringId,
-                                  @StringRes int subtitleStringId, int requestsCost) {
-        this.drawableIconId = drawableIconId;
-        this.titleStringId = titleStringId;
-        this.id = id;
-        this.requestsCost = requestsCost;
-        this.subtitleStringId = subtitleStringId;
     }
 
     public boolean isSubtitleExists() {

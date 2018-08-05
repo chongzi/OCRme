@@ -31,16 +31,14 @@ import static dagger.internal.Preconditions.checkNotNull;
 
 public class LanguageOcrPresenter implements LanguageOcrContract.Presenter {
     public static final String TAG = DEV_TAG + LanguageOcrPresenter.class.getSimpleName();
-    @Nullable
-    private LanguageOcrContract.View mLanguageOcrView;
-
-    @NonNull
-    private List<String> allLanguageCodes;
-
     // This is provided lazily because its value is determined in the Activity's onCreate. By
     // calling it in takeView(), the value is guaranteed to be set.
     private final Lazy<ResponsableList<String>> checkedLanguageCodesLazy;
     private final Lazy<List<String>> recentlyChosenLanguageCodesLazy;
+    @Nullable
+    private LanguageOcrContract.View mLanguageOcrView;
+    @NonNull
+    private List<String> allLanguageCodes;
 
     /**
      * Dagger strictly enforces that arguments not marked with {@code @Nullable} are not injected

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/root_view">
+    android:layout_height="match_parent">
 
     <ProgressBar
         android:id="@+id/progress"
@@ -15,23 +15,25 @@
         android:visibility="gone" />
 
     <LinearLayout
+        android:id="@+id/pdf_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:id="@+id/pdf_layout">
+        android:orientation="vertical">
 
         <com.github.barteksc.pdfviewer.PDFView
             android:id="@+id/pdfView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight = "1"/>
+            android:layout_weight="1"
+            android:background="@color/grey_200" />
 
         <RelativeLayout
+            android:background="@color/grey_200"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="0"
             android:paddingEnd="@dimen/my_base_margin"
-            android:paddingStart="@dimen/my_base_margin"
-            android:layout_weight = "0">
+            android:paddingStart="@dimen/my_base_margin">
 
             <LinearLayout
                 android:id="@+id/bottom_icons"

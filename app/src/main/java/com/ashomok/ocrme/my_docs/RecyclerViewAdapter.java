@@ -10,11 +10,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ashomok.ocrme.R;
@@ -23,7 +21,6 @@ import com.ashomok.ocrme.utils.GlideApp;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
@@ -34,11 +31,10 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.DocViewHolder> {
 
+    public static final String TAG = DEV_TAG + RecyclerViewAdapter.class.getSimpleName();
     private final MyDocsActivity.RecyclerViewCallback callback;
     private List<OcrResult> mDataList;
     private List<OcrResult> multiSelectDataList;
-
-    public static final String TAG = DEV_TAG + RecyclerViewAdapter.class.getSimpleName();
 
     RecyclerViewAdapter(List<OcrResult> mDataList,
                         List<OcrResult> multiSelectDataList,
@@ -126,6 +122,25 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return mDataList.size();
     }
 
+    static class DocViewHolder extends RecyclerView.ViewHolder {
+        CardView cardView;
+        ImageView sourceImage;
+        TextView timeStamp;
+        ImageButton menuBtn;
+        CheckBox checkbox;
+        ImageView darkHint;
+
+        DocViewHolder(View v) {
+            super(v);
+            sourceImage = v.findViewById(R.id.sourceImage);
+            timeStamp = v.findViewById(R.id.timeStamp);
+            cardView = v.findViewById(R.id.cardView);
+            menuBtn = v.findViewById(R.id.card_menu_btn);
+            checkbox = v.findViewById(R.id.checkBox);
+            darkHint = v.findViewById(R.id.hint);
+        }
+    }
+
     private class DocMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
         private int position;
 
@@ -148,25 +163,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 default:
             }
             return false;
-        }
-    }
-
-    static class DocViewHolder extends RecyclerView.ViewHolder {
-        CardView cardView;
-        ImageView sourceImage;
-        TextView timeStamp;
-        ImageButton menuBtn;
-        CheckBox checkbox;
-        ImageView darkHint;
-
-        DocViewHolder(View v) {
-            super(v);
-            sourceImage = v.findViewById(R.id.sourceImage);
-            timeStamp = v.findViewById(R.id.timeStamp);
-            cardView = v.findViewById(R.id.cardView);
-            menuBtn = v.findViewById(R.id.card_menu_btn);
-            checkbox = v.findViewById(R.id.checkBox);
-            darkHint = v.findViewById(R.id.hint);
         }
     }
 }

@@ -8,7 +8,6 @@ import android.support.annotation.StringRes;
 
 import com.ashomok.ocrme.BuildConfig;
 import com.ashomok.ocrme.R;
-import com.ashomok.ocrme.Settings;
 import com.ashomok.ocrme.my_docs.get_my_docs_task.MyDocsHttpClient;
 
 import dagger.Binds;
@@ -22,9 +21,6 @@ import dagger.Provides;
 @Module
 public abstract class MyDocsModule {
 
-    @Binds
-    abstract MyDocsContract.Presenter myDocsPresenter(MyDocsPresenter presenter);
-
     @Provides
     static MyDocsHttpClient provideMyDocsHttpClient() {
         return MyDocsHttpClient.getInstance();
@@ -35,9 +31,11 @@ public abstract class MyDocsModule {
     int provideAdBannerId() {
         if (BuildConfig.DEBUG) {
             return R.string.test_banner;
-        }
-        else {
+        } else {
             return R.string.my_docs_banner;
         }
     }
+
+    @Binds
+    abstract MyDocsContract.Presenter myDocsPresenter(MyDocsPresenter presenter);
 }

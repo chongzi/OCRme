@@ -8,7 +8,6 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -54,23 +53,20 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
  */
 //// TODO: MAJOR 9/14/17 replace spinners with new Language Activity - see Google Translate APP for example
 public class TranslateActivity extends RxAppCompatActivity implements View.OnClickListener {
+    public static final String EXTRA_TEXT = "com.ashomokdev.imagetotext.TEXT";
     private static final String TAG = DEV_TAG + TranslateActivity.class.getSimpleName();
     private String sourceText;
     private String targetText;
     private TranslateHttpClient translateHttpClient;
-
     private Spinner sourceLanguagesSpinner;
     private Spinner targetLanguagesSpinner;
-
     private TextView sourceEditText;
     private EditText targetEditText;
     private ProgressBar progress;
     private View contentLayout;
-
     private String sourceLanguageCode;
     private String targetLanguageCode;
     private List<SupportedLanguagesResponse.Language> languages;
-    public static final String EXTRA_TEXT = "com.ashomokdev.imagetotext.TEXT";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +76,7 @@ public class TranslateActivity extends RxAppCompatActivity implements View.OnCli
         Intent intent = getIntent();
         sourceText = intent.getStringExtra(EXTRA_TEXT);
         if (sourceText == null || sourceText.length() < 1) {
-           Log.d(TAG, "called with empty source text");
+            Log.d(TAG, "called with empty source text");
         }
 
         initToolbar();

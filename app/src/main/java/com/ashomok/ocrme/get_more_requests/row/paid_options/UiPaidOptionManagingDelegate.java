@@ -14,21 +14,10 @@
 package com.ashomok.ocrme.get_more_requests.row.paid_options;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
-import android.view.View;
-import android.widget.Toast;
 
-import com.ashomok.ocrme.OcrRequestsCounter;
-import com.ashomok.ocrme.R;
-import com.ashomok.ocrme.billing.BillingProviderCallback;
 import com.ashomok.ocrme.billing.BillingProviderImpl;
 import com.ashomok.ocrme.billing.model.SkuRowData;
-import com.ashomok.ocrme.get_more_requests.GetMoreRequestsActivity;
-import com.ashomok.ocrme.get_more_requests.GetMoreRequestsContract;
-import com.ashomok.ocrme.get_more_requests.row.free_options.PromoRowFreeOptionData;
-import com.ashomok.ocrme.get_more_requests.row.free_options.option_delegates.FreeOptionRowViewHolder;
 
-import java.util.List;
 
 /**
  * Implementations of this abstract class are responsible to render UI and handle user actions for
@@ -42,7 +31,7 @@ public abstract class UiPaidOptionManagingDelegate {
     private Context context;
 
     public UiPaidOptionManagingDelegate(BillingProviderImpl billingProvider,
-                              Context context) {
+                                        Context context) {
         this.billingProvider = billingProvider;
         this.context = context;
     }
@@ -55,7 +44,7 @@ public abstract class UiPaidOptionManagingDelegate {
         return context;
     }
 
-    public void onRowClicked(SkuRowData data){
+    public void onRowClicked(SkuRowData data) {
         getBillingProvider().getBillingManager().initiatePurchaseFlow(data.getSku(),
                 data.getSkuType());
     }

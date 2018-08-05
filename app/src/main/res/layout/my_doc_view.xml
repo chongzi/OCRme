@@ -55,6 +55,7 @@
                     android:layout_height="wrap_content"
                     android:background="@null"
                     android:tint="@color/colorAccent"
+                    android:layout_margin="5dp"
                     android:src="@drawable/ic_more_vert_black_24dp" />
             </LinearLayout>
 

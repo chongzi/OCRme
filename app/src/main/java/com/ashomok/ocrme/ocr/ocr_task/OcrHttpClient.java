@@ -21,16 +21,9 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 public class OcrHttpClient {
     private static final String TAG =
             DEV_TAG + OcrHttpClient.class.getSimpleName();
+    private static final int CONNECTION_TIMEOUT_SEC = 90;
     private static OcrHttpClient instance;
     private OcrAPI ocrAPI;
-    private static final int CONNECTION_TIMEOUT_SEC = 90;
-
-    public static OcrHttpClient getInstance() {
-        if (instance == null) {
-            instance = new OcrHttpClient();
-        }
-        return instance;
-    }
 
     private OcrHttpClient() {
         OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
@@ -49,11 +42,18 @@ public class OcrHttpClient {
         ocrAPI = retrofit.create(OcrAPI.class);
     }
 
+    public static OcrHttpClient getInstance() {
+        if (instance == null) {
+            instance = new OcrHttpClient();
+        }
+        return instance;
+    }
+
     /**
      * @param gcsImageUri Google cloud storage image uri,
      *                    example "gs://bucket-for-requests-test/2017-07-26-12-37-36-806-2017-07-26-12-37-36-806-ru.jpg";
      * @param languages
-     * @param idToken firebase user token, docs: https://firebase.google.com/docs/auth/admin/verify-id-tokens
+     * @param idToken     firebase user token, docs: https://firebase.google.com/docs/auth/admin/verify-id-tokens
      * @return
      */
     public Single<OcrResponse> ocr(

@@ -20,19 +20,19 @@ import com.ashomok.ocrme.update_to_premium.UpdateToPremiumActivity;
  */
 
 public class NativeAdDialogFragment extends DialogFragment {
+    private static final String NATIVE_AD_PLACEMENT_ID = "172310460079691_172774360033301";
     Button CTAbtn;
     Button removeAd;
     Button skip;
-    private static final String NATIVE_AD_PLACEMENT_ID = "172310460079691_172774360033301";
 
 
-    public NativeAdDialogFragment(){
+    public NativeAdDialogFragment() {
         // Empty constructor is required for DialogFragment
         // Make sure not to add arguments to the constructor
         // Use `newInstance` instead as shown below
     }
 
-    public static NativeAdDialogFragment newInstance(){
+    public static NativeAdDialogFragment newInstance() {
         NativeAdDialogFragment frag = new NativeAdDialogFragment();
         return frag;
     }

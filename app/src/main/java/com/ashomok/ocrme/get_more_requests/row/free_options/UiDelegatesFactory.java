@@ -15,8 +15,6 @@
  */
 package com.ashomok.ocrme.get_more_requests.row.free_options;
 
-import com.ashomok.ocrme.get_more_requests.row.free_options.option_delegates.FreeOptionRowViewHolder;
-
 import java.util.Map;
 
 import javax.inject.Inject;
