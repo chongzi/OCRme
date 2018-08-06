@@ -54,6 +54,7 @@ public class MyDocsPresenter implements MyDocsContract.Presenter {
     private Context context;
     private String idToken;
     private String startCursor;
+    private boolean initialized = false;
 
     /**
      * Dagger strictly enforces that arguments not marked with {@code @Nullable} are not injected
@@ -72,31 +73,32 @@ public class MyDocsPresenter implements MyDocsContract.Presenter {
     }
 
     void initWithDocs() {
-        Log.d(TAG, "initWithDocs called");
         if (view != null) {
-            if (isOnline()) {
+            if (!initialized) {
+                if (isOnline()) {
+                    view.showProgress(true);
 
-                view.showProgress(true);
-
-                getIdToken()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                optionalToken -> {
-                                    view.showProgress(false);
-                                    //logged in - updateUi(boolean isUserSignedIn) called
-                                    if (optionalToken.isPresent()) {
-                                        idToken = optionalToken.get();
-                                        startCursor = null;
-                                        callApiForDocs(httpClient, idToken, startCursor, true);
-                                    }
-                                }, throwable -> {
-                                    view.showProgress(false);
-                                    throwable.printStackTrace();
-                                    view.showError(R.string.unable_identify_user);
-                                });
-            } else {
-                view.showError(R.string.no_internet_connection);
+                    getIdToken()
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(
+                                    optionalToken -> {
+                                        view.showProgress(false);
+                                        //logged in - updateUi(boolean isUserSignedIn) called
+                                        if (optionalToken.isPresent()) {
+                                            initialized = true;
+                                            idToken = optionalToken.get();
+                                            startCursor = null;
+                                            callApiForDocs(httpClient, idToken, startCursor, true);
+                                        }
+                                    }, throwable -> {
+                                        view.showProgress(false);
+                                        throwable.printStackTrace();
+                                        view.showError(R.string.unable_identify_user);
+                                    });
+                } else {
+                    view.showError(R.string.no_internet_connection);
+                }
             }
         }
     }

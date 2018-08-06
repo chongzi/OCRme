@@ -5,8 +5,8 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".main.MainActivity"
-    tools:openDrawer="start">
+    tools:context=".main.MainActivity">
+    <!--tools:openDrawer="start">-->
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -18,149 +18,142 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <ScrollView
-            android:id="@+id/scroll_view"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/top_line_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/toolbar">
+            android:layout_below="@id/toolbar"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/language_layout"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/activity_horizontal_margin">
+                android:layout_margin="6dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:orientation="horizontal">
 
-                <LinearLayout
-                    android:id="@+id/top_line_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:id="@+id/language_layout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:orientation="horizontal"
-                        android:layout_margin="6dp"
-                        android:layout_weight="1">
-
-                        <TextView
-                            android:id="@+id/language_label"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/language"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:id="@+id/language"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="3dp"
-                            android:layout_marginStart="3dp"
-                            android:text="@string/auto"
-                            android:textColor="@color/colorAccent"
-                            android:textSize="16sp" />
-                    </LinearLayout>
-
-                    <RelativeLayout
-                        android:id="@+id/requests_counter_layout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="6dp"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <ImageView
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:layout_centerInParent="true"
-                            android:layout_margin="8dp"
-                            android:src="@drawable/circle"
-                            android:tint="@color/green_600" />
-
-                        <TextView
-                            android:id="@+id/requests_counter_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:text="00"
-                            android:textColor="@color/white" />
-                    </RelativeLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/image_source_layout"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/top_line_layout"
-                    android:layout_marginBottom="@dimen/activity_vertical_margin"
-                    android:orientation="horizontal"
-                    android:weightSum="2">
-
-                    <ImageButton
-                        android:id="@+id/gallery_btn"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/gallery_card" />
-
-                    <ImageButton
-                        android:id="@+id/photo_btn"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/camera_card" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ask_login"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/image_source_layout"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/please_login" />
-
-                    <Button
-                        android:id="@+id/sign_in_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/activity_vertical_margin"
-                        android:background="@color/colorAccent"
-                        android:text="@string/sign_in"
-                        android:textColor="@android:color/white"
-                        android:textSize="16sp" />
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/my_docs_btn"
+                <TextView
+                    android:id="@+id/language_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/image_source_layout"
-                    android:layout_centerHorizontal="true"
-                    android:background="@color/colorAccent"
-                    android:text="@string/my_docs"
-                    android:textColor="@android:color/white"
-                    android:textSize="16sp"
-                    android:visibility="gone" />
+                    android:text="@string/language"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/language"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginStart="3dp"
+                    android:text="@string/auto"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/requests_counter_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="8dp"
+                    android:src="@drawable/circle"
+                    android:tint="@color/green_600" />
+
+                <TextView
+                    android:id="@+id/requests_counter_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="00"
+                    android:textColor="@color/white" />
             </RelativeLayout>
-        </ScrollView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/image_source_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/top_line_layout"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <ImageButton
+                android:id="@+id/gallery_btn"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:layout_weight="1"
+                android:scaleType="centerCrop"
+                android:src="@drawable/gallery_card" />
+
+            <ImageButton
+                android:id="@+id/photo_btn"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:layout_weight="1"
+                android:scaleType="centerCrop"
+                android:src="@drawable/camera_card" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ask_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_above="@+id/ads_container">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/please_login" />
+
+            <Button
+                android:id="@+id/sign_in_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:background="@color/colorAccent"
+                android:text="@string/sign_in"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <Button
+            android:layout_above="@+id/ads_container"
+            android:id="@+id/my_docs_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@color/colorAccent"
+            android:text="@string/my_docs"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:visibility="gone" />
 
         <RelativeLayout
             android:id="@+id/ads_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"></RelativeLayout>
+            android:layout_height="100dp"
+            android:layout_alignParentBottom="true"
+            />
     </RelativeLayout>
+
 
     <!-- Navigation Drawer -->
     <android.support.design.widget.NavigationView

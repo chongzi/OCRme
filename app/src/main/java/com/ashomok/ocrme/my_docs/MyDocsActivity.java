@@ -62,6 +62,8 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
     private RecyclerViewAdapter adapter;
     private ActionMode mActionMode;
     private ProgressBar progress;
+    private EndlessRecyclerViewScrollListener scrollListener;
+
     //"Select" docs action mode
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
 
@@ -103,6 +105,7 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
             adapter.notifyDataSetChanged();
         }
     };
+
     private RecyclerViewCallback callback = new RecyclerViewCallback() {
         @Override
         public void onItemClick(int position) {
@@ -149,9 +152,10 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         setContentView(R.layout.activity_my_docs);
         initToolbar();
         initSignInView();
-        initRecyclerView();
-        progress = findViewById(R.id.progress);
 
+        initRecyclerView();
+
+        progress = findViewById(R.id.progress);
         updateUi(mIsUserSignedIn);
 
         mPresenter.takeView(this);
@@ -163,6 +167,14 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         getMenuInflater().inflate(R.menu.my_docs_common, menu);
         return true;
     }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        menu.findItem(R.id.select).setVisible(dataList.size() > 0);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -250,6 +262,7 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
     }
 
     private void initRecyclerView() {
+        Log.d(TAG, "initRecyclerView called");
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         AutoFitGridLayoutManager layoutManager =
                 new AutoFitGridLayoutManager(this, 500);
@@ -260,7 +273,7 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
 
         adapter = new RecyclerViewAdapter(dataList, multiSelectDataList, callback);
         recyclerView.setAdapter(adapter);
-        EndlessRecyclerViewScrollListener scrollListener =
+        scrollListener =
                 new EndlessRecyclerViewScrollListener(layoutManager) {
                     @Override
                     public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
@@ -367,6 +380,8 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         }
 
         mPresenter.showAdsIfNeeded();
+
+        invalidateOptionsMenu();
     }
 
     @Override
@@ -375,6 +390,8 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         int size = dataList.size();
         dataList.clear();
         adapter.notifyItemRangeRemoved(0, size);
+
+        invalidateOptionsMenu();
     }
 
     /**
@@ -386,22 +403,16 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            progress.setVisibility(show ? View.VISIBLE : View.GONE);
-            progress.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    progress.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            progress.setVisibility(show ? View.VISIBLE : View.GONE);
-        }
+        progress.setVisibility(show ? View.VISIBLE : View.GONE);
+        progress.animate().setDuration(shortAnimTime).alpha(
+                show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                progress.setVisibility(show ? View.VISIBLE : View.GONE);
+            }
+        });
     }
 
     @Override

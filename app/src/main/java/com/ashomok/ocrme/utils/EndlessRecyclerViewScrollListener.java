@@ -4,6 +4,11 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
+
+import com.ashomok.ocrme.my_docs.MyDocsPresenter;
+
+import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
 public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnScrollListener {
     RecyclerView.LayoutManager mLayoutManager;
@@ -14,10 +19,13 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     private int currentPage = 0;
     // The total number of items in the dataset after the last load
     private int previousTotalItemCount = 0;
+
     // True if we are still waiting for the last set of data to load.
     private boolean loading = true;
     // Sets the starting page index
     private int startingPageIndex = 0;
+    public static final String TAG = DEV_TAG + EndlessRecyclerViewScrollListener.class.getSimpleName();
+
 
     public EndlessRecyclerViewScrollListener(LinearLayoutManager layoutManager) {
         this.mLayoutManager = layoutManager;
@@ -69,14 +77,14 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
             this.currentPage = this.startingPageIndex;
             this.previousTotalItemCount = totalItemCount;
             if (totalItemCount == 0) {
-                this.loading = true;
+                setLoading(true);
             }
         }
         // If it’s still loading, we check to see if the dataset count has
         // changed, if so we conclude it has finished loading and update the current page
         // number and total item count.
         if (loading && (totalItemCount > previousTotalItemCount)) {
-            loading = false;
+            setLoading(false);
             previousTotalItemCount = totalItemCount;
         }
 
@@ -87,15 +95,19 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
         if (!loading && (lastVisibleItemPosition + visibleThreshold) > totalItemCount) {
             currentPage++;
             onLoadMore(currentPage, totalItemCount, view);
-            loading = true;
+            setLoading(true);
         }
+    }
+
+    public void setLoading(boolean loading) {
+        this.loading = loading;
     }
 
     // Call this method whenever performing new searches
     public void resetState() {
         this.currentPage = this.startingPageIndex;
         this.previousTotalItemCount = 0;
-        this.loading = true;
+       setLoading(true);
     }
 
     // Defines the process for actually loading more data based on page
