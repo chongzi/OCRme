@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.widget.TextView;
 
 import com.ashomok.ocrme.R;
+import com.ashomok.ocrme.my_docs.MyDocsActivity;
 
 import org.junit.After;
 import org.junit.Before;
@@ -14,8 +15,10 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
 
+import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
 public class MainActivityTest {
@@ -30,7 +33,7 @@ public class MainActivityTest {
     }
 
 
-    //todo remove failed
+//    //todo remove failed
 //    @Test
 //    public void clickingLogin_shouldStartMyDocsActivity() {
 //

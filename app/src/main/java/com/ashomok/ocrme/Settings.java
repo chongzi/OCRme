@@ -12,6 +12,7 @@ public class Settings {
 
     public static final String facebookPageUrl = "https://www.facebook.com/OCRmePhotoScaner"; //for follow us on fb button
     public static String appPackageName = BuildConfig.APPLICATION_ID;
+    public static String ENDPOINT = "https://3-dot-ocrme-77a2b.appspot.com/"; //todo move to gradle
     public static boolean isAdsActive = true; //will be set in MainActivity
     public static boolean isPremium = false;//will be set in MainActivity
 

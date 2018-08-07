@@ -11,6 +11,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.ashomok.ocrme.Settings.ENDPOINT;
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
 /**
@@ -36,7 +37,7 @@ public class OcrHttpClient {
                 .client(okHttpClient)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(OcrAPI.ENDPOINT)
+                .baseUrl(ENDPOINT)
                 .build();
 
         ocrAPI = retrofit.create(OcrAPI.class);

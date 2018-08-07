@@ -12,7 +12,6 @@ import retrofit2.http.Query;
  */
 
 public interface MyDocsAPI {
-    String ENDPOINT = "https://ocrme-77a2b.appspot.com";
 
     @POST("list_ocr_requests")
     Single<MyDocsResponse> getMyDocs(@Body MyDocsRequestBean myDocsRequestBean);

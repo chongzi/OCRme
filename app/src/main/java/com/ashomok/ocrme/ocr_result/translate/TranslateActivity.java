@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.InputType;
@@ -43,14 +44,18 @@ import java.util.Locale;
 
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.ashomok.ocrme.Settings.appPackageName;
+import static com.ashomok.ocrme.utils.FirebaseUtils.getIdToken;
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
 /**
  * Created by iuliia on 8/27/17.
  */
+
+//todo use MVP here
 //// TODO: MAJOR 9/14/17 replace spinners with new Language Activity - see Google Translate APP for example
 public class TranslateActivity extends RxAppCompatActivity implements View.OnClickListener {
     public static final String EXTRA_TEXT = "com.ashomokdev.imagetotext.TEXT";
@@ -66,6 +71,8 @@ public class TranslateActivity extends RxAppCompatActivity implements View.OnCli
     private View contentLayout;
     private String sourceLanguageCode;
     private String targetLanguageCode;
+    @Nullable
+    private String userIdToken;
     private List<SupportedLanguagesResponse.Language> languages;
 
     @Override
@@ -100,7 +107,7 @@ public class TranslateActivity extends RxAppCompatActivity implements View.OnCli
             boolean handled = false;
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 sourceText = sourceEditText.getText().toString();
-                callTranslate(sourceText, sourceLanguageCode, targetLanguageCode);
+                callTranslate(sourceText, sourceLanguageCode, targetLanguageCode, userIdToken);
                 handled = true;
             }
             return handled;
@@ -117,7 +124,7 @@ public class TranslateActivity extends RxAppCompatActivity implements View.OnCli
 
                 if (languages != null && ++check1[0] > 1) {
                     sourceLanguageCode = languages.get(position).getCode();
-                    callTranslate(sourceText, sourceLanguageCode, targetLanguageCode);
+                    callTranslate(sourceText, sourceLanguageCode, targetLanguageCode, userIdToken);
                 }
             }
 
@@ -131,7 +138,7 @@ public class TranslateActivity extends RxAppCompatActivity implements View.OnCli
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (languages != null && ++check2[0] > 1) {
                     targetLanguageCode = languages.get(position).getCode();
-                    callTranslate(sourceText, sourceLanguageCode, targetLanguageCode);
+                    callTranslate(sourceText, sourceLanguageCode, targetLanguageCode, userIdToken);
                 }
             }
 
@@ -151,42 +158,20 @@ public class TranslateActivity extends RxAppCompatActivity implements View.OnCli
     private void callInitTranslate(@NonNull String mInputText) {
         if (NetworkUtils.isOnline(this)) {
             showProgress(true);
-            String deviceLanguageCode = Locale.getDefault().getLanguage();
 
-            //first -------------------------------------------
-            Single<SupportedLanguagesResponse> supportedLanguagesResponceSingle =
-                    translateHttpClient.getSupportedLanguages(deviceLanguageCode)
-                            .doOnEvent((supportedLanguagesResponce, throwable) -> {
-                                        Log.d(TAG, "getSupportedLanguages called in thread: "
-                                                + Thread.currentThread().getName());
-                                    }
-                            ).subscribeOn(Schedulers.io());
-
-
-            //second---------------------------------------------
-            Single<TranslateResponse> translateResponseSingle =
-                    translateHttpClient.translate(deviceLanguageCode, mInputText)
-                            .doOnEvent((supportedLanguagesResponce, throwable) -> {
-                                        Log.d(TAG, "translate called in thread: "
-                                                + Thread.currentThread().getName());
-                                    }
-                            ).subscribeOn(Schedulers.io());
-
-            //zipped first + second-----------------------------------------
-            Single<Pair<SupportedLanguagesResponse, TranslateResponse>> zipped =
-                    Single.zip(
-                            supportedLanguagesResponceSingle,
-                            translateResponseSingle,
-                            (a, b) -> new Pair<>(a, b))
-                            .observeOn(AndroidSchedulers.mainThread());// Will switch to Main-Thread when finished
-
-            zipped.compose(bindToLifecycle())
+           getIdToken()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
-                            myData -> {
-                                Log.d(TAG, "zipped returns " + myData.toString());
-                                updateUI(myData);
-                            },
-                            throwable -> {
+                            optionalToken -> {
+                                //logged in
+                                if (optionalToken.isPresent()) {
+                                    userIdToken = optionalToken.get();
+                                }
+
+                                callInitTranslate(mInputText, userIdToken);
+
+                            }, throwable -> {
                                 String errorMessage = throwable.getMessage();
                                 Log.e(TAG, errorMessage);
                                 updateUI(errorMessage);
@@ -196,15 +181,60 @@ public class TranslateActivity extends RxAppCompatActivity implements View.OnCli
         }
     }
 
+    private void callInitTranslate(@NonNull String mInputText, @Nullable String userIdToken) {
+
+        String deviceLanguageCode = Locale.getDefault().getLanguage();
+        //first -------------------------------------------
+        Single<SupportedLanguagesResponse> supportedLanguagesResponceSingle =
+                translateHttpClient.getSupportedLanguages(deviceLanguageCode)
+                        .doOnEvent((supportedLanguagesResponce, throwable) -> {
+                                    Log.d(TAG, "getSupportedLanguages called in thread: "
+                                            + Thread.currentThread().getName());
+                                }
+                        ).subscribeOn(Schedulers.io());
+
+
+        //second---------------------------------------------
+        Single<TranslateResponse> translateResponseSingle =
+                translateHttpClient.translate(deviceLanguageCode, mInputText, userIdToken)
+                        .doOnEvent((supportedLanguagesResponce, throwable) -> {
+                                    Log.d(TAG, "translate called in thread: "
+                                            + Thread.currentThread().getName());
+                                }
+                        ).subscribeOn(Schedulers.io());
+
+        //zipped first + second-----------------------------------------
+        Single<Pair<SupportedLanguagesResponse, TranslateResponse>> zipped =
+                Single.zip(
+                        supportedLanguagesResponceSingle,
+                        translateResponseSingle,
+                        (a, b) -> new Pair<>(a, b))
+                        .observeOn(AndroidSchedulers.mainThread());// Will switch to Main-Thread when finished
+
+        zipped.compose(bindToLifecycle())
+                .subscribe(
+                        myData -> {
+                            Log.d(TAG, "zipped returns " + myData.toString());
+                            updateUI(myData);
+                        },
+                        throwable -> {
+                            String errorMessage = throwable.getMessage();
+                            Log.e(TAG, errorMessage);
+                            updateUI(errorMessage);
+                        });
+    }
+
     private void callTranslate(
             @NonNull String mInputText,
             @NonNull String sourceLanguageCode,
-            @NonNull String targetLanguageCode) {
+            @NonNull String targetLanguageCode,
+            @Nullable String userIdToken) {
 
         if (NetworkUtils.isOnline(this)) {
 
             Single<TranslateResponse> translateResponseSingle =
-                    translateHttpClient.translate(sourceLanguageCode, targetLanguageCode, mInputText)
+                    translateHttpClient.translate(
+                            sourceLanguageCode, targetLanguageCode, mInputText, userIdToken)
                             .subscribeOn(Schedulers.io());
 
             translateResponseSingle
@@ -230,7 +260,7 @@ public class TranslateActivity extends RxAppCompatActivity implements View.OnCli
             updateUI(getString(R.string.error_while_translating));
         } else {
             //do staff
-            targetText = translateResponse.getTextResult();
+            targetText = translateResponse.getTranslateResult().getTextResult();
             targetEditText.setText(targetText);
         }
     }
@@ -252,8 +282,8 @@ public class TranslateActivity extends RxAppCompatActivity implements View.OnCli
         } else {
             //do staff
             languages = supportedLanguagesResponse.getSupportedLanguages();
-            sourceLanguageCode = translateResponse.getSourceLanguageCode();
-            targetLanguageCode = translateResponse.getTargetLanguageCode();
+            sourceLanguageCode = translateResponse.getTranslateResult().getSourceLanguageCode();
+            targetLanguageCode = translateResponse.getTranslateResult().getTargetLanguageCode();
 
             ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                     android.R.layout.simple_spinner_item,
@@ -271,7 +301,7 @@ public class TranslateActivity extends RxAppCompatActivity implements View.OnCli
                     .findFirst()
                     .orElse(0));
 
-            targetText = translateResponse.getTextResult();
+            targetText = translateResponse.getTranslateResult().getTextResult();
             targetEditText.setText(targetText);
             sourceEditText.setText(sourceText);
         }
@@ -285,34 +315,25 @@ public class TranslateActivity extends RxAppCompatActivity implements View.OnCli
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            contentLayout.setVisibility(show ? View.GONE : View.VISIBLE);
-            contentLayout.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    contentLayout.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
+        contentLayout.setVisibility(show ? View.GONE : View.VISIBLE);
+        contentLayout.animate().setDuration(shortAnimTime).alpha(
+                show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                contentLayout.setVisibility(show ? View.GONE : View.VISIBLE);
+            }
+        });
 
-            progress.setVisibility(show ? View.VISIBLE : View.GONE);
-            progress.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    progress.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-
-
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            progress.setVisibility(show ? View.VISIBLE : View.GONE);
-            contentLayout.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
+        progress.setVisibility(show ? View.VISIBLE : View.GONE);
+        progress.animate().setDuration(shortAnimTime).alpha(
+                show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                progress.setVisibility(show ? View.VISIBLE : View.GONE);
+            }
+        });
     }
 
 

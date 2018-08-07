@@ -4,11 +4,13 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.annotations.Nullable;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.ashomok.ocrme.Settings.ENDPOINT;
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
 /**
@@ -33,7 +35,7 @@ public class TranslateHttpClient {
                 .client(okHttpClient)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(TranslateAPI.ENDPOINT)
+                .baseUrl(ENDPOINT)
                 .build();
 
         translateAPI = retrofit.create(TranslateAPI.class);
@@ -55,11 +57,14 @@ public class TranslateHttpClient {
      * @param sourceText         input text
      * @return
      */
-    public Single<TranslateResponse> translate(String deviceLanguageCode, String sourceText) {
+    public Single<TranslateResponse> translate(String deviceLanguageCode,
+                                               String sourceText,
+                                               @Nullable String userIdToken) {
 
         TranslateRequestBean translateRequest = new TranslateRequestBean.Builder()
                 .targetLang(deviceLanguageCode)
                 .sourceText(sourceText)
+                .idTokenString(userIdToken)
                 .build();
 
         return translateAPI.translate(translateRequest);
@@ -71,11 +76,15 @@ public class TranslateHttpClient {
      * @param sourceText         source text
      * @return
      */
-    public Single<TranslateResponse> translate(String sourceLanguageCode, String targetLanguageCode, String sourceText) {
+    public Single<TranslateResponse> translate(String sourceLanguageCode,
+                                               String targetLanguageCode,
+                                               String sourceText,
+                                               @Nullable String userIdToken) {
         TranslateRequestBean translateRequest = new TranslateRequestBean.Builder()
                 .sourceText(sourceText)
                 .sourceLang(sourceLanguageCode)
                 .targetLang(targetLanguageCode)
+                .idTokenString(userIdToken)
                 .build();
         return translateAPI.translate(translateRequest);
     }

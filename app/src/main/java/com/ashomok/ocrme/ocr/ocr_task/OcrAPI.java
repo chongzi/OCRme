@@ -9,7 +9,6 @@ import retrofit2.http.POST;
  */
 
 public interface OcrAPI {
-    String ENDPOINT = "https://ocrme-77a2b.appspot.com";
 
     @POST("ocr_request")
     Single<OcrResponse> ocr(@Body OcrRequestBean ocrRequest);

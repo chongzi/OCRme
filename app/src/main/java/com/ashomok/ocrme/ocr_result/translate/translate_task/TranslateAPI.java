@@ -13,8 +13,6 @@ import retrofit2.http.Query;
 
 public interface TranslateAPI {
 
-    String ENDPOINT = "https://ocrme-77a2b.appspot.com";
-
     //curl https://ocrme-77a2b.appspot.com/supported_languages?device_language_code=de
     @GET("supported_languages?")
     Single<SupportedLanguagesResponse> getSupportedLanguages(
