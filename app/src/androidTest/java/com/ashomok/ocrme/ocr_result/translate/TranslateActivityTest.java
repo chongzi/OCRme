@@ -42,4 +42,18 @@ public class TranslateActivityTest {
         mActivityRule.launchActivity(intent);
         Thread.sleep(100000);
     }
+
+    @Test
+    public void seeHowToLook2() throws InterruptedException {
+        final Context targetContext = InstrumentationRegistry.getInstrumentation()
+                .getTargetContext();
+        Intent intent = new Intent(targetContext, TranslateActivity.class);
+
+        String sourceText = "руский длиекструский длинный";
+
+//        String sourceText = "русский длинный текст русскирусский текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текст";
+        intent.putExtra(EXTRA_TEXT, sourceText);
+        mActivityRule.launchActivity(intent);
+        Thread.sleep(100000);
+    }
 }
