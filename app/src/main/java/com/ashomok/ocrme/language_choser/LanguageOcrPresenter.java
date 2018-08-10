@@ -36,7 +36,7 @@ public class LanguageOcrPresenter implements LanguageOcrContract.Presenter {
     private final Lazy<ResponsableList<String>> checkedLanguageCodesLazy;
     private final Lazy<List<String>> recentlyChosenLanguageCodesLazy;
     @Nullable
-    private LanguageOcrContract.View mLanguageOcrView;
+    private LanguageOcrContract.View view;
     @NonNull
     private List<String> allLanguageCodes;
 
@@ -54,34 +54,34 @@ public class LanguageOcrPresenter implements LanguageOcrContract.Presenter {
     }
 
     private void showLanguages() {
-        if (mLanguageOcrView != null) {
+        if (view != null) {
             //init recently chosen language list
             if (recentlyChosenLanguageCodesLazy.get().size() > 0) {
-                mLanguageOcrView.showRecentlyChosenLanguages(
+                view.showRecentlyChosenLanguages(
                         recentlyChosenLanguageCodesLazy.get(), checkedLanguageCodesLazy.get());
 
             }
 
             //init all languages list
-            mLanguageOcrView.showAllLanguages(allLanguageCodes, checkedLanguageCodesLazy.get());
+            view.showAllLanguages(allLanguageCodes, checkedLanguageCodesLazy.get());
 
             //init auto btn
-            mLanguageOcrView.initAutoBtn();
+            view.initAutoBtn();
             if (checkedLanguageCodesLazy.get().size() < 1) {
                 //check auto btn
-                mLanguageOcrView.updateAutoView(true);
+                view.updateAutoView(true);
             }
         }
     }
 
     @Override
     public void takeView(LanguageOcrContract.View languageOcrActivity) {
-        mLanguageOcrView = languageOcrActivity;
+        view = languageOcrActivity;
         showLanguages();
     }
 
     @Override
     public void dropView() {
-        mLanguageOcrView = null;
+        view = null;
     }
 }

@@ -1,4 +1,4 @@
-package com.ashomok.ocrme.ocr_result.translate.translate_task;
+package com.ashomok.ocrme.ocr_result.translate.translate_task.translate_task;
 
 import java.io.Serializable;
 import java.util.List;

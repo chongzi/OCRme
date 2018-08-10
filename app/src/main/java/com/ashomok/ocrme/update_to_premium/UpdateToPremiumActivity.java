@@ -41,8 +41,8 @@ public class UpdateToPremiumActivity extends RxAppCompatActivity
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         AndroidInjection.inject(this); //todo or extends daggerappcompat activity instaead
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_to_premium);
         mRootView = findViewById(android.R.id.content);
         if (mRootView == null) {

@@ -1,4 +1,4 @@
-package com.ashomok.ocrme.ocr_result.translate.translate_task;
+package com.ashomok.ocrme.ocr_result.translate.translate_task.translate_task;
 
 import io.reactivex.Single;
 import retrofit2.http.Body;

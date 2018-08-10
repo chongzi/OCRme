@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:card_view="http://schemas.android.com/tools"
-    android:fitsSystemWindows="true"
     android:descendantFocusability="beforeDescendants"
+    android:fitsSystemWindows="true"
     android:focusableInTouchMode="true">
 
     <android.support.design.widget.AppBarLayout
@@ -23,59 +22,72 @@
             android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll|enterAlways" />
 
-        <LinearLayout
-            android:id="@+id/top_layout"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:gravity="center_vertical"
-            android:minHeight="50dp"
-            android:orientation="horizontal"
-            android:paddingEnd="@dimen/my_base_margin"
-            android:paddingLeft="@dimen/my_base_margin"
-            android:paddingStart="@dimen/my_base_margin"
-            app:layout_scrollFlags="scroll|enterAlways">
+            android:layout_height="wrap_content">
 
-            <Spinner
-                android:id="@+id/spinner_source_languages"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/colorPrimaryDark"
-                android:entries="@array/default_value" />
+                android:orientation="vertical">
 
-            <Spinner
-                android:id="@+id/spinner_target_languages"
+
+                <LinearLayout
+                    android:id="@+id/top_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:gravity="center_vertical"
+                    android:minHeight="50dp"
+                    android:orientation="horizontal"
+                    android:paddingEnd="@dimen/my_base_margin"
+                    android:paddingLeft="@dimen/my_base_margin"
+                    android:paddingStart="@dimen/my_base_margin"
+                    app:layout_scrollFlags="scroll|enterAlways">
+
+                    <Spinner
+                        android:id="@+id/spinner_source_languages"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/colorPrimaryDark"
+                        android:entries="@array/default_value" />
+
+                    <Spinner
+                        android:id="@+id/spinner_target_languages"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/colorPrimaryDark"
+                        android:entries="@array/default_value" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_below="@+id/top_layout"
+                    android:background="@android:color/darker_gray"
+                    app:layout_scrollFlags="scroll|enterAlways" />
+
+                <TextView
+                    android:id="@+id/source_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/top_layout"
+                    android:layout_margin="@dimen/my_base_margin"
+                    android:background="@null"
+                    app:layout_scrollFlags="scroll|enterAlways" />
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/progress"
+                style="?android:attr/progressBarStyleLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/colorPrimaryDark"
-                android:entries="@array/default_value" />
-        </LinearLayout>
+                android:layout_centerInParent="true"
+                android:layout_marginBottom="8dp"
+                android:indeterminate="true"
+                android:visibility="visible" />
+        </RelativeLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:layout_below="@+id/top_layout"
-            android:background="@android:color/darker_gray"
-            app:layout_scrollFlags="scroll|enterAlways" />
-
-        <TextView
-            android:id="@+id/source_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/top_layout"
-            android:layout_margin="@dimen/my_base_margin"
-            android:background="@null"
-            app:layout_scrollFlags="scroll|enterAlways" />
     </android.support.design.widget.AppBarLayout>
-
-    <ProgressBar
-        android:id="@+id/progress"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="8dp"
-        android:indeterminate="true"
-        android:visibility="visible" />
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="wrap_content"
@@ -87,12 +99,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            card_view:cardCornerRadius="4dp"
-            app:cardBackgroundColor="@color/colorPrimary"
+            android:layout_marginBottom="@dimen/my_base_margin"
             android:layout_marginLeft="@dimen/my_base_margin"
             android:layout_marginRight="@dimen/my_base_margin"
-            android:layout_marginBottom="@dimen/my_base_margin"
-            android:layout_marginTop="18dp">
+            android:layout_marginTop="18dp"
+            app:cardBackgroundColor="@color/colorPrimary"
+            card_view:cardCornerRadius="4dp">
 
             <RelativeLayout
                 android:id="@+id/content"

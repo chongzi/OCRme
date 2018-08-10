@@ -50,8 +50,8 @@ public class GetMoreRequestsActivity extends BaseLoginActivity
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         AndroidInjection.inject(this); //or extends daggerappcompat activity instead
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_get_more_requests);
         mRootView = findViewById(android.R.id.content);
         if (mRootView == null) {

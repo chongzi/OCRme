@@ -1,5 +1,6 @@
 package com.ashomok.ocrme.utils;
 
+import android.content.Context;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -10,6 +11,7 @@ import com.ashomok.ocrme.R;
 /**
  * Created by iuliia on 10/12/17.
  */
+
 
 public class InfoSnackbarUtil {
 

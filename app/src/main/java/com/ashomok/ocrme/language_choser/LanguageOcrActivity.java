@@ -73,7 +73,7 @@ public class LanguageOcrActivity extends DaggerAppCompatActivity implements Lang
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.takeView(this);
+        mPresenter.takeView(this); //because presenter use Lazy - so need to wait while activity created
     }
 
     @Override

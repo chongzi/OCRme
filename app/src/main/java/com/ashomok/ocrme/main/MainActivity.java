@@ -102,8 +102,8 @@ public class MainActivity extends BaseLoginActivity implements
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         AndroidInjection.inject(this);
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         setUpToolbar();
@@ -210,7 +210,6 @@ public class MainActivity extends BaseLoginActivity implements
 
         languageLayout = findViewById(R.id.language_layout);
         languageLayout.setOnClickListener(this);
-//        languageTextView.setOnClickListener(this);
     }
 
 

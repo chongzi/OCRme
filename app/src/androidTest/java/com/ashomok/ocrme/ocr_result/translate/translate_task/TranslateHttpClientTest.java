@@ -3,6 +3,10 @@ package com.ashomok.ocrme.ocr_result.translate.translate_task;
 import android.util.Log;
 import android.util.Pair;
 
+import com.ashomok.ocrme.ocr_result.translate.translate_task.translate_task.SupportedLanguagesResponse;
+import com.ashomok.ocrme.ocr_result.translate.translate_task.translate_task.TranslateHttpClient;
+import com.ashomok.ocrme.ocr_result.translate.translate_task.translate_task.TranslateResponse;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,12 +41,26 @@ public class TranslateHttpClientTest {
     @Test
     public void translate() {
         TranslateResponse responce =
-                client.translate("de", "наша мама добрая").blockingGet();
+                client.translate("de", "наша мама добрая", null).blockingGet();
 
         Assert.assertTrue(responce.getStatus().equals(TranslateResponse.Status.OK));
-        Assert.assertTrue(responce.getSourceLanguageCode().equals("ru"));
-        Assert.assertTrue(responce.getTargetLanguageCode().equals("de"));
-        Assert.assertTrue(responce.getTextResult().length() > 0);
+        TranslateResponse.TranslateResult translateResult = responce.getTranslateResult();
+        Assert.assertTrue(translateResult.getSourceLanguageCode().equals("ru"));
+        Assert.assertTrue(translateResult.getTargetLanguageCode().equals("de"));
+        Assert.assertTrue(translateResult.getTextResult().length() > 0);
+    }
+
+    @Test
+    public void translate2() {
+        TranslateResponse responce =
+                client.translate("de", "русский длинный текст русский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текст",
+   null).blockingGet();
+
+        Assert.assertTrue(responce.getStatus().equals(TranslateResponse.Status.OK));
+        TranslateResponse.TranslateResult translateResult = responce.getTranslateResult();
+        Assert.assertTrue(translateResult.getSourceLanguageCode().equals("ru"));
+        Assert.assertTrue(translateResult.getTargetLanguageCode().equals("de"));
+        Assert.assertTrue(translateResult.getTextResult().length() > 0);
     }
 
     @Test
@@ -57,7 +75,7 @@ public class TranslateHttpClientTest {
                         ).subscribeOn(Schedulers.io());
 
         Single<TranslateResponse> translateResponseSingle =
-                client.translate("de", "наша мама добрая")
+                client.translate("de", "наша мама добрая", null)
                         .doOnEvent((supportedLanguagesResponce, throwable) -> {
                                     Log.d(TAG, "getSupportedLanguages thread = "
                                             + Thread.currentThread().getName());

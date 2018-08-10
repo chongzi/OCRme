@@ -11,14 +11,10 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.InputType;
 import android.text.Spanned;
-import android.util.Log;
-import android.util.Pair;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
@@ -32,286 +28,100 @@ import android.widget.Toast;
 import com.annimon.stream.IntStream;
 import com.annimon.stream.Stream;
 import com.ashomok.ocrme.R;
-import com.ashomok.ocrme.ocr_result.translate.translate_task.SupportedLanguagesResponse;
-import com.ashomok.ocrme.ocr_result.translate.translate_task.TranslateHttpClient;
-import com.ashomok.ocrme.ocr_result.translate.translate_task.TranslateResponse;
-import com.ashomok.ocrme.utils.NetworkUtils;
-import com.trello.rxlifecycle2.android.ActivityEvent;
+import com.ashomok.ocrme.ocr_result.translate.translate_task.translate_task.SupportedLanguagesResponse;
+import com.ashomok.ocrme.utils.InfoSnackbarUtil;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import java.util.List;
-import java.util.Locale;
 
-import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjection;
 
 import static com.ashomok.ocrme.Settings.appPackageName;
-import static com.ashomok.ocrme.utils.FirebaseUtils.getIdToken;
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
 /**
  * Created by iuliia on 8/27/17.
  */
 
-//todo use MVP here
 //// TODO: MAJOR 9/14/17 replace spinners with new Language Activity - see Google Translate APP for example
-public class TranslateActivity extends RxAppCompatActivity implements View.OnClickListener {
-    public static final String EXTRA_TEXT = "com.ashomokdev.imagetotext.TEXT";
+public class TranslateActivity extends RxAppCompatActivity implements View.OnClickListener,
+        TranslateContract.View {
+
     private static final String TAG = DEV_TAG + TranslateActivity.class.getSimpleName();
-    private String sourceText;
-    private String targetText;
-    private TranslateHttpClient translateHttpClient;
+    public static final String EXTRA_TEXT = "com.ashomokdev.imagetotext.TEXT";
+
     private Spinner sourceLanguagesSpinner;
     private Spinner targetLanguagesSpinner;
-    private TextView sourceEditText;
+    private TextView sourceTextView;
     private EditText targetEditText;
     private ProgressBar progress;
     private View contentLayout;
-    private String sourceLanguageCode;
-    private String targetLanguageCode;
-    @Nullable
-    private String userIdToken;
-    private List<SupportedLanguagesResponse.Language> languages;
+    private String sourceText;
+
+    public View mRootView;
+
+    @Inject
+    TranslatePresenter mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this); //todo or extends daggerappcompat activity instaead
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_translate);
 
-        Intent intent = getIntent();
-        sourceText = intent.getStringExtra(EXTRA_TEXT);
-        if (sourceText == null || sourceText.length() < 1) {
-            Log.d(TAG, "called with empty source text");
+        mRootView = findViewById(android.R.id.content);
+        if (mRootView == null) {
+            mRootView = getWindow().getDecorView().findViewById(android.R.id.content);
         }
 
         initToolbar();
 
-        sourceLanguagesSpinner = findViewById(R.id.spinner_source_languages);
-        targetLanguagesSpinner = findViewById(R.id.spinner_target_languages);
+        sourceText = getIntent().getStringExtra(EXTRA_TEXT);
 
-        sourceEditText = findViewById(R.id.source_text);
+        sourceTextView = findViewById(R.id.source_text);
         targetEditText = findViewById(R.id.target_text);
 
         progress = findViewById(R.id.progress);
         contentLayout = findViewById(R.id.content);
 
-        translateHttpClient = TranslateHttpClient.getInstance();
-
-        callInitTranslate(sourceText);
-
         initBottomPanel();
 
-        sourceEditText.setOnEditorActionListener((v, actionId, event) -> {
+        sourceTextView.setOnEditorActionListener((v, actionId, event) -> {
             boolean handled = false;
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                sourceText = sourceEditText.getText().toString();
-                callTranslate(sourceText, sourceLanguageCode, targetLanguageCode, userIdToken);
+                mPresenter.updateSourceText(sourceTextView.getText().toString());
                 handled = true;
             }
             return handled;
         });
 
-        sourceEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        sourceEditText.setRawInputType(InputType.TYPE_CLASS_TEXT);
+        sourceTextView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        sourceTextView.setRawInputType(InputType.TYPE_CLASS_TEXT);
+        sourceTextView.setText(sourceText);
 
-        final int[] check1 = {0}; //for preventing duplicate translate call in init process
-        final int[] check2 = {0}; //for preventing duplicate translate call in init process
-        sourceLanguagesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                if (languages != null && ++check1[0] > 1) {
-                    sourceLanguageCode = languages.get(position).getCode();
-                    callTranslate(sourceText, sourceLanguageCode, targetLanguageCode, userIdToken);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-        targetLanguagesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (languages != null && ++check2[0] > 1) {
-                    targetLanguageCode = languages.get(position).getCode();
-                    callTranslate(sourceText, sourceLanguageCode, targetLanguageCode, userIdToken);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+        mPresenter.takeView(this);
     }
 
-    /**
-     * init translate call performs in parallel
-     * 1 Thread: get supported languages
-     * 2 Thread: call translate for given Text, using auto for sourcelanguage and
-     * deviceLanguage for targetLanguage
-     */
-    private void callInitTranslate(@NonNull String mInputText) {
-        if (NetworkUtils.isOnline(this)) {
-            showProgress(true);
 
-           getIdToken()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            optionalToken -> {
-                                //logged in
-                                if (optionalToken.isPresent()) {
-                                    userIdToken = optionalToken.get();
-                                }
-
-                                callInitTranslate(mInputText, userIdToken);
-
-                            }, throwable -> {
-                                String errorMessage = throwable.getMessage();
-                                Log.e(TAG, errorMessage);
-                                updateUI(errorMessage);
-                            });
-        } else {
-            updateUI(getString(R.string.network_error));
-        }
-    }
-
-    private void callInitTranslate(@NonNull String mInputText, @Nullable String userIdToken) {
-
-        String deviceLanguageCode = Locale.getDefault().getLanguage();
-        //first -------------------------------------------
-        Single<SupportedLanguagesResponse> supportedLanguagesResponceSingle =
-                translateHttpClient.getSupportedLanguages(deviceLanguageCode)
-                        .doOnEvent((supportedLanguagesResponce, throwable) -> {
-                                    Log.d(TAG, "getSupportedLanguages called in thread: "
-                                            + Thread.currentThread().getName());
-                                }
-                        ).subscribeOn(Schedulers.io());
-
-
-        //second---------------------------------------------
-        Single<TranslateResponse> translateResponseSingle =
-                translateHttpClient.translate(deviceLanguageCode, mInputText, userIdToken)
-                        .doOnEvent((supportedLanguagesResponce, throwable) -> {
-                                    Log.d(TAG, "translate called in thread: "
-                                            + Thread.currentThread().getName());
-                                }
-                        ).subscribeOn(Schedulers.io());
-
-        //zipped first + second-----------------------------------------
-        Single<Pair<SupportedLanguagesResponse, TranslateResponse>> zipped =
-                Single.zip(
-                        supportedLanguagesResponceSingle,
-                        translateResponseSingle,
-                        (a, b) -> new Pair<>(a, b))
-                        .observeOn(AndroidSchedulers.mainThread());// Will switch to Main-Thread when finished
-
-        zipped.compose(bindToLifecycle())
-                .subscribe(
-                        myData -> {
-                            Log.d(TAG, "zipped returns " + myData.toString());
-                            updateUI(myData);
-                        },
-                        throwable -> {
-                            String errorMessage = throwable.getMessage();
-                            Log.e(TAG, errorMessage);
-                            updateUI(errorMessage);
-                        });
-    }
-
-    private void callTranslate(
-            @NonNull String mInputText,
-            @NonNull String sourceLanguageCode,
-            @NonNull String targetLanguageCode,
-            @Nullable String userIdToken) {
-
-        if (NetworkUtils.isOnline(this)) {
-
-            Single<TranslateResponse> translateResponseSingle =
-                    translateHttpClient.translate(
-                            sourceLanguageCode, targetLanguageCode, mInputText, userIdToken)
-                            .subscribeOn(Schedulers.io());
-
-            translateResponseSingle
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .compose(bindUntilEvent(ActivityEvent.DESTROY))
-                    .subscribe(
-                            myData -> {
-                                Log.d(TAG, "translate returns " + myData.toString());
-                                updateUI(myData);
-                            },
-                            throwable -> {
-                                String errorMessage = throwable.getMessage();
-                                Log.e(TAG, errorMessage);
-                                updateUI(errorMessage);
-                            });
-        } else {
-            updateUI(getString(R.string.network_error));
-        }
-    }
-
-    private void updateUI(TranslateResponse translateResponse) {
-        if (!translateResponse.getStatus().equals(TranslateResponse.Status.OK)) {
-            updateUI(getString(R.string.error_while_translating));
-        } else {
-            //do staff
-            targetText = translateResponse.getTranslateResult().getTextResult();
-            targetEditText.setText(targetText);
-        }
-    }
-
-    private void updateUI(String errorMessage) {
+    @Override
+    public void showError(String message) {
         showProgress(false);
-        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
+        InfoSnackbarUtil.showError(message, mRootView);
     }
 
-    private void updateUI(Pair<SupportedLanguagesResponse, TranslateResponse> myData) {
+    @Override
+    public void showError(int errorMessageRes) {
         showProgress(false);
-        SupportedLanguagesResponse supportedLanguagesResponse = myData.first;
-        TranslateResponse translateResponse = myData.second;
-
-        if (!supportedLanguagesResponse.getStatus().equals(SupportedLanguagesResponse.Status.OK)) {
-            updateUI(getString(R.string.can_not_get_supported_languages));
-        } else if (!translateResponse.getStatus().equals(TranslateResponse.Status.OK)) {
-            updateUI(getString(R.string.error_while_translating));
-        } else {
-            //do staff
-            languages = supportedLanguagesResponse.getSupportedLanguages();
-            sourceLanguageCode = translateResponse.getTranslateResult().getSourceLanguageCode();
-            targetLanguageCode = translateResponse.getTranslateResult().getTargetLanguageCode();
-
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                    android.R.layout.simple_spinner_item,
-                    Stream.of(languages).map(l -> l.getName()).toList());
-
-            sourceLanguagesSpinner.setAdapter(adapter);
-            targetLanguagesSpinner.setAdapter(adapter);
-
-            sourceLanguagesSpinner.setSelection(IntStream.range(0, languages.size())
-                    .filter(i -> languages.get(i).getCode().equals(sourceLanguageCode))
-                    .findFirst()
-                    .orElse(0));
-            targetLanguagesSpinner.setSelection(IntStream.range(0, languages.size())
-                    .filter(i -> languages.get(i).getCode().equals(targetLanguageCode))
-                    .findFirst()
-                    .orElse(0));
-
-            targetText = translateResponse.getTranslateResult().getTextResult();
-            targetEditText.setText(targetText);
-            sourceEditText.setText(sourceText);
-        }
+        InfoSnackbarUtil.showError(errorMessageRes, mRootView);
     }
 
     /**
      * Shows the progress UI and hides the activity's content
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
+    public void showProgress(final boolean show) {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
@@ -336,6 +146,73 @@ public class TranslateActivity extends RxAppCompatActivity implements View.OnCli
         });
     }
 
+    @Override
+    public void updateTargetText(String targetText) {
+        targetEditText.setText(targetText);
+    }
+
+    @Override
+    public void initSourceLanguagesSpinner(
+            List<SupportedLanguagesResponse.Language> languages,
+            String sourceLanguageCode) {
+
+        sourceLanguagesSpinner = findViewById(R.id.spinner_source_languages);
+
+        sourceLanguagesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mPresenter.updateSourceLanguageCode(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item,
+                Stream.of(languages).map(l -> l.getName()).toList());
+
+        sourceLanguagesSpinner.setAdapter(adapter);
+
+        sourceLanguagesSpinner.setSelection(IntStream.range(0, languages.size())
+                .filter(i -> languages.get(i).getCode().equals(sourceLanguageCode))
+                .findFirst()
+                .orElse(0));
+    }
+
+    @Override
+    public void initTargetLanguagesSpinner(
+            List<SupportedLanguagesResponse.Language> languages,
+            String targetLanguageCode) {
+
+        targetLanguagesSpinner = findViewById(R.id.spinner_target_languages);
+
+        targetLanguagesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mPresenter.updateTargetLanguageCode(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item,
+                Stream.of(languages).map(l -> l.getName()).toList());
+
+        targetLanguagesSpinner.setAdapter(adapter);
+
+        targetLanguagesSpinner.setSelection(IntStream.range(0, languages.size())
+                .filter(i -> languages.get(i).getCode().equals(targetLanguageCode))
+                .findFirst()
+                .orElse(0));
+    }
+
 
     private void initToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -358,7 +235,7 @@ public class TranslateActivity extends RxAppCompatActivity implements View.OnCli
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.copy_btn:
-                copyTextToClipboard(targetText);
+                copyTextToClipboard();
                 break;
             case R.id.share_text_btn:
                 onShareClicked();
@@ -368,7 +245,8 @@ public class TranslateActivity extends RxAppCompatActivity implements View.OnCli
         }
     }
 
-    private void copyTextToClipboard(CharSequence text) {
+    private void copyTextToClipboard() {
+        String text = targetEditText.getText().toString();
         ClipboardManager clipboard =
                 (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText(getString(R.string.text_result), text);
@@ -382,13 +260,15 @@ public class TranslateActivity extends RxAppCompatActivity implements View.OnCli
 
     @SuppressWarnings("deprecation")
     private void onShareClicked() {
+        String text = targetEditText.getText().toString();
+
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
 
         Resources res = getResources();
         String linkToApp = "https://play.google.com/store/apps/details?id=" + appPackageName;
         String sharedBody =
-                String.format(res.getString(R.string.share_text_message), targetText, linkToApp);
+                String.format(res.getString(R.string.share_text_message), text, linkToApp);
 
         Spanned styledText;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
@@ -400,5 +280,10 @@ public class TranslateActivity extends RxAppCompatActivity implements View.OnCli
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, res.getString(R.string.text_result));
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, styledText);
         startActivity(Intent.createChooser(sharingIntent, res.getString(R.string.send_text_result_to)));
+    }
+
+    @Override
+    public String getSourceText() {
+        return sourceText;
     }
 }

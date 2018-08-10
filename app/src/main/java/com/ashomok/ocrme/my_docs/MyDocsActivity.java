@@ -55,8 +55,8 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
     AdMobContainerImpl adMobContainer;
     @Inject
     MyDocsPresenter mPresenter;
-    @Inject
-    MyDocsHttpClient httpClient;
+//    @Inject
+//    MyDocsHttpClient httpClient; //todo removeredntant
     private List<OcrResult> dataList;
     private List<OcrResult> multiSelectDataList;
     private RecyclerViewAdapter adapter;
@@ -147,8 +147,8 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         AndroidInjection.inject(this);
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_docs);
         initToolbar();
         initSignInView();
