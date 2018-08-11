@@ -4,9 +4,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
-
-import com.ashomok.ocrme.my_docs.MyDocsPresenter;
 
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 

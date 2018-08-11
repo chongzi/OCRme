@@ -18,7 +18,7 @@ import static com.ashomok.ocrme.ocr_result.tab_fragments.TextFragment.EXTRA_TEXT
  */
 
 // run slow emulator /home/iuliia/Android/Sdk/tools/emulator -avd Nexus_5X_API_24 -netspeed gsm
-    // /home/iuliia/Android/Sdk/tools/emulator -avd Nexus_5X_API_24 -netdelay gprs
+// /home/iuliia/Android/Sdk/tools/emulator -avd Nexus_5X_API_24 -netdelay gprs
 
 @RunWith(AndroidJUnit4.class)
 @SmallTest
@@ -28,16 +28,12 @@ public class TranslateActivityTest {
     public ActivityTestRule<TranslateActivity> mActivityRule = new ActivityTestRule<>(
             TranslateActivity.class, true, false);
 
-
     @Test
     public void seeHowToLook() throws InterruptedException {
         final Context targetContext = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext();
         Intent intent = new Intent(targetContext, TranslateActivity.class);
-
-//        String sourceText = "руский длиекструский длинный";
-
-        String sourceText = "русский длинный текст русскирусский текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текст";
+        String sourceText = "русский длинный текст й длинный текст русскирусский текструсский длинный текструсский дй длинный текст русскирусский текструсский длинный текструсский дй длинный текст русскирусский текструсский длинный текструсский дй длинный текст русскирусский текструсский длинный текструсский друсскирусский текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текст";
         intent.putExtra(EXTRA_TEXT, sourceText);
         mActivityRule.launchActivity(intent);
         Thread.sleep(100000);
@@ -49,9 +45,8 @@ public class TranslateActivityTest {
                 .getTargetContext();
         Intent intent = new Intent(targetContext, TranslateActivity.class);
 
-        String sourceText = "руский длиекструский длинный";
+        String sourceText = "руский длинный";
 
-//        String sourceText = "русский длинный текст русскирусский текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текструсский длинный текст";
         intent.putExtra(EXTRA_TEXT, sourceText);
         mActivityRule.launchActivity(intent);
         Thread.sleep(100000);

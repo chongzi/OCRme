@@ -4,23 +4,13 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <!-- error infobar -->
-    <dimen name="error_horizontal_padding">4dp</dimen>
-    <dimen name="error_vertical_padding">16dp</dimen>
 
-    <dimen name="loginactivity_logo_from_login">20dp</dimen>
-
-    <dimen name="nav_header_vertical_spacing">16dp</dimen>
-
-    <dimen name="sing_in_btn_height">48dp</dimen>
-    <dimen name="bottom_icon_size">36dp</dimen>
     <dimen name="my_base_margin">14dp</dimen>
     <dimen name="my_l_margin">24dp</dimen>
-    <dimen name="top_margin">18dp</dimen>
     <dimen name="my_default_font_size">18sp</dimen>
     <dimen name="empty_view_error_font_size">18sp</dimen>
     <dimen name="spl_default_splitter_size">12dp</dimen>
     <dimen name="fab_margin">20dp</dimen>
-    <dimen name="margin10">10dp</dimen>
     <dimen name="margin3">3dp</dimen>
     <dimen name="margin9">9dp</dimen>
     <dimen name="update_to_premium_backdrop_height">256dp</dimen>
@@ -28,6 +18,5 @@
     <dimen name="base_text_size">16sp</dimen>
     <dimen name="xl_text_size">26sp</dimen>
     <dimen name="l_text_size">20sp</dimen>
-    <dimen name="btn_padding">8dp</dimen>
 
 </resources>

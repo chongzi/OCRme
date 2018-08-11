@@ -45,6 +45,7 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
  * Created by iuliia on 8/27/17.
  */
 
+//TODO MAJOR add ads here
 //// TODO: MAJOR 9/14/17 replace spinners with new Language Activity - see Google Translate APP for example
 public class TranslateActivity extends RxAppCompatActivity implements View.OnClickListener,
         TranslateContract.View {

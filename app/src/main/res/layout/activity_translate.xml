@@ -1,158 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:card_view="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:descendantFocusability="beforeDescendants"
-    android:fitsSystemWindows="true"
-    android:focusableInTouchMode="true">
+    android:layout_height="match_parent">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar"
+    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:card_view="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:theme="@style/AppThemeLight">
+        android:layout_height="match_parent"
+        android:descendantFocusability="beforeDescendants"
+        android:fitsSystemWindows="true"
+        android:focusableInTouchMode="true">
 
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/toolbar"
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|enterAlways" />
+            android:orientation="vertical"
+            android:theme="@style/AppThemeLight">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            <include
+                android:id="@+id/toolbar"
+                layout="@layout/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|enterAlways" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:id="@+id/top_layout"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:gravity="center_vertical"
+                android:minHeight="50dp"
+                android:orientation="horizontal"
+                android:paddingEnd="@dimen/my_base_margin"
+                android:paddingLeft="@dimen/my_base_margin"
+                android:paddingStart="@dimen/my_base_margin"
+                app:layout_scrollFlags="scroll|enterAlways">
 
-
-                <LinearLayout
-                    android:id="@+id/top_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:gravity="center_vertical"
-                    android:minHeight="50dp"
-                    android:orientation="horizontal"
-                    android:paddingEnd="@dimen/my_base_margin"
-                    android:paddingLeft="@dimen/my_base_margin"
-                    android:paddingStart="@dimen/my_base_margin"
-                    app:layout_scrollFlags="scroll|enterAlways">
-
-                    <Spinner
-                        android:id="@+id/spinner_source_languages"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@color/colorPrimaryDark"
-                        android:entries="@array/default_value" />
-
-                    <Spinner
-                        android:id="@+id/spinner_target_languages"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@color/colorPrimaryDark"
-                        android:entries="@array/default_value" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:layout_below="@+id/top_layout"
-                    android:background="@android:color/darker_gray"
-                    app:layout_scrollFlags="scroll|enterAlways" />
-
-                <TextView
-                    android:id="@+id/source_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/top_layout"
-                    android:layout_margin="@dimen/my_base_margin"
-                    android:background="@null"
-                    app:layout_scrollFlags="scroll|enterAlways" />
-            </LinearLayout>
-
-            <ProgressBar
-                android:id="@+id/progress"
-                style="?android:attr/progressBarStyleLarge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginBottom="8dp"
-                android:indeterminate="true"
-                android:visibility="visible" />
-        </RelativeLayout>
-
-    </android.support.design.widget.AppBarLayout>
-
-    <android.support.v4.widget.NestedScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/card_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/my_base_margin"
-            android:layout_marginLeft="@dimen/my_base_margin"
-            android:layout_marginRight="@dimen/my_base_margin"
-            android:layout_marginTop="18dp"
-            app:cardBackgroundColor="@color/colorPrimary"
-            card_view:cardCornerRadius="4dp">
-
-            <RelativeLayout
-                android:id="@+id/content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/target_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/my_base_margin"
-                    android:layout_marginRight="@dimen/my_base_margin"
-                    android:layout_marginTop="@dimen/my_base_margin"
-                    android:background="@null"
-                    android:inputType="text|textAutoCorrect|textMultiLine"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/my_default_font_size" />
-
-                <LinearLayout
-                    android:id="@+id/bottom_icons"
+                <Spinner
+                    android:id="@+id/spinner_source_languages"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_below="@id/target_text"
-                    android:orientation="horizontal"
-                    android:paddingEnd="@dimen/my_base_margin"
-                    android:paddingStart="@dimen/my_base_margin">
+                    android:backgroundTint="@color/colorPrimaryDark"
+                    android:entries="@array/default_value" />
 
-                    <ImageButton
-                        android:id="@+id/copy_btn"
+                <Spinner
+                    android:id="@+id/spinner_target_languages"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/colorPrimaryDark"
+                    android:entries="@array/default_value" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_below="@+id/top_layout"
+                android:background="@android:color/darker_gray"
+                app:layout_scrollFlags="scroll|enterAlways" />
+
+            <TextView
+                android:id="@+id/source_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/top_layout"
+                android:layout_margin="@dimen/my_base_margin"
+                android:background="@null"
+                app:layout_scrollFlags="scroll|enterAlways" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/my_base_margin"
+                android:layout_marginLeft="@dimen/my_base_margin"
+                android:layout_marginRight="@dimen/my_base_margin"
+                android:layout_marginTop="18dp"
+                app:cardBackgroundColor="@color/colorPrimary"
+                card_view:cardCornerRadius="4dp">
+
+                <RelativeLayout
+                    android:id="@+id/content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/target_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/my_base_margin"
+                        android:layout_marginRight="@dimen/my_base_margin"
+                        android:layout_marginTop="@dimen/my_base_margin"
+                        android:background="@null"
+                        android:inputType="text|textAutoCorrect|textMultiLine"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/my_default_font_size" />
+
+                    <LinearLayout
+                        android:id="@+id/bottom_icons"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="?android:selectableItemBackground"
-                        android:padding="@dimen/my_base_margin"
-                        android:src="@drawable/ic_content_copy_black_24dp"
-                        android:tint="@color/white" />
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@id/target_text"
+                        android:orientation="horizontal"
+                        android:paddingEnd="@dimen/my_base_margin"
+                        android:paddingStart="@dimen/my_base_margin">
 
-                    <ImageButton
-                        android:id="@+id/share_text_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="?android:selectableItemBackground"
-                        android:padding="@dimen/my_base_margin"
-                        android:src="@drawable/ic_share_black_24dp"
-                        android:tint="@color/white" />
-                </LinearLayout>
-            </RelativeLayout>
-        </android.support.v7.widget.CardView>
-    </android.support.v4.widget.NestedScrollView>
-</android.support.design.widget.CoordinatorLayout>
+                        <ImageButton
+                            android:id="@+id/copy_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="?android:selectableItemBackground"
+                            android:padding="@dimen/my_base_margin"
+                            android:src="@drawable/ic_content_copy_black_24dp"
+                            android:tint="@color/white" />
+
+                        <ImageButton
+                            android:id="@+id/share_text_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="?android:selectableItemBackground"
+                            android:padding="@dimen/my_base_margin"
+                            android:src="@drawable/ic_share_black_24dp"
+                            android:tint="@color/white" />
+                    </LinearLayout>
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
+        </android.support.v4.widget.NestedScrollView>
+    </android.support.design.widget.CoordinatorLayout>
+
+    <ProgressBar
+        android:id="@+id/progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="8dp"
+        android:indeterminate="true"
+        android:visibility="visible" />
+</RelativeLayout>

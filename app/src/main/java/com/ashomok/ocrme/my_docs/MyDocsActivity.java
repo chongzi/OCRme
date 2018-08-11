@@ -21,7 +21,6 @@ import android.widget.ProgressBar;
 import com.ashomok.ocrme.R;
 import com.ashomok.ocrme.ad.AdMobContainerImpl;
 import com.ashomok.ocrme.firebaseUiAuth.BaseLoginActivity;
-import com.ashomok.ocrme.my_docs.get_my_docs_task.MyDocsHttpClient;
 import com.ashomok.ocrme.ocr.ocr_task.OcrResponse;
 import com.ashomok.ocrme.ocr.ocr_task.OcrResult;
 import com.ashomok.ocrme.ocr_result.OcrResultActivity;
@@ -45,6 +44,9 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
  */
 
 //todo don't reload list when onback clicked
+ //todo stranje scroll animation when load more - looks like ылетает влево и появляется снова
+ //todo bug - scroll automaticaly to the top if contains 9 pc docs.
+
 public class MyDocsActivity extends BaseLoginActivity implements View.OnClickListener, MyDocsContract.View {
 
     private static final int DELETE_TAG = 1;
@@ -55,8 +57,7 @@ public class MyDocsActivity extends BaseLoginActivity implements View.OnClickLis
     AdMobContainerImpl adMobContainer;
     @Inject
     MyDocsPresenter mPresenter;
-//    @Inject
-//    MyDocsHttpClient httpClient; //todo removeredntant
+
     private List<OcrResult> dataList;
     private List<OcrResult> multiSelectDataList;
     private RecyclerViewAdapter adapter;

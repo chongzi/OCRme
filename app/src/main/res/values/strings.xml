@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE resources [<!ENTITY appname "OCRme"><!ENTITY author "AshomokDev">]>
-
 <resources>
     <string-array name="default_value">
         <item>-</item>
@@ -9,27 +8,20 @@
     <string name="my_email" translatable="false">ashomokdev@gmail.com</string>
     <string name="version">version</string>
     <string name="exit_dialog_title">Do you want to exit?</string>
-    <string name="alert_dialog_exit">Exit</string>
     <string name="cancel">Cancel</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="remove_ads">Remove ads</string>
     <string name="about">About</string>
     <string name="share_opinion">Please share your opinion</string>
     <string name="ok" translatable="false">OK</string>
     <string name="later">Later</string>
     <string name="never">Never</string>
-    <string name="recognition">Recognition…</string>
     <string name="camera_not_found">Camera not found</string>
     <string name="thank_you_for_your_support">Thank you for your support!</string>
     <string name="times_app_was_used" translatable="false">times_app_was_used</string>
     <string name="rate_app_dialog_title">Rate app</string>
     <string name="language">Language:</string>
     <string name="language_label">Language</string>
-    <string name="change">change</string>
     <string name="my_docs">My docs</string>
-    <string name="share">Share</string>
-    <string name="rate">Rate</string>
     <string name="afrikaans">Afrikaans</string>
     <string name="arabic">Arabic</string>
     <string name="assamese">Assamese</string>
@@ -44,7 +36,6 @@
     <string name="danish">Danish</string>
     <string name="dutch">Dutch</string>
     <string name="estonian">Estonian</string>
-    <string name="recognizing">Recognizing</string>
     <string name="english">English</string>
     <string name="max_checked_allowed">Max %1$s languages allowed</string>
     <string name="text_not_found">Text not found.</string>
@@ -53,12 +44,6 @@
     <string name="logout">Logout</string>
     <string name="facebook_application_id" translatable="false">1921494888130800</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb1921494888130800</string>
-    <string name="loading">Loading…</string>
-    <string name="preference_file_key" translatable="false">preference_file_key</string>
-    <string name="last_login_mode" translatable="false">last_login_mode</string>
-    <string name="user_email" translatable="false">user_email</string>
-    <string name="register">Register</string>
-    <string name="alert_dialog_logout">Logout</string>
     <string name="ask_sign_out">You are signed in as %1$s. Sign out?</string>
     <string name="you_signed_in_as">You are signed in as \n%1$s</string>
     <string name="please_login">Please Sign in for having access to your work history</string>
@@ -69,9 +54,6 @@
     <string name="copied">Copied</string>
     <string name="send_text_result_to">Send text result to</string>
     <string name="open_in_another_app">Open in\nanother app</string>
-    <string name="not_avalible">You disabled this feature</string>
-    <string name="allow_permissions">Please allow the permissions, otherwise this feature will not work.</string>
-    <string name="permissions_needs">Permission needs!</string>
     <string name="no_app">You have no app to do this.</string>
     <string name="no_file">Unexpected error. File can not be find.</string>
     <string name="file_saved">File saved in</string>
@@ -85,62 +67,12 @@
     <string name="error_while_translating">Error while translating.</string>
     <string name="network_error">Network error. Check internet connection.</string>
     <string name="language_not_supported">Language not supported</string>
-    <string name="launch_title">FirebaseUI Auth Demo</string>
     <string name="sign_in">Sign in</string>
-    <string name="green_theme">Green Theme</string>
-    <string name="purple_theme">Purple Theme</string>
-    <string name="dark_theme">Dark Theme</string>
-    <string name="use_theme_header">Use theme:</string>
-    <string name="logo_header">Logo:</string>
-    <string name="firebase_logo_label">Firebase Auth</string>
-    <string name="google_logo_label">Google</string>
-    <string name="no_logo_label">None</string>
-    <string name="auth_providers_header">Use auth providers:</string>
-    <string name="email_label">Email</string>
-    <string name="phone_label">Phone</string>
-    <string name="facebook_label">Facebook</string>
-    <string name="facebook_label_missing_config">Facebook - configuration missing</string>
-    <string name="twitter_label">Twitter</string>
-    <string name="twitter_label_missing_config">Twitter - configuration missing</string>
-    <string name="google_label">Google</string>
-    <string name="google_label_missing_config">Google - configuration missing</string>
-    <string name="google_tos_label">Google TOS</string>
-    <string name="firebase_tos_label">Firebase TOS</string>
-    <string name="google_privacy_label">Google Privacy Policy</string>
-    <string name="firebase_privacy_label">Firebase Privacy Policy</string>
-    <string name="tos_header">Terms of Service URL:</string>
-    <string name="privacy_policy_header">Privacy Policy URL:</string>
-    <string name="unknown_response">Unexpected onActivityResult response code</string>
     <string name="unknown_sign_in_response">Unknown response from AuthUI sign-in</string>
     <string name="sign_in_cancelled">Sign in cancelled</string>
     <string name="no_internet_connection">No internet connection</string>
-    <string name="signed_in_header">You are signed in!</string>
-    <string name="sign_out">Sign out</string>
-    <string name="delete_account_label">Delete account</string>
     <string name="sign_out_failed">Sign out failed</string>
-    <string name="delete_account_failed">Delete account failed</string>
-    <string name="user_profile_header">User profile:</string>
-    <string name="profile_picture_content_desc">Profile picture</string>
-    <string name="default_theme">Default theme</string>
-    <string name="configuration_required">Configuration is required - see README.md</string>
-    <string name="other_options_header">Other Options:</string>
-    <string name="rational_image_perm">This sample will read an image from local storage to upload to Cloud Storage.</string>
-    <string name="anonymous_auth_failed_msg">Anonymous authentication failed, various components of the demo will not work. Make sure your device is online and that Anonymous Auth is configured in your Firebase project(https://console.firebase.google.com/project/_/authentication/providers)</string>
-    <string name="extra_google_scopes">Example extra Google scopes</string>
-    <string name="drive_file_scope">Drive File</string>
-    <string name="youtube_data_scope">Youtube data</string>
-    <string name="extra_facebook_scopes">Example extra Facebook scopes</string>
-    <string name="friends">Friends</string>
-    <string name="photos">Photos</string>
-    <string name="idp_token">IDP Token</string>
-    <string name="idp_secret">IDP Secret</string>
     <string name="unknown_error">An unknown error occurred</string>
-    <string name="send">Send</string>
-    <string name="download">Download</string>
-    <string name="upload">Upload</string>
-    <string name="choose_image">Choose Image</string>
-    <string name="accessibility_downloaded_image">Downloaded image</string>
-    <string name="allow_new_email_acccount">Allow account creation if email does not exist.</string>
     <string name="canceled">Canseled</string>
     <string name="invalid_language_hints">Invalid language hints. \nRun again with Auto language.</string>
     <string name="result">Result</string>
@@ -153,18 +85,13 @@
     <string name="all_languages">All languages</string>
     <string name="ocr_recently_chosen_languge_codes" translatable="false">ocr_recently_chosen_languge_codes</string>
     <string name="auto">auto</string>
-    <string name="search_title">Search</string>
-    <string name="search_hint">English</string>
     <string name="saved_language_codes">saved_language_codes</string>
     <string name="preferences">preferences</string>
     <string name="crop">Crop</string>
     <string name="main_action_rotate">Rotate</string>
-    <string name="translate_recently_chosen_languge_codes" translatable="false">translate_recently_chosen_languge_codes</string>
     <string name="menu_item_delete">Delete</string>
-    <string name="check">Check</string>
     <string name="unable_identify_user">Unable to identify user. Try login again.</string>
     <string name="deleted">Deleted</string>
-    <string name="error_while_delete">Error while delete</string>
     <string name="selected">\u0020selected</string>
     <string name="select_all">Select all</string>
     <string name="select">Select</string>
@@ -179,7 +106,6 @@
     <string name="one_year">One year</string>
     <string name="price_per_month">%1$s %2$s/month</string>
     <string name="price_per_1_in_100">%1$s %2$s/request</string>
-    <string name="price_per_1_in_5">%1$s %2$s/request</string>
     <string name="no_ads">No ads</string>
     <string name="unlimited_ocr_requests">Unlimited Image recognition requests</string>
     <string name="unlimited_translate_requests">Unlimited Translate requests</string>
@@ -197,7 +123,6 @@
     <string name="check_premium_price">Check premium price</string>
     <string name="you_have_requests">You have %1$s Image Scan Requests. You can get more FREE or check premium account price.</string>
     <string name="you_have_no_docs">You have no docs yet</string>
-    <string name="signed_in">Signed in</string>
     <string name="logged_out">Logged out</string>
     <string name="get_free_requests">Get FREE Image Scan Requests</string>
     <string name="watch_video_ads">Watch one video ad</string>
