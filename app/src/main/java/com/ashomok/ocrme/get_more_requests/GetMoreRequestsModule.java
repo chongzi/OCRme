@@ -75,8 +75,10 @@ public abstract class GetMoreRequestsModule {
         Map<String, UiPaidOptionManagingDelegate> uiDelegates = new HashMap<>();
         uiDelegates.put(BillingProviderImpl.SCAN_IMAGE_REQUESTS_5_SKU_ID, batch5Delegate);
         uiDelegates.put(BillingProviderImpl.SCAN_IMAGE_REQUESTS_100_SKU_ID, batch100Delegate);
-        uiDelegates.put(BillingProviderImpl.PREMIUM_MONTHLY_SKU_ID, subscriptionMonthlyDelegate);
-        uiDelegates.put(BillingProviderImpl.PREMIUM_YEARLY_SKU_ID, subscriptionYearlyDelegate);
+
+        //remove for better conversion
+//        uiDelegates.put(BillingProviderImpl.PREMIUM_MONTHLY_SKU_ID, subscriptionMonthlyDelegate);
+//        uiDelegates.put(BillingProviderImpl.PREMIUM_YEARLY_SKU_ID, subscriptionYearlyDelegate);
         return uiDelegates;
 
     }

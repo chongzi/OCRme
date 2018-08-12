@@ -80,7 +80,7 @@ public class OcrResultActivity extends AppCompatActivity {
                 errorMessage = getString(R.string.text_not_found);
                 break;
             case INVALID_LANGUAGE_HINTS:
-                errorMessage = getString(R.string.invalid_language_hints);
+                errorMessage = getString(R.string.invalid_language);
                 break;
             default:
                 break;

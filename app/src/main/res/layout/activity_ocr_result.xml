@@ -62,7 +62,7 @@
             android:clickable="false"
             android:gravity="center"
             android:maxWidth="300dp"
-            android:text="@string/invalid_language_hints"
+            android:text="@string/invalid_language"
             android:textColor="@color/grey_600"
             android:textSize="@dimen/empty_view_error_font_size" />
     </RelativeLayout>

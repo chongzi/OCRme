@@ -98,7 +98,7 @@ public abstract class BaseLoginActivity extends RxAppCompatActivity {
             } else if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
                 showError(R.string.unknown_error, mRootView);
             } else {
-                showError(R.string.unknown_sign_in_response, mRootView);
+                showError(R.string.unknown_response, mRootView);
             }
         }
     }

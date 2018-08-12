@@ -60,21 +60,21 @@
     <string name="error_while_saving">Error occurs while saving file</string>
     <string name="send_pdf_to">Send PDF to</string>
     <string name="link_to_pdf" translatable="false">Link to PDF</string>
-    <string name="share_pdf_message"> <![CDATA[Pdf file link: %1$s<br />Provided by app: %2$s]]></string>
-    <string name="share_text_message"> <![CDATA[%1$s<br />Provided by app: %2$s]]></string>
+    <string name="share_pdf_message" translatable="false"> <![CDATA[Pdf file link: %1$s<br />Provided by app: %2$s]]></string>
+    <string name="share_text_message" translatable="false"> <![CDATA[%1$s<br />Provided by app: %2$s]]></string>
     <string name="translate">Translate</string>
     <string name="can_not_get_supported_languages">Can not get supported languages.</string>
     <string name="error_while_translating">Error while translating.</string>
     <string name="network_error">Network error. Check internet connection.</string>
     <string name="language_not_supported">Language not supported</string>
     <string name="sign_in">Sign in</string>
-    <string name="unknown_sign_in_response">Unknown response from AuthUI sign-in</string>
+    <string name="unknown_response">Unknown response</string>
     <string name="sign_in_cancelled">Sign in cancelled</string>
     <string name="no_internet_connection">No internet connection</string>
     <string name="sign_out_failed">Sign out failed</string>
     <string name="unknown_error">An unknown error occurred</string>
-    <string name="canceled">Canseled</string>
-    <string name="invalid_language_hints">Invalid language hints. \nRun again with Auto language.</string>
+    <string name="canceled">Canceled</string>
+    <string name="invalid_language">Invalid language. \nRun again with Auto language.</string>
     <string name="result">Result</string>
     <string name="file_must_be_saved_downloading">File must be saved on the device before downloading. \nPlease allow permission.</string>
     <string name="this_option_is_not_be_avalible">This option is not available until you allow permission in phone Settings.</string>
@@ -85,8 +85,8 @@
     <string name="all_languages">All languages</string>
     <string name="ocr_recently_chosen_languge_codes" translatable="false">ocr_recently_chosen_languge_codes</string>
     <string name="auto">auto</string>
-    <string name="saved_language_codes">saved_language_codes</string>
-    <string name="preferences">preferences</string>
+    <string name="saved_language_codes" translatable="false">saved_language_codes</string>
+    <string name="preferences" translatable="false">preferences</string>
     <string name="crop">Crop</string>
     <string name="main_action_rotate">Rotate</string>
     <string name="menu_item_delete">Delete</string>
@@ -117,11 +117,11 @@
     <string name="error_while_creating_file">Error occurred while creating the File</string>
     <string name="my_premium">My premium</string>
     <string name="you_are_premium">You are premium!</string>
-    <string name="you_get_ocr_requests">You get %1$s requests more.</string>
+    <string name="you_get_ocr_requests">You get %1$s requests.</string>
     <string name="get_more_for_free">Get more for free</string>
     <string name="get_more_for_free_toolbar">We use the best algorithms and we pay for it. \nGet more for FREE thanks to a little support.</string>
     <string name="check_premium_price">Check premium price</string>
-    <string name="you_have_requests">You have %1$s Image Scan Requests. You can get more FREE or check premium account price.</string>
+    <string name="you_have_requests">You have %1$s Image Recognition Requests. You can get more FREE or check premium account price.</string>
     <string name="you_have_no_docs">You have no docs yet</string>
     <string name="logged_out">Logged out</string>
     <string name="get_free_requests">Get FREE Image Scan Requests</string>
@@ -130,7 +130,7 @@
     <string name="login_to_system">Login to system</string>
     <string name="rate_app">Rate app ★★★★★</string>
     <string name="follow_us_on_fb">Follow us on Facebook</string>
-    <string name="requests_cost">+%1$s</string>
+    <string name="requests_cost" translatable="false">+%1$s</string>
     <string name="task_is_done">Task is done</string>
     <string name="failed_to_load_video_ad">Failed to load video ad</string>
     <string name="you_have_n_requests">You have %1$s requests</string>
