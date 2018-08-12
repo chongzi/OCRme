@@ -8,11 +8,11 @@ import android.support.v13.app.FragmentPagerAdapter;
 
 import com.ashomok.ocrme.ocr.ocr_task.OcrResponse;
 import com.ashomok.ocrme.ocr.ocr_task.OcrResult;
-import com.ashomok.ocrme.ocr_result.tab_fragments.PdfFragment;
+import com.ashomok.ocrme.ocr_result.tab_fragments.SearchablePdfFragment;
 import com.ashomok.ocrme.ocr_result.tab_fragments.TextFragment;
 
-import static com.ashomok.ocrme.ocr_result.tab_fragments.PdfFragment.EXTRA_PDF_GS_URL;
-import static com.ashomok.ocrme.ocr_result.tab_fragments.PdfFragment.EXTRA_PDF_MEDIA_URL;
+import static com.ashomok.ocrme.ocr_result.tab_fragments.SearchablePdfFragment.EXTRA_PDF_GS_URL;
+import static com.ashomok.ocrme.ocr_result.tab_fragments.SearchablePdfFragment.EXTRA_PDF_MEDIA_URL;
 import static com.ashomok.ocrme.ocr_result.tab_fragments.TextFragment.EXTRA_IMAGE_URL;
 import static com.ashomok.ocrme.ocr_result.tab_fragments.TextFragment.EXTRA_LANGUAGES;
 import static com.ashomok.ocrme.ocr_result.tab_fragments.TextFragment.EXTRA_TEXT;
@@ -44,8 +44,8 @@ public class MyPagerAdapter extends FragmentPagerAdapter {
         }
     }
 
-    private PdfFragment initPDFFragment(OcrResult ocrResult) {
-        PdfFragment fragment = new PdfFragment();
+    private SearchablePdfFragment initPDFFragment(OcrResult ocrResult) {
+        SearchablePdfFragment fragment = new SearchablePdfFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_PDF_GS_URL, ocrResult.getPdfResultGsUrl());
         bundle.putString(EXTRA_PDF_MEDIA_URL, ocrResult.getPdfResultGsUrl());

@@ -52,10 +52,12 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
  * Created by iuliia on 5/31/17.
  */
 
-public class PdfFragment extends Fragment implements FragmentCompat.OnRequestPermissionsResultCallback {
+
+//todo use dagger here
+public class SearchablePdfFragment extends Fragment implements FragmentCompat.OnRequestPermissionsResultCallback {
     public static final String EXTRA_PDF_GS_URL = "com.ashomokdev.imagetotext.PDF_URL";
     public static final String EXTRA_PDF_MEDIA_URL = "com.ashomokdev.imagetotext.EXTRA_PDF_MEDIA_URL";
-    private static final String TAG = DEV_TAG + PdfFragment.class.getSimpleName();
+    private static final String TAG = DEV_TAG + SearchablePdfFragment.class.getSimpleName();
     private FirebaseAuth mAuth; //needs for pdf downloading
     private String mStoreLocation;
     private String mDownloadURL; //for sharing pdf option only

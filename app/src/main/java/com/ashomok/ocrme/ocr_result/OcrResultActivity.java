@@ -138,8 +138,6 @@ public class OcrResultActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> {
             //back btn pressed
 
-            //todo show interstitial ads
-
             //save data if you need here
             finish();
         });
