@@ -5,5 +5,5 @@
         android:id="@+id/main_action_rotate"
         android:icon="@drawable/ic_rotate_white_24dp"
         android:title="@string/main_action_rotate"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
 </menu>

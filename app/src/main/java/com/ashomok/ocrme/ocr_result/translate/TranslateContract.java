@@ -7,7 +7,7 @@ import com.ashomok.ocrme.ocr_result.translate.translate_task.translate_task.Supp
 
 import java.util.List;
 
-public interface TranslateContract  {
+public interface TranslateContract {
     interface View {
 
         void showError(String message);

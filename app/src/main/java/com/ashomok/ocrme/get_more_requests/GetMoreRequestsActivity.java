@@ -30,6 +30,7 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
  * Created by iuliia on 3/2/18.
  */
 
+//todo adds android tsts espresso
 public class GetMoreRequestsActivity extends BaseLoginActivity
         implements GetMoreRequestsContract.View {
 

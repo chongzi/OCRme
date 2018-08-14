@@ -28,8 +28,8 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:background="@color/colorPrimaryDark"
+                android:gravity="center"
                 android:orientation="horizontal">
 
                 <RelativeLayout
@@ -42,9 +42,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:paddingLeft="5dp"
                         android:layout_margin="@dimen/margin3"
                         android:background="@color/colorPrimaryDark"
+                        android:paddingLeft="5dp"
                         android:textColor="@android:color/white"
                         android:textSize="10sp" />
                 </RelativeLayout>
@@ -53,10 +53,10 @@
                     android:id="@+id/card_menu_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:tint="@color/colorAccent"
                     android:layout_margin="5dp"
-                    android:src="@drawable/ic_more_vert_black_24dp" />
+                    android:background="@null"
+                    android:src="@drawable/ic_more_vert_black_24dp"
+                    android:tint="@color/colorAccent" />
             </LinearLayout>
 
             <ImageView

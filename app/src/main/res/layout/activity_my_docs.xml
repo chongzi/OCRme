@@ -85,18 +85,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
+                android:gravity="center"
                 android:text="@string/please_login" />
 
             <Button
                 android:id="@+id/sign_in_btn"
+                style="@style/buttonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/colorAccent"
                 android:clickable="true"
                 android:focusable="true"
-                android:text="@string/sign_in"
-                android:textColor="@android:color/white"
-                android:textSize="16sp" />
+                android:text="@string/sign_in" />
         </LinearLayout>
     </RelativeLayout>
 

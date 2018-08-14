@@ -8,6 +8,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
 public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnScrollListener {
+    public static final String TAG = DEV_TAG + EndlessRecyclerViewScrollListener.class.getSimpleName();
     RecyclerView.LayoutManager mLayoutManager;
     // The minimum amount of items to have below your current scroll position
     // before loading more.
@@ -16,12 +17,10 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     private int currentPage = 0;
     // The total number of items in the dataset after the last load
     private int previousTotalItemCount = 0;
-
     // True if we are still waiting for the last set of data to load.
     private boolean loading = true;
     // Sets the starting page index
     private int startingPageIndex = 0;
-    public static final String TAG = DEV_TAG + EndlessRecyclerViewScrollListener.class.getSimpleName();
 
 
     public EndlessRecyclerViewScrollListener(LinearLayoutManager layoutManager) {
@@ -104,7 +103,7 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     public void resetState() {
         this.currentPage = this.startingPageIndex;
         this.previousTotalItemCount = 0;
-       setLoading(true);
+        setLoading(true);
     }
 
     // Defines the process for actually loading more data based on page

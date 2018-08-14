@@ -25,7 +25,8 @@ public class TranslateRequestBean {
         private String sourceLang;
         private String targetLang;
         private String sourceText;
-        private @Nullable String idTokenString;
+        private @Nullable
+        String idTokenString;
 
         public Builder sourceLang(String sourceLang) {
             this.sourceLang = sourceLang;

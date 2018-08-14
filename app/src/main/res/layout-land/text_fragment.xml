@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.ashomok.ocrme.utils.SplitPaneLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.ashomok.ocrme.utils.SplitPaneLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:spl="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/split_pane_layout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     spl:orientation="horizontal"
     spl:splitterBackground="@color/colorAccent"
     spl:splitterPosition="33%"
-    spl:splitterSize="16dip"
-    android:id="@+id/split_pane_layout">
+    spl:splitterSize="16dip">
 
     <include layout="@layout/split_pane_content" />
 </com.ashomok.ocrme.utils.SplitPaneLayout>

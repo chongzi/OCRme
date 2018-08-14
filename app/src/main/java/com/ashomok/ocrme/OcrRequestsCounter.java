@@ -15,6 +15,7 @@ public class OcrRequestsCounter {
     private static final String AVAILABLE_OCR_REQUESTS_COUNT_TAG = "availableOcrRequestsCount";
     private static final int INIT_OCR_REQUESTS_COUNT = 5;
     private final SharedPreferences sharedPreferences;
+
     @Inject
     public OcrRequestsCounter(SharedPreferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;

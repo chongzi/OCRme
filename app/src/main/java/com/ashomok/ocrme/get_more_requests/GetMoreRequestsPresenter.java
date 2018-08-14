@@ -50,7 +50,7 @@ public class GetMoreRequestsPresenter implements GetMoreRequestsContract.Present
         @Override
         public void onSkuRowDataUpdated() {
             Log.d(TAG, "onSkuRowDataUpdated called");
-            view.updatePaidOption(billingProvider.getSkuRowDataList());
+            view.updatePaidOption(billingProvider.getSkuRowDataListForInAppPurchases());
         }
     };
 

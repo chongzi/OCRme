@@ -58,15 +58,15 @@
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:layout_margin="@dimen/my_base_margin"
-                    android:src="@drawable/auto_detection_icon"/>
+                    android:src="@drawable/auto_detection_icon" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/auto_detection"
                     android:textColor="@color/green_600"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/my_default_font_size" />
+                    android:textSize="@dimen/my_default_font_size"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <RelativeLayout
@@ -90,8 +90,8 @@
                     android:layout_marginTop="@dimen/my_base_margin"
                     android:text="@string/recently_chosen_languages"
                     android:textColor="@color/colorPrimaryDark"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/my_default_font_size" />
+                    android:textSize="@dimen/my_default_font_size"
+                    android:textStyle="bold" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recently_chosen_list"
@@ -123,8 +123,8 @@
                     android:layout_marginTop="@dimen/my_base_margin"
                     android:text="@string/all_languages"
                     android:textColor="@color/colorPrimaryDark"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/my_default_font_size" />
+                    android:textSize="@dimen/my_default_font_size"
+                    android:textStyle="bold" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/all_languages_list"

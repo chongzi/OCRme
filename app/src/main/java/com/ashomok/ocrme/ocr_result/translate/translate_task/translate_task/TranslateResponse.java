@@ -12,6 +12,7 @@ public class TranslateResponse implements Serializable {
     public TranslateResult getTranslateResult() {
         return translateResult;
     }
+
     public Status getStatus() {
         return status;
     }

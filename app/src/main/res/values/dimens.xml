@@ -18,5 +18,6 @@
     <dimen name="base_text_size">16sp</dimen>
     <dimen name="xl_text_size">26sp</dimen>
     <dimen name="l_text_size">20sp</dimen>
+    <dimen name="button_padding">6dp</dimen>
 
 </resources>

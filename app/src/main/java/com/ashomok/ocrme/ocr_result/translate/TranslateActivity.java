@@ -50,9 +50,11 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 public class TranslateActivity extends RxAppCompatActivity implements View.OnClickListener,
         TranslateContract.View {
 
-    private static final String TAG = DEV_TAG + TranslateActivity.class.getSimpleName();
     public static final String EXTRA_TEXT = "com.ashomokdev.imagetotext.TEXT";
-
+    private static final String TAG = DEV_TAG + TranslateActivity.class.getSimpleName();
+    public View mRootView;
+    @Inject
+    TranslatePresenter mPresenter;
     private Spinner sourceLanguagesSpinner;
     private Spinner targetLanguagesSpinner;
     private TextView sourceTextView;
@@ -60,11 +62,6 @@ public class TranslateActivity extends RxAppCompatActivity implements View.OnCli
     private ProgressBar progress;
     private View contentLayout;
     private String sourceText;
-
-    public View mRootView;
-
-    @Inject
-    TranslatePresenter mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

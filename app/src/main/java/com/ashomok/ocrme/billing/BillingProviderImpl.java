@@ -69,6 +69,7 @@ public class BillingProviderImpl implements BillingProvider {
     public List<SkuRowData> getSkuRowDataListForSubscriptions() {
         return Stream.of(skuRowDataList)
                 .filter(i -> i.getSkuType().equals(BillingClient.SkuType.SUBS))
+                .sortBy(SkuRowData::getPriceAmountMicros)
                 .toList();
     }
 
@@ -76,6 +77,7 @@ public class BillingProviderImpl implements BillingProvider {
     public List<SkuRowData> getSkuRowDataListForInAppPurchases() {
         return Stream.of(skuRowDataList)
                 .filter(i -> i.getSkuType().equals(BillingClient.SkuType.INAPP))
+                .sortBy(SkuRowData::getPriceAmountMicros)
                 .toList();
     }
 

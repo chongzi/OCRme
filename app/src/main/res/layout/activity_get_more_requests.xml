@@ -59,8 +59,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
-                        android:textColor="@android:color/white"
                         android:text="@string/you_have_n_requests"
+                        android:textColor="@android:color/white"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -68,8 +68,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
-                        android:textColor="@android:color/white"
                         android:text="@string/get_more_for_free_toolbar"
+                        android:textColor="@android:color/white"
                         android:textSize="15sp" />
 
                 </LinearLayout>

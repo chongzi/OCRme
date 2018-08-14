@@ -28,12 +28,12 @@
             android:id="@+id/sign_in"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
             android:text="@string/sign_in"
-            android:textSize="16sp"
-            android:layout_gravity="center_vertical"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <RelativeLayout

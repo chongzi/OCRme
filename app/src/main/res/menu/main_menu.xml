@@ -5,6 +5,6 @@
         android:id="@+id/remove_ads"
         android:icon="@drawable/remove_ads"
         android:title="@string/remove_ads"
-        app:showAsAction="ifRoom"
-        android:visible="false"/>
+        android:visible="false"
+        app:showAsAction="ifRoom" />
 </menu>

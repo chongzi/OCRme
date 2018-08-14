@@ -44,8 +44,8 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
  */
 
 //todo don't reload list when onback clicked
- //todo stranje scroll animation when load more - looks like ылетает влево и появляется снова
- //todo bug - scroll automaticaly to the top if contains 9 pc docs.
+//todo stranje scroll animation when load more - looks like ылетает влево и появляется снова
+//todo bug - scroll automaticaly to the top if contains 9 pc docs.
 
 public class MyDocsActivity extends BaseLoginActivity implements View.OnClickListener, MyDocsContract.View {
 

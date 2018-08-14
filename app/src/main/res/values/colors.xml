@@ -5,7 +5,8 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#EF992A</color>
     <color name="white">#ffffff</color>
-    <color name="error_message_background" tools:keep="@color/error_message_background">#ffff1600</color>
+    <color name="error_message_background" tools:keep="@color/error_message_background">#ffff1600
+    </color>
 
 
     <item name="blue" type="color" tools:keep="@color/blue">#FF33B5E5</item>
@@ -281,7 +282,9 @@
     <color name="deep_orange_100" tools:keep="@color/deep_orange_100">#ffccbc</color>
     <color name="deep_orange_200" tools:keep="@color/deep_orange_200">#ffab91</color>
     <color name="deep_orange_300" tools:keep="@color/deep_orange_300">#ff8a65</color>
-    <color name="deep_orange_400" tools:ignore="UnusedResources" tools:keep="@color/deep_orange_400">#ff7043</color>
+    <color name="deep_orange_400" tools:ignore="UnusedResources" tools:keep="@color/deep_orange_400">
+        #ff7043
+    </color>
     <color name="deep_orange_500" tools:keep="@color/deep_orange_500">#ff5722</color>
     <color name="deep_orange_600" tools:keep="@color/deep_orange_600">#f4511e</color>
     <color name="deep_orange_700" tools:keep="@color/deep_orange_700">#e64a19</color>
@@ -331,16 +334,14 @@
     <color name="blue_grey_900" tools:keep="@color/blue_grey_900">#263238</color>
 
 
-
-
-
     <color name="background_material_dark">#ff212121</color>
     <color name="background_material_light">#fffafafa</color>
 
     <color name="ripple_material_light">#20444444</color>
     <color name="ripple_material_dark">#20ffffff</color>
 
-    <color name="button_material_dark80" tools:keep="@color/button_material_dark80">#9a5a595b</color>
+    <color name="button_material_dark80" tools:keep="@color/button_material_dark80">#9a5a595b
+    </color>
     <color name="button_material_dark">#ff5a595b</color>
     <color name="button_material_light">#ffd6d7d7</color>
 
@@ -354,8 +355,11 @@
     <color name="dim_foreground_disabled_material_dark">#80bebebe</color>
     <color name="dim_foreground_disabled_material_light">#80323232</color>
 
-    <color name="hint_foreground_material_dark" tools:keep="@color/hint_foreground_material_dark">@color/bright_foreground_disabled_material_dark</color>
-    <color name="hint_foreground_material_light">@color/bright_foreground_disabled_material_light</color>
+    <color name="hint_foreground_material_dark" tools:keep="@color/hint_foreground_material_dark">
+        @color/bright_foreground_disabled_material_dark
+    </color>
+    <color name="hint_foreground_material_light">@color/bright_foreground_disabled_material_light
+    </color>
     <color name="highlighted_text_material_dark">#6640c4ff</color>
     <color name="highlighted_text_material_light">#6640c4ff</color>
 
@@ -365,14 +369,18 @@
     <!-- Black 87% -->
     <color name="primary_text_default_material_light">#de000000</color>
     <!-- Black 54% -->
-    <color name="secondary_text_material_light" tools:keep="@color/secondary_text_material_light">#8a000000</color>
+    <color name="secondary_text_material_light" tools:keep="@color/secondary_text_material_light">
+        #8a000000
+    </color>
     <!-- Black 54%
     <color name="tertiary_text_material_light">#8a000000</color>
 
     <!- White 87% -->
     <color name="primary_text_default_material_dark">#deffffff</color>
     <!-- White 38% -->
-    <color name="secondary_text_material_dark" tools:keep="@color/secondary_text_material_dark">#61ffffff</color>
+    <color name="secondary_text_material_dark" tools:keep="@color/secondary_text_material_dark">
+        #61ffffff
+    </color>
     <!-- White 38%
     <color name="tertiary_text_material_dark">#61ffffff</color>
 
@@ -393,7 +401,8 @@
     <color name="material_blue_A200" tools:keep="@color/material_blue_A200">#ff448aff</color>
     <color name="material_blue_A400" tools:keep="@color/material_blue_A400">#ff2979ff</color>
 
-    <color name="material_light_blue_A200" tools:keep="@color/material_light_blue_A200">#ff40c4ff</color>
+    <color name="material_light_blue_A200" tools:keep="@color/material_light_blue_A200">#ff40c4ff
+    </color>
 
     <color name="material_teal_100" tools:keep="@color/material_teal_100">#ffb2ebf2</color>
     <color name="material_teal_300" tools:keep="@color/material_teal_300">#ff4dd0e1</color>
@@ -403,7 +412,8 @@
     <color name="material_teal_A400" tools:keep="@color/material_teal_A400">#ff00e5ff</color>
 
     <!-- Accent color used by Settings -->
-    <color name="material_dark_teal_A400" tools:keep="@color/material_dark_teal_A400">#ff009688</color>
+    <color name="material_dark_teal_A400" tools:keep="@color/material_dark_teal_A400">#ff009688
+    </color>
 
     <color name="material_green_100" tools:keep="@color/material_green_100">#ffb7e1cd</color>
     <color name="material_green_300" tools:keep="@color/material_green_300">#ff57bb8a</color>
@@ -433,12 +443,20 @@
     <color name="material_orange_A200" tools:keep="@color/material_orange_A200">#ffffab40</color>
     <color name="material_orange_A400" tools:keep="@color/material_orange_A400">#ffff9100</color>
 
-    <color name="material_deep_orange_100" tools:keep="@color/material_deep_orange_100">#fff4c7c3</color>
-    <color name="material_deep_orange_300" tools:keep="@color/material_deep_orange_300">#ffe67c73</color>
-    <color name="material_deep_orange_500" tools:keep="@color/material_deep_orange_500">#ffff5722</color>
-    <color name="material_deep_orange_700" tools:keep="@color/material_deep_orange_700">#ffc53929</color>
-    <color name="material_deep_orange_A200" tools:keep="@color/material_deep_orange_A200">#ffff5252</color>
-    <color name="material_deep_orange_A400" tools:keep="@color/material_deep_orange_A400">#ffff1744</color>
+    <color name="material_deep_orange_100" tools:keep="@color/material_deep_orange_100">#fff4c7c3
+    </color>
+    <color name="material_deep_orange_300" tools:keep="@color/material_deep_orange_300">#ffe67c73
+    </color>
+    <color name="material_deep_orange_500" tools:keep="@color/material_deep_orange_500">#ffff5722
+    </color>
+    <color name="material_deep_orange_700" tools:keep="@color/material_deep_orange_700">#ffc53929
+    </color>
+    <color name="material_deep_orange_A200" tools:keep="@color/material_deep_orange_A200">
+        #ffff5252
+    </color>
+    <color name="material_deep_orange_A400" tools:keep="@color/material_deep_orange_A400">
+        #ffff1744
+    </color>
 
     <!-- Neutral colors -->
     <eat-comment />
@@ -452,12 +470,18 @@
     <color name="material_grey_900">#ff212121</color>
 
     <color name="material_blue_grey_50" tools:keep="@color/material_blue_grey_50">#ffeceff1</color>
-    <color name="material_blue_grey_100" tools:keep="@color/material_blue_grey_100">#ffcfd8dc</color>
-    <color name="material_blue_grey_300" tools:keep="@color/material_blue_grey_300">#ff90a4ae</color>
-    <color name="material_blue_grey_400" tools:keep="@color/material_blue_grey_400">#ff78909c</color>
-    <color name="material_blue_grey_500" tools:keep="@color/material_blue_grey_500">#ff607d8b</color>
-    <color name="material_blue_grey_600" tools:keep="@color/material_blue_grey_600">#ff546e7a</color>
-    <color name="material_blue_grey_700" tools:keep="@color/material_blue_grey_700">#ff455a64</color>
+    <color name="material_blue_grey_100" tools:keep="@color/material_blue_grey_100">#ffcfd8dc
+    </color>
+    <color name="material_blue_grey_300" tools:keep="@color/material_blue_grey_300">#ff90a4ae
+    </color>
+    <color name="material_blue_grey_400" tools:keep="@color/material_blue_grey_400">#ff78909c
+    </color>
+    <color name="material_blue_grey_500" tools:keep="@color/material_blue_grey_500">#ff607d8b
+    </color>
+    <color name="material_blue_grey_600" tools:keep="@color/material_blue_grey_600">#ff546e7a
+    </color>
+    <color name="material_blue_grey_700" tools:keep="@color/material_blue_grey_700">#ff455a64
+    </color>
     <color name="material_blue_grey_800">#ff37474f</color>
     <!-- Primary color used by Settings -->
     <color name="material_blue_grey_900">#ff263238</color>
@@ -472,15 +496,26 @@
     <!-- Time picker defaults when no theme is set -->
     <eat-comment />
 
-    <color name="timepicker_default_background_material" tools:keep="@color/timepicker_default_background_material">@color/primary_text_default_material_light</color>
-    <color name="timepicker_default_disabled_color_material" tools:keep="@color/timepicker_default_disabled_color_material">@color/bright_foreground_disabled_material_dark</color>
-    <color name="timepicker_default_ampm_selected_background_color_material" tools:keep="@color/timepicker_default_ampm_selected_background_color_material">@color/material_light_blue_A200</color>
-    <color name="timepicker_default_selector_color_material" tools:keep="@color/timepicker_default_selector_color_material">@color/material_light_blue_A200</color>
+    <color name="timepicker_default_background_material" tools:keep="@color/timepicker_default_background_material">
+        @color/primary_text_default_material_light
+    </color>
+    <color name="timepicker_default_disabled_color_material" tools:keep="@color/timepicker_default_disabled_color_material">
+        @color/bright_foreground_disabled_material_dark
+    </color>
+    <color name="timepicker_default_ampm_selected_background_color_material" tools:keep="@color/timepicker_default_ampm_selected_background_color_material">
+        @color/material_light_blue_A200
+    </color>
+    <color name="timepicker_default_selector_color_material" tools:keep="@color/timepicker_default_selector_color_material">
+        @color/material_light_blue_A200
+    </color>
 
     <color name="list_item_title" tools:keep="@color/list_item_title">#ffffffff</color>
     <color name="list_background" tools:keep="@color/list_background">#fff</color>
-    <color name="list_background_pressed_old" tools:keep="@color/list_background_pressed_old">#2E962E</color>
-    <color name="list_background_pressed" tools:keep="@color/list_background_pressed">#ff424242</color>
+    <color name="list_background_pressed_old" tools:keep="@color/list_background_pressed_old">
+        #2E962E
+    </color>
+    <color name="list_background_pressed" tools:keep="@color/list_background_pressed">#ff424242
+    </color>
     <color name="list_divider" tools:keep="@color/list_divider">#fff</color>
     <color name="counter_text_bg" tools:keep="@color/counter_text_bg">#626262</color>
     <color name="counter_text_color" tools:keep="@color/counter_text_color">#c5c4c4</color>

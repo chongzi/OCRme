@@ -2,10 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/select"
+    <item
+        android:id="@+id/select"
         android:title="@string/select"
-        app:showAsAction="always"
-        android:visible="false"/>
+        android:visible="false"
+        app:showAsAction="always" />
 
     <!--new menu items - todo-->
 
@@ -15,22 +16,22 @@
     <!--app:showAsAction="ifRoom"/>-->
 
     <!--<item android:id="@+id/grid"-->
-        <!--android:icon="@drawable/some_draw"-->
-        <!--android:title="@string/grid"-->
-        <!--app:showAsAction="ifRoom"/>-->
+    <!--android:icon="@drawable/some_draw"-->
+    <!--android:title="@string/grid"-->
+    <!--app:showAsAction="ifRoom"/>-->
 
     <!--<item android:id="@+id/list"-->
-        <!--android:icon="@drawable/some_draw"-->
-        <!--android:title="@string/list"-->
-        <!--app:showAsAction="ifRoom"/>-->
+    <!--android:icon="@drawable/some_draw"-->
+    <!--android:title="@string/list"-->
+    <!--app:showAsAction="ifRoom"/>-->
 
     <!--<item android:id="@+id/remove_ads"-->
-        <!--android:icon="@drawable/some_draw"-->
-        <!--android:title="@string/remove_ads"-->
-        <!--app:showAsAction="ifRoom"/>-->
+    <!--android:icon="@drawable/some_draw"-->
+    <!--android:title="@string/remove_ads"-->
+    <!--app:showAsAction="ifRoom"/>-->
 
     <!--<item android:id="@+id/sort_by"-->
-        <!--android:icon="@drawable/some_draw"-->
-        <!--android:title="@string/sort_by"-->
-        <!--app:showAsAction="ifRoom"/>-->
+    <!--android:icon="@drawable/some_draw"-->
+    <!--android:title="@string/sort_by"-->
+    <!--app:showAsAction="ifRoom"/>-->
 </menu>

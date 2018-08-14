@@ -7,7 +7,7 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module
-public abstract  class TranslateModule {
+public abstract class TranslateModule {
 
 
     @Provides
@@ -25,10 +25,12 @@ public abstract  class TranslateModule {
 //        }
 //    }
 
-    @Binds
-    abstract TranslateContract.Presenter translatePresenter(TranslatePresenter presenter);
-
     @Provides
     static String provideSourceText(
-            TranslateActivity activity) { return activity.getSourceText(); }
+            TranslateActivity activity) {
+        return activity.getSourceText();
+    }
+
+    @Binds
+    abstract TranslateContract.Presenter translatePresenter(TranslatePresenter presenter);
 }

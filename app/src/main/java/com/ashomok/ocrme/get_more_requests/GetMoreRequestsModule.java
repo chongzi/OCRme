@@ -18,8 +18,6 @@ import com.ashomok.ocrme.get_more_requests.row.free_options.option_delegates.Wat
 import com.ashomok.ocrme.get_more_requests.row.paid_options.UiPaidOptionManagingDelegate;
 import com.ashomok.ocrme.get_more_requests.row.paid_options.option_delegates.Batch100Delegate;
 import com.ashomok.ocrme.get_more_requests.row.paid_options.option_delegates.Batch5Delegate;
-import com.ashomok.ocrme.get_more_requests.row.paid_options.option_delegates.SubscriptionMonthlyDelegate;
-import com.ashomok.ocrme.get_more_requests.row.paid_options.option_delegates.SubscriptionYearlyDelegate;
 import com.ashomok.ocrme.update_to_premium.UpdateToPremiumPresenter;
 
 import java.util.HashMap;
@@ -68,17 +66,12 @@ public abstract class GetMoreRequestsModule {
     @Provides
     static Map<String, UiPaidOptionManagingDelegate>
     provideUiDelegatesForPaid(Batch5Delegate batch5Delegate,
-                              Batch100Delegate batch100Delegate,
-                              SubscriptionMonthlyDelegate subscriptionMonthlyDelegate,
-                              SubscriptionYearlyDelegate subscriptionYearlyDelegate) {
+                              Batch100Delegate batch100Delegate) {
 
         Map<String, UiPaidOptionManagingDelegate> uiDelegates = new HashMap<>();
         uiDelegates.put(BillingProviderImpl.SCAN_IMAGE_REQUESTS_5_SKU_ID, batch5Delegate);
         uiDelegates.put(BillingProviderImpl.SCAN_IMAGE_REQUESTS_100_SKU_ID, batch100Delegate);
 
-        //remove for better conversion
-//        uiDelegates.put(BillingProviderImpl.PREMIUM_MONTHLY_SKU_ID, subscriptionMonthlyDelegate);
-//        uiDelegates.put(BillingProviderImpl.PREMIUM_YEARLY_SKU_ID, subscriptionYearlyDelegate);
         return uiDelegates;
 
     }
