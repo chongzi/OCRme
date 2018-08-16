@@ -56,7 +56,7 @@ public class TextFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = DEV_TAG + TextFragment.class.getSimpleName();
     private String textResult;
     private String imageUrl;
-    private String[] languages;
+    private ArrayList<String> languages;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,7 +64,7 @@ public class TextFragment extends Fragment implements View.OnClickListener {
         Bundle bundle = getArguments();
         textResult = bundle.getString(EXTRA_TEXT);
         imageUrl = bundle.getString(EXTRA_IMAGE_URL);
-        languages = bundle.getStringArray(EXTRA_LANGUAGES);
+        languages = bundle.getStringArrayList(EXTRA_LANGUAGES);
         return view;
     }
 
@@ -98,8 +98,8 @@ public class TextFragment extends Fragment implements View.OnClickListener {
 
     private void onBadResultClicked() {
         Intent intent = new Intent(getActivity(), LanguageOcrActivity.class);
-        if (languages != null && languages.length > 0) {
-            ArrayList<String> extra = Stream.of(Arrays.asList(languages))
+        if (languages != null && languages.size() > 0) {
+            ArrayList<String> extra = Stream.of(languages)
                     .collect(Collectors.toCollection(ArrayList::new));
             intent.putStringArrayListExtra(CHECKED_LANGUAGE_CODES, extra);
         }

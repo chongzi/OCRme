@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,19 +12,29 @@ import android.widget.TextView;
 
 import com.ashomok.ocrme.R;
 import com.ashomok.ocrme.ocr.ocr_task.OcrResponse;
+import com.ashomok.ocrme.ocr_result.translate.TranslatePresenter;
+
+import javax.inject.Inject;
+
+import dagger.android.support.DaggerAppCompatActivity;
 
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
 /**
  * Created by iuliia on 5/30/17.
  */
-public class OcrResultActivity extends AppCompatActivity {
+public class OcrResultActivity
+        extends DaggerAppCompatActivity implements OcrResultContract.View {
     public static final String EXTRA_OCR_RESPONSE = "com.ashomokdev.imagetotext.OCR_RESPONCE";
     public static final String EXTRA_ERROR_MESSAGE = "com.ashomokdev.imagetotext.ERROR_MESSAGE";
     private static final String TAG = DEV_TAG + OcrResultActivity.class.getSimpleName();
 
+    @Inject
+    OcrResultPresenter mPresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ocr_result);
         initToolbar();
@@ -38,7 +47,8 @@ public class OcrResultActivity extends AppCompatActivity {
         } else {
             OcrResponse ocrData = null;
             if (intent.getExtras() != null) {
-                ocrData = (OcrResponse) intent.getExtras().getSerializable(EXTRA_OCR_RESPONSE);
+                ocrData = (OcrResponse) intent.getExtras()
+                        .getSerializable(EXTRA_OCR_RESPONSE);
             }
             if (ocrData != null) {
                 if (ocrData.getStatus().equals(OcrResponse.Status.OK)) {
@@ -49,6 +59,8 @@ public class OcrResultActivity extends AppCompatActivity {
             }
             fixCoordinatorLayout();
         }
+
+        mPresenter.takeView(this);
     }
 
     /**
@@ -88,7 +100,8 @@ public class OcrResultActivity extends AppCompatActivity {
         showError(errorMessage);
     }
 
-    private void showError(String errorMessage) {
+    @Override
+    public void showError(String errorMessage) {
         View emptyResult = findViewById(R.id.empty_result_layout);
         emptyResult.setVisibility(View.VISIBLE);
 

@@ -5,17 +5,21 @@ import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v13.app.FragmentPagerAdapter;
+import android.util.Log;
 
 import com.ashomok.ocrme.ocr.ocr_task.OcrResponse;
 import com.ashomok.ocrme.ocr.ocr_task.OcrResult;
 import com.ashomok.ocrme.ocr_result.tab_fragments.SearchablePdfFragment;
 import com.ashomok.ocrme.ocr_result.tab_fragments.TextFragment;
 
+import java.util.ArrayList;
+
 import static com.ashomok.ocrme.ocr_result.tab_fragments.SearchablePdfFragment.EXTRA_PDF_GS_URL;
 import static com.ashomok.ocrme.ocr_result.tab_fragments.SearchablePdfFragment.EXTRA_PDF_MEDIA_URL;
 import static com.ashomok.ocrme.ocr_result.tab_fragments.TextFragment.EXTRA_IMAGE_URL;
 import static com.ashomok.ocrme.ocr_result.tab_fragments.TextFragment.EXTRA_LANGUAGES;
 import static com.ashomok.ocrme.ocr_result.tab_fragments.TextFragment.EXTRA_TEXT;
+import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
 /**
  * Created by iuliia on 5/31/17.
@@ -24,10 +28,12 @@ import static com.ashomok.ocrme.ocr_result.tab_fragments.TextFragment.EXTRA_TEXT
 public class MyPagerAdapter extends FragmentPagerAdapter {
     private static final int ITEM_COUNT = 2;
     private OcrResponse ocrData;
+    public static final String TAG = DEV_TAG+ MyPagerAdapter.class.getSimpleName();
 
     MyPagerAdapter(FragmentManager fm, OcrResponse ocrData) {
         super(fm);
         this.ocrData = ocrData;
+        Log.d(TAG, "Adapter obtained ocr data: "+ ocrData.toString());
     }
 
     @Override
@@ -58,7 +64,7 @@ public class MyPagerAdapter extends FragmentPagerAdapter {
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_TEXT, ocrResult.getTextResult());
         bundle.putString(EXTRA_IMAGE_URL, ocrResult.getSourceImageUrl());
-        bundle.putStringArray(EXTRA_LANGUAGES, ocrResult.getLanguages());
+        bundle.putStringArrayList(EXTRA_LANGUAGES, new ArrayList<>(ocrResult.getLanguages()));
         fragment.setArguments(bundle);
         return fragment;
     }

@@ -8,6 +8,8 @@ import com.ashomok.ocrme.main.MainActivity;
 import com.ashomok.ocrme.main.MainModule;
 import com.ashomok.ocrme.my_docs.MyDocsActivity;
 import com.ashomok.ocrme.my_docs.MyDocsModule;
+import com.ashomok.ocrme.ocr_result.OcrResultActivity;
+import com.ashomok.ocrme.ocr_result.OcrResultModule;
 import com.ashomok.ocrme.ocr_result.translate.TranslateActivity;
 import com.ashomok.ocrme.ocr_result.translate.TranslateModule;
 import com.ashomok.ocrme.update_to_premium.UpdateToPremiumActivity;
@@ -43,4 +45,7 @@ public abstract class ActivityBindingModule {
 
     @ContributesAndroidInjector(modules = GetMoreRequestsModule.class)
     abstract GetMoreRequestsActivity getMoreRequestsActivity();
+
+    @ContributesAndroidInjector(modules = OcrResultModule.class)
+    abstract OcrResultActivity getOcrResultActivity();
 }

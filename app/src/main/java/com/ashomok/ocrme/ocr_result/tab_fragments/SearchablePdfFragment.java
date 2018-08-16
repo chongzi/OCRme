@@ -92,6 +92,7 @@ public class SearchablePdfFragment extends Fragment implements FragmentCompat.On
         showProgress(true);
         Completable completableAuthenticate = authenticate();
 
+        //todo reduntant authentification&
         completableAuthenticate
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
