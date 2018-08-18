@@ -1,6 +1,8 @@
 package com.ashomok.ocrme.ocr;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -33,6 +35,8 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -43,6 +47,7 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.ashomok.ocrme.ocr_result.OcrResultActivity.EXTRA_ERROR_MESSAGE;
 import static com.ashomok.ocrme.ocr_result.OcrResultActivity.EXTRA_OCR_RESPONSE;
+import static com.ashomok.ocrme.utils.FileUtils.scaleBitmapDown;
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
 //import static com.ashomok.ocrme.Settings.firebaseFolderURL;
@@ -52,17 +57,19 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
  * Created by Iuliia on 13.12.2015.
  */
 //todo mvp with dagger needs
-//todo refactoring needed - uri and url - two ways to process task - make 2 processor classes
 public class OcrActivity extends RxAppCompatActivity {
     public static final int RESULT_CANCELED_BY_USER = 123;
     public static final String EXTRA_LANGUAGES = "com.ashomokdev.imagetotext.ocr.LANGUAGES";
     public static final String EXTRA_IMAGE_URI = "com.ashomokdev.imagetotext.ocr.IMAGE_URI"; //image stored on device
     public static final String EXTRA_IMAGE_URL = "com.ashomokdev.imagetotext.ocr.IMAGE_URL"; //image stored on Firebase storage
     public static final String TAG = DEV_TAG + OcrActivity.class.getSimpleName();
+
     @Nullable
-    private Uri imageUri; //image stored on device - will be uploaded example content://com.ashomok.imagetotext.provider/my_images/DCIM/Camera/cropped.jpg
+    private Uri imageUri; //example content://com.ashomok.imagetotext.provider/my_images/DCIM/Camera/cropped.jpg Image stored on device - will be uploaded to firebase storage
+
     @Nullable
     private String imageUrl; //Url of image, stored in firebase storage example gs://imagetotext-149919.appspot.com/ocr_request_images/aeffe41d-7acc-44a3-883b-677bbab02a12cropped.jpg
+
     private StorageReference mImageRef;
     private ArrayList<String> sourceLanguageCodes;
 
@@ -74,10 +81,20 @@ public class OcrActivity extends RxAppCompatActivity {
 
         imageUri = getIntent().getParcelableExtra(EXTRA_IMAGE_URI);
         imageUrl = getIntent().getStringExtra(EXTRA_IMAGE_URL);
+        if ((imageUri == null && imageUrl == null) ||
+                (imageUri != null && imageUrl != null)) {
+            Log.e(TAG, "You need provide ether imageUri or imageUrl");
+        }
+
         sourceLanguageCodes = getIntent().getStringArrayListExtra(EXTRA_LANGUAGES);
 
         initCancelBtn();
-        initImage().subscribe(() -> initAnimatedScanBand());
+
+        initImage().subscribe(() -> {
+            if (!BuildConfig.DEBUG) {
+                initAnimatedScanBand();
+            }
+        });
 
         OcrHttpClient httpClient = OcrHttpClient.getInstance();
         callOcr(httpClient);
@@ -86,22 +103,14 @@ public class OcrActivity extends RxAppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Runnable deleteFile = () -> {
+        if (imageUri != null) {
             try {
-                File file = new File(imageUri.getPath());
-                file.delete();
-                if (file.exists()) {
-                    file.getCanonicalFile().delete();
-                    if (file.exists()) {
-                        getApplicationContext().deleteFile(file.getName());
-                    }
-                }
-            } catch (Exception e) {
-                Log.e(TAG, e.getMessage());
+                getContentResolver().delete(imageUri, null, null);
             }
-        };
-
-        deleteFile.run();
+            catch (Exception e){
+                Log.e(TAG, "error while deleting");
+            }
+        }
     }
 
     public void callOcr(OcrHttpClient httpClient) {
@@ -252,27 +261,58 @@ public class OcrActivity extends RxAppCompatActivity {
         if (imageUrl != null) {
             return Single.just(imageUrl);
         } else {
+
             return Single.create(emitter -> {
                 String uuid = UUID.randomUUID().toString();
 
                 //generate image ref
+                String lastPathSegment = imageUri.getLastPathSegment();
                 mImageRef = FirebaseStorage.getInstance().getReference().child(
-                        "ocr_request_images/" + uuid + imageUri.getLastPathSegment());
+                        "ocr_request_images/" + uuid + lastPathSegment);
 
-                mImageRef
-                        .putFile(imageUri)
-                        .addOnSuccessListener(taskSnapshot -> {
-                            String path = taskSnapshot.getMetadata().getReference().getPath();
-                            Log.d(TAG, "uploadPhoto:onSuccess:" + path);
-                            String gcsImageUri = BuildConfig.FIREBASE_FOLDER_URL + path;
-                            emitter.onSuccess(gcsImageUri);
-                        })
-                        .addOnFailureListener(e -> {
-                            Log.e(TAG, "uploadPhoto:onError", e);
-                            emitter.onError(e);
-                        });
+
+                //scale bitmap if needed and upload
+                InputStream imageStream = null;
+                try {
+                    imageStream = getContentResolver().openInputStream(imageUri);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                Bitmap.CompressFormat compressFormat = getCompressFormat(lastPathSegment);
+                if (compressFormat == null){
+                    emitter.onError(new Throwable("Unknown image extension"));
+                }else {
+                    byte[] byteArray = scaleBitmapDown(BitmapFactory.decodeStream(imageStream), compressFormat);
+                    mImageRef
+                            .putBytes(byteArray)
+                            .addOnSuccessListener(taskSnapshot -> {
+                                String path = taskSnapshot.getMetadata().getReference().getPath();
+                                Log.d(TAG, "uploadPhoto:onSuccess:" + path);
+                                String gcsImageUrl = BuildConfig.FIREBASE_FOLDER_URL + path;
+                                emitter.onSuccess(gcsImageUrl);
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e(TAG, "uploadPhoto:onError", e);
+                                emitter.onError(e);
+                            });
+                }
             });
         }
+    }
+
+    @Nullable
+    private Bitmap.CompressFormat getCompressFormat(String lastPathSegment) {
+        Bitmap.CompressFormat compressFormat = null;
+        if (lastPathSegment.toLowerCase().contains("jpg") ||
+                lastPathSegment.toLowerCase().contains("jpeg")) {
+            compressFormat = Bitmap.CompressFormat.JPEG;
+        } else if (lastPathSegment.toLowerCase().contains("png")) {
+            compressFormat = Bitmap.CompressFormat.PNG;
+        } else {
+            Log.e(TAG, "Unknown image extension");
+        }
+        return compressFormat;
     }
 
     /**

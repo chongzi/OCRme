@@ -16,6 +16,7 @@ import android.widget.ImageView;
 
 import com.ashomok.ocrme.R;
 import com.ashomok.ocrme.Settings;
+import com.ashomok.ocrme.utils.FilesProvider;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -32,6 +33,7 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static com.ashomok.ocrme.utils.FilesProvider.getGcsImageUri;
 import static com.ashomok.ocrme.utils.FilesProvider.getTestImages;
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
@@ -49,9 +51,16 @@ public class OcrActivityTest {
             OcrActivity.class, true, false);
 
     @Test
-    public void testOcr() throws InterruptedException {
+    public void testOcrWithUri() throws InterruptedException {
         String path = getTestImages().get(0);
         launchActivityWithPath(Uri.fromFile(new File(path)));
+        Thread.sleep(10000);//waiting for ocr finished
+    }
+
+    @Test
+    public void testOcrWithUrl() throws InterruptedException {
+        String url = getGcsImageUri();
+        launchActivityWithUrl(url);
         Thread.sleep(10000);//waiting for ocr finished
     }
 
@@ -60,6 +69,21 @@ public class OcrActivityTest {
                 .getTargetContext();
         Intent intent = new Intent(targetContext, OcrActivity.class);
         intent.putExtra(OcrActivity.EXTRA_IMAGE_URI, uri);
+
+        ArrayList<String> languages = new ArrayList<>();
+        languages.add("ru");
+        intent.putExtra(OcrActivity.EXTRA_LANGUAGES, languages);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+        mActivityRule.launchActivity(intent);
+    }
+
+    private void launchActivityWithUrl(String url) {
+        Context targetContext = InstrumentationRegistry.getInstrumentation()
+                .getTargetContext();
+        Intent intent = new Intent(targetContext, OcrActivity.class);
+        intent.putExtra(OcrActivity.EXTRA_IMAGE_URL, url);
 
         ArrayList<String> languages = new ArrayList<>();
         languages.add("ru");

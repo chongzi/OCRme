@@ -22,6 +22,7 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 /**
  * Created by iuliia on 9/19/17.
  */
+
 public class OcrHttpClientTest {
 
     private OcrHttpClient client;

@@ -1,24 +1,26 @@
 package com.ashomok.ocrme.ocr_result;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
+
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v13.app.FragmentPagerAdapter;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
 
 import com.ashomok.ocrme.ocr.ocr_task.OcrResponse;
 import com.ashomok.ocrme.ocr.ocr_task.OcrResult;
-import com.ashomok.ocrme.ocr_result.tab_fragments.SearchablePdfFragment;
-import com.ashomok.ocrme.ocr_result.tab_fragments.TextFragment;
+import com.ashomok.ocrme.ocr_result.tab_fragments.searchable_pdf.SearchablePdfFragment;
+import com.ashomok.ocrme.ocr_result.tab_fragments.text.TextFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import static com.ashomok.ocrme.ocr_result.tab_fragments.SearchablePdfFragment.EXTRA_PDF_GS_URL;
-import static com.ashomok.ocrme.ocr_result.tab_fragments.SearchablePdfFragment.EXTRA_PDF_MEDIA_URL;
-import static com.ashomok.ocrme.ocr_result.tab_fragments.TextFragment.EXTRA_IMAGE_URL;
-import static com.ashomok.ocrme.ocr_result.tab_fragments.TextFragment.EXTRA_LANGUAGES;
-import static com.ashomok.ocrme.ocr_result.tab_fragments.TextFragment.EXTRA_TEXT;
+import static com.ashomok.ocrme.ocr_result.tab_fragments.searchable_pdf.SearchablePdfFragment.EXTRA_PDF_GS_URL;
+import static com.ashomok.ocrme.ocr_result.tab_fragments.searchable_pdf.SearchablePdfFragment.EXTRA_PDF_MEDIA_URL;
+import static com.ashomok.ocrme.ocr_result.tab_fragments.text.TextFragment.EXTRA_IMAGE_URL;
+import static com.ashomok.ocrme.ocr_result.tab_fragments.text.TextFragment.EXTRA_LANGUAGES;
+import static com.ashomok.ocrme.ocr_result.tab_fragments.text.TextFragment.EXTRA_TEXT;
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
 /**
@@ -64,7 +66,10 @@ public class MyPagerAdapter extends FragmentPagerAdapter {
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_TEXT, ocrResult.getTextResult());
         bundle.putString(EXTRA_IMAGE_URL, ocrResult.getSourceImageUrl());
-        bundle.putStringArrayList(EXTRA_LANGUAGES, new ArrayList<>(ocrResult.getLanguages()));
+        List<String> languages = ocrResult.getLanguages();
+        if (languages!=null) {
+            bundle.putStringArrayList(EXTRA_LANGUAGES, new ArrayList<>(languages));
+        }
         fragment.setArguments(bundle);
         return fragment;
     }

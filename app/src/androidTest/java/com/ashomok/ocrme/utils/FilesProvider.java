@@ -33,6 +33,10 @@ public class FilesProvider {
     private static final String gcsImageUri =
             "gs://ocrme-77a2b.appspot.com/test/ru.jpg";
 
+//    //todo set default back
+//    private static final String gcsImageUri =
+//            "gs://ocrme-77a2b.appspot.com/ocr_request_images/ca853240-124e-4f78-871d-1b1cd3ef7ba34bf1518f-d560-4fe8-a9ff-47ec9038fb0d.jpg";
+
     private static final String gcsPdfUri =
             "gs://ocrme-77a2b.appspot.com/test/ru.pdf";
 

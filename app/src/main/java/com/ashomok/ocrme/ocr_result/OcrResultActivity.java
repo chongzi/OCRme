@@ -119,7 +119,7 @@ public class OcrResultActivity
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         final ViewPager viewPager = findViewById(R.id.pager);
-        final MyPagerAdapter adapter = new MyPagerAdapter(getFragmentManager(), ocrData);
+        final MyPagerAdapter adapter = new MyPagerAdapter(getSupportFragmentManager(), ocrData);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

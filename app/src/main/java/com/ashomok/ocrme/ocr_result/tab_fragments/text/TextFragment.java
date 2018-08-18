@@ -1,4 +1,4 @@
-package com.ashomok.ocrme.ocr_result.tab_fragments;
+package com.ashomok.ocrme.ocr_result.tab_fragments.text;
 
 import android.app.Fragment;
 import android.content.ClipData;
@@ -9,6 +9,7 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.Spanned;
@@ -35,7 +36,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+
+import javax.inject.Inject;
+
+import dagger.android.support.DaggerFragment;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.CLIPBOARD_SERVICE;
@@ -48,7 +52,8 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
  */
 
 //todo Forbidd splitter to go out of screen bounds. https://github.com/bieliaievays/OCRme/issues/2
-public class TextFragment extends Fragment implements View.OnClickListener {
+
+public class TextFragment extends DaggerFragment implements View.OnClickListener, TextContract.View {
     public static final String EXTRA_TEXT = "com.ashomokdev.imagetotext.TEXT";
     public static final String EXTRA_IMAGE_URL = "com.ashomokdev.imagetotext.IMAGE";
     public static final String EXTRA_LANGUAGES = "com.ashomokdev.imagetotext.LANGUAGES";
@@ -58,29 +63,35 @@ public class TextFragment extends Fragment implements View.OnClickListener {
     private String imageUrl;
     private ArrayList<String> languages;
 
+    @Inject
+    TextPresenter textPresenter;
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.text_fragment, container, false);
         Bundle bundle = getArguments();
-        textResult = bundle.getString(EXTRA_TEXT);
-        imageUrl = bundle.getString(EXTRA_IMAGE_URL);
-        languages = bundle.getStringArrayList(EXTRA_LANGUAGES);
+        if (bundle != null) {
+            textResult = bundle.getString(EXTRA_TEXT);
+            imageUrl = bundle.getString(EXTRA_IMAGE_URL);
+            languages = bundle.getStringArrayList(EXTRA_LANGUAGES);
+        }
         return view;
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setImage();
-        initText();
-        initBottomPanel();
+        setImage(view);
+        initText(view);
+        initBottomPanel(view);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.copy_btn:
-                copyTextToClipboard(textResult);
+                copyTextToClipboard(textResult, view);
                 break;
             case R.id.translate_btn:
                 onTranslateClicked();
@@ -106,44 +117,46 @@ public class TextFragment extends Fragment implements View.OnClickListener {
         startActivityForResult(intent, LANGUAGE_ACTIVITY_REQUEST_CODE);
     }
 
-    private void initBottomPanel() {
-        View copyBtn = getActivity().findViewById(R.id.copy_btn);
+    private void initBottomPanel(View view) {
+        View copyBtn = view.findViewById(R.id.copy_btn);
         copyBtn.setOnClickListener(this);
 
-        View translateBtn = getActivity().findViewById(R.id.translate_btn);
+        View translateBtn = view.findViewById(R.id.translate_btn);
         translateBtn.setOnClickListener(this);
 
-        View shareBtn = getActivity().findViewById(R.id.share_text_btn);
+        View shareBtn = view.findViewById(R.id.share_text_btn);
         shareBtn.setOnClickListener(this);
 
-        View badResult = getActivity().findViewById(R.id.bad_result_btn);
+        View badResult = view.findViewById(R.id.bad_result_btn);
         badResult.setOnClickListener(this);
     }
 
-
-    private void initText() {
-        EditText mTextView = getActivity().findViewById(R.id.text);
+    private void initText(View view) {
+        EditText mTextView = view.findViewById(R.id.text);
         mTextView.setText(textResult);
     }
 
-    private void setImage() {
+    private void setImage(View view) {
 
-        final ImageView mImageView = getActivity().findViewById(R.id.source_image);
+        final ImageView mImageView = view.findViewById(R.id.source_image);
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference gsReference = storage.getReferenceFromUrl(imageUrl);
 
-        GlideApp.with(this.getActivity())
+        GlideApp.with(this)
                 .load(gsReference)
                 .listener(new RequestListener<Drawable>() {
                     @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                                Target<Drawable> target, boolean isFirstResource) {
                         return false;
                     }
 
                     @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        getActivity().findViewById(R.id.progress).setVisibility(View.INVISIBLE);
+                    public boolean onResourceReady(Drawable resource, Object model,
+                                                   Target<Drawable> target, DataSource dataSource,
+                                                   boolean isFirstResource) {
+                        view.findViewById(R.id.progress).setVisibility(View.INVISIBLE);
                         return false;
                     }
                 })
@@ -152,7 +165,7 @@ public class TextFragment extends Fragment implements View.OnClickListener {
                 .into(mImageView);
 
         //scroll to centre
-        final ScrollView scrollView = getActivity().findViewById(R.id.image_scroll_view);
+        final ScrollView scrollView = view.findViewById(R.id.image_scroll_view);
         scrollView.addOnLayoutChangeListener((
                 v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
             int centreHeight = mImageView.getHeight() / 2;
@@ -167,8 +180,10 @@ public class TextFragment extends Fragment implements View.OnClickListener {
         if (requestCode == LANGUAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
             //language was changed - run ocr again for the same image
             Bundle bundle = data.getExtras();
-            ArrayList<String> newLanguages = bundle.getStringArrayList(CHECKED_LANGUAGE_CODES);
-            runOcr(newLanguages);
+            if (bundle != null) {
+                ArrayList<String> newLanguages = bundle.getStringArrayList(CHECKED_LANGUAGE_CODES);
+                runOcr(newLanguages);
+            }
         }
     }
 
@@ -180,7 +195,9 @@ public class TextFragment extends Fragment implements View.OnClickListener {
 
             startActivity(intent);
 
-            getActivity().finish();
+            if (getActivity()!= null) {
+                getActivity().finish();
+            }
         }
     }
 
@@ -189,7 +206,7 @@ public class TextFragment extends Fragment implements View.OnClickListener {
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
 
-        Resources res = getActivity().getResources();
+        Resources res = getResources();
         String linkToApp = "https://play.google.com/store/apps/details?id=" + appPackageName;
         String sharedBody =
                 String.format(res.getString(R.string.share_text_message), textResult, linkToApp);
@@ -203,7 +220,7 @@ public class TextFragment extends Fragment implements View.OnClickListener {
 
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, res.getString(R.string.text_result));
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, styledText);
-        getActivity().startActivity(Intent.createChooser(sharingIntent, res.getString(R.string.send_text_result_to)));
+        startActivity(Intent.createChooser(sharingIntent, res.getString(R.string.send_text_result_to)));
     }
 
     private void onTranslateClicked() {
@@ -212,15 +229,19 @@ public class TextFragment extends Fragment implements View.OnClickListener {
         startActivity(intent);
     }
 
-    private void copyTextToClipboard(CharSequence text) {
+    private void copyTextToClipboard(CharSequence text, View view) {
         ClipboardManager clipboard =
-                (ClipboardManager) getActivity().getSystemService(CLIPBOARD_SERVICE);
+                (ClipboardManager) view.getContext().getSystemService(CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText(getString(R.string.text_result), text);
-        clipboard.setPrimaryClip(clip);
-        Toast.makeText(getActivity(), getActivity().getString(R.string.copied),
-                Toast.LENGTH_SHORT).show();
-        Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-        // Vibrate for 300 milliseconds
-        v.vibrate(300);
+        if (clipboard != null) {
+            clipboard.setPrimaryClip(clip);
+            Toast.makeText(getActivity(), getString(R.string.copied),
+                    Toast.LENGTH_SHORT).show();
+            Vibrator v = (Vibrator) view.getContext().getSystemService(Context.VIBRATOR_SERVICE);
+            // Vibrate for 300 milliseconds
+            if (v != null) {
+                v.vibrate(300);
+            }
+        }
     }
 }

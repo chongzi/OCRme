@@ -57,6 +57,9 @@ public class OcrHttpClient {
      * @param idToken     firebase user token, docs: https://firebase.google.com/docs/auth/admin/verify-id-tokens
      * @return
      */
+
+
+
     public Single<OcrResponse> ocr(
             String gcsImageUri, Optional<List<String>> languages, Optional<String> idToken) {
 

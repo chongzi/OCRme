@@ -1,10 +1,9 @@
-package com.ashomok.ocrme.ocr_result.tab_fragments;
+package com.ashomok.ocrme.ocr_result.tab_fragments.searchable_pdf;
 
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -14,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v13.app.FragmentCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.text.Html;
 import android.text.Spanned;
@@ -54,7 +54,7 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
 
 //todo use dagger here
-public class SearchablePdfFragment extends Fragment implements FragmentCompat.OnRequestPermissionsResultCallback {
+public class SearchablePdfFragment extends Fragment implements SearchablePdfContract.View {
     public static final String EXTRA_PDF_GS_URL = "com.ashomokdev.imagetotext.PDF_URL";
     public static final String EXTRA_PDF_MEDIA_URL = "com.ashomokdev.imagetotext.EXTRA_PDF_MEDIA_URL";
     private static final String TAG = DEV_TAG + SearchablePdfFragment.class.getSimpleName();
@@ -90,19 +90,27 @@ public class SearchablePdfFragment extends Fragment implements FragmentCompat.On
         super.onViewCreated(view, savedInstanceState);
 
         showProgress(true);
-        Completable completableAuthenticate = authenticate();
+//        Completable completableAuthenticate = authenticate();
+//
+//        //todo reduntant authentification&
+//        completableAuthenticate
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .andThen(initPdfView())
+//                .subscribe(
+//                        () -> showProgress(false),
+//                        error -> {
+//                            showProgress(false);
+//                            showError(error, mRootView);
+//                        });
 
-        //todo reduntant authentification&
-        completableAuthenticate
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .andThen(initPdfView())
+        initPdfView()
                 .subscribe(
-                        () -> showProgress(false),
-                        error -> {
-                            showProgress(false);
-                            showError(error, mRootView);
-                        });
+                () -> showProgress(false),
+                error -> {
+                    showProgress(false);
+                    showError(error, mRootView);
+                });
     }
 
 

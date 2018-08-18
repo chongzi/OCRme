@@ -11,7 +11,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static com.ashomok.ocrme.ocr_result.tab_fragments.TextFragment.EXTRA_TEXT;
+import static com.ashomok.ocrme.ocr_result.tab_fragments.text.TextFragment.EXTRA_TEXT;
 
 /**
  * Created by iuliia on 9/16/17.

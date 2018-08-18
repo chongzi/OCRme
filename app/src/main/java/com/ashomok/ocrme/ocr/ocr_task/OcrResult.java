@@ -102,47 +102,47 @@ public class OcrResult implements Serializable {
         private Long id;
         private String timeStamp;
 
-        Builder sourceImageUrl(String inputImageUrl) {
+        public Builder sourceImageUrl(String inputImageUrl) {
             this.inputImageUrl = inputImageUrl;
             return this;
         }
 
-        Builder languages(List<String> languages) {
+        public Builder languages(List<String> languages) {
             this.languages = languages;
             return this;
         }
 
-        Builder textResult(String textResult) {
+        public Builder textResult(String textResult) {
             this.textResult = textResult;
             return this;
         }
 
-        Builder pdfResultGsUrl(String pdfResultGsUrl) {
+        public  Builder pdfResultGsUrl(String pdfResultGsUrl) {
             this.pdfResultGsUrl = pdfResultGsUrl;
             return this;
         }
 
-        Builder pdfResultMediaUrl(String pdfResultMediaUrl) {
+        public Builder pdfResultMediaUrl(String pdfResultMediaUrl) {
             this.pdfResultMediaUrl = pdfResultMediaUrl;
             return this;
         }
 
-        Builder pdfImageResultGsUrl(String pdfImageResultGsUrl) {
+        public Builder pdfImageResultGsUrl(String pdfImageResultGsUrl) {
             this.pdfImageResultGsUrl = pdfImageResultGsUrl;
             return this;
         }
 
-        Builder pdfImageResultMediaUrl(String pdfImageResultMediaUrl) {
+        public Builder pdfImageResultMediaUrl(String pdfImageResultMediaUrl) {
             this.pdfImageResultMediaUrl = pdfImageResultMediaUrl;
             return this;
         }
 
-        Builder id(Long id) {
+        public Builder id(Long id) {
             this.id = id;
             return this;
         }
 
-        Builder timeStamp(String timeStamp) {
+        public Builder timeStamp(String timeStamp) {
             this.timeStamp = timeStamp;
             return this;
         }

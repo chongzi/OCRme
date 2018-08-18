@@ -10,6 +10,8 @@ import android.support.test.runner.AndroidJUnit4;
 import com.ashomok.ocrme.R;
 import com.ashomok.ocrme.ocr.ocr_task.OcrResponse;
 import com.ashomok.ocrme.ocr.ocr_task.OcrResult;
+import com.ashomok.ocrme.utils.Repeat;
+import com.ashomok.ocrme.utils.RepeatRule;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -75,6 +77,9 @@ public class OcrResultActivityTest {
     private OcrResponse.Status status = OcrResponse.Status.OK;
 
     @Rule
+    public RepeatRule rule = new RepeatRule();
+
+    @Rule
     public ActivityTestRule<OcrResultActivity> mActivityRule = new ActivityTestRule<>(
             OcrResultActivity.class, true, false);
 
@@ -109,6 +114,7 @@ public class OcrResultActivityTest {
         mActivityRule.launchActivity(intent);
     }
 
+    @Repeat(2)
     @Test
     public void tabSwap() throws InterruptedException {
         launchActivityWithLongText();
@@ -121,7 +127,7 @@ public class OcrResultActivityTest {
     @Test
     public void testLongText() throws InterruptedException {
         launchActivityWithLongText();
-        Thread.sleep(4000);
+        Thread.sleep(40000);
     }
 
     @Test
