@@ -56,7 +56,7 @@
     <string name="open_in_another_app">Open in\nanother app</string>
     <string name="no_app">You have no app to do this.</string>
     <string name="no_file">Unexpected error. File can not be find.</string>
-    <string name="file_saved">File saved in</string>
+    <string name="file_saved">File saved in </string>
     <string name="error_while_saving">Error occurs while saving file</string>
     <string name="send_pdf_to">Send PDF to</string>
     <string name="link_to_pdf" translatable="false">Link to PDF</string>
@@ -195,4 +195,5 @@
     <string name="one_month_premium">One Month Premium</string>
     <string name="unlimited_requests">Unlimited requests + No ads</string>
     <string name="one_year_premium">One Year Premium</string>
+    <string name="searchable_PDF">searchable PDF</string>
 </resources>

@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.ashomok.ocrme.R;
 import com.ashomok.ocrme.ocr.ocr_task.OcrResponse;
-import com.ashomok.ocrme.ocr_result.translate.TranslatePresenter;
+import com.ashomok.ocrme.ocr.ocr_task.OcrResult;
 
 import javax.inject.Inject;
 
@@ -30,7 +30,7 @@ public class OcrResultActivity
     private static final String TAG = DEV_TAG + OcrResultActivity.class.getSimpleName();
 
     @Inject
-    OcrResultPresenter mPresenter;
+    OcrResultContract.Presenter mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +115,14 @@ public class OcrResultActivity
     private void initTabLayout(OcrResponse ocrData) {
         TabLayout tabLayout = findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.text)));
-        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.PDF)));
+
+        //add only for new docs
+        OcrResult ocrResult = ocrData.getOcrResult();
+        if (ocrResult.getPdfImageResultGsUrl() != null && ocrResult.getPdfImageResultMediaUrl() != null) {
+            tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.PDF)));
+        }
+
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.searchable_PDF)));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         final ViewPager viewPager = findViewById(R.id.pager);

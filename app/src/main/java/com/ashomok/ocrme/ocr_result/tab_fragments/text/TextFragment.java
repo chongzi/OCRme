@@ -1,6 +1,5 @@
 package com.ashomok.ocrme.ocr_result.tab_fragments.text;
 
-import android.app.Fragment;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -64,7 +63,7 @@ public class TextFragment extends DaggerFragment implements View.OnClickListener
     private ArrayList<String> languages;
 
     @Inject
-    TextPresenter textPresenter;
+    TextContract.Presenter textPresenter;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,

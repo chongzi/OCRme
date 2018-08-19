@@ -75,10 +75,12 @@ public class RequestsCounterDialogFragment extends DialogFragment {
     private void startGetMoreRequestsActivity() {
         Intent intent = new Intent(getActivity(), GetMoreRequestsActivity.class);
         startActivity(intent);
+        dismiss();
     }
 
     private void startUpdateToPremiumActivity() {
         Intent intent = new Intent(getActivity(), UpdateToPremiumActivity.class);
         startActivity(intent);
+        dismiss();
     }
 }

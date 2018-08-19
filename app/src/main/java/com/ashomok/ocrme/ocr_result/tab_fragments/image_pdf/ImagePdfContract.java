@@ -1,4 +1,4 @@
-package com.ashomok.ocrme.ocr_result.tab_fragments.searchable_pdf;
+package com.ashomok.ocrme.ocr_result.tab_fragments.image_pdf;
 
 import com.ashomok.ocrme.di_dagger.BasePresenter;
 
@@ -6,7 +6,7 @@ import java.io.File;
 
 import io.reactivex.Completable;
 
-public interface SearchablePdfContract {
+public interface ImagePdfContract {
     interface View {
 
         void showProgress(boolean show);

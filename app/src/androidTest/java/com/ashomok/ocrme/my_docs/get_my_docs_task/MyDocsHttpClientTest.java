@@ -5,7 +5,6 @@ import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.ashomok.ocrme.ocr.ocr_task.OcrResult;
-import com.ashomok.ocrme.utils.FirebaseAuthUtil;
 import com.ashomok.ocrme.utils.Repeat;
 import com.ashomok.ocrme.utils.RepeatRule;
 
@@ -25,6 +24,7 @@ import java.util.stream.Collectors;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 
+import static com.ashomok.ocrme.utils.FirebaseUtils.getIdToken;
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
 /**
@@ -46,7 +46,13 @@ public class MyDocsHttpClientTest {
     @Before
     public void init() {
         client = MyDocsHttpClient.getInstance();
-        idToken = FirebaseAuthUtil.getIdToken().blockingGet().get();
+
+        idToken = null;
+        try {
+            idToken = getIdToken().blockingGet().get();
+        } catch (NoSuchElementException exception) {
+            throw new AssertionError("Test not failed, but needs authentificate user");
+        }
         Single<MyDocsResponse> single = client.getMyDocs(idToken, null);
         response = single.blockingGet();
     }

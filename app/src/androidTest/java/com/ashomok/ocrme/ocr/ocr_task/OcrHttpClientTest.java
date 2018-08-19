@@ -1,8 +1,6 @@
 package com.ashomok.ocrme.ocr.ocr_task;
 
 import com.annimon.stream.Optional;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -10,13 +8,12 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 import static com.ashomok.ocrme.utils.FilesProvider.getGcsImageUri;
-import static com.ashomok.ocrme.utils.FirebaseAuthUtil.getIdToken;
+import static com.ashomok.ocrme.utils.FirebaseUtils.getIdToken;
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
 /**
@@ -40,12 +37,17 @@ public class OcrHttpClientTest {
         List<String> languages = new ArrayList<>();
         languages.add("ru");
 
-        String token = getIdToken().blockingGet().get();
+        String token;
+        try {
+            token = getIdToken().blockingGet().get();
+        } catch (NoSuchElementException exception) {
+            throw new AssertionError("Test not failed, but needs authentificate user");
+        }
         Single<OcrResponse> response = client.ocr(gcsImageUri, Optional.of(languages), Optional.of(token));
 
         OcrResponse ocrResponse = response.blockingGet();
 
-        Assert.assertEquals( OcrResponse.Status.OK, ocrResponse.getStatus());
+        Assert.assertEquals(OcrResponse.Status.OK, ocrResponse.getStatus());
         Assert.assertTrue(ocrResponse.getOcrResult().getTextResult().length() > 5);
         Assert.assertTrue(ocrResponse.getOcrResult().getPdfResultGsUrl().length() > 5);
     }

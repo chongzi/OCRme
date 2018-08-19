@@ -1,4 +1,4 @@
-package com.ashomok.ocrme.ocr_result.tab_fragments.searchable_pdf;
+package com.ashomok.ocrme.ocr_result.tab_fragments.image_pdf;
 
 import android.Manifest;
 import android.animation.Animator;
@@ -35,24 +35,22 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+
 import dagger.android.support.DaggerFragment;
 
 import static com.ashomok.ocrme.Settings.appPackageName;
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
-/**
- * Created by iuliia on 5/31/17.
- */
-public class SearchablePdfFragment extends DaggerFragment implements SearchablePdfContract.View {
-    public static final String EXTRA_PDF_GS_URL = "com.ashomok.ocrme.ocr_result.tab_fragments.searchable_pdf.PDF_URL";
-    public static final String EXTRA_PDF_MEDIA_URL = "com.ashomok.ocrme.ocr_result.tab_fragments.searchable_pdf.EXTRA_PDF_MEDIA_URL";
-    private static final String TAG = DEV_TAG + SearchablePdfFragment.class.getSimpleName();
+public class ImagePdfFragment extends DaggerFragment implements ImagePdfContract.View {
+    public static final String EXTRA_PDF_GS_URL = "com.ashomok.ocrme.ocr_result.tab_fragments.image_pdf.PDF_URL";
+    public static final String EXTRA_PDF_MEDIA_URL = "com.ashomok.ocrme.ocr_result.tab_fragments.image_pdf.EXTRA_PDF_MEDIA_URL";
+    private static final String TAG = DEV_TAG + ImagePdfFragment.class.getSimpleName();
     private String mGsUrl;
     private String mDownloadURL; //for sharing pdf option only
     private View mRootView;
 
     @Inject
-    SearchablePdfContract.Presenter mPresenter;
+    ImagePdfContract.Presenter mPresenter;
 
     @Inject
     Context context;
@@ -65,9 +63,10 @@ public class SearchablePdfFragment extends DaggerFragment implements SearchableP
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.searchable_pdf_fragment, container, false);
+        View view = inflater.inflate(R.layout.image_pdf_fragment, container, false);
         mPdfView = view.findViewById(R.id.pdfView);
         progressBar = view.findViewById(R.id.progress);
+
         mRootView = view.findViewById(R.id.root_view);
 
         Bundle bundle = getArguments();
@@ -118,30 +117,30 @@ public class SearchablePdfFragment extends DaggerFragment implements SearchableP
     @Override
     public void runPDFIntent(File pdfFile) {
 
-            if (pdfFile.exists()) {
-                Uri fileUri = null;
-                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { //explanation https://inthecheesefactory.com/blog/how-to-share-access-to-file-with-fileprovider-on-android-nougat/en
+        if (pdfFile.exists()) {
+            Uri fileUri = null;
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { //explanation https://inthecheesefactory.com/blog/how-to-share-access-to-file-with-fileprovider-on-android-nougat/en
 
-                    fileUri = FileProvider.getUriForFile(context,
-                            BuildConfig.APPLICATION_ID + ".provider",
-                            pdfFile);
-                } else {
-                    fileUri = Uri.fromFile(pdfFile);
-                }
-
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(fileUri, "application/pdf");
-                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-                if (isAnyAppHandleIntent(intent)) {
-                    context.startActivity(intent);
-                } else {
-                    showError(R.string.no_app);
-                }
+                fileUri = FileProvider.getUriForFile(context,
+                        BuildConfig.APPLICATION_ID + ".provider",
+                        pdfFile);
             } else {
-                showError(R.string.no_file);
+                fileUri = Uri.fromFile(pdfFile);
             }
+
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(fileUri, "application/pdf");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            if (isAnyAppHandleIntent(intent)) {
+                context.startActivity(intent);
+            } else {
+                showError(R.string.no_app);
+            }
+        } else {
+            showError(R.string.no_file);
+        }
     }
 
     private boolean isAnyAppHandleIntent(Intent intent) {

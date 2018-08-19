@@ -10,14 +10,13 @@ import android.util.Log;
 
 import com.ashomok.ocrme.ocr.ocr_task.OcrResponse;
 import com.ashomok.ocrme.ocr.ocr_task.OcrResult;
+import com.ashomok.ocrme.ocr_result.tab_fragments.image_pdf.ImagePdfFragment;
 import com.ashomok.ocrme.ocr_result.tab_fragments.searchable_pdf.SearchablePdfFragment;
 import com.ashomok.ocrme.ocr_result.tab_fragments.text.TextFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ashomok.ocrme.ocr_result.tab_fragments.searchable_pdf.SearchablePdfFragment.EXTRA_PDF_GS_URL;
-import static com.ashomok.ocrme.ocr_result.tab_fragments.searchable_pdf.SearchablePdfFragment.EXTRA_PDF_MEDIA_URL;
 import static com.ashomok.ocrme.ocr_result.tab_fragments.text.TextFragment.EXTRA_IMAGE_URL;
 import static com.ashomok.ocrme.ocr_result.tab_fragments.text.TextFragment.EXTRA_LANGUAGES;
 import static com.ashomok.ocrme.ocr_result.tab_fragments.text.TextFragment.EXTRA_TEXT;
@@ -28,35 +27,74 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
  */
 
 public class MyPagerAdapter extends FragmentPagerAdapter {
-    private static final int ITEM_COUNT = 2;
+    private static int ITEM_COUNT = 3;
     private OcrResponse ocrData;
-    public static final String TAG = DEV_TAG+ MyPagerAdapter.class.getSimpleName();
+    public static final String TAG = DEV_TAG + MyPagerAdapter.class.getSimpleName();
 
     MyPagerAdapter(FragmentManager fm, OcrResponse ocrData) {
         super(fm);
         this.ocrData = ocrData;
-        Log.d(TAG, "Adapter obtained ocr data: "+ ocrData.toString());
+        Log.d(TAG, "Adapter obtained ocr data: " + ocrData.toString());
+
+        OcrResult ocrResult = ocrData.getOcrResult();
+        //don't init imagePDFFragment for old docs - backward compatibility
+        if (ocrResult.getPdfImageResultGsUrl() == null || ocrResult.getPdfImageResultMediaUrl() == null) {
+            //old doc
+            ITEM_COUNT = 2;
+        } else {
+            //new doc
+            ITEM_COUNT = 3;
+        }
     }
 
     @Override
     @Nullable
     public Fragment getItem(int position) {
         OcrResult ocrResult = ocrData.getOcrResult();
-        switch (position) {
-            case 0:
-                return initTextFragment(ocrResult);
-            case 1:
-                return initPDFFragment(ocrResult);
-            default:
-                return null;
+
+        if (ITEM_COUNT == 2) {
+            //old doc
+            switch (position) {
+                case 0:
+                    return initTextFragment(ocrResult);
+                case 1:
+                    return initSearchablePDFFragment(ocrResult);
+                default:
+                    return null;
+            }
+
+        } else if (ITEM_COUNT == 3) {
+            //new doc
+            switch (position) {
+                case 0:
+                    return initTextFragment(ocrResult);
+                case 1:
+                    return initImagePDFFragment(ocrResult);
+                case 2:
+                    return initSearchablePDFFragment(ocrResult);
+                default:
+                    return null;
+            }
+        } else {
+            Log.e(TAG, "unexpected fragments count");
+            return null;
         }
     }
 
-    private SearchablePdfFragment initPDFFragment(OcrResult ocrResult) {
+    private SearchablePdfFragment initSearchablePDFFragment(OcrResult ocrResult) {
         SearchablePdfFragment fragment = new SearchablePdfFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(EXTRA_PDF_GS_URL, ocrResult.getPdfResultGsUrl());
-        bundle.putString(EXTRA_PDF_MEDIA_URL, ocrResult.getPdfResultGsUrl());
+        bundle.putString(SearchablePdfFragment.EXTRA_PDF_GS_URL, ocrResult.getPdfResultGsUrl());
+        bundle.putString(SearchablePdfFragment.EXTRA_PDF_MEDIA_URL, ocrResult.getPdfResultMediaUrl());
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    private ImagePdfFragment initImagePDFFragment(OcrResult ocrResult) {
+        ImagePdfFragment fragment = new ImagePdfFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(ImagePdfFragment.EXTRA_PDF_GS_URL, ocrResult.getPdfImageResultGsUrl());
+        bundle.putString(ImagePdfFragment.EXTRA_PDF_MEDIA_URL, ocrResult.getPdfImageResultMediaUrl());
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -67,7 +105,7 @@ public class MyPagerAdapter extends FragmentPagerAdapter {
         bundle.putString(EXTRA_TEXT, ocrResult.getTextResult());
         bundle.putString(EXTRA_IMAGE_URL, ocrResult.getSourceImageUrl());
         List<String> languages = ocrResult.getLanguages();
-        if (languages!=null) {
+        if (languages != null) {
             bundle.putStringArrayList(EXTRA_LANGUAGES, new ArrayList<>(languages));
         }
         fragment.setArguments(bundle);

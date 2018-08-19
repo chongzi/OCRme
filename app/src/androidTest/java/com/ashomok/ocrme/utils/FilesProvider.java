@@ -30,15 +30,12 @@ public class FilesProvider {
     private static final String TEST_IMGS = "test_imgs";
     private static final String TAG = DEV_TAG + FilesProvider.class.getSimpleName();
 
-    private static final String gcsImageUri =
-            "gs://ocrme-77a2b.appspot.com/test/ru.jpg";
+    private static final String gcsImageUri = "gs://ocrme-77a2b.appspot.com/test/ru.jpg";
 
-//    //todo set default back
-//    private static final String gcsImageUri =
-//            "gs://ocrme-77a2b.appspot.com/ocr_request_images/ca853240-124e-4f78-871d-1b1cd3ef7ba34bf1518f-d560-4fe8-a9ff-47ec9038fb0d.jpg";
+    private static final String gcsSearchablePdfUri = "gs://ocrme-77a2b.appspot.com/test/ru.pdf";
 
-    private static final String gcsPdfUri =
-            "gs://ocrme-77a2b.appspot.com/test/ru.pdf";
+    private static final String gcsImagePdfUri = "gs://ocrme-77a2b.appspot.com/test/pdf-results%2F2018-08-19-14-51-16-841-file.pdf";
+
 
     public static ArrayList<String> getTestImages() {
         //create folders for tessdata files
@@ -118,7 +115,7 @@ public class FilesProvider {
         return gcsImageUri;
     }
 
-    public static String getGcsPdfUri() {
-        return gcsPdfUri;
-    }
+    public static String getGcsSearchablePdfUri() { return gcsSearchablePdfUri; }
+
+    public static String getGcsImagePdfUri() { return gcsImagePdfUri; }
 }

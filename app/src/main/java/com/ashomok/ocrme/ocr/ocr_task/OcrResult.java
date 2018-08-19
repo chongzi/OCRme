@@ -58,7 +58,6 @@ public class OcrResult implements Serializable {
         return pdfResultMediaUrl;
     }
 
-    //todo use it
     public String getPdfImageResultGsUrl() {
         return pdfImageResultGsUrl;
     }

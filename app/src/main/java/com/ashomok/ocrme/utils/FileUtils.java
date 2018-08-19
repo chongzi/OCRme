@@ -99,12 +99,6 @@ public class FileUtils {
         return Bitmap.createScaledBitmap(bitmap, resizedWidth, resizedHeight, false);
     }
 
-    private static byte[] toByteArray(Bitmap bitmap) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        return stream.toByteArray();
-    }
-
     public static void prepareDirectory(String path) throws Exception {
 
         File dir = new File(path);
@@ -128,16 +122,5 @@ public class FileUtils {
         inChannel.transferTo(0, inChannel.size(), outChannel);
         inStream.close();
         outStream.close();
-    }
-
-    public static void deleteFile(Uri uri) {
-        File fdelete = new File(uri.getPath());
-        if (fdelete.exists()) {
-            if (fdelete.delete()) {
-                Log.d(TAG, "file Deleted :" + uri.getPath());
-            } else {
-                Log.d(TAG, "file not Deleted :" + uri.getPath());
-            }
-        }
     }
 }

@@ -23,8 +23,9 @@ import static android.support.test.espresso.action.ViewActions.swipeLeft;
 import static android.support.test.espresso.action.ViewActions.swipeRight;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static com.ashomok.ocrme.ocr_result.OcrResultActivity.EXTRA_OCR_RESPONSE;
+import static com.ashomok.ocrme.utils.FilesProvider.getGcsImagePdfUri;
 import static com.ashomok.ocrme.utils.FilesProvider.getGcsImageUri;
-import static com.ashomok.ocrme.utils.FilesProvider.getGcsPdfUri;
+import static com.ashomok.ocrme.utils.FilesProvider.getGcsSearchablePdfUri;
 
 /**
  * Created by iuliia on 5/31/17.
@@ -72,7 +73,8 @@ public class OcrResultActivityTest {
             "ng long long long longlong long long long longlong long long long longlong long long l" +
             "ong longlong long long long longlong long long long longlong long long long long";
     private String shortText ="short text";
-    private String pdfResultGsUrl = getGcsPdfUri();
+    private String gcsSearchablePdfUri = getGcsSearchablePdfUri();
+    private String gcsImagePdfUri = getGcsImagePdfUri();
     private String imageUrl = getGcsImageUri();
     private OcrResponse.Status status = OcrResponse.Status.OK;
 
@@ -90,8 +92,10 @@ public class OcrResultActivityTest {
         Intent intent = new Intent(targetContext, OcrResultActivity.class);
         OcrResult ocrResult =new OcrResult.Builder()
                 .textResult(longText)
-                .pdfResultGsUrl(pdfResultGsUrl)
+                .pdfResultGsUrl(gcsSearchablePdfUri)
+                .pdfImageResultGsUrl(gcsImagePdfUri)
                 .pdfResultMediaUrl( "media url")
+                .pdfImageResultMediaUrl( "media url")
                 .sourceImageUrl(imageUrl)
                 .build();
         OcrResponse response = new OcrResponse(ocrResult, status);
@@ -105,8 +109,10 @@ public class OcrResultActivityTest {
         Intent intent = new Intent(targetContext, OcrResultActivity.class);
         OcrResult ocrResult =new OcrResult.Builder()
                 .textResult(shortText)
-                .pdfResultGsUrl(pdfResultGsUrl)
+                .pdfResultGsUrl(gcsSearchablePdfUri)
+                .pdfImageResultGsUrl(gcsImagePdfUri)
                 .pdfResultMediaUrl( "media url")
+                .pdfImageResultMediaUrl( "media url")
                 .sourceImageUrl(imageUrl)
                 .build();
         OcrResponse response = new OcrResponse(ocrResult, status);
