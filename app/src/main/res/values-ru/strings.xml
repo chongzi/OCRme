@@ -81,7 +81,7 @@
     <string name="selected">\u0020выбрано</string>
     <string name="select_all">Выбрать все</string>
     <string name="select">Выбрать</string>
-    <string name="delete_docs">Удалить %1$s docs?</string>
+    <string name="delete_docs">Удалить %1$s докуменов?</string>
     <string name="delete">Удалить</string>
     <string name="languages_selected">Выбрано %1$s языков</string>
     <string name="unselect_all">Отменить выбор</string>

@@ -29,7 +29,7 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 public class FileUtils {
     private static final String TAG = DEV_TAG + FileUtils.class.getSimpleName();
     private static final String DEFAULT_DIR_NAME = "Camera";
-    private static final int maxImageSizeBytes = 60 * 1024;
+    private static final int maxImageSizeBytes = 150 * 1024; //150 kb
 
     /**
      * create File in DEFAULT_DIR_NAME
@@ -68,13 +68,16 @@ public class FileUtils {
     //scale to  maxImageSizeBytes
     public static byte[] scaleBitmapDown(Bitmap bitmap, Bitmap.CompressFormat compressFormat) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        bitmap.compress(compressFormat, 100, baos);
         int options = 100;
+
         while ( baos.toByteArray().length > maxImageSizeBytes) {
             baos.reset();
             bitmap.compress(compressFormat, options, baos);
             options -= 10;
+            Log.d(TAG, "image byte array size = " + baos.toByteArray().length);
         }
+
         return baos.toByteArray();
     }
 
