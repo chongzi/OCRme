@@ -14,6 +14,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
+import org.robolectric.shadows.ShadowLog;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -31,6 +32,13 @@ public class MainActivityTest {
         // onCreate(...) => onStart() => onPostCreate(...) => onResume()
         activity = Robolectric.setupActivity(MainActivity.class);
     }
+
+    //turn on loggining
+    @Before
+    public void init() {
+        ShadowLog.stream = System.out;
+    }
+
 
 
 //    //todo remove failed

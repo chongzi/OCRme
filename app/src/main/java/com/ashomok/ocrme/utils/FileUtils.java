@@ -2,7 +2,6 @@ package com.ashomok.ocrme.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -11,13 +10,11 @@ import android.util.Log;
 
 import com.ashomok.ocrme.BuildConfig;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
@@ -29,7 +26,7 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 public class FileUtils {
     private static final String TAG = DEV_TAG + FileUtils.class.getSimpleName();
     private static final String DEFAULT_DIR_NAME = "Camera";
-    private static final int maxImageSizeBytes = 200 * 1024; //200 kb
+    public static final int maxImageSizeBytes = 200 * 1024; //200 kb
 
     /**
      * create File in DEFAULT_DIR_NAME
@@ -65,19 +62,26 @@ public class FileUtils {
         return uri;
     }
 
-    //scale to  maxImageSizeBytes
     public static byte[] scaleBitmapDown(Bitmap bitmap, Bitmap.CompressFormat compressFormat) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(compressFormat, 100, baos);
         int options = 100;
 
-        while ( baos.toByteArray().length > maxImageSizeBytes) {
+        while (baos.toByteArray().length > maxImageSizeBytes) {
             baos.reset();
             bitmap.compress(compressFormat, options, baos);
             options -= 10;
             Log.d(TAG, "image byte array size = " + baos.toByteArray().length);
         }
 
+        return baos.toByteArray();
+    }
+
+
+    public static byte[] toBytes(Bitmap bitmap, Bitmap.CompressFormat compressFormat) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(compressFormat, 100, baos);
+        Log.d(TAG, "image byte array size = " + baos.toByteArray().length);
         return baos.toByteArray();
     }
 
@@ -126,4 +130,5 @@ public class FileUtils {
         inStream.close();
         outStream.close();
     }
+
 }

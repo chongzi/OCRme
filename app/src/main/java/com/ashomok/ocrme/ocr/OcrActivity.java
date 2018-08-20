@@ -48,6 +48,7 @@ import io.reactivex.schedulers.Schedulers;
 import static com.ashomok.ocrme.ocr_result.OcrResultActivity.EXTRA_ERROR_MESSAGE;
 import static com.ashomok.ocrme.ocr_result.OcrResultActivity.EXTRA_OCR_RESPONSE;
 import static com.ashomok.ocrme.utils.FileUtils.scaleBitmapDown;
+import static com.ashomok.ocrme.utils.FileUtils.toBytes;
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
 //import static com.ashomok.ocrme.Settings.firebaseFolderURL;
@@ -283,7 +284,8 @@ public class OcrActivity extends RxAppCompatActivity {
                 if (compressFormat == null){
                     emitter.onError(new Throwable("Unknown image extension"));
                 }else {
-                    byte[] byteArray = scaleBitmapDown(BitmapFactory.decodeStream(imageStream), compressFormat);
+
+                    byte[] byteArray = toBytes(BitmapFactory.decodeStream(imageStream), compressFormat);
                     mImageRef
                             .putBytes(byteArray)
                             .addOnSuccessListener(taskSnapshot -> {

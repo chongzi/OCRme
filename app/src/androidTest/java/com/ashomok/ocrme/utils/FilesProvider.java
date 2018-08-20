@@ -38,7 +38,6 @@ public class FilesProvider {
 
 
     public static ArrayList<String> getTestImages() {
-        //create folders for tessdata files
         prepareDirectories(
                 new String[]{DATA_PATH + TEST_IMGS});
 
