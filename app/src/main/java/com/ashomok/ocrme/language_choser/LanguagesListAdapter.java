@@ -17,6 +17,7 @@ import com.ashomok.ocrme.Settings;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import static com.ashomok.ocrme.utils.InfoSnackbarUtil.showError;
@@ -32,7 +33,6 @@ public class LanguagesListAdapter extends RecyclerView.Adapter<LanguagesListAdap
     private static final int MAX_CHECKED_ALLOWED = 3;
     private final StateChangedNotifier notifier;
     private List<String> allLanguageCodes;
-
     private ResponsableList<String> checkedLanguageCodes;
 
     LanguagesListAdapter(List<String> allLanguageCodes,
@@ -102,7 +102,7 @@ public class LanguagesListAdapter extends RecyclerView.Adapter<LanguagesListAdap
         String item = getItem(position);
         View parent = holder.languageLayout.getRootView();
 
-        holder.languageName.setText(Settings.getOcrLanguageSupportList(parent.getContext()).get(item));
+        holder.languageName.setText(Settings.getSortedOcrLanguageSupportList(parent.getContext()).get(item));
 
         holder.languageLayout.setOnClickListener(view -> {
             if (checkedLanguageCodes.contains(item)) {

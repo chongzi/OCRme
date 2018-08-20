@@ -29,7 +29,7 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 public class FileUtils {
     private static final String TAG = DEV_TAG + FileUtils.class.getSimpleName();
     private static final String DEFAULT_DIR_NAME = "Camera";
-    private static final int maxImageSizeBytes = 150 * 1024; //150 kb
+    private static final int maxImageSizeBytes = 200 * 1024; //200 kb
 
     /**
      * create File in DEFAULT_DIR_NAME

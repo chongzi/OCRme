@@ -232,7 +232,7 @@ public class MainPresenter implements MainContract.Presenter {
 
     @NonNull
     private String generateLanguageString(List<String> checkedLanguageCodes) {
-        Map<String, String> allLanguages = Settings.getOcrLanguageSupportList(context);
+        Map<String, String> allLanguages = Settings.getSortedOcrLanguageSupportList(context);
         List<String> checkedLanguages = Stream.of(checkedLanguageCodes)
                 .filter(allLanguages::containsKey)
                 .map(allLanguages::get)

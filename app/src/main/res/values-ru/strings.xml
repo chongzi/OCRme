@@ -93,8 +93,8 @@
     <string name="price_per_month">%1$s %2$s/месяц</string>
     <string name="price_per_1_in_100">%1$s %2$s/реквест</string>
     <string name="no_ads">Без рекламы</string>
-    <string name="unlimited_ocr_requests">Неограниченные Реквесты распознавания изображений</string>
-    <string name="unlimited_translate_requests">Неограниченное количество Реквестов на перевод</string>
+    <string name="unlimited_ocr_requests">Безлимитное количество Реквестов на распознавание</string>
+    <string name="unlimited_translate_requests">Безлимитное количество Реквестов на перевод</string>
     <string name="languages_supported_for_ocr">Поддержка 100+ языков для распознавания изображений</string>
     <string name="languages_supported_for_translate">Поддержка 60+ языков для перевода</string>
     <string name="highprecision_recognition_system">Высокоточная система распознавания</string>
@@ -104,7 +104,7 @@
     <string name="my_premium">Мой премиум</string>
     <string name="you_are_premium">Вы премиум!</string>
     <string name="you_get_ocr_requests">Вы получили %1$s реквестов.</string>
-    <string name="get_more_for_free">Получите больше Бесплатно</string>
+    <string name="get_more_for_free">Получить бесплатно</string>
     <string name="get_more_for_free_toolbar">Мы используем лучшие алгоритмы, и мы платим за это. \nПолучите больше бесплатно благодаря небольшой поддержке.</string>
     <string name="check_premium_price">Проверить цену на премиум</string>
     <string name="you_have_requests">У вас %1$s реквестов на распознавание изображений. Вы можете получить больше бесплатно или проверить цену премиум-аккаунта.</string>
@@ -173,6 +173,6 @@
     <string name="vietnamese">Вьетнамский</string>
     <string name="buy_100_requests">Купить 100 реквестов</string>
     <string name="one_month_premium">Премиум на месяц</string>
-    <string name="unlimited_requests">Неограниченные реквесты + Без рекламы</string>
+    <string name="unlimited_requests">Безлимитные реквесты + Без рекламы</string>
     <string name="one_year_premium">Премиум на год</string>
 </resources>

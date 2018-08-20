@@ -2,7 +2,11 @@ package com.ashomok.ocrme;
 
 import android.content.Context;
 
+import com.ashomok.ocrme.utils.MapUtil;
+
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Created by iuliia on 12/12/16.
@@ -16,8 +20,12 @@ public class Settings {
     public static boolean isAdsActive = true; //will be set in MainActivity
     public static boolean isPremium = false;//will be set in MainActivity
 
-    public static LinkedHashMap<String, String> getOcrLanguageSupportList(final Context context) {
-        return new LinkedHashMap<String, String>() {{
+    public static Map<String, String> getSortedOcrLanguageSupportList(final Context context){
+        return MapUtil.sortByValue(getOcrLanguageSupportList(context));
+    }
+
+    private static Map<String, String> getOcrLanguageSupportList(final Context context) {
+        return new HashMap<String, String>() {{
             put("af", context.getString(R.string.afrikaans));
             put("ar", context.getString(R.string.arabic));
             put("as", context.getString(R.string.assamese));

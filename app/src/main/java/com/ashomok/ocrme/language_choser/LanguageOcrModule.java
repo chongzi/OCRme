@@ -45,7 +45,7 @@ public abstract class LanguageOcrModule {
     @Provides
     @AllLanguageCodes
     static List<String> provideAllLanguageCodes(Context context) {
-        return new ArrayList<>(Settings.getOcrLanguageSupportList(context).keySet());
+        return new ArrayList<>(Settings.getSortedOcrLanguageSupportList(context).keySet());
     }
 
     @Binds
