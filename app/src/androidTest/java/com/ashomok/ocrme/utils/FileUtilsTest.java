@@ -42,7 +42,7 @@ public class FileUtilsTest {
     }
 
     @Test
-    public void scaleBitmapDown() {
+    public void bitmapToBytesTest() {
         Assert.assertTrue(bitmap != null);
         byte[] scaled = FileUtils.toBytes(bitmap, Bitmap.CompressFormat.JPEG);
         bitmapScaled = BitmapFactory.decodeByteArray(scaled, 0, scaled.length);

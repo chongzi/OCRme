@@ -31,7 +31,7 @@
                 android:orientation="horizontal"
                 android:weightSum="2">
 
-                <ImageView
+                <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/backdrop_image"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"

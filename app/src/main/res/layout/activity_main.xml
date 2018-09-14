@@ -65,7 +65,7 @@
                 android:clickable="true"
                 android:focusable="true">
 
-                <ImageView
+                <android.support.v7.widget.AppCompatImageView
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:layout_centerInParent="true"

@@ -83,18 +83,22 @@ public class MyDocsPresenter implements MyDocsContract.Presenter {
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(
                                     optionalToken -> {
-                                        view.showProgress(false);
-                                        //logged in - updateUi(boolean isUserSignedIn) called
-                                        if (optionalToken.isPresent()) {
-                                            initialized = true;
-                                            idToken = optionalToken.get();
-                                            startCursor = null;
-                                            callApiForDocs(httpClient, idToken, startCursor, true);
+                                        if (view != null) {
+                                            view.showProgress(false);
+                                            //logged in - updateUi(boolean isUserSignedIn) called
+                                            if (optionalToken.isPresent()) {
+                                                initialized = true;
+                                                idToken = optionalToken.get();
+                                                startCursor = null;
+                                                callApiForDocs(httpClient, idToken, startCursor, true);
+                                            }
                                         }
                                     }, throwable -> {
-                                        view.showProgress(false);
-                                        throwable.printStackTrace();
-                                        view.showError(R.string.unable_identify_user);
+                                        if (view != null) {
+                                            view.showProgress(false);
+                                            throwable.printStackTrace();
+                                            view.showError(R.string.unable_identify_user);
+                                        }
                                     });
                 } else {
                     view.showError(R.string.no_internet_connection);

@@ -13,7 +13,6 @@ import com.ashomok.ocrme.get_more_requests.row.free_options.PromoRowFreeOptionDa
 import com.ashomok.ocrme.get_more_requests.row.free_options.UiFreeOptionManagingDelegate;
 import com.ashomok.ocrme.get_more_requests.row.free_options.option_delegates.FollowUsOnFbDelegate;
 import com.ashomok.ocrme.get_more_requests.row.free_options.option_delegates.LoginToSystemDelegate;
-import com.ashomok.ocrme.get_more_requests.row.free_options.option_delegates.RateAppDelegate;
 import com.ashomok.ocrme.get_more_requests.row.free_options.option_delegates.WatchVideoDelegate;
 import com.ashomok.ocrme.get_more_requests.row.paid_options.UiPaidOptionManagingDelegate;
 import com.ashomok.ocrme.get_more_requests.row.paid_options.option_delegates.Batch100Delegate;
@@ -53,12 +52,10 @@ public abstract class GetMoreRequestsModule {
     static Map<String, UiFreeOptionManagingDelegate> provideUiDelegatesForFree(
             LoginToSystemDelegate loginToSystemDelegate,
             WatchVideoDelegate watchVideoDelegate,
-            RateAppDelegate rateAppDelegate,
             FollowUsOnFbDelegate followUsOnFbDelegate) {
         Map<String, UiFreeOptionManagingDelegate> uiDelegates = new HashMap<>();
         uiDelegates.put(WatchVideoDelegate.ID, watchVideoDelegate);
         uiDelegates.put(LoginToSystemDelegate.ID, loginToSystemDelegate);
-        uiDelegates.put(RateAppDelegate.ID, rateAppDelegate);
         uiDelegates.put(FollowUsOnFbDelegate.ID, followUsOnFbDelegate);
         return uiDelegates;
     }

@@ -59,7 +59,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:src="@drawable/circle"
