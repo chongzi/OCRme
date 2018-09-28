@@ -13,6 +13,7 @@
     <string name="about">About</string>
     <string name="share_opinion">Please share your opinion</string>
     <string name="ok" translatable="false">OK</string>
+    <string name="ok_sure">OK, sure</string>
     <string name="later">Later</string>
     <string name="never">Never</string>
     <string name="camera_not_found">Camera not found</string>
@@ -96,7 +97,7 @@
     <string name="select_all">Select all</string>
     <string name="select">Select</string>
     <string name="delete_docs">Delete %1$s docs?</string>
-    <string name="support_us">Please support us with ★★★★★!</string>
+    <string name="support_us">Is result good? \nIf you like the app, please support us with ★★★★★!</string>
     <string name="delete">Delete</string>
     <string name="languages_selected">%1$s languages selected</string>
     <string name="unselect_all">Unselect all</string>
@@ -129,7 +130,8 @@
     <string name="watch_video_ads">Watch one video ad</string>
     <string name="best_choise">Best choice</string>
     <string name="login_to_system">Login to system</string>
-    <string name="rate_app">Rate app ★★★★★</string>
+    <string name="rate_app_5_stars">Rate app ★★★★★</string>
+    <string name="rate_app">Rate app</string>
     <string name="follow_us_on_fb">Follow us on Facebook</string>
     <string name="requests_cost" translatable="false">+%1$s</string>
     <string name="task_is_done">Task is done</string>
@@ -197,4 +199,8 @@
     <string name="unlimited_requests">Unlimited requests + No ads</string>
     <string name="one_year_premium">One Year Premium</string>
     <string name="searchable_PDF" translatable="false">searchable PDF</string>
+    <string name="privacy_policy_agreement">Privacy Policy agreement</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="privacy_policy_explanation">Using this app you agreed with our Privacy Policy.</string>
+    <string name="no_video_ads_avalible">No video ads available for you right now. Please check later.</string>
 </resources>

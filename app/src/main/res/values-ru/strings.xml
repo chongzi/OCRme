@@ -65,6 +65,8 @@
     <string name="canceled">Отменено</string>
     <string name="invalid_language">Недопустимый язык. \nЗапустите снова с языком Auto.</string>
     <string name="result">Результат</string>
+    <string name="ok_sure">Да, конечно</string>
+    <string name="rate_app">Оценить приложение</string>
     <string name="file_must_be_saved_downloading">Перед загрузкой файл должен быть сохранен на устройстве. \nПожалуйста, дайте разрешение.</string>
     <string name="this_option_is_not_be_avalible">Этот параметр недоступен, пока вы не дадите разрешение в настройках телефона.</string>
     <string name="file_must_be_saved_opening">Файл должен быть сохранен на устройстве ранее. \ nПожалуйста, разрешите разрешение.</string>
@@ -105,7 +107,7 @@
     <string name="you_are_premium">Вы премиум!</string>
     <string name="you_get_ocr_requests">Вы получили %1$s реквестов.</string>
     <string name="get_more_for_free">Получить бесплатно</string>
-    <string name="support_us">Пожалуйста поддержите нас с ★★★★★!</string>
+    <string name="support_us">Вы получили хороший результат? \nЕсли вам нравится приложение, пожалуйста поддержите нас с ★★★★★!</string>
     <string name="get_more_for_free_toolbar">Мы используем лучшие алгоритмы, и мы платим за это. \nПолучите больше бесплатно благодаря небольшой поддержке.</string>
     <string name="check_premium_price">Проверить цену на премиум</string>
     <string name="you_have_requests">У вас %1$s реквестов на распознавание изображений. Вы можете получить больше бесплатно или проверить цену премиум-аккаунта.</string>
@@ -115,7 +117,7 @@
     <string name="watch_video_ads">Просмотр одной видеорекламы</string>
     <string name="best_choise">Лучший выбор</string>
     <string name="login_to_system">Войти в систему</string>
-    <string name="rate_app">Оценить приложение ★★★★★</string>
+    <string name="rate_app_5_stars">Оценить приложение ★★★★★</string>
     <string name="follow_us_on_fb">Следить за нами на Facebook</string>
     <string name="task_is_done">Задача выполнена</string>
     <string name="failed_to_load_video_ad">Не удалось загрузить видеорекламу</string>
@@ -176,4 +178,8 @@
     <string name="one_month_premium">Премиум на месяц</string>
     <string name="unlimited_requests">Безлимитные реквесты + Без рекламы</string>
     <string name="one_year_premium">Премиум на год</string>
+    <string name="privacy_policy_agreement">Соглашение о конфиденциальности</string>
+    <string name="privacy_policy">Соглашение о конфиденциальности</string>
+    <string name="privacy_policy_explanation">Используя это приложение Вы соглашаетесь с нашей Политикой конфиденциальности.</string>
+    <string name="no_video_ads_avalible">Нет видеорекламы, доступной для Вас прямо сейчас. Пожалуйста, проверьте позже.</string>
 </resources>

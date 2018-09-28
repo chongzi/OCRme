@@ -16,7 +16,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="27dp"
             android:text="@string/support_us"
-            android:textSize="@dimen/base_text_size" />
+            android:gravity="center"
+            android:textSize="@dimen/base_text_size"
+            />
 
         <LinearLayout
             android:layout_below="@id/message"
@@ -59,7 +61,7 @@
                 android:layout_marginStart="3dp"
                 android:layout_weight="1"
                 android:background="@color/colorAccent"
-                android:text="@string/ok"
+                android:text="@string/ok_sure"
                 android:textColor="@android:color/white"
                 android:textSize="16sp" />
 

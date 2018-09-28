@@ -4,6 +4,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
@@ -63,6 +64,12 @@ public class AboutActivity extends AppCompatActivity {
             String version = getString(R.string.version) + " " + BuildConfig.VERSION_NAME;
             mTextView_version.setText(version);
 
+            TextView privacy_policy_link = findViewById(R.id.privacy_policy_link);
+            privacy_policy_link.setText(
+                    Html.fromHtml("<u>" + getString(R.string.privacy_policy_agreement) + "</u>"));
+
+            privacy_policy_link.setOnClickListener(view -> openPrivacyPolicy());
+
             if (!Settings.isPremium) {
                 View freeVersionCard = findViewById(R.id.free_version_explanation_card);
                 freeVersionCard.setVisibility(View.VISIBLE);
@@ -78,6 +85,10 @@ public class AboutActivity extends AppCompatActivity {
             Log.e(TAG, e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private void openPrivacyPolicy() {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Settings.PRIVACY_POLICY_LINK)));
     }
 
     private void initToolbar() {

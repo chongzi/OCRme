@@ -1,5 +1,7 @@
 package com.ashomok.ocrme.main;
 
+import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
@@ -15,6 +17,8 @@ import com.ashomok.ocrme.Settings;
 import com.ashomok.ocrme.billing.BillingProviderCallback;
 import com.ashomok.ocrme.billing.BillingProviderImpl;
 import com.ashomok.ocrme.rate_app.RateAppAsker;
+import com.ashomok.ocrme.rate_app.RateAppAskerCallback;
+import com.ashomok.ocrme.rate_app.RateAppDialogFragment;
 import com.ashomok.ocrme.utils.NetworkUtils;
 import com.ashomok.ocrme.utils.SharedPreferencesUtil;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,7 +39,7 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
 public class MainPresenter implements MainContract.Presenter {
     public static final String TAG = DEV_TAG + MainPresenter.class.getSimpleName();
-    private RateAppAsker rateAppAsker;
+
     @Nullable
     public MainContract.View view;
     private Context context;
@@ -79,13 +83,11 @@ public class MainPresenter implements MainContract.Presenter {
     MainPresenter(Context context,
                   SharedPreferences mSharedPreferences,
                   BillingProviderImpl billingProvider,
-                  OcrRequestsCounter ocrRequestsCounter,
-                  RateAppAsker rateAppAsker) {
+                  OcrRequestsCounter ocrRequestsCounter) {
         this.context = context;
         this.mSharedPreferences = mSharedPreferences;
         this.billingProvider = billingProvider;
         this.ocrRequestsCounter = ocrRequestsCounter;
-        this.rateAppAsker = rateAppAsker;
     }
 
     private void onPremiumStatusUpdated(boolean isPremium) {
@@ -118,8 +120,6 @@ public class MainPresenter implements MainContract.Presenter {
             languageCodes = obtainSavedLanguagesCodes();
             updateLanguageTextView(languageCodes);
             initRequestCounter();
-
-            rateAppAsker.init();
         }
     }
 

@@ -13,6 +13,7 @@ import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import javax.inject.Inject;
 
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
+import static com.google.android.gms.ads.AdRequest.ERROR_CODE_NO_FILL;
 
 /**
  * Created by iuliia on 3/5/18.
@@ -92,6 +93,10 @@ public class WatchVideoDelegate extends UiFreeOptionManagingDelegate implements 
 
     @Override
     public void onRewardedVideoAdFailedToLoad(int i) {
-        activity.showError(R.string.failed_to_load_video_ad);
+        if (i == ERROR_CODE_NO_FILL) {
+            activity.showError(R.string.no_video_ads_avalible);
+        } else {
+            activity.showError(R.string.failed_to_load_video_ad);
+        }
     }
 }

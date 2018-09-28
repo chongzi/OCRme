@@ -46,6 +46,7 @@ import com.ashomok.ocrme.ocr.OcrActivity;
 import com.ashomok.ocrme.update_to_premium.UpdateToPremiumActivity;
 import com.ashomok.ocrme.utils.InfoSnackbarUtil;
 import com.ashomok.ocrme.utils.NetworkUtils;
+import com.ashomok.ocrme.utils.RateAppUtils;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
@@ -336,6 +337,9 @@ public class MainActivity extends BaseLoginActivity implements
                         case R.id.update_to_premium:
                             startUpdateToPremiumActivity();
                             break;
+                        case R.id.rate_app:
+                            rateApp();
+                            break;
                         case R.id.logout:
                             logout();
                             break;
@@ -352,6 +356,11 @@ public class MainActivity extends BaseLoginActivity implements
         LinearLayout loginHeader =
                 navigationView.getHeaderView(0).findViewById(R.id.propose_sign_in_layout);
         loginHeader.setOnClickListener(this);
+    }
+
+    private void rateApp() {
+        RateAppUtils rateAppUtils = new RateAppUtils();
+        rateAppUtils.rate(this);
     }
 
     private void startAboutActivity() {

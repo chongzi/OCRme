@@ -17,6 +17,10 @@
             android:id="@+id/update_to_premium"
             android:icon="@drawable/my_premium_icon"
             android:title="@string/update_to_premium" />
+        <item
+            android:id="@+id/rate_app"
+            android:icon="@drawable/ic_sentiment_satisfied"
+            android:title="@string/rate_app" />
     </group>
     <group
         android:id="@+id/logout_group"

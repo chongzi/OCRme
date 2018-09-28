@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.ashomok.ocrme.R;
+import com.ashomok.ocrme.utils.RateAppUtils;
 
 /**
  * Created by iuliia on 10/5/16.
@@ -77,17 +78,7 @@ public class RateAppDialogFragment extends DialogFragment {
     }
 
     private void rate() {
-        Toast.makeText(getActivity(), R.string.thank_you_for_your_support, Toast.LENGTH_SHORT).show();
-        String appPackageName = getActivity().getPackageName();
-        openPackageInMarket(appPackageName);
-    }
-
-    private void openPackageInMarket(String appPackageName) {
-        Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName));
-        try {
-            getActivity().startActivity(marketIntent);
-        } catch (ActivityNotFoundException exception) {
-            getActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-        }
+        RateAppUtils rateAppUtils = new RateAppUtils();
+        rateAppUtils.rate(getActivity());
     }
 }

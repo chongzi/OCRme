@@ -1,11 +1,10 @@
 package com.ashomok.ocrme.rate_app;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.Nullable;
 
 import com.ashomok.ocrme.R;
-import com.ashomok.ocrme.main.RequestsCounterDialogFragment;
 
 import javax.inject.Inject;
 
@@ -14,51 +13,49 @@ import javax.inject.Inject;
  * Created by iuliia on 10/5/16.
  */
 
-public class RateAppAsker {
+public class RateAppAsker implements OnNeverAskReachedListener {
 
     /**
-     * Ask to rate app if the app was used UsingCountForRateApp times
+     * Ask to rate app if the app was used RATE_APP_COUNT times
      */
-    public static final int UsingCountForRateApp = 100;
-    public static final int UsingCountForNeverAsk = -1;
-    private Activity activity;
+    public static final int RATE_APP_COUNT = 10;
+    public static final int NEVER_ASK = -1;
+    private final Context context;
     private SharedPreferences sharedPreferences;
 
+
     @Inject
-    public RateAppAsker(SharedPreferences sharedPreferences, Activity activity){
+    public RateAppAsker(SharedPreferences sharedPreferences, Context context){
         this.sharedPreferences = sharedPreferences;
-        this.activity = activity;
+        this.context = context;
     }
 
-    public void init() {
+    public void init(RateAppAskerCallback callback) {
+        int timesAppWasUsed = sharedPreferences.getInt(context.getString(R.string.times_app_was_used), 0);
 
-        SharedPreferences sharedPref = sharedPreferences;
-        int timesAppWasUsed = sharedPref.getInt(activity.getString(R.string.times_app_was_used), 0);
-
-        if (timesAppWasUsed == UsingCountForNeverAsk) {
-            return;
-        } else {
-            SharedPreferences.Editor editor = sharedPref.edit();
-            if (timesAppWasUsed >= UsingCountForRateApp) {
-                askToRate(activity);
-                editor.putInt(activity.getString(R.string.times_app_was_used), 0);
+        if (timesAppWasUsed != NEVER_ASK) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            if (timesAppWasUsed >= RATE_APP_COUNT) {
+                askToRate(callback);
+                editor.putInt(context.getString(R.string.times_app_was_used), 0);
             } else {
 
-                editor.putInt(activity.getString(R.string.times_app_was_used), ++timesAppWasUsed);
+                editor.putInt(context.getString(R.string.times_app_was_used), ++timesAppWasUsed);
             }
             editor.apply();
         }
     }
 
-    private static void askToRate(final Activity activity) {
+    private void askToRate(RateAppAskerCallback callback) {
         RateAppDialogFragment rateAppDialogFragment = RateAppDialogFragment.newInstance();
-        rateAppDialogFragment.setOnStopAskListener(() -> {
-            //set default
-            SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putInt(activity.getString(R.string.times_app_was_used), UsingCountForNeverAsk);
-            editor.apply();
-        });
-        rateAppDialogFragment.show(activity.getFragmentManager(), "rate_app_dialog");
+        rateAppDialogFragment.setOnStopAskListener(this);
+        callback.showRateAppDialog(rateAppDialogFragment);
+    }
+
+    @Override
+    public void onStopAsk() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(context.getString(R.string.times_app_was_used), NEVER_ASK);
+        editor.apply();
     }
 }

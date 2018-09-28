@@ -63,6 +63,13 @@ public class OcrResultActivity
         mPresenter.takeView(this);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPresenter.dropView();  //prevent leaking activity in
+        // case presenter is orchestrating a long running task
+    }
+
     /**
      * fix of issue - Android - footer scrolls off screen when used in CoordinatorLayout
      * https://stackoverflow.com/questions/30777698/android-footer-scrolls-off-screen-when-used-in-coordinatorlayout
