@@ -1,5 +1,6 @@
 package com.ashomok.ocrme.get_more_requests.row.free_options.option_delegates;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +10,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.ashomok.ocrme.OcrRequestsCounter;
+import com.ashomok.ocrme.R;
 import com.ashomok.ocrme.get_more_requests.GetMoreRequestsActivity;
 import com.ashomok.ocrme.get_more_requests.row.free_options.UiFreeOptionManagingDelegate;
 
@@ -73,7 +75,11 @@ public class FollowUsOnFbDelegate extends UiFreeOptionManagingDelegate {
     }
 
     private void runFollowUs() {
-        activity.startActivity(newFacebookIntent(activity.getPackageManager(), facebookPageUrl));
+        try {
+            activity.startActivity(newFacebookIntent(activity.getPackageManager(), facebookPageUrl));
+        } catch (ActivityNotFoundException e) {
+            activity.showError(R.string.unable_to_open_fb);
+        }
     }
 
     @Override

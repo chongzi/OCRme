@@ -99,4 +99,9 @@ public class WatchVideoDelegate extends UiFreeOptionManagingDelegate implements 
             activity.showError(R.string.failed_to_load_video_ad);
         }
     }
+
+    @Override
+    public void onRewardedVideoCompleted() {
+
+    }
 }

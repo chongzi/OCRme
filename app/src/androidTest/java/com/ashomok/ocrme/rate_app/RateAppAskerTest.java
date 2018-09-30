@@ -50,11 +50,10 @@ public class RateAppAskerTest  {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(context.getString(R.string.times_app_was_used), 0);
         editor.apply();
-        rateAppAsker.setCallback(rateAppDialogFragment -> {
+        rateAppAsker.init(rateAppDialogFragment -> {
             Log.d(TAG, "dialog showed");
             throw new AssertionError("dialog showed when not expected");
         });
-        rateAppAsker.init();
 
         int timesAppWasUsed = sharedPreferences.getInt(context.getString(R.string.times_app_was_used), 0);
 
@@ -66,11 +65,10 @@ public class RateAppAskerTest  {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(context.getString(R.string.times_app_was_used), RATE_APP_COUNT);
         editor.apply();
-        rateAppAsker.setCallback(rateAppDialogFragment -> {
+        rateAppAsker.init(rateAppDialogFragment -> {
             Log.d(TAG, "dialog showed");
             Assert.assertNotNull(rateAppDialogFragment);
         });
-        rateAppAsker.init();
 
         int timesAppWasUsed = sharedPreferences.getInt(context.getString(R.string.times_app_was_used), 0);
 

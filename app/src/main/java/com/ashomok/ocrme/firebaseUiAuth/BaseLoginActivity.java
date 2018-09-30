@@ -68,7 +68,7 @@ public abstract class BaseLoginActivity extends RxAppCompatActivity {
                         .setTosUrl(getSelectedTosUrl())
                         .setPrivacyPolicyUrl(getSelectedPrivacyPolicyUrl())
                         .setIsSmartLockEnabled(true, true)
-                        .setAllowNewEmailAccounts(true)
+//                        .setAllowNewEmailAccounts(true) //todo
                         .build(), RC_SIGN_IN);
     }
 
@@ -93,10 +93,10 @@ public abstract class BaseLoginActivity extends RxAppCompatActivity {
             if (response == null) {
                 // User pressed back button
                 showError(R.string.sign_in_cancelled, mRootView);
-            } else if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
-                showError(R.string.no_internet_connection, mRootView);
-            } else if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
-                showError(R.string.unknown_error, mRootView);
+//            } else if (response.getErrorCode() == ErrorCodes.NO_NETWORK) { //todo
+//                showError(R.string.no_internet_connection, mRootView);
+//            } else if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
+//                showError(R.string.unknown_error, mRootView);
             } else {
                 showError(R.string.unknown_response, mRootView);
             }
@@ -119,9 +119,10 @@ public abstract class BaseLoginActivity extends RxAppCompatActivity {
     private List<AuthUI.IdpConfig> getSelectedProviders() {
         List<AuthUI.IdpConfig> selectedProviders = new ArrayList<>();
 
-        selectedProviders.add(new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build());
-        selectedProviders.add(new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build());
-        selectedProviders.add(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build());
+        //todo
+//        selectedProviders.add(new AuthUI.IdpConfig.Builder(AuthUI.).build());
+//        selectedProviders.add(new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build());
+//        selectedProviders.add(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build());
 
         return selectedProviders;
     }
