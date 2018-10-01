@@ -183,4 +183,5 @@
     <string name="unable_to_open_fb">Невозможно открыть Facebook. Установите приложение Facebook и попробуйте снова.</string>
     <string name="privacy_policy_explanation">Используя это приложение Вы соглашаетесь с нашей Политикой конфиденциальности.</string>
     <string name="no_video_ads_avalible">Нет видеорекламы, доступной для Вас прямо сейчас. Пожалуйста, проверьте позже.</string>
+    <string name="signed_in">Вход выполнен</string>
 </resources>

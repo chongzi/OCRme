@@ -66,8 +66,8 @@ dependencies {
     testImplementation group: 'org.robolectric', name: 'playservices', version: '3.4.1'
 
     testImplementation "com.android.support.test:monitor:1.0.2"
-    testCompile 'org.mockito:mockito-core:2.15.0'
-    androidTestCompile 'org.mockito:mockito-core:2.15.0'
+    testCompile 'org.mockito:mockito-core:2.21.0'
+    androidTestCompile 'org.mockito:mockito-core:2.21.0'
     androidTestCompile 'com.google.dexmaker:dexmaker:1.2'
     androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.2'
 
@@ -91,15 +91,15 @@ dependencies {
     }
 
     //http client
-    compile group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.3.0'
+    compile group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.4.0'
     compile 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
-    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.4.0'
     compile 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
     compile 'com.squareup.okhttp3:okhttp:3.10.0'
 
     // ButterKnife
-    compile 'com.jakewharton:butterknife:8.7.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
+    compile 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
     // Dagger
     compile 'com.google.dagger:dagger:2.15'
@@ -124,10 +124,6 @@ dependencies {
     //firebase
     // FirebaseUI Auth
     implementation 'com.firebaseui:firebase-ui-auth:4.2.0'
-//    compile('com.firebaseui:firebase-ui-auth:3.2.2') {
-//        // Necessary to avoid version conflicts
-//        exclude group: 'com.android.support', module: 'cardview'
-//    }
     compile('com.facebook.android:facebook-android-sdk:4.28.0') {
         // Necessary to avoid version conflicts
         exclude group: 'com.android.support', module: 'cardview'
@@ -135,8 +131,8 @@ dependencies {
     compile 'com.firebaseui:firebase-ui-storage:3.2.2'
     compile 'com.google.firebase:firebase-storage:16.0.2'
     compile 'com.google.firebase:firebase-core:16.0.3'
-    implementation 'com.github.bumptech.glide:glide:4.6.1'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
+    implementation 'com.github.bumptech.glide:glide:4.8.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
 
     compile 'com.android.support:multidex:1.0.3'
 

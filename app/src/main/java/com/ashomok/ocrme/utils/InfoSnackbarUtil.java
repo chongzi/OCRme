@@ -4,14 +4,11 @@ import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-
 import com.ashomok.ocrme.R;
 
 /**
  * Created by iuliia on 10/12/17.
  */
-
-
 public class InfoSnackbarUtil {
 
     public static void showError(@StringRes int errorMessageRes, View mRootView) {
@@ -21,7 +18,6 @@ public class InfoSnackbarUtil {
             snackbar.show();
         }
     }
-
 
     public static void showError(Throwable throwable, View mRootView) {
         if (mRootView != null) {

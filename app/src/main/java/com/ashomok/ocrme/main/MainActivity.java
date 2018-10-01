@@ -38,7 +38,7 @@ import com.ashomok.ocrme.Settings;
 import com.ashomok.ocrme.about.AboutActivity;
 import com.ashomok.ocrme.ad.AdMobContainerImpl;
 import com.ashomok.ocrme.crop_image.CropImageActivity;
-import com.ashomok.ocrme.firebaseUiAuth.BaseLoginActivity;
+import com.ashomok.ocrme.firebaseUiAuth.AuthUiActivity;
 import com.ashomok.ocrme.firebaseUiAuth.SignOutDialogFragment;
 import com.ashomok.ocrme.language_choser.LanguageOcrActivity;
 import com.ashomok.ocrme.my_docs.MyDocsActivity;
@@ -64,7 +64,7 @@ import static com.ashomok.ocrme.utils.FileUtils.createFile;
 import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
 
 //todo use butterknife
-public class MainActivity extends BaseLoginActivity implements
+public class MainActivity extends AuthUiActivity implements
         SignOutDialogFragment.OnSignedOutListener,
         View.OnClickListener,
         MainContract.View {

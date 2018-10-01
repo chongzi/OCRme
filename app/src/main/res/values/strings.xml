@@ -204,4 +204,5 @@
     <string name="privacy_policy_explanation">Using this app you agreed with our Privacy Policy.</string>
     <string name="no_video_ads_avalible">No video ads available for you right now. Please check later.</string>
     <string name="unable_to_open_fb">Unable to open Facebook. Install Facebook app to your device and try again.</string>
+    <string name="signed_in">Signed in</string>
 </resources>

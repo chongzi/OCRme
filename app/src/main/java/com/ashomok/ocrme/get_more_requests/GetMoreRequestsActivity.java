@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.ashomok.ocrme.OcrRequestsCounter;
 import com.ashomok.ocrme.R;
 import com.ashomok.ocrme.billing.model.SkuRowData;
-import com.ashomok.ocrme.firebaseUiAuth.BaseLoginActivity;
+import com.ashomok.ocrme.firebaseUiAuth.AuthUiActivity;
 import com.ashomok.ocrme.get_more_requests.row.free_options.PromoListFreeOptionsAdapter;
 import com.ashomok.ocrme.get_more_requests.row.paid_options.PromoListPaidOptionsAdapter;
 import com.ashomok.ocrme.utils.InfoSnackbarUtil;
@@ -31,7 +31,7 @@ import static com.ashomok.ocrme.utils.LogUtil.DEV_TAG;
  */
 
 //todo adds android tsts espresso
-public class GetMoreRequestsActivity extends BaseLoginActivity
+public class GetMoreRequestsActivity extends AuthUiActivity
         implements GetMoreRequestsContract.View {
 
     private static final String TAG = DEV_TAG + GetMoreRequestsActivity.class.getSimpleName();
