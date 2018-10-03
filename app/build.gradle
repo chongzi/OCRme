@@ -8,18 +8,19 @@ android {
         applicationId "com.ashomok.ocrme"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 28
-        versionName "1.0.3"
+        versionCode 29
+        versionName "1.1.0"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        resConfigs "auto"
+        resConfigs "en", "ru"
     }
     buildTypes {
         debug {
             testCoverageEnabled = true
         }
         release {
-            minifyEnabled false
+            shrinkResources true
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         buildTypes.each {

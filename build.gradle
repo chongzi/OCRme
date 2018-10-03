@@ -14,6 +14,10 @@ buildscript {
     }
 }
 
+//plugins {
+//    id 'nebula.lint' version '9.3.2'
+//}
+
 allprojects {
     repositories {
         jcenter()
@@ -22,6 +26,9 @@ allprojects {
             url "https://maven.google.com"
         }
     }
+
+//    apply plugin: 'nebula.lint'
+//    gradleLint.rules = ['unused-dependency'] // add as many rules here as you'd like
 }
 
 task clean(type: Delete) {
