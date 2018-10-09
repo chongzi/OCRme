@@ -127,7 +127,6 @@ public abstract class AuthUiActivity extends AppCompatActivity {
         Log.d(TAG, "onSignedIn");
         mIsUserSignedIn = true;
         updateUi(mIsUserSignedIn);
-        showInfo(R.string.signed_in, mRootView);
     }
 
     /**

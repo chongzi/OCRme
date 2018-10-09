@@ -5,4 +5,8 @@
 -dontwarn com.fasterxml.jackson.**
 -dontwarn org.codehaus.**
 -dontwarn org.slf4j.**
+-keep class com.ashomok.ocrme.**
+-dontshrink
+-dontoptimize
+-dontpreverify
 
